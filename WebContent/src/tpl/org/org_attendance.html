@@ -1,0 +1,29 @@
+<div class="hbox hbox-auto-xs hbox-auto-sm" ng-controller="OrgAttendance">
+  <div class="panel-heading font-bold text-center">
+    设置考勤
+  </div>
+  <div class="panel-body" ng-controller="OrgAttendance">
+    <form class="attendance-form form-horizontal" method="get" ng-model="formData">
+      <div class="form-group">
+        <label class="col-sm-3 control-label">上班时间</label>
+        <div class="col-sm-8">
+          <timepicker ng-model="onTime" ng-change="changed()" hour-step="hstep" minute-step="mstep" show-meridian="ismeridian"></timepicker>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-3 control-label">下班时间</label>
+        <div class="col-sm-8">
+          <timepicker ng-model="offTime" ng-change="changed()" hour-step="hstep" minute-step="mstep" show-meridian="ismeridian"></timepicker>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-2 col-xs-6">
+          <button type="submit" id="attendance" class="w100 btn btn-success" ng-click="submit()">确定</button>
+        </div>
+        <div class="col-sm-2 col-xs-6">
+          <a ng-click="return()" class="w100 btn btn-default">取消</a>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

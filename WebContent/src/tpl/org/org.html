@@ -1,0 +1,75 @@
+<div class="org hbox hbox-auto-xs hbox-auto-sm" ng-controller="OrgController">
+  <div class="frame-panel">
+    <div class="row">
+      <!-- <div class="col-md-4 col-xs-0"></div> -->
+      <div class="col-md-3 col-xs-12">
+        <h2 class="org-title text-left txt-center">组织架构</h2>
+      </div>
+      <div class="col-md-9 col-xs-12" ng-init="single=true;only=false;mutiple=true;locked=true">
+        <div class="panel-heading pull-right btn-group">
+          <button id="clickId" class="none" ng-click="click()"></button>
+          <button type="button" id="add" class="btn btn-success" ng-click="addUnit()" ng-disabled="only">
+            <i class="fa fa-fw fa-plus"></i>
+            <span class="hid">添加</span>
+          </button>
+          <button type="button" id="modify" class="btn btn-primary" ng-click="editIt()" ng-disabled="single">
+            <i class="fa fa-fw fa-pencil"></i>
+            <span class="hid">修改</span>
+          </button>
+          <!-- <button type="button" id="delete" class="btn btn-danger" ng-click="removeIt()" ng-disabled="mutiple">
+            <i class="fa fa-fw fa-minus"></i>
+            <span class="hid">删除</span>
+          </button> -->
+          <button type="button" class="btn btn-default" ng-click="seeDetails()" ng-disabled="single">
+            <i class="fa fa-fw fa-eye"></i>
+            <span class="hid">查看</span>
+          </button>
+          <button type="button" id="freeze" class="btn btn-default" ng-click="freeze()" ng-disabled="locked">
+            <i class="fa fa-fw fa-lock"></i>
+            <span class="hid">冻结</span>
+          </button>
+          <!-- <button type="button" id="attendance" class="btn btn-default" ng-click="attendance()" ng-disabled="mutiple">
+            <i class="fa-fw glyphicon glyphicon-time"></i>
+            <span class="hid">考勤时间</span>
+          </button> -->
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-3">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="wrapper-md">
+              <div class="b-a r-2x" ng-init="loading=true">
+                <div ng-if="loading" class="loading">
+                  <i class="glyphicon glyphicon-repeat"></i>
+                </div>
+                <span ng-if="doing_async">...加载中...</span>
+                <abn-tree
+                tree-data         = "tree_data"
+                tree-control      = "org_tree"
+                on-select         = "tree_handler(branch)"
+                expand-level      = "2"
+                initial-selection = ""
+                icon-leaf         = ""
+                icon-expand       = "fa fa-plus"
+                icon-collapse     = "fa fa-minus"
+                > 
+                </abn-tree>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-9">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="wrapper-md">
+              <div class="" ui-view></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

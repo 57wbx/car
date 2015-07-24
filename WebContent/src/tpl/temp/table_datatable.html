@@ -1,0 +1,34 @@
+<!-- <div class="bg-light lter b-b wrapper-md">
+  <h1 class="m-n font-thin h3">Datatable</h1>
+</div> -->
+<div class="wrapper-md">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      请假单 (2015年4月)
+    </div>
+    <div class="table-responsive">
+      <table ui-jq="dataTable" ui-options="{
+          sAjaxSource: 'api/datatable.json',
+          aoColumns: [
+            { mData: 'name' },
+            { mData: 'employeeID' },
+            { mData: 'time' },
+            { mData: 'reason' },
+            { mData: 'person' }
+          ]
+        }" class="table table-striped b-t b-b">
+        <thead>
+          <tr>
+            <th  style="width:15%">姓名</th>
+            <th  style="width:15%">工号</th>
+            <th  style="width:25%">请假时间</th>
+            <th  style="width:30%">请假事由</th>
+            <th  style="width:15%">审批人员</th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

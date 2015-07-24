@@ -1,0 +1,105 @@
+<div class="hbox hbox-auto-xs hbox-auto-sm" ng-controller="OrgAdd">
+  <div class="panel-heading font-bold text-center">
+    添加组织
+  </div>
+  <div class="panel-body">
+    <form name="form" class="form-horizontal form-validation" method="get" ng-model="formData">
+      <div class="form-group">
+        <label class="col-sm-3 control-label">编码<i class="fa fa-asterisk text-danger"></i></label>
+        <div class="col-sm-8">
+          <input type="text" ng-change="checkNull()" id="number" placeholder="公司编号，建议按公司简称编号" class="form-control" ng-model="formData.code" tabindex="1" required>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-3 control-label">名称<i class="fa fa-asterisk text-danger"></i></label>
+        <div class="col-sm-8">
+          <input type="text" ng-change="checkNull()" id="name" placeholder="公司全称"  class="form-control" ng-model="formData.name" required>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-3 control-label">简称</label>
+        <div class="col-sm-8">
+          <input type="text" placeholder="公司简称" class="form-control" ng-model="formData.simpleName">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-3 control-label">组织类型<i class="fa fa-asterisk text-danger"></i></label>
+        <div class="col-sm-8">
+          <select id="orgType" class="form-control" ng-model="formData.unitLayer" required>
+            <option value="1">集团</option>
+            <option value="2">公司</option>
+            <option value="3">部门</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-3 control-label">上级组织</label>
+        <div class="col-sm-8">
+        	<input readonly type="text" class="form-control" ng-model="formData.superName">
+		</div>
+      </div>
+	<!-- 	
+      <div class="form-group">
+        <label class="col-sm-3 col-xs-11 control-label">上级组织</label>
+        <div class="col-sm-6 col-xs-8">
+          <input id="superName" readonly type="text" placeholder="选择上级组织" class="form-control" ng-model="viewData.superName">
+        </div>
+        <div class="col-sm-2 col-xs-4">
+          <a id="chooseBtn" ng-click="choose()" class="w100 btn btn-info">选择</a>
+        </div>
+      </div>
+      <div class="form-group none" id="superUnit">
+        <div class="col-sm-offset-3 col-sm-8">
+          <div ui-view class="fade-in-down smooth">
+            <div class="panel panel-default">
+              <div class="panel-body">
+                <div class="wrapper-md">
+                  <div class="table-responsive">
+                    <table id="orgAddList" class="table table-striped b-t b-b">
+                      <thead>
+                        <tr>
+                          <th>编码</th>
+                          <th>名称</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+       -->
+      <div class="form-group">
+        <label class="col-sm-3 control-label">电话</label>
+        <div class="col-sm-8">
+          <input type="tel" placeholder="电话" class="form-control" ng-model="formData.phoneNumber">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-3 control-label">传真</label>
+        <div class="col-sm-8">
+          <input type="tel" placeholder="传真" class="form-control" ng-model="formData.fax">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-3 control-label">地址</label>
+        <div class="col-sm-8">
+          <input type="text" placeholder="地址" class="form-control" ng-model="formData.adminAddress">
+        </div>
+      </div>
+      <div class="line line-dashed b-b line-lg pull-in"></div>
+      <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-2 col-xs-6">
+          <button type="button" id="add" class="w100 btn btn-success" ng-click="submit()" ng-disabled='form.$invalid'>确定</button>
+        </div>
+        <div class="col-sm-2 col-xs-6">
+          <a ng-click="return()" class="w100 btn btn-default">取消</a>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,34 @@
+<div class="hbox hbox-auto-xs hbox-auto-sm" ng-controller="RoleAllot">
+	<div class="panel-heading font-bold text-center">分配权限</div>
+	<div class="panel-body">
+		<form class="form-horizontal" method="get">
+			<div class="form-group">
+				<div style="float: left;margin:0 50px 50px 50px;">
+					<p>角色编码：{{details.number}}</p>
+					<br/>
+					<p>角色名称：{{details.name}}</p>
+					<br/>
+					<p>所属组织：{{details.orgName}}</p>
+				</div>
+				
+				<div class="form-group" style="margin:0 auto;border: 1px black;float:left;">
+					<div class="content_wrap" style="margin-left: 70px;height:300px;overflow-y:scroll;width:200px;">
+						<div class="zTreeDemoBackground left">
+							<ul id="treeDemo" class="ztree"></ul>
+						</div>
+					</div>
+				</div>
+				
+			</div>
+			<div class="line line-dashed b-b line-lg pull-in"></div>
+			<div class="form-group">
+				<div class="col-sm-offset-3 col-sm-2 col-xs-6">
+					<button type="button" id="allot" class="w100 btn btn-success" ng-click="submit()" ng-disabled='form.$invalid'>确定</button>
+				</div>
+				<div class="col-sm-2 col-xs-6">
+					<a ng-click="return()" class="w100 btn btn-default">取消</a>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>

@@ -1,0 +1,43 @@
+<div class="hbox hbox-auto-xs hbox-auto-sm" ng-controller="PositionDetails">
+  <div class="panel-heading font-bold text-center">
+    详情
+  </div>
+  <div class="panel-body">
+    <form class="form-horizontal" method="get">
+      <div class="form-group">
+        <label class="col-sm-2 control-label">名称</label>
+        <p class="col-sm-4 form-text" ng-bind="details.name"></p>
+        <label class="col-sm-2 control-label">简称</label>
+        <p class="col-sm-4 form-text" ng-bind="details.simpleName"></p>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-2 control-label">编码</label>
+        <p class="col-sm-4 form-text" ng-bind="details.number"></p>
+        <label class="col-sm-2 control-label">所属组织</label>
+        <p class="col-sm-4 form-text" ng-bind="details.orgName"></p>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-2 control-label">描述</label>
+        <p class="col-sm-4 form-text" ng-bind="details.description"></p>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-2 control-label">创建人</label>
+        <p class="col-sm-4 form-text" ng-bind="details.creator"></p>
+        <label class="col-sm-2 control-label">修改人</label>
+        <p class="col-sm-4 form-text" ng-bind="details.lastUpdateUser"></p>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-2 control-label">创建时间</label>
+        <p class="col-sm-4 form-text" ng-bind="details.createTime | date:'yyyy-MM-dd'"></p>
+        <label class="col-sm-2 control-label">修改时间</label>
+        <p class="col-sm-4 form-text" ng-bind="details.lastUpdateTime | date:'yyyy-MM-dd'"></p>
+      </div>
+      <div class="line line-dashed b-b line-lg pull-in"></div>
+      <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-8 col-lg-offset-1 col-lg-6">
+          <a ng-click="return()" class="btn btn-info">&nbsp;&nbsp;返回&nbsp;&nbsp;</a>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

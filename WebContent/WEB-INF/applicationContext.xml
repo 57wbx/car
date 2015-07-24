@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx" 
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-2.5.xsd 
+		http://www.springframework.org/schema/tx 
+		http://www.springframework.org/schema/tx/spring-tx-2.5.xsd 
+		http://www.springframework.org/schema/aop 
+		http://www.springframework.org/schema/aop/spring-aop-2.5.xsd 
+		http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+
+	<context:annotation-config /> 
+	<context:component-scan base-package="com.hhxh.car" />
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+		<property name="configLocations" value="classpath*:hibernate.cfg.xml" />
+		<property name="packagesToScan">
+			<list>
+				<value>com.hhxh.car.</value>
+			</list>
+		</property>
+	</bean>
+	
+	<!-- 配置声明事务管理 -->
+	<!-- 事务管理 -->
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+
+	<!-- 事务配置 -->
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="save*" propagation="REQUIRED" rollback-for="java.lang.Throwable"/>
+			<tx:method name="assign*" propagation="REQUIRED" rollback-for="java.lang.Throwable"/>
+			<tx:method name="add*" propagation="REQUIRED" rollback-for="java.lang.Throwable"/>
+			<tx:method name="edit*" propagation="REQUIRED" rollback-for="java.lang.Throwable"/>
+			<tx:method name="update*" propagation="REQUIRED" rollback-for="java.lang.Throwable"/>
+			<tx:method name="delete*" propagation="REQUIRED" rollback-for="java.lang.Throwable"/>
+			<tx:method name="remove*" propagation="REQUIRED" rollback-for="java.lang.Throwable"/>
+			<tx:method name="query*" propagation="REQUIRED" rollback-for="java.lang.Throwable"/>
+			<tx:method name="execute*" propagation="REQUIRED" rollback-for="java.lang.Throwable"/>
+			<tx:method name="insert*" propagation="REQUIRED" rollback-for="java.lang.Throwable"/>
+			<tx:method name="get*" propagation="REQUIRED" rollback-for="java.lang.Throwable"/>
+			<tx:method name="set*" propagation="REQUIRED" rollback-for="java.lang.Throwable"/>
+			<tx:method name="jbpm*" propagation="REQUIRED" rollback-for="java.lang.Throwable"/>
+			<tx:method name="yjph*" propagation="REQUIRED" rollback-for="java.lang.Throwable"/>
+			<tx:method name="update*" propagation="REQUIRED" rollback-for="java.lang.Throwable"/>
+		</tx:attributes>
+	</tx:advice>
+	<aop:config>
+		<aop:pointcut id="allManagerMethodOne" expression="execution(* com.hhxh.car.*.service..*(..))" />
+		<aop:pointcut id="allManagerMethodTwo" expression="execution(* com.hhxh.car.*.*.service..*(..))" />
+		<aop:pointcut id="allManagerMethod" expression="execution(* com.hhxh.car.*.*.*.service..*(..))" />
+		<aop:pointcut id="managerMethod" expression="execution(* com.hhxh.car.common.service..*(..))" />
+		<aop:pointcut id="messageMethod" expression="execution(* com.hhxh.car.common.quartz..*(..))" />
+		<aop:advisor pointcut-ref="allManagerMethodTwo" advice-ref="txAdvice" />
+		<aop:advisor pointcut-ref="allManagerMethod" advice-ref="txAdvice" />
+		<aop:advisor pointcut-ref="managerMethod" advice-ref="txAdvice" />
+		<aop:advisor pointcut-ref="allManagerMethodOne" advice-ref="txAdvice" />
+		<aop:advisor pointcut-ref="messageMethod" advice-ref="txAdvice" />
+	</aop:config>
+</beans>

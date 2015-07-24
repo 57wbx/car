@@ -1,0 +1,104 @@
+<style type="text/css">
+</style>
+<!-- 添加事件 -->
+<script type="text/javascript">
+$(function(){
+	$("body").bind("mouseout",function(e){
+		if(!e.toElement||!e.toElement.className||e.toElement.className.indexOf("detailView")<0){
+			hideView();
+		}
+	});
+});
+
+function show(obj){
+	$(".second-panel").css("display","none");
+	var number = $(obj).attr("number");
+	$("#"+number).css("display","block");
+}
+function hideView(){
+	$(".second-panel").css("display","none");
+}
+</script>
+<ul class="nav">
+	<li ng-repeat="A in app.ui.items" class="hidden-folded padder m-t m-b-sm text-muted text-xs">
+    	<span ng-bind="A.type"></span>
+	</li>
+	<li ng-init="B = A.items"></li>
+	<li ng-repeat="C in app.ui.items[0].items" onmouseover="show(this)" number="{{C.id}}">
+		<a class="auto">
+			<i class="glyphicon {{C.icon}} icon" style="width:14px;heigth:14px;"></i>
+			<span class="font-bold" ng-bind="C.name"></span>
+		</a>
+	</li>
+	<!-- <li class="ng-scope first-menu-item" onmouseover="show('menu-001')">
+	    <a ui-sref="app.org.list" class="auto" href="#/app/org/list">
+			<i class="glyphicon fa fa-sitemap text-primary icon"></i>
+			<span class="font-bold ng-binding" >组织架构</span>
+	    </a>
+	</li>
+  <li class="ng-scope" onmouseover="show('menu-002')">
+    <a ui-sref="app.employee.list" class="auto" href="#/app/employee/list">
+      <i class="glyphicon fa fa-group text-warning icon"></i>
+      <span class="font-bold ng-binding">员工管理</span>
+    </a>
+  </li>
+  <li class="ng-scope" onmouseover="show('menu-003')">
+    <a ui-sref="app.position.list" class="auto" href="#/app/position/list">
+      <i class="glyphicon fa fa-mortar-board text-info icon"></i>
+      <span class="font-bold ng-binding">职位管理</span>
+    </a>
+  </li>
+  <li class="ng-scope" onmouseover="show('menu-004')">
+    <a ui-sref="app.user.list" class="auto" href="#/app/user/list">
+      <i class="glyphicon fa fa-users text-primary icon"></i>
+      <span class="font-bold ng-binding">用户管理</span>
+    </a>
+  </li>
+  <li class="ng-scope" onmouseover="show('menu-005')">
+    <a ui-sref="app.role.list" class="auto" href="#/app/role/list">
+      <i class="glyphicon fa fa-user text-primary icon"></i>
+      <span class="font-bold ng-binding">角色管理</span>
+    </a>
+  </li>
+  
+  <li class="ng-scope" onmouseover="show('menu-006')">
+    <a ui-sref="app.leave.list" class="auto" href="#/app/leave/list">
+      <i class="glyphicon fa fa-user text-info icon"></i>
+      <span class="font-bold ng-binding">请假申请</span>
+    </a>
+  </li>
+  <li class="ng-scope">
+    <a ui-sref="app.role.list" class="auto" href="#/app/role/list">
+      <i class="glyphicon fa fa-user text-danger icon"></i>
+      <span class="font-bold ng-binding">出差申请</span>
+    </a>
+  </li>
+   -->
+  
+  <li class="line dk hidden-folded"></li>
+  <li class="hidden-folded padder m-t m-b-sm text-muted text-xs">          
+    <span translate="aside.nav.your_stuff.YOUR_STUFF" class="ng-scope">我的工作</span>
+  </li>  
+  <li>
+    <a ui-sref="app.page.profile" href="#/app/page/profile">
+      <i class="icon-user icon text-success-lter"></i>
+      <b class="badge bg-success pull-right">70%</b>
+      <span>工作计划</span>
+    </a>
+  </li>
+  <li>
+    <a ui-sref="app.docs" href="#/app/docs">
+      <i class="icon-question icon"></i>
+      <span>工作总结</span>
+    </a>
+  </li>
+</ul>
+
+<div ng-repeat="A in app.ui.childItems" id="{{A.id}}" class="second-panel detailView">
+	<h5 class="detailView">{{A.name}}</h5>
+	<ul id="second-menulist-45" class="second-menu clearfix detailView">
+		<li class="detailView" ng-repeat="B in A.items">
+			<a class="second-menu-item detailView" title="{{B.name}}" ui-sref="{{B.url}}" style="color:black;" onclick="hideView()" href="#/{{B.href}}" >{{B.name}}</a>
+		</li>
+	</ul>  
+</div>

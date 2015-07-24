@@ -1,0 +1,62 @@
+{
+  "datalist": [{
+    "type": "导航",
+    "name": null,
+    "route": null,
+    "count": null,
+    "items": [{
+      "type": null,
+      "name": "组织架构",
+      "route": "app.org.list",
+      "icon": "fa fa-sitemap text-primary",
+      "count": 2,
+      "items": [{
+        "type": null,
+        "name": "部门管理",
+        "route": "app.chart",
+        "count": null,
+        "items": null
+      }]
+    }, {
+      "type": null,
+      "name": "员工管理",
+      "route": "app.employee.list",
+      "icon": "fa fa-group text-warning",
+      "count": null,
+      "items": [{
+        "type": null,
+        "name": "工作计划",
+        "route": "app.dashboard-1",
+        "count": null,
+        "items": null
+      }, {
+        "type": null,
+        "name": "工作总结",
+        "route": "app.mail.list",
+        "count": null,
+        "items": null
+      }]
+    }, {
+      "type": null,
+      "name": "职位管理",
+      "route": "app.position.list",
+      "icon": "fa fa-mortar-board text-info",
+      "count": 24,
+      "items": null
+    }, {
+      "type": null,
+      "name": "用户管理",
+      "route": "app.user.list",
+      "icon": "fa fa-users text-info",
+      "count": 24,
+      "items": null
+    }, {
+      "type": null,
+      "name": "角色管理",
+      "route": "app.role.list",
+      "icon": "fa fa-user text-info",
+      "count": 24,
+      "items": null
+    }]
+  }]
+}

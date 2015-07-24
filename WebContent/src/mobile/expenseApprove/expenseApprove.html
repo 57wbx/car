@@ -1,0 +1,140 @@
+<meta name="fullscreen" content="true">
+ <!-- qq browsers private meta -->
+<meta name="x5-orientation" content="portrait">
+<meta name="x5-fullscreen" content="true">
+<meta name="x5-page-mode" content="app">
+
+<style type="text/css" media="all">
+#myDiv{
+	margin:0;
+	padding:0;
+	font-size:14px;
+	background-color: #FFFFFF;
+	/* -webkit-user-select:none; */
+	-webkit-text-size-adjust:none;
+	font-style:normal;
+	font-weight:normal;
+	font-family:Arial,"黑体","Helvetica Neue", Helvetica;
+}
+#header {
+	position:absolute;
+	top:0; left:0;
+	width:100%;
+	height:45px;
+	line-height:45px;
+	background-image:-webkit-gradient(linear, 0 0, 0 100%, color-stop(0, #1B85FF), color-stop(0.05, #1B85FF), color-stop(1, #1B85FF));
+	background-image:-moz-linear-gradient(top, #1B85FF, #1B85FF 5%, #1B85FF);
+	background-image:-o-linear-gradient(top, #1B85FF, #1B85FF 5%, #1B85FF);
+	padding:0;
+	color: #FFFFFF;
+	font-size:20px;
+	text-align:center;
+}
+#header a {
+	color:#f3f3f3;
+	text-decoration:none;
+	font-weight:bold;
+	text-shadow:0 -1px 0 rgba(0,0,0,0.5);
+}
+input{
+	border:0px;width:100%;height:100%;text-align:right;
+}
+.detailsTable{
+	width:100%;
+}
+.detailsTable tr td{
+	text-align:center;
+	border:1px solid #CFCFCF;
+	height:30px;
+}
+.btnLeft{
+	float:left;margin-top:3px;margin-left:15px;font-size:14px;
+}
+.btnRight{
+	float:right;margin-top:3px;margin-right:15px;font-size:14px;
+}
+.bottombtn{padding:6px;border-radius:.6em;background-color:#1B85FF;text-align:center;color:#FFFFFF;}
+.stateBtn{width:25%;text-align:center;background-color: #dddddd;}
+</style>
+<div class="hbox hbox-auto-xs hbox-auto-sm" id="myDiv" ng-controller="ExpenseBillController">
+	<div id="header">
+		<div class="btnLeft" ng-click="return()">&lt;返回</div>
+		报销单审批
+		<div class="btnRight" ng-click="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+	</div>
+	<div class="row" style="top:60px;">
+		<div class="col-lg-12" style="padding: 0;">
+			<form name="form" method="get" ng-model="formData">
+				<div class="list-group">
+					<li class="list-group-item">
+						<span style="float:right;">{{formData.user}}</span>
+						报&nbsp;&nbsp;销&nbsp;&nbsp;人：
+					</li>
+					<li class="list-group-item">
+						<span style="float:right;">{{formData.dept}}</span>
+						报销部门：
+					</li>
+					<li class="list-group-item">
+						<span style="float:right;">{{formData.createTime}}</span>
+						报销日期：
+					</li>
+					<li class="list-group-item">
+						<span style="float:right;">
+							<select style="border:0;height:100%;text-align:right;" disabled="disabled" ng-model="formData.emergent">
+								<option value="1">正常</option>
+								<option value="2">重要</option>
+								<option value="3">紧急</option>
+							</select>
+						</span>
+						紧急程度：
+					</li>
+					<li class="list-group-item" style="padding-right:0px;">
+						<span style="float:right;margin-right: 15px;">
+							<input type="text" readonly="readonly" ng-model="formData.borrowAmount"/>
+						</span>
+						借款金额：
+					</li>
+					<li class="list-group-item" style="padding-right:0px;"><!-- 明细汇总 -->
+						<span style="float:right;margin-right: 15px;"><input type="text" readonly="readonly" ng-model="formData.invoiceAmount"/></span>
+						发票金额：
+					</li>
+					<li class="list-group-item" style="padding-right:0px;">
+						<span style="float:right;margin-right: 15px;"><input type="text" readonly="readonly" ng-model="formData.amount"/></span>
+						申请报销金额：
+					</li>
+					<li class="list-group-item" style="padding-right:0px;">
+						<span style="float:right;margin-right: 15px;"><input type="text" readonly="readonly" ng-model="formData.actAmount"/></span>
+						实际报销金额：
+					</li>
+					<li class="list-group-item">
+						<textarea ng-model="formData.remark" readonly="readonly" style='width:100%;height:70px;resize:none;overflow-x:hidden;overflow-y:auto;border-radius:.6em;font-size:14px;' placeholder="备注"></textarea>
+					</li>
+					<li class="list-group-item">
+						<table class="detailsTable">
+							<tr>
+								<td style="width:50%">费用项目</td>
+								<td style="width:50%">申请报销金额</td>
+							</tr>
+							<tr ng-repeat="entry in entrys">
+								<td>{{entry.feeTypeName}}</td>
+								<td>{{entry.amount}}</td>
+							</tr>
+						</table>
+					</li>
+					<div id="btns" style="width: 100%;text-align:right;display:none;z-index:200;position:absolute;bottom:25px;">
+						<button class="stateBtn"  ng-click="passOn()">转交</button><br/>
+						<button class="stateBtn"  ng-click="stop()">终止</button><br/>
+						<button class="stateBtn"  ng-click="reminders()">催办</button>
+					</div>
+					<div style="clear: both;"></div>
+					<div style="width: 100%;">
+						<button class="stateBtn" ng-click="agree()" style="float:left;">同意</button>
+						<button class="stateBtn" ng-click="refuse()" style="float:left;">拒绝</button>
+						<button class="stateBtn" ng-click="record()" style="float:left;">审批记录</button>
+						<button class="stateBtn" ng-click="showBtns()" style="width:25%;">更多</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
