@@ -111,14 +111,12 @@ public class AdminOrgUnit implements Serializable {
     /**
      * 状态
      */
-    @Column(name = "useType")
-    private Integer state;
 	/**
 	 * 是否锁定/冻结（解锁/反冻结）1冻结、0取消冻结
 	 * @return
 	 */
     @Column(name="useType")
-    private String locked;
+    private Integer locked;
    
     /**
      * 考勤地址
@@ -134,10 +132,10 @@ public class AdminOrgUnit implements Serializable {
     
     
     
-	public String getLocked() {
+	public Integer getLocked() {
 		return locked;
 	}
-	public void setLocked(String locked) {
+	public void setLocked(Integer locked) {
 		this.locked = locked;
 	}
 	public String getId() {
@@ -217,12 +215,6 @@ public class AdminOrgUnit implements Serializable {
 	}
 	public void setFLongNumber(String fLongNumber) {
 		FLongNumber = fLongNumber;
-	}
-	public Integer getState() {
-		return state;
-	}
-	public void setState(Integer state) {
-		this.state = state;
 	}
 	public String getAddress() {
 		return address;

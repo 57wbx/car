@@ -381,7 +381,7 @@ public class OrgAction extends AbstractAction {
 	public void freeze() throws Exception
 	{
 		AdminOrgUnit obj = baseService.get(AdminOrgUnit.class, id);
-		obj.setLocked("1");
+		obj.setLocked(1);
 		baseService.update(obj);
 		JSONObject json = new JSONObject();
 		json.put("code", "1");
@@ -396,7 +396,7 @@ public class OrgAction extends AbstractAction {
 	public void unfreeze()throws Exception
 	{
 		AdminOrgUnit obj = baseService.get(AdminOrgUnit.class, id);
-		obj.setLocked("0");
+		obj.setLocked(0);
 		baseService.update(obj);
 		JSONObject json = new JSONObject();
 		json.put("code", "1");
