@@ -350,14 +350,14 @@ public class OrgAction extends AbstractAction {
 		StringBuffer sql = getSql();
 		if(isNotEmpty(FLongNumber))
 		{
-			sql.append("where t1.FLongNumber like '").append(FLongNumber).append("%'").append(RT);
+			sql.append("where t1.orgCode like '").append(FLongNumber).append("%'").append(RT);
 		}
 		else
 		{
 			User user = getLoginUser();
 			if(user.getRootOrgUnit()!=null&&user.getRootOrgUnit().getFLongNumber()!=null)
 			{
-				sql.append("where t1.FLongNumber like '").append(user.getRootOrgUnit().getFLongNumber()).append("%'").append(RT);
+				sql.append("where t1.orgCode like '").append(user.getRootOrgUnit().getFLongNumber()).append("%'").append(RT);
 			}
 			else
 			{
@@ -366,8 +366,8 @@ public class OrgAction extends AbstractAction {
 		}
 		if(isNotEmpty(search))
 		{
-			sql.append("AND (t1.Fname LIKE '%").append(search).append("%'").append(RT);
-			sql.append("or t1.FNumber LIKE '%").append(search).append("%')").append(RT);
+			sql.append("AND (t1.name LIKE '%").append(search).append("%'").append(RT);
+			sql.append("or t1.curCode LIKE '%").append(search).append("%')").append(RT);
 		}
 		commonQuery(sql,true);
 	}
