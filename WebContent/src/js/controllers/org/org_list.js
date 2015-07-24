@@ -127,10 +127,6 @@ app.controller('OrgList', function($rootScope, $scope, $state, utils) {
       }, {
         "mDataProp": "fax"
       }, {
-        "mDataProp": "phoneNumber"
-      }, {
-        "mDataProp": "adminAddress"
-      }, {
         "mDataProp": "createTime"
       }, {
         "mDataProp": "creator"

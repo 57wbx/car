@@ -213,7 +213,7 @@ public class OrgAction extends AbstractAction {
 		User user = getLoginUser();
 		if(user.getRootOrgUnit()!=null&&user.getRootOrgUnit().getFLongNumber()!=null)
 		{
-			sql.append("where t1.FLongNumber like '").append(user.getRootOrgUnit().getFLongNumber()).append("%'").append(RT);
+			sql.append("where t1.orgCode like '").append(user.getRootOrgUnit().getFLongNumber()).append("%'").append(RT);
 		}
 		else
 		{
@@ -221,7 +221,7 @@ public class OrgAction extends AbstractAction {
 		}
 		if(isNotEmpty(id))
 		{
-			sql.append("and t1.Fparent='").append(id).append("'").append(RT);
+			sql.append("and t1.parentID='").append(id).append("'").append(RT);
 		}
 		commonQuery(sql,false);
 	}
@@ -304,14 +304,14 @@ public class OrgAction extends AbstractAction {
 	{
 		StringBuffer sql = new StringBuffer();
 		sql.append("SELECT").append(RT); 
-		sql.append("t1.fid,t1.fnumber,t1.fname,t1.FSIMPLENAME,t2.Fid parentId,t2.fname parentName,").append(RT);
-		sql.append("t1.FadminAddress,t1.FunitLayer,t1.FDESCRIPTION,t1.FPHONENUMBER,").append(RT);
-		sql.append("t1.ffax,t1.flock,t1.FLONGNUMBER,").append(RT);
-		sql.append("t4.FNAME_L2 creator,t1.FCREATETIME,t5.FNAME_L2 updateUser,t1.FLASTUPDATETIME").append(RT);
-		sql.append("FROM T_ORG_Admin t1").append(RT);
-		sql.append("LEFT JOIN T_ORG_Admin t2 ON t1.fparent=t2.fid").append(RT);
-		sql.append("LEFT JOIN T_PM_USER t4 ON t1.fcreateuserid=t4.fid").append(RT);
-		sql.append("LEFT JOIN T_PM_USER t5 ON t1.FLastUpdateUserID=t5.fid").append(RT);
+		sql.append("t1.orgid,t1.curCode,t1.name,t1.simpleName,t2.orgid parentId,t2.name parentName,").append(RT);
+		sql.append("t1.orgType,t1.memo,").append(RT);
+		sql.append("t1.fax,t1.useType,t1.orgCode,").append(RT);
+		sql.append("t4.FNAME_L2 creator,t1.registerDate,t5.FNAME_L2 updateUser,t1.updateTime").append(RT);
+		sql.append("FROM sys_org t1").append(RT);
+		sql.append("LEFT JOIN sys_org t2 ON t1.parentID=t2.orgid").append(RT);
+		sql.append("LEFT JOIN T_PM_USER t4 ON t1.createUserID=t4.fid").append(RT);
+		sql.append("LEFT JOIN T_PM_USER t5 ON t1.lastUpdateUserID=t5.fid").append(RT);
 		return sql;
 	}
 	
@@ -329,17 +329,15 @@ public class OrgAction extends AbstractAction {
 		item.put("simpleName",obj[3]==null?"":obj[3]);
 		item.put("parent", obj[4]==null?"":obj[4]);
 		item.put("parentName", obj[5]==null?"":obj[5]);
-		item.put("adminAddress", obj[6]==null?"":obj[6]);
-		item.put("unitLayer", obj[7]==null?"":obj[7]);
-		item.put("description", checkNull(obj[8]));
-		item.put("phoneNumber", checkNull(obj[9]));
-		item.put("fax", checkNull(obj[10]));
-		item.put("locked",checkNull(obj[11]));;
-		item.put("FLongNumber",checkNull(obj[12]));
-		item.put("creator", checkNull(obj[13]));
-		item.put("createTime",obj[14]==null?"":ymd.format(obj[14]));
-		item.put("lastUpdateUser",checkNull(obj[15]));
-		item.put("lastModifyTime", obj[16]==null?"":ymd.format(obj[16]));
+		item.put("unitLayer", obj[6]==null?"":obj[6]);
+		item.put("description", checkNull(obj[7]));
+		item.put("fax", checkNull(obj[8]));
+		item.put("locked",checkNull(obj[9]));;
+		item.put("FLongNumber",checkNull(obj[10]));
+		item.put("creator", checkNull(obj[11]));
+		item.put("createTime",obj[12]==null?"":ymd.format(obj[12]));
+		item.put("lastUpdateUser",checkNull(obj[13]));
+		item.put("lastModifyTime", obj[14]==null?"":ymd.format(obj[14]));
 		return item;
 	}
 	
