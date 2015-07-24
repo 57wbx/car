@@ -215,7 +215,7 @@ public class RoleAction extends AbstractAction{
 		//组织过滤
 		if(isNotEmpty(FLongNumber))
 		{
-			sql.append("and org.FLongNumber like '").append(FLongNumber).append("%'").append(RT);
+			sql.append("and org.orgCode like '").append(FLongNumber).append("%'").append(RT);
 		}
 		if(isNotEmpty(search))
 		{
