@@ -196,9 +196,7 @@ public class OrgAction extends AbstractAction {
 		obj.setNumber(code);
 		obj.setName(name);
 		obj.setSimpleName(simpleName);
-		obj.setAdminAddress(adminAddress);
 		obj.setFax(fax);
-		obj.setPhoneNumber(phoneNumber);
 		User user = getLoginUser();
 		obj.setLastUpdateUser(user);
 		obj.setLastModifyTime(new Date());
@@ -414,8 +412,6 @@ public class OrgAction extends AbstractAction {
 	{
 		for(int i=0;i<ids.length;i++){
 			AdminOrgUnit obj = baseService.get(AdminOrgUnit.class, ids[i]);
-			obj.setOnDutyTime(onDutyTime);
-			obj.setOffDutyTime(offDutyTime);
 			baseService.update(obj);
 		}
 		JSONObject json = new JSONObject();

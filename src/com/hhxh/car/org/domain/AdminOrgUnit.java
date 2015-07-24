@@ -33,7 +33,7 @@ import com.hhxh.car.permission.domain.User;
  *
  */
 @Entity
-@Table(name = "T_ORG_Admin")
+@Table(name = "SYS_ORG")
 public class AdminOrgUnit implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -41,178 +41,98 @@ public class AdminOrgUnit implements Serializable {
 	@Id
 	@GenericGenerator(name = "sasGenerator", strategy = "assigned")
 	@GeneratedValue(generator = "sasGenerator")
-	@Column(name="Fid",length=44)
+	@Column(name="orgID",length=44)
 	private String id;
 	
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "FCreateTime")
+	@Column(name = "registerDate")
 	private Date createTime;
 	
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "FLastUpdateTime")
+	@Column(name = "updateTime")
 	private Date lastModifyTime;
 	 /**
      * 创建人
      */
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="FCreateUserID")
+    @JoinColumn(name="createUserID")
     private User createUser;
     /**
      * 最后修改者
      */
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="FLastUpdateUserID")
+    @JoinColumn(name="lastUpdateUserID")
     private User lastUpdateUser;
     /**
      * 简称
      */
-    @Column(name="FsimpleName")
+    @Column(name="simpleName")
     private String simpleName;
     /**
      * 编码
      */
-    @Column(name="Fnumber")
+    @Column(name="curCode")
     private String number;
     /**
      * 名称
      */
-    @Column(name="Fname")
+    @Column(name="name")
     private String name;
-    /**
-     * 续存组织
-     */
-    @ManyToOne
-    @JoinColumn(name="FadminOrgUnit")
-    private AdminOrgUnit adminOrgUnit;
     /**
      * 上级组织
      */
     @ManyToOne
-    @JoinColumn(name="Fparent")
+    @JoinColumn(name="parentID")
     private AdminOrgUnit parent;
+    
     
     /**
      * 组织层次 1集团，2公司，3部门
      */
-    @Column(name="FunitLayer")
+    @Column(name="orgType")
     private Integer unitLayer;
     /**
      * 组织描述
      */
-    @Column(name="Fdescription")
+    @Column(name="memo")
     private String description;
    
     /**
-     * 实体组织类型
-     */
-    @Column(name="FtypeEntityOrg")
-    private String typeEntityOrg;
-    /**
-     * 地区
-     */
-    @Column(name="Fterritory")
-    private String territory;
-    /**
-     * 电话号码
-     */
-    @Column(name="FphoneNumber")
-    private String phoneNumber;
-    /**
-     * 地址
-     */
-    @Column(name="FadminAddress")
-    private String adminAddress;
-   
-    /**
-     * 邮编
-     */
-    @Column(name="FzipCode")
-    private String zipCode;
-    /**
      * 传真
      */
-    @Column(name="Ffax")
+    @Column(name="fax")
     private String fax;
     /**
      * 长编码
      * @return
      */
-    @Column(name="FLongNumber")
+    @Column(name="orgCode")
     private String FLongNumber;
-    /**
-     * 助记码
-     */
-    @Column(name="FCode")
-    private String code;
     /**
      * 状态
      */
-    @Column(name = "Fstate")
+    @Column(name = "useType")
     private Integer state;
-    /**
-     * URL
-     * @return
-     */
-    @Column(name="FURL")
-    private String URL;
 	/**
 	 * 是否锁定/冻结（解锁/反冻结）1冻结、0取消冻结
 	 * @return
 	 */
-    @Column(name="FLock")
+    @Column(name="useType")
     private String locked;
-    /**
-     * 上班时间
-     */
-    @Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "FOnDutyTime")
-    private Date onDutyTime; 
-    /**
-     * 下班时间
-     */
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name ="FOffDutyTime")
-    private Date offDutyTime;
-    /**
-     * 经度
-     */
-    @Column(name="FLng")
-    private BigDecimal lng;
-    /**
-     * 纬度
-     */
-    @Column(name="FLat")
-    private BigDecimal lat;
-    /**
-     * 考勤位置(已废弃)
-     */
-    @Column(name="FLocation")
-    private String location; 
+   
     /**
      * 考勤地址
      */
-    @Column(name="FAddress")
+    @Column(name="address")
    	private String address;
     
-    @Column(name="FIsleaf")
+    @Column(name="isLeaf")
     private Integer isleaf;
     
-    @Column(name="FLevel")
+    @Column(name="level")
     private Integer level;
     
-    @Column(name="FLongName")
-    private String longName;
-    /**
-     * 是否来自EAS '1'=是(来自eas的数据不能修改删除)  '0'=否
-     * @return
-     * @author 胡永兴
-     */
-    @Column(name="FISFROMEAS")
-    private Integer isfromeas;
     
-    //省份
-    @Column(name="FProvinceId")
-    private String provinceId;
     
 	public String getLocked() {
 		return locked;
@@ -268,12 +188,6 @@ public class AdminOrgUnit implements Serializable {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public AdminOrgUnit getAdminOrgUnit() {
-		return adminOrgUnit;
-	}
-	public void setAdminOrgUnit(AdminOrgUnit adminOrgUnit) {
-		this.adminOrgUnit = adminOrgUnit;
-	}
 	public AdminOrgUnit getParent() {
 		return parent;
 	}
@@ -286,36 +200,11 @@ public class AdminOrgUnit implements Serializable {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	
-	public String getTypeEntityOrg() {
-		return typeEntityOrg;
+	public Integer getUnitLayer() {
+		return unitLayer;
 	}
-	public void setTypeEntityOrg(String typeEntityOrg) {
-		this.typeEntityOrg = typeEntityOrg;
-	}
-	public String getTerritory() {
-		return territory;
-	}
-	public void setTerritory(String territory) {
-		this.territory = territory;
-	}
-	public String getPhoneNumber() {
-		return phoneNumber;
-	}
-	public void setPhoneNumber(String phoneNumber) {
-		this.phoneNumber = phoneNumber;
-	}
-	public String getAdminAddress() {
-		return adminAddress;
-	}
-	public void setAdminAddress(String adminAddress) {
-		this.adminAddress = adminAddress;
-	}
-	public String getZipCode() {
-		return zipCode;
-	}
-	public void setZipCode(String zipCode) {
-		this.zipCode = zipCode;
+	public void setUnitLayer(Integer unitLayer) {
+		this.unitLayer = unitLayer;
 	}
 	public String getFax() {
 		return fax;
@@ -335,17 +224,11 @@ public class AdminOrgUnit implements Serializable {
 	public void setState(Integer state) {
 		this.state = state;
 	}
-	public String getCode() {
-		return code;
+	public String getAddress() {
+		return address;
 	}
-	public void setCode(String code) {
-		this.code = code;
-	}
-	public String getURL() {
-		return URL;
-	}
-	public void setURL(String uRL) {
-		URL = uRL;
+	public void setAddress(String address) {
+		this.address = address;
 	}
 	public Integer getIsleaf() {
 		return isleaf;
@@ -359,66 +242,12 @@ public class AdminOrgUnit implements Serializable {
 	public void setLevel(Integer level) {
 		this.level = level;
 	}
-	public String getLongName() {
-		return longName;
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
-	public void setLongName(String longName) {
-		this.longName = longName;
-	}
-	public Date getOnDutyTime() {
-		return onDutyTime;
-	}
-	public void setOnDutyTime(Date onDutyTime) {
-		this.onDutyTime = onDutyTime;
-	}
-	public Date getOffDutyTime() {
-		return offDutyTime;
-	}
-	public void setOffDutyTime(Date offDutyTime) {
-		this.offDutyTime = offDutyTime;
-	}
-	public BigDecimal getLng() {
-		return lng;
-	}
-	public void setLng(BigDecimal lng) {
-		this.lng = lng;
-	}
-	public BigDecimal getLat() {
-		return lat;
-	}
-	public void setLat(BigDecimal lat) {
-		this.lat = lat;
-	}
-	public String getLocation() {
-		return location;
-	}
-	public void setLocation(String location) {
-		this.location = location;
-	}
-	public String getAddress() {
-		return address;
-	}
-	public void setAddress(String address) {
-		this.address = address;
-	}
-	public Integer getIsfromeas() {
-		return isfromeas;
-	}
-	public void setIsfromeas(Integer isfromeas) {
-		this.isfromeas = isfromeas;
-	}
-	public String getProvinceId() {
-		return provinceId;
-	}
-	public void setProvinceId(String provinceId) {
-		this.provinceId = provinceId;
-	}
-	public Integer getUnitLayer() {
-		return unitLayer;
-	}
-	public void setUnitLayer(Integer unitLayer) {
-		this.unitLayer = unitLayer;
-	}
+	
+	
+
 	
 	
 }
