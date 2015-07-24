@@ -235,14 +235,14 @@ public class RoleAction extends AbstractAction{
 		sql.append("SELECT").append(RT);
 		sql.append("role.FID,role.Fnumber,role.fname_l2,role.fdescription_l2,creator.FNAME_L2 creatorName,").append(RT);
 		sql.append("role.FCREATETIME,updateUser.FNAME_L2 updateUserName,role.FLASTUPDATETIME,").append(RT);
-		sql.append("org.FID orgID,ORG.FNAME orgName").append(RT);
+		sql.append("org.orgid orgID,ORG.name orgName").append(RT);
 		sql.append("FROM T_PM_Role role").append(RT);
 		sql.append("LEFT JOIN t_pm_user creator ON role.FCREATORID=creator.FID").append(RT);
 		sql.append("LEFT JOIN t_pm_user updateUser ON role.FlastupdateUserid=updateUser.FID").append(RT);
-		sql.append("LEFT JOIN t_org_admin org ON role.FadminOrgUnitId=org.FID").append(RT);
+		sql.append("LEFT JOIN sys_org org ON role.FadminOrgUnitId=org.orgid").append(RT);
 		if(user.getRootOrgUnit()!=null&&user.getRootOrgUnit().getFLongNumber()!=null)
 		{
-			sql.append("where org.FLongNumber like '").append(user.getRootOrgUnit().getFLongNumber()).append("%'").append(RT);
+			sql.append("where org.orgCode like '").append(user.getRootOrgUnit().getFLongNumber()).append("%'").append(RT);
 		}
 		else
 		{

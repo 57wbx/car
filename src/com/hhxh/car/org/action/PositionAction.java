@@ -46,10 +46,10 @@ public class PositionAction extends AbstractAction{
 		StringBuffer sql = new StringBuffer();
 		sql.append("SELECT").append(RT);
 		sql.append("t1.FID posId,t1.Fname posName,t1.fnumber posNum,t1.fsimplename posSimpleName,").append(RT);
-		sql.append("t1.FDescription posDes,t2.Fid orgId,t2.Fname orgName,t3.fname_l2 creator,").append(RT);
+		sql.append("t1.FDescription posDes,t2.orgid orgId,t2.name orgName,t3.fname_l2 creator,").append(RT);
 		sql.append("t1.FCreateTime createTime,t4.FNAME_L2 updateUser,t1.FLastUpdateTime").append(RT);
 		sql.append("FROM T_ORG_Position t1").append(RT);
-		sql.append("LEFT JOIN T_ORG_Admin t2 ON t1.FADMINORGUNITID=t2.FID").append(RT);
+		sql.append("LEFT JOIN sys_org t2 ON t1.FADMINORGUNITID=t2.orgid").append(RT);
 		sql.append("LEFT JOIN T_PM_USER t3 ON t1.FCREATORID=t3.FID").append(RT);
 		sql.append("LEFT JOIN T_PM_USER t4 ON t1.FLastUpdateUserID=t4.FID").append(RT);
 		sql.append("where t1.FID='").append(id).append("'").append(RT);
@@ -161,7 +161,7 @@ public class PositionAction extends AbstractAction{
 	{
 		StringBuffer sql = getSql();
 		if(FLongNumber!=null&&!"".equals(FLongNumber)){
-			sql.append("where t2.FLongNumber LIKE '").append(FLongNumber).append("%'").append(RT);
+			sql.append("where t2.orgcode LIKE '").append(FLongNumber).append("%'").append(RT);
 		}
 		if(isNotEmpty(search))
 		{
@@ -180,10 +180,10 @@ public class PositionAction extends AbstractAction{
 		StringBuffer sql = new StringBuffer();
 		sql.append("SELECT").append(RT);
 		sql.append("t1.FID posId,t1.Fname posName,t1.fnumber posNum,t1.fsimplename posSimpleName,").append(RT);
-		sql.append("t1.FDescription posDes,t2.Fid orgId,t2.Fname orgName,t3.fname_l2 creator,").append(RT);
+		sql.append("t1.FDescription posDes,t2.orgid orgId,t2.name orgName,t3.fname_l2 creator,").append(RT);
 		sql.append("t1.FCreateTime createTime,t4.FNAME_L2 updateUser,t1.FLastUpdateTime").append(RT);
 		sql.append("FROM T_ORG_Position t1").append(RT);
-		sql.append("LEFT JOIN T_ORG_Admin t2 ON t1.FADMINORGUNITID=t2.FID").append(RT);
+		sql.append("LEFT JOIN sys_org t2 ON t1.FADMINORGUNITID=t2.orgid").append(RT);
 		sql.append("LEFT JOIN T_PM_USER t3 ON t1.FCREATORID=t3.FID").append(RT);
 		sql.append("LEFT JOIN T_PM_USER t4 ON t1.FLastUpdateUserID=t4.FID").append(RT);
 		return sql;
@@ -198,7 +198,7 @@ public class PositionAction extends AbstractAction{
 		AdminOrgUnit adminOrgUnit = baseService.get(AdminOrgUnit.class, id);
 		StringBuffer sql = getSql();
 		if(adminOrgUnit!=null&&!"".equals(adminOrgUnit)){
-			sql.append("where t2.FLongNumber LIKE '").append(adminOrgUnit.getFLongNumber()).append("%'").append(RT);
+			sql.append("where t2.orgcode LIKE '").append(adminOrgUnit.getFLongNumber()).append("%'").append(RT);
 			commonList(sql,false);
 		}else{
 			JSONObject json = new JSONObject();

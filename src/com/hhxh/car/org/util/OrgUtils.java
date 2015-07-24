@@ -14,7 +14,7 @@ public class OrgUtils
 	{
 		StringBuffer sql = new StringBuffer("");
 		
-		sql.append("select FID,FNumber,FLongNumber,FName from t_org_admin").append(RT);
+		sql.append("select orgid,curCode,orgCode,name from sys_org").append(RT);
 		
 		PreparedStatement pstmt = conn.prepareStatement(sql.toString());
 		ResultSet rs = pstmt.executeQuery();
@@ -23,8 +23,8 @@ public class OrgUtils
 		try
 		{
 			while (rs.next()) {
-				String id = rs.getString("FID");
-				String longNumber = rs.getString("FLongNumber");
+				String id = rs.getString("orgid");
+				String longNumber = rs.getString("orgcode");
 				if (StringUtils.isEmpty(longNumber))
 				{
 					continue;
@@ -55,7 +55,7 @@ public class OrgUtils
 				//01!04!04.03!033!033.803!033.803.002
 				
 				StringBuffer updateSql = new StringBuffer("");
-				updateSql.append("update t_org_admin set FLongName ='").append(longName).append("' where fid ='").append(id).append("'");
+				updateSql.append("update sys_org set orgCode ='").append(longName).append("' where orgid ='").append(id).append("'");
 				PreparedStatement insertPstmt=null;
 				try{				 
 				insertPstmt = conn.prepareStatement(updateSql.toString());
@@ -81,13 +81,13 @@ public class OrgUtils
 	{
 		String name = "";
 		StringBuffer sql = new StringBuffer("");		
-		sql.append("select FName from t_org_admin where fnumber='").append(number).append("'").append(RT);
+		sql.append("select name from sys_org where curCode='").append(number).append("'").append(RT);
 		
 		PreparedStatement pstmt = conn.prepareStatement(sql.toString());
 	    ResultSet rs = pstmt.executeQuery();
 	    if (rs.next())
 	    {
-	    	name = rs.getString("FName");
+	    	name = rs.getString("name");
 	    }
 	    rs.close();
 	    pstmt.close();	    

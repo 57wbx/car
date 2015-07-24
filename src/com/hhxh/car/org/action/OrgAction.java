@@ -115,7 +115,7 @@ public class OrgAction extends AbstractAction {
 		}else{
 			longNumber = code;
 		}
-		String sql = "select 1 from T_ORG_Admin where FLongNumber like '"+longNumber+"%'";
+		String sql = "select 1 from sys_org where orgCode like '"+longNumber+"%'";
 		List<Object> list = baseService.querySql(sql.toString());
 		if(list.size()>=1){
 			return true;

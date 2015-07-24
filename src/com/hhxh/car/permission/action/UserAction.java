@@ -204,7 +204,7 @@ public class UserAction extends AbstractAction {
 		sql.append("where t1.FisAdministrator<>1").append(RT);
 		if(isNotEmpty(FLongNumber))
 		{
-			sql.append("AND t2.FLongNumber like '").append(FLongNumber).append("%'").append(RT);
+			sql.append("AND t2.orgCode like '").append(FLongNumber).append("%'").append(RT);
 		}
 		if(isNotEmpty(search))
 		{
@@ -236,11 +236,11 @@ public class UserAction extends AbstractAction {
 	{
 		StringBuffer sql = new StringBuffer();
 		sql.append("SELECT").append(RT);
-		sql.append("t1.fid,t1.fnumber,t2.FId orgId,t2.Fname orgName,t1.FName_L2,t1.FCell,t1.FEmail,t1.FForbidden,").append(RT);
+		sql.append("t1.fid,t1.fnumber,t2.orgid orgId,t2.name orgName,t1.FName_L2,t1.FCell,t1.FEmail,t1.FForbidden,").append(RT);
 		sql.append("t1.FDescription_L2,t1.FCreateTime,t1.FLastUpdateTime,t3.fname_l2 creator,").append(RT);
 		sql.append("t4.fname_l2 updateUser,t1.FPERSONID personId,t5.fname personName,t1.FRoleid roleId,t6.FNAME_L2 roleName").append(RT);
 		sql.append("FROM t_pm_user t1").append(RT);
-		sql.append("LEFT JOIN t_org_admin t2 ON t1.FDEFORGUNITID=t2.fid").append(RT);
+		sql.append("LEFT JOIN sys_org t2 ON t1.FDEFORGUNITID=t2.orgid").append(RT);
 		sql.append("LEFT JOIN t_pm_user t3 ON t1.fcreatorId=t3.fid").append(RT);
 		sql.append("LEFT JOIN t_pm_user t4 ON t1.FLASTUPDATEUSERID=t4.fid").append(RT);
 		sql.append("LEFT JOIN T_BD_Person t5 ON t1.fpersonid=t5.fid").append(RT);
