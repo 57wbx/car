@@ -55,7 +55,7 @@ public class OrgAction extends AbstractAction {
 		StringBuffer sql = getSql();
 		if(id!=null)
 		{
-			sql.append("and t1.FID='").append(id).append("'").append(RT);
+			sql.append("and t1.orgid='").append(id).append("'").append(RT);
 		}
 		List<Object[]> list = baseService.querySql(sql.toString());
 		JSONObject item = null;
