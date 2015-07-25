@@ -39,8 +39,8 @@ public class RolePermService extends BaseService{
 		sql.append("DISTINCT(menu.name) menuName,menu.menuid,menu.menuCode,menu.uiClassName url,").append("\r\n");
 		sql.append("menu.uiClassParam bgClass,menu.imgPath imageClass").append("\r\n");
 		sql.append("FROM sys_menu menu").append("\r\n");
-		sql.append("LEFT JOIN T_PM_RolePerm rp ON menu.menuid=rp.FMENUITEMID").append("\r\n");
-		sql.append("LEFT JOIN T_PM_Role role ON role.fid=rp.FRoleId").append("\r\n");
+		sql.append("LEFT JOIN sys_role_menu rp ON menu.menuid=rp.menuid").append("\r\n");
+		sql.append("LEFT JOIN T_PM_Role role ON role.fid=rp.roleid").append("\r\n");
 		sql.append("LEFT JOIN t_pm_user u ON u.FRoleid=role.fid").append("\r\n");
 		sql.append("WHERE  menu.flevel=1 and menu.uiClassName is not null").append("\r\n");
 		sql.append("AND role.Fid='").append(user.getRole().getId()).append("'").append("\r\n");
@@ -70,9 +70,9 @@ public class RolePermService extends BaseService{
 		StringBuffer sql = new StringBuffer();
 		sql.append("SELECT").append("\r\n");
 		sql.append("menu.menuid,menu.name,item.FID btnId,item.FName btnName,item.Fnumber btnNumber,").append("\r\n");
-		sql.append("SUM(CASE WHEN rp.FROLEID='").append(roleId).append("' THEN 1 ELSE 0 END ) AS hasPerm").append("\r\n");
-		sql.append("FROM T_PM_PermItem item ").append("\r\n");
-		sql.append("LEFT JOIN T_PM_RolePerm rp ON rp.FPermItemID=item.FID").append("\r\n");
+		sql.append("SUM(CASE WHEN rp.roleid='").append(roleId).append("' THEN 1 ELSE 0 END ) AS hasPerm").append("\r\n");
+		sql.append("FROM sys_menu_permitem  item ").append("\r\n");
+		sql.append("LEFT JOIN sys_role_menu rp ON rp.PermItemID=item.FID").append("\r\n");
 		sql.append("LEFT JOIN sys_menu menu ON menu.menuid=item.FPARENTID").append("\r\n");
 		sql.append("WHERE  menu.FUICLASSNAME IS NOT NULL").append("\r\n");
 		sql.append("GROUP BY menu.menuid,menu.name,item.FID,item.FName,item.Fnumber").append("\r\n");
@@ -122,7 +122,7 @@ public class RolePermService extends BaseService{
 		}
 		else
 		{
-			String hql = "from MainMenuItem where level=0 order by number asc";
+			String hql = "from MainMenuItem where level=0 order by  longNumber asc";
 			List<MainMenuItem> list = dao.gets(hql);
 			for(MainMenuItem obj : list)
 			{
@@ -132,10 +132,10 @@ public class RolePermService extends BaseService{
 				sql.append("SELECT").append("\r\n");
 				sql.append("DISTINCT menu.menuid,menu.uiClassName,menu.uiClassName,menu.name").append("\r\n");
 				sql.append("FROM sys_menu menu").append("\r\n");
-				sql.append("LEFT JOIN T_PM_RolePerm rp ON menu.menuid=rp.FMENUITEMID").append("\r\n");
-				sql.append("WHERE rp.FRoleId='").append(roleId).append("'").append("\r\n");
+				sql.append("LEFT JOIN sys_role_menu rp ON menu.menuid=rp.menuid").append("\r\n");
+				sql.append("WHERE rp.roleid='").append(roleId).append("'").append("\r\n");
 				sql.append("AND menu.parentID='").append(obj.getId()).append("'").append("\r\n");
-				sql.append("AND AND menu.Flevel=1").append("\r\n");
+				sql.append("AND menu.Flevel=1").append("\r\n");
 				sql.append("ORDER BY menu.menuCode ASC").append("\r\n");
 				List<Object[]> parms = dao.querySql(sql.toString());
 				JSONArray childItems = new JSONArray();

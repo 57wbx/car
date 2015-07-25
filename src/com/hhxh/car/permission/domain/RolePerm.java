@@ -27,43 +27,31 @@ import org.hibernate.annotations.GenericGenerator;
  *
  */
 @Entity
-@Table(name = "T_PM_RolePerm")
+@Table(name = "sys_role_menu")
 public class RolePerm implements Serializable {
 
 	@Id
 	@GenericGenerator(name = "sasGenerator", strategy = "assigned")
 	@GeneratedValue(generator = "sasGenerator")
-	@Column(length=44,name = "fID")
+	@Column(length=44,name = "id")
 	private String id;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="FRoleID")
+    @JoinColumn(name="roleID")
 	private Role role;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="FPermItemID")
+    @JoinColumn(name="permitemID")
 	private PermItem permItem;
 	
-	@Column(name = "FPermType")
-	private Integer permType;
-	
-	@Column(length=255,name = "FRuleStructure")
-	private String ruleStructure;
-	
-	@Column(length=255,name = "FRuleExpr")
-	private String ruleExpr;
 	
 	@Column(length=100,name="FUiClassPath")
 	private String uiClassPath;
 	
-	@Column(length=80,name="FLONGNUMBER")
-	private String longNumber;
 	
-	@Column(length=44,name="FMenuPARENT")
-	private String menuParent;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="FMENUITEMID")
+    @JoinColumn(name="menuID")
 	private MainMenuItem menuItem;
 
 	public String getId() {
@@ -90,29 +78,6 @@ public class RolePerm implements Serializable {
 		this.permItem = permItem;
 	}
 
-	public Integer getPermType() {
-		return permType;
-	}
-
-	public void setPermType(Integer permType) {
-		this.permType = permType;
-	}
-
-	public String getRuleStructure() {
-		return ruleStructure;
-	}
-
-	public void setRuleStructure(String ruleStructure) {
-		this.ruleStructure = ruleStructure;
-	}
-
-	public String getRuleExpr() {
-		return ruleExpr;
-	}
-
-	public void setRuleExpr(String ruleExpr) {
-		this.ruleExpr = ruleExpr;
-	}
 
 	
 	
@@ -124,21 +89,7 @@ public class RolePerm implements Serializable {
 		this.uiClassPath = uiClassPath;
 	}
 
-	public String getLongNumber() {
-		return longNumber;
-	}
-
-	public void setLongNumber(String longNumber) {
-		this.longNumber = longNumber;
-	}
-
-	public String getMenuParent() {
-		return menuParent;
-	}
-
-	public void setMenuParent(String menuParent) {
-		this.menuParent = menuParent;
-	}
+	
 
 	public MainMenuItem getMenuItem() {
 		return menuItem;

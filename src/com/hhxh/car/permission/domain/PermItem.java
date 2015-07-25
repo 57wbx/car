@@ -24,7 +24,7 @@ import org.hibernate.annotations.GenericGenerator;
  *
  */
 @Entity
-@Table(name = "T_PM_PermItem")
+@Table(name = "sys_menu_permitem")
 public class PermItem implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
@@ -48,11 +48,8 @@ public class PermItem implements Serializable {
 	@Column(length=80,name = "FName")
 	private String name;
 	
-	@Column(length=240,name = "FLongNumber")
-	private String longNumber;
 	
-	@Column(length=80,name = "FDescription_l2")
-	private String description;
+	
 
 	public String getId() {
 		return id;
@@ -78,22 +75,7 @@ public class PermItem implements Serializable {
 		this.name = name;
 	}
 
-	public String getLongNumber() {
-		return longNumber;
-	}
-
-	public void setLongNumber(String longNumber) {
-		this.longNumber = longNumber;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
+	
 	public MainMenuItem getMainMenuItem() {
 		return mainMenuItem;
 	}

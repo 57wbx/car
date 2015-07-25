@@ -112,13 +112,13 @@ public class RolePermAction extends AbstractAction{
 		if(isNotEmpty(addMenuStr))
 		{
 			StringBuffer sql = new StringBuffer();
-			sql.append("INSERT INTO T_PM_RolePerm").append(RT);
-			sql.append("(fid,froleid,fpermitemid,fmenuitemid)").append(RT);
+			sql.append("INSERT INTO sys_role_menu").append(RT);
+			sql.append("(id,roleid,permitemid,menuID)").append(RT);
 			sql.append("SELECT UUID(),").append(RT);
 			sql.append("'").append(id).append("',").append(RT);
 			sql.append("FID,").append(RT);
 			sql.append("FPARENTID").append(RT);
-			sql.append("FROM T_PM_PermItem").append(RT);
+			sql.append("FROM sys_menu_permitem ").append(RT);
 			sql.append("WHERE fid IN").append(RT);
 			sql.append("(").append(addMenuStr).append(")").append(RT);
 			baseService.executeSqlUpdate(sql.toString());
@@ -135,9 +135,9 @@ public class RolePermAction extends AbstractAction{
 		{
 			StringBuffer sql = new StringBuffer();
 			sql.append("delete").append(RT);
-			sql.append("from T_PM_RolePerm").append(RT);
-			sql.append("where FRoleID='").append(id).append("'").append(RT);
-			sql.append("and FPermItemID in (").append(delMenuStr).append(")").append(RT);
+			sql.append("from sys_role_menu").append(RT);
+			sql.append("where RoleID='").append(id).append("'").append(RT);
+			sql.append("and PermItemID in (").append(delMenuStr).append(")").append(RT);
 			baseService.executeSqlUpdate(sql.toString());
 		}
 	}

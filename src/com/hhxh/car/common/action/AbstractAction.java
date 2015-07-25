@@ -194,11 +194,11 @@ public class AbstractAction extends ActionSupport {
 		StringBuffer sql = new StringBuffer();
 		sql.append("SELECT").append(RT);
 		sql.append("item.Fnumber btnNumber,item.FName btnName").append(RT);
-		sql.append("FROM T_PM_PermItem item").append(RT);
-		sql.append("LEFT JOIN T_PM_RolePerm rp ON rp.FPermItemID=item.FID").append(RT);
-		sql.append("LEFT JOIN T_PM_MENU menu ON menu.FID=item.FPARENTID").append(RT);
-		sql.append("WHERE rp.FROLEID='").append(roleId).append("'").append(RT);
-		sql.append("and menu.FNumber='").append(menuNum).append("'").append(RT);
+		sql.append("FROM sys_menu_permitem item").append(RT);
+		sql.append("LEFT JOIN sys_role_menu rp ON rp.permitemID=item.FID").append(RT);
+		sql.append("LEFT JOIN sys_menu menu ON menu.menuid=item.FPARENTID").append(RT);
+		sql.append("WHERE rp.roleID='").append(roleId).append("'").append(RT);
+		sql.append("and menu.menuCode='").append(menuNum).append("'").append(RT);
 		sql.append("order by item.Fnumber").append(RT);
 		return sql;
 	}
