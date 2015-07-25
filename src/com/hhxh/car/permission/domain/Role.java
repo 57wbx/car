@@ -31,7 +31,7 @@ import com.hhxh.car.org.domain.AdminOrgUnit;
  *
  */
 @Entity
-@Table(name = "sys_role")
+@Table(name = "T_PM_Role")
 public class Role implements Serializable {
 	
 	/**
