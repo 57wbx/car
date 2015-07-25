@@ -40,10 +40,10 @@ public class RolePermService extends BaseService{
 		sql.append("menu.uiClassParam bgClass,menu.imgPath imageClass").append("\r\n");
 		sql.append("FROM sys_menu menu").append("\r\n");
 		sql.append("LEFT JOIN sys_role_menu rp ON menu.menuid=rp.menuid").append("\r\n");
-		sql.append("LEFT JOIN T_PM_Role role ON role.fid=rp.roleid").append("\r\n");
-		sql.append("LEFT JOIN t_pm_user u ON u.FRoleid=role.fid").append("\r\n");
+		sql.append("LEFT JOIN sys_role role ON role.roleid=rp.roleid").append("\r\n");
+		sql.append("LEFT JOIN t_pm_user u ON u.FRoleid=role.roleid").append("\r\n");
 		sql.append("WHERE  menu.flevel=1 and menu.uiClassName is not null").append("\r\n");
-		sql.append("AND role.Fid='").append(user.getRole().getId()).append("'").append("\r\n");
+		sql.append("AND role.roleid='").append(user.getRole().getId()).append("'").append("\r\n");
 		sql.append("ORDER BY menu.menuCode asc").append("\r\n");
 		List<Object[]> list = dao.querySql(sql.toString());
 		JSONArray items = new JSONArray();

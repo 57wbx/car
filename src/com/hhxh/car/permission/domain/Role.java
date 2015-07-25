@@ -31,7 +31,7 @@ import com.hhxh.car.org.domain.AdminOrgUnit;
  *
  */
 @Entity
-@Table(name = "T_PM_Role")
+@Table(name = "sys_role")
 public class Role implements Serializable {
 	
 	/**
@@ -42,44 +42,44 @@ public class Role implements Serializable {
 	@Id
 	@GenericGenerator(name = "sasGenerator", strategy = "assigned")
 	@GeneratedValue(generator = "sasGenerator")
-	@Column(length=44,name = "fID")
+	@Column(length=44,name = "roleID")
 	private String id;
 	
 	//角色名称
-	@Column(length=80,name = "fName_l2")
+	@Column(length=80,name = "roleName")
 	private String name;
 	
 	//角色编码
-	@Column(length=80,name = "fNumber")
+	@Column(length=80,name = "roleCode")
 	private String number;
 	
 	//描述
-	@Column(length=255,name = "FDescription_l2")
+	@Column(length=255,name = "description")
 	private String description;
 	
 	//简称
-	@Column(length=80,name = "FSimpleName")
+	@Column(length=80,name = "simpleName")
 	private String simpleName;
 	
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="FCreatorID")
+    @JoinColumn(name="creatorID")
 	private User creator;
 	
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "FCreateTime")
+	@Column(name = "createTime")
 	private Date createTime;
 	
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="FLastUpdateUserID")
+    @JoinColumn(name="lastUpdateUserID")
 	private User lastUpdateUser;
 	
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "FLastUpdateTime")
+	@Column(name = "lastUpdateTime")
 	private Date lastUpdateTime;
 	
 	//所属组织
 	@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="FadminOrgUnitId")
+    @JoinColumn(name="orgID")
 	private AdminOrgUnit adminOrgUnit;
 
 	public String getId() {

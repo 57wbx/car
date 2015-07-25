@@ -53,12 +53,12 @@ public class PersonAction extends AbstractAction{
 		StringBuffer sql = new StringBuffer();
 		sql.append("SELECT ").append(RT);
 		sql.append("t1.fid perId,t1.fnumber perNum,t1.fname perName,t1.Fgender,t1.fhighestDegreeName,").append(RT);
-		sql.append("t3.fid orgId,t3.fname orgName,t2.fid positionId,t2.fname positionName,t1.femployeeClassifyName, ").append(RT);
+		sql.append("t3.orgid orgId,t3.name orgName,t2.fid positionId,t2.fname positionName,t1.femployeeClassifyName, ").append(RT);
 		sql.append("t1.fstate perState,t1.fdescription perDes,t1.fcreatetime perCreateTime,t1.FLastUpdateTime perUpdateTime,").append(RT);
 		sql.append("t1.Fcell,t1.Faddress,t4.FName_L2,t5.FName_L2 ").append(RT);
 		sql.append("FROM T_BD_Person t1 ").append(RT);
 		sql.append("LEFT JOIN T_ORG_Position t2 ON t1.FPositionID=t2.fid ").append(RT);
-		sql.append("LEFT JOIN t_org_admin t3 ON t2.FAdminOrgUnitID=t3.fid ").append(RT);
+		sql.append("LEFT JOIN sys_org t3 ON t2.FAdminOrgUnitID=t3.orgid ").append(RT);
 		sql.append("LEFT JOIN t_pm_user t4 on t1.FCreatorID=t4.FID，").append(RT);
 		sql.append("LEFT JOIN t_pm_user t5 on t1.FLastUpdateUserID=t5.FID").append(RT);
 		sql.append("where t1.fid='").append(id).append("'").append(RT);
@@ -168,11 +168,11 @@ public class PersonAction extends AbstractAction{
 		sql.append("t1.fid perId,t1.fnumber perNum,t1.fname perName").append(RT);
 		sql.append("FROM T_BD_Person t1 ").append(RT);
 		sql.append("LEFT JOIN T_ORG_Position t2 ON t1.FPositionID=t2.fid ").append(RT);
-		sql.append("LEFT JOIN t_org_admin t3 ON t2.FAdminOrgUnitID=t3.fid ").append(RT);
+		sql.append("LEFT JOIN sys_org t3 ON t2.FAdminOrgUnitID=t3.orgid ").append(RT);
 		sql.append("where t1.FID NOT IN (SELECT FPERSONID FROM t_pm_user  WHERE FPERSONID IS NOT NULL)").append(RT);
 		if(user.getRootOrgUnit()!=null&&user.getRootOrgUnit().getFLongNumber()!=null)
 		{
-			sql.append("and t3.FLongNumber like '").append(user.getRootOrgUnit().getFLongNumber()).append("%'").append(RT);
+			sql.append("and t3.orgCode like '").append(user.getRootOrgUnit().getFLongNumber()).append("%'").append(RT);
 		}
 		else
 		{
@@ -180,7 +180,7 @@ public class PersonAction extends AbstractAction{
 		}
 		if(isNotEmpty(FLongNumber))
 		{
-			sql.append("and t3.FLongNumber like '").append(FLongNumber).append("%'").append(RT);
+			sql.append("and t3.orgCode like '").append(FLongNumber).append("%'").append(RT);
 		}
 		if(isNotEmpty(search))
 		{
@@ -216,18 +216,18 @@ public class PersonAction extends AbstractAction{
 		StringBuffer sql = new StringBuffer();
 		sql.append("SELECT ").append(RT);
 		sql.append("t1.fid perId,t1.fnumber perNum,t1.fname perName,t1.Fgender,t1.fhighestDegreeName,").append(RT);
-		sql.append("t3.fid orgId,t3.fname orgName,t2.fid positionId,t2.fname positionName,t1.femployeeClassifyName, ").append(RT);
+		sql.append("t3.orgid orgId,t3.name orgName,t2.fid positionId,t2.fname positionName,t1.femployeeClassifyName, ").append(RT);
 		sql.append("t1.fstate perState,t1.fdescription perDes,t1.fcreatetime perCreateTime,t1.FLastUpdateTime perUpdateTime,").append(RT);
 		sql.append("t1.Fcell,t1.Faddress,t4.FName_L2,t5.FName_L2 ").append(RT);
 		sql.append("FROM T_BD_Person t1 ").append(RT);
 		sql.append("LEFT JOIN T_ORG_Position t2 ON t1.FPositionID=t2.fid ").append(RT);
-		sql.append("LEFT JOIN t_org_admin t3 ON t2.FAdminOrgUnitID=t3.fid ").append(RT);
+		sql.append("LEFT JOIN sys_org t3 ON t2.FAdminOrgUnitID=t3.orgid ").append(RT);
 		sql.append("LEFT JOIN t_pm_user t4 on t1.FCreatorID=t4.FID").append(RT);
 		sql.append("LEFT JOIN t_pm_user t5 on t1.FLastUpdateUserID=t5.FID").append(RT);
 		sql.append("where 1=1").append(RT);
 		if(isNotEmpty(FLongNumber))
 		{
-			sql.append("and t3.FLongNumber like '").append(FLongNumber).append("%'").append(RT);
+			sql.append("and t3.orgCode like '").append(FLongNumber).append("%'").append(RT);
 		}else if(isNotEmpty(id)){
 			sql.append("and t1.FPositionID='").append(id).append("'").append(RT);
 		}
@@ -359,7 +359,7 @@ public class PersonAction extends AbstractAction{
 		StringBuffer positionSql = new StringBuffer();
 		positionSql.append("SELECT FID,FName,FAdminOrgUnitID FROM  T_ORG_Position WHERE FAdminOrgUnitID is not null ").append(RT);
 		StringBuffer orgSql = new StringBuffer();
-		orgSql.append("SELECT FID,FNAME,FPARENT,FLongNumber,FunitLayer FROM T_ORG_Admin ").append(RT);
+		orgSql.append("SELECT orgid,name,parentID,orgCode,orgType FROM sys_org ").append(RT);
 		commonQuery(positionSql,orgSql);
 	}
 	

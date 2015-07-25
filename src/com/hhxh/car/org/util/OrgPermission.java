@@ -52,8 +52,8 @@ public class OrgPermission {
 				
 				StringBuffer insertSql = new StringBuffer("");
 				insertSql.append("insert into ").append(tempTableName).append("(FUSerID,FOrgUnitID,FOrgUnitName,FParentOrgUnitID,FNumber,FLongNumber,FLevel,FIsLeaf,FHasPermission)").append(RT);
-				insertSql.append("select '").append(everyUserID).append("', FID,FName,FParent,FNumber,FLongNumber,FLevel,FIsLeaf,1  from T_Org_Admin where FLongNumber like '").append(orgUnitNumber).append("%'").append(RT);
-				insertSql.append(" and CONCAT('").append(everyUserID).append("',fid) not in (select CONCAT(FUserID,FOrgUnitID) from ").append(tempTableName).append(")").append(RT);
+				insertSql.append("select '").append(everyUserID).append("', orgid,name,parentID,curCode,orgCode,level,isLeaf,1  from T_Org_Admin where orgCode like '").append(orgUnitNumber).append("%'").append(RT);
+				insertSql.append(" and CONCAT('").append(everyUserID).append("',orgid) not in (select CONCAT(FUserID,FOrgUnitID) from ").append(tempTableName).append(")").append(RT);
 								 
 				PreparedStatement insertPstmt = conn.prepareStatement(insertSql.toString());
 				insertPstmt.execute();
@@ -67,7 +67,7 @@ public class OrgPermission {
 			StringBuffer updateSql = new StringBuffer("");
 			updateSql.append(" update ").append(tempTableName).append(" orgUnitTbl ").append(RT);
 			updateSql.append(" set  FParentLongNumber = ").append(RT);
-			updateSql.append(" (select orgAdmin.FLongNumber from T_Org_Admin orgAdmin where orgUnitTbl.FParentOrgUnitID = orgAdmin.FID )").append(RT);
+			updateSql.append(" (select orgAdmin.orgCode from sys_org orgAdmin where orgUnitTbl.FParentOrgUnitID = orgAdmin.orgid )").append(RT);
 			
 			PreparedStatement updatePstmt = conn.prepareStatement(updateSql.toString());
 			updatePstmt.executeUpdate();
@@ -94,15 +94,15 @@ public class OrgPermission {
 		sql.append("select ").append(RT);
 		sql.append("pmUser.FID FUserID, ").append(RT);		
 		sql.append("pmUser.FDefOrgUnitID FOrgUnitID,").append(RT);
-		sql.append("orgAdmin.FLongNumber FOrgUnitNumber,").append(RT);
-		sql.append("orgAdmin.Fparent FParentOrgUnitID").append(RT);
+		sql.append("orgAdmin.orgCode FOrgUnitNumber,").append(RT);
+		sql.append("orgAdmin.parentID FParentOrgUnitID").append(RT);
 		sql.append("from T_PM_User pmUser").append(RT);
 		sql.append("inner join T_PM_USERROLEORG userRole").append(RT);
 		sql.append("on pmUser.FID = userRole.FUserID").append(RT);
 		sql.append("inner join T_PM_Role pmRole").append(RT);
 		sql.append("on userRole.FRoleID = pmRole.FID").append(RT);
-		sql.append("inner join T_ORG_Admin orgAdmin").append(RT);
-		sql.append("on pmUser.FDefOrgUnitID = orgAdmin.FID").append(RT);
+		sql.append("inner join sys_org orgAdmin").append(RT);
+		sql.append("on pmUser.FDefOrgUnitID = orgAdmin.orgid").append(RT);
 		sql.append("where pmRole.FIsExtendOrg = 1").append(RT);
 		if (StringUtils.isNotEmpty(userIDs))
 		{
@@ -114,11 +114,11 @@ public class OrgPermission {
 		sql.append("select ").append(RT);
 		sql.append("orgRange.FUserID FUserID, ").append(RT);		
 		sql.append("ForgID FOrgUnitID,").append(RT);
-		sql.append("orgAdmin.FLongNumber FOrgUnitNumber,").append(RT);
-		sql.append("orgAdmin.Fparent FParentOrgUnitID").append(RT);
+		sql.append("orgAdmin.orgCode FOrgUnitNumber,").append(RT);
+		sql.append("orgAdmin.parentid FParentOrgUnitID").append(RT);
 		sql.append("from T_PM_ORGRANGEINCLUDESUBORG orgRange").append(RT);
-		sql.append("inner join T_ORG_Admin orgAdmin").append(RT);
-		sql.append("on orgRange.ForgID = orgAdmin.FID ").append(RT);
+		sql.append("inner join sys_org orgAdmin").append(RT);
+		sql.append("on orgRange.ForgID = orgAdmin.orgid ").append(RT);
 		if (StringUtils.isNotEmpty(userIDs))
 		{
 			sql.append("where orgRange.FUserID in ").append(userIDs).append(RT);
