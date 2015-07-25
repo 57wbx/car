@@ -55,12 +55,12 @@ public class PersonAction extends AbstractAction{
 		sql.append("t1.fid perId,t1.fnumber perNum,t1.fname perName,t1.Fgender,t1.fhighestDegreeName,").append(RT);
 		sql.append("t3.orgid orgId,t3.name orgName,t2.fid positionId,t2.fname positionName,t1.femployeeClassifyName, ").append(RT);
 		sql.append("t1.fstate perState,t1.fdescription perDes,t1.fcreatetime perCreateTime,t1.FLastUpdateTime perUpdateTime,").append(RT);
-		sql.append("t1.Fcell,t1.Faddress,t4.FName_L2,t5.FName_L2 ").append(RT);
+		sql.append("t1.Fcell,t1.Faddress,t4.userName,t5.userName ").append(RT);
 		sql.append("FROM T_BD_Person t1 ").append(RT);
 		sql.append("LEFT JOIN T_ORG_Position t2 ON t1.FPositionID=t2.fid ").append(RT);
 		sql.append("LEFT JOIN sys_org t3 ON t2.FAdminOrgUnitID=t3.orgid ").append(RT);
-		sql.append("LEFT JOIN t_pm_user t4 on t1.FCreatorID=t4.FID，").append(RT);
-		sql.append("LEFT JOIN t_pm_user t5 on t1.FLastUpdateUserID=t5.FID").append(RT);
+		sql.append("LEFT JOIN t_pm_user t4 on t1.FCreatorID=t4.id，").append(RT);
+		sql.append("LEFT JOIN t_pm_user t5 on t1.FLastUpdateUserID=t5.id").append(RT);
 		sql.append("where t1.fid='").append(id).append("'").append(RT);
 		List<Object[]> list = baseService.querySql(sql.toString());
 		JSONObject json = new JSONObject();
@@ -169,7 +169,7 @@ public class PersonAction extends AbstractAction{
 		sql.append("FROM T_BD_Person t1 ").append(RT);
 		sql.append("LEFT JOIN T_ORG_Position t2 ON t1.FPositionID=t2.fid ").append(RT);
 		sql.append("LEFT JOIN sys_org t3 ON t2.FAdminOrgUnitID=t3.orgid ").append(RT);
-		sql.append("where t1.FID NOT IN (SELECT FPERSONID FROM t_pm_user  WHERE FPERSONID IS NOT NULL)").append(RT);
+		sql.append("where t1.FID NOT IN (SELECT PERSONID FROM t_pm_user  WHERE PERSONID IS NOT NULL)").append(RT);
 		if(user.getRootOrgUnit()!=null&&user.getRootOrgUnit().getFLongNumber()!=null)
 		{
 			sql.append("and t3.orgCode like '").append(user.getRootOrgUnit().getFLongNumber()).append("%'").append(RT);
@@ -218,12 +218,12 @@ public class PersonAction extends AbstractAction{
 		sql.append("t1.fid perId,t1.fnumber perNum,t1.fname perName,t1.Fgender,t1.fhighestDegreeName,").append(RT);
 		sql.append("t3.orgid orgId,t3.name orgName,t2.fid positionId,t2.fname positionName,t1.femployeeClassifyName, ").append(RT);
 		sql.append("t1.fstate perState,t1.fdescription perDes,t1.fcreatetime perCreateTime,t1.FLastUpdateTime perUpdateTime,").append(RT);
-		sql.append("t1.Fcell,t1.Faddress,t4.FName_L2,t5.FName_L2 ").append(RT);
+		sql.append("t1.Fcell,t1.Faddress,t4.username,t5.username ").append(RT);
 		sql.append("FROM T_BD_Person t1 ").append(RT);
 		sql.append("LEFT JOIN T_ORG_Position t2 ON t1.FPositionID=t2.fid ").append(RT);
 		sql.append("LEFT JOIN sys_org t3 ON t2.FAdminOrgUnitID=t3.orgid ").append(RT);
-		sql.append("LEFT JOIN t_pm_user t4 on t1.FCreatorID=t4.FID").append(RT);
-		sql.append("LEFT JOIN t_pm_user t5 on t1.FLastUpdateUserID=t5.FID").append(RT);
+		sql.append("LEFT JOIN t_pm_user t4 on t1.FCreatorID=t4.ID").append(RT);
+		sql.append("LEFT JOIN t_pm_user t5 on t1.FLastUpdateUserID=t5.ID").append(RT);
 		sql.append("where 1=1").append(RT);
 		if(isNotEmpty(FLongNumber))
 		{

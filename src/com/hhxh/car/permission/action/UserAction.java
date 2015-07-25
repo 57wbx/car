@@ -62,7 +62,7 @@ public class UserAction extends AbstractAction {
 		StringBuffer sql = getSql();
 		if(isNotEmpty(id))
 		{
-			sql.append("where t1.FID='").append(id).append("'").append(RT);
+			sql.append("where t1.ID='").append(id).append("'").append(RT);
 		}
 		List<Object[]> list = baseService.querySql(sql.toString());
 		JSONObject json = new JSONObject();
@@ -109,8 +109,6 @@ public class UserAction extends AbstractAction {
 	{
 		obj.setName(name);
 		obj.setDescription(description);
-		obj.setMobile(cell);
-		obj.setEmail(email);
 		if(isNotEmpty(orgId))
 		{
 			AdminOrgUnit org = baseService.get(AdminOrgUnit.class, orgId);
@@ -201,17 +199,17 @@ public class UserAction extends AbstractAction {
 	public void loadList() throws IOException 
 	{
 		StringBuffer sql = getSql();
-		sql.append("where t1.FisAdministrator<>1").append(RT);
+		sql.append("where t1.isAdmin<>1").append(RT);
 		if(isNotEmpty(FLongNumber))
 		{
 			sql.append("AND t2.orgCode like '").append(FLongNumber).append("%'").append(RT);
 		}
 		if(isNotEmpty(search))
 		{
-			sql.append("AND (t1.FName_L2 LIKE '%").append(search).append("%'").append(RT);
-			sql.append("or t1.FNumber LIKE '%").append(search).append("%')").append(RT);
+			sql.append("AND (t1.username LIKE '%").append(search).append("%'").append(RT);
+			sql.append("or t1.usercode LIKE '%").append(search).append("%')").append(RT);
 		}
-		sql.append("order by t1.FCreateTime desc ").append(RT);
+		sql.append("order by t1.CreateTime desc ").append(RT);
 		int total = baseService.querySql(sql.toString()).size();
 		List<Object[]> list = baseService.querySql(sql.toString(),start,pageSize);
 		JSONArray items = new JSONArray();
@@ -236,15 +234,15 @@ public class UserAction extends AbstractAction {
 	{
 		StringBuffer sql = new StringBuffer();
 		sql.append("SELECT").append(RT);
-		sql.append("t1.fid,t1.fnumber,t2.orgid orgId,t2.name orgName,t1.FName_L2,t1.FCell,t1.FEmail,t1.FForbidden,").append(RT);
-		sql.append("t1.FDescription_L2,t1.FCreateTime,t1.FLastUpdateTime,t3.fname_l2 creator,").append(RT);
-		sql.append("t4.fname_l2 updateUser,t1.FPERSONID personId,t5.fname personName,t1.FRoleid roleId,t6.roleName roleName").append(RT);
+		sql.append("t1.id,t1.userCode,t2.orgid orgId,t2.name orgName,t1.username,'','',t1.isForbidden,").append(RT);
+		sql.append("t1.DESCRIPTION,t1.CreateTime,t1.LastUpdateTime,t3.username creator,").append(RT);
+		sql.append("t4.username updateUser,t1.PERSONID personId,t5.fname personName,t1.Roleid roleId,t6.roleName roleName").append(RT);
 		sql.append("FROM t_pm_user t1").append(RT);
-		sql.append("LEFT JOIN sys_org t2 ON t1.FDEFORGUNITID=t2.orgid").append(RT);
-		sql.append("LEFT JOIN t_pm_user t3 ON t1.fcreatorId=t3.fid").append(RT);
-		sql.append("LEFT JOIN t_pm_user t4 ON t1.FLASTUPDATEUSERID=t4.fid").append(RT);
-		sql.append("LEFT JOIN T_BD_Person t5 ON t1.fpersonid=t5.fid").append(RT);
-		sql.append("LEFT JOIN sys_role t6 ON t1.FRoleid=t6.roleid").append(RT);
+		sql.append("LEFT JOIN sys_org t2 ON t1.orgid=t2.orgid").append(RT);
+		sql.append("LEFT JOIN t_pm_user t3 ON t1.creatorId=t3.id").append(RT);
+		sql.append("LEFT JOIN t_pm_user t4 ON t1.LASTUPDATEUSERID=t4.id").append(RT);
+		sql.append("LEFT JOIN T_BD_Person t5 ON t1.personid=t5.fid").append(RT);
+		sql.append("LEFT JOIN sys_role t6 ON t1.Roleid=t6.roleid").append(RT);
 		return sql;
 	}
 	

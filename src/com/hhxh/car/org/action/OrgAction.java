@@ -307,11 +307,11 @@ public class OrgAction extends AbstractAction {
 		sql.append("t1.orgid,t1.curCode,t1.name,t1.simpleName,t2.orgid parentId,t2.name parentName,").append(RT);
 		sql.append("t1.orgType,t1.memo,").append(RT);
 		sql.append("t1.fax,t1.useType,t1.orgCode,").append(RT);
-		sql.append("t4.FNAME_L2 creator,t1.registerDate,t5.FNAME_L2 updateUser,t1.updateTime").append(RT);
+		sql.append("t4.userNAME creator,t1.registerDate,t5.userNAME updateUser,t1.updateTime").append(RT);
 		sql.append("FROM sys_org t1").append(RT);
 		sql.append("LEFT JOIN sys_org t2 ON t1.parentID=t2.orgid").append(RT);
-		sql.append("LEFT JOIN T_PM_USER t4 ON t1.createUserID=t4.fid").append(RT);
-		sql.append("LEFT JOIN T_PM_USER t5 ON t1.lastUpdateUserID=t5.fid").append(RT);
+		sql.append("LEFT JOIN T_PM_USER t4 ON t1.createUserID=t4.id").append(RT);
+		sql.append("LEFT JOIN T_PM_USER t5 ON t1.lastUpdateUserID=t5.id").append(RT);
 		return sql;
 	}
 	

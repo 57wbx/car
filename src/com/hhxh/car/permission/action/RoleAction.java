@@ -79,12 +79,12 @@ public class RoleAction extends AbstractAction{
 		{
 			StringBuilder sql = new StringBuilder();
 			sql.append("SELECT").append(RT);
-			sql.append("fid,fname_l2,").append(RT);
-			sql.append("CASE WHEN froleid='").append(roleId).append("' THEN 1").append(RT);
+			sql.append("id,username,").append(RT);
+			sql.append("CASE WHEN roleid='").append(roleId).append("' THEN 1").append(RT);
 			sql.append("ELSE 0 END ischeck").append(RT);
 			sql.append("FROM t_pm_user").append(RT);
-			sql.append("where FDEFORGUNITID='").append(id).append("'").append(RT);
-			sql.append("and FisAdministrator<>1").append(RT);
+			sql.append("where orgid='").append(id).append("'").append(RT);
+			sql.append("and isAdmin<>1").append(RT);
 			List<Object[]> list = baseService.querySql(sql.toString());
 			for(Object[] obj : list)
 			{
@@ -233,12 +233,12 @@ public class RoleAction extends AbstractAction{
 	{
 		StringBuffer sql = new StringBuffer();
 		sql.append("SELECT").append(RT);
-		sql.append("role.roleID,role.roleCode,role.roleName,role.description,creator.FNAME_L2 creatorName,").append(RT);
-		sql.append("role.createTime,updateUser.FNAME_L2 updateUserName,role.lastUpdateTime,").append(RT);
+		sql.append("role.roleID,role.roleCode,role.roleName,role.description,creator.username creatorName,").append(RT);
+		sql.append("role.createTime,updateUser.username updateUserName,role.lastUpdateTime,").append(RT);
 		sql.append("org.orgid orgID,ORG.name orgName").append(RT);
 		sql.append("FROM sys_role role").append(RT);
-		sql.append("LEFT JOIN t_pm_user creator ON role.creatorID=creator.FID").append(RT);
-		sql.append("LEFT JOIN t_pm_user updateUser ON role.lastUpdateUserID=updateUser.FID").append(RT);
+		sql.append("LEFT JOIN t_pm_user creator ON role.creatorID=creator.ID").append(RT);
+		sql.append("LEFT JOIN t_pm_user updateUser ON role.lastUpdateUserID=updateUser.ID").append(RT);
 		sql.append("LEFT JOIN sys_org org ON role.orgID=org.orgid").append(RT);
 		if(user.getRootOrgUnit()!=null&&user.getRootOrgUnit().getFLongNumber()!=null)
 		{
@@ -305,16 +305,16 @@ public class RoleAction extends AbstractAction{
 		{
 			StringBuilder delSql = new StringBuilder();
 			delSql.append("UPDATE t_pm_user").append(RT);
-			delSql.append("SET froleid = NULL").append(RT);
-			delSql.append("WHERE fid IN(").append(delUserIds).append(")").append(RT);
+			delSql.append("SET roleid = NULL").append(RT);
+			delSql.append("WHERE id IN(").append(delUserIds).append(")").append(RT);
 			baseService.executeSqlUpdate(delSql.toString());
 		}
 		if(isNotEmpty(addUserIds))
 		{
 			StringBuilder delSql = new StringBuilder();
 			delSql.append("UPDATE t_pm_user").append(RT);
-			delSql.append("SET froleid = '").append(roleId).append("'").append(RT);
-			delSql.append("WHERE fid IN(").append(addUserIds).append(")").append(RT);
+			delSql.append("SET roleid = '").append(roleId).append("'").append(RT);
+			delSql.append("WHERE id IN(").append(addUserIds).append(")").append(RT);
 			baseService.executeSqlUpdate(delSql.toString());
 		}
 		JSONObject json = new JSONObject();

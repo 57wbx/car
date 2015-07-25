@@ -39,173 +39,122 @@ public class User implements Serializable,Comparable<Object> {
 	@Id
 	@GenericGenerator(name = "sasGenerator", strategy = "assigned")
 	@GeneratedValue(generator = "sasGenerator")
-	@Column(name="fid",length=44)
+	@Column(name="ID",length=44)
 	private String id;
 	
 	/**
 	 * 用户编码
 	 */
-	@Column(name="fnumber",length = 64)
+	@Column(name="userCode",length = 64)
 	private String number;
 
 	
 	/**
 	 * 用户帐号
 	 */
-	@Column(name="Faccount", length = 64)
+	@Column(name="ACCOUNT", length = 64)
 	private String account;
 	
 	/**
 	 * 用户类型  20:职员 30:客户 40：供应商 10：系统用户
 	 */
-	@Column(name="FUserType",length = 32)
+	@Column(name="USERTYPE",length = 32)
 	private Integer userType;
 
 	/**
 	 * 所属组织
 	 */
     @ManyToOne
-    @JoinColumn(name="FDEFORGUNITID")
+    @JoinColumn(name="orgID")
 	private AdminOrgUnit adminOrgUnit;
 
 	/**
 	 * 用户实名
 	 */
-	@Column(name="FName_L2",nullable = false, length = 64)
+	@Column(name="userNAME",nullable = false, length = 64)
 	private String name;
-	/**
-	 * 用户简称拼音
-	 */
-	@Column(name="FNAME_JIANPIN",length=80)
-	private String name_jianpin;
 	/**
 	 * 用户密码
 	 */
-	@Column(name="FPassword",length = 256)
+	@Column(name="PASSWORD",length = 256)
 	private String password;
 
-	/**
-	 * 手机
-	 */
-	@Column(name="FCell",length = 32)
-	private String mobile;
 
-	/**
-	 * 电子邮箱
-	 */
-	@Column(name="FEmail",length = 128)
-	private String email;
 	
-	/**
-	 * 办公电话
-	 */
-	@Column(name="FOfficePhone",length = 128)
-	private String officeTel;
 	
-	/**
-	 * 家庭电话
-	 */
-	@Column(name="FHomePhone",length = 128)
-	private String homeTel;
 	
-	/**
-	 * 是否删除  0=是，1=否
-	 */
-	@Column(name="FIsDelete")
-	private Integer isDelete = 1;
 	
 	/**
 	 * 启用禁用  1=启用，0=禁用
 	 */
-	@Column(name="FForbidden")
+	@Column(name="isForbidden")
 	private Integer isEnable = 1;
 	
 	/**
 	 * 是否锁定 0=是,1=否
 	 */
-	@Column(name="FIsLocked")
+	@Column(name="isLOCKED")
 	private Integer isLock=1;
 	
     /**
      * 描述
      */
-    @Column(name="FDescription_L2",length = 256)
+    @Column(name="DESCRIPTION",length = 256)
     private String description;
     
     
-    /**
-     * 业务角色
-     */
-    /*
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="foperatorRoleId")
-    private OperatorRole operatorRole;*/
     
     /**
      * 创建时间
      */
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "FCreateTime")
+    @Column(name = "CREATETIME")
     private Date createTime;
 
     /**
      * 最近修改时间
      */
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "FLastUpdateTime")
+    @Column(name = "LASTUPDATETIME")
     private Date lastModifyTime;
 
     /**
      * 创建人
      */
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="FCreatorId")
+    @JoinColumn(name="CREATORID")
     private User createUser;
     
     /**
      * 最近修改人
      */
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="FLastUpdateUserId")
+    @JoinColumn(name="LASTUPDATEUSERID")
     private User lastModifyUser;
-    
-    /**
-     * 登录时间(用于统计当前在线用户)
-     */
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "flast_login_time")
-    private Date lastLoginTime;
     
     /**
      * 员工
      */
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="FPERSONID")
+    @JoinColumn(name="personID")
     private Person person;
     
     //角色
     @ManyToOne
-    @JoinColumn(name="FRoleid")
+    @JoinColumn(name="roleid")
     private Role role;
     
     /**
      * 根组织
      */
     @ManyToOne
-    @JoinColumn(name="FrootOrgUnit")
+    @JoinColumn(name="rootOrgID")
     private AdminOrgUnit rootOrgUnit;
     
     //是否是系统管理员 1：是，0：否
-    @Column(name="FisAdministrator")
+    @Column(name="isAdmin")
     private Integer isAdministrator;
 
-	public Integer getIsDelete() {
-		return isDelete;
-	}
-
-	public void setIsDelete(Integer isDelete) {
-		this.isDelete = isDelete;
-	}
 
 	public Person getPerson() {
 		return person;
@@ -271,37 +220,6 @@ public class User implements Serializable,Comparable<Object> {
 		this.password = password;
 	}
 
-	public String getMobile() {
-		return mobile;
-	}
-
-	public void setMobile(String mobile) {
-		this.mobile = mobile;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public String getOfficeTel() {
-		return officeTel;
-	}
-
-	public void setOfficeTel(String officeTel) {
-		this.officeTel = officeTel;
-	}
-
-	public String getHomeTel() {
-		return homeTel;
-	}
-
-	public void setHomeTel(String homeTel) {
-		this.homeTel = homeTel;
-	}
 
 	public String getDescription() {
 		return description;
@@ -369,21 +287,6 @@ public class User implements Serializable,Comparable<Object> {
 		this.number = number;
 	}
 
-	public Date getLastLoginTime() {
-		return lastLoginTime;
-	}
-
-	public void setLastLoginTime(Date lastLoginTime) {
-		this.lastLoginTime = lastLoginTime;
-	}
-
-	public String getName_jianpin() {
-		return name_jianpin;
-	}
-
-	public void setName_jianpin(String name_jianpin) {
-		this.name_jianpin = name_jianpin;
-	}
 
 	
 	@Override
@@ -416,25 +319,6 @@ public class User implements Serializable,Comparable<Object> {
 		return this.getId().hashCode();
 	}
 
-	@Override
-	/**
-	 * 实现compareTo方法
-	 * add by lanxiaojun on 2014-1-6
-	 * 大于返回负值，小于返回整数 ，则用TreeSet进行排序时，降序
-	 */
-	public int compareTo(Object o) {
-		if((o instanceof User)){
-			User user = (User)o;
-			if(this.getLastLoginTime().compareTo(user.getLastLoginTime()) == 0){
-				return 0;
-			}else if(this.getLastLoginTime().compareTo(user.getLastLoginTime()) > 0){
-				return -1;
-			}else{
-				return 1;
-			}
-		}
-		throw new ClassCastException(this.getClass().getName() +" 不能和 " + o.getClass().getName() + "进行比较");
-	}
 
 	public Role getRole() {
 		return role;
@@ -450,5 +334,10 @@ public class User implements Serializable,Comparable<Object> {
 
 	public void setRootOrgUnit(AdminOrgUnit rootOrgUnit) {
 		this.rootOrgUnit = rootOrgUnit;
+	}
+
+	@Override
+	public int compareTo(Object o) {
+		return 0;
 	}
 }
