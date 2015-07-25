@@ -54,7 +54,7 @@ public class RoleAction extends AbstractAction{
 		//组织过滤
 		JSONObject json = new JSONObject();
 		if(id!=null){
-			sql.append("and role.FID ='").append(id).append("'").append(RT);
+			sql.append("and role.roleid ='").append(id).append("'").append(RT);
 			List<Object[]> list = baseService.querySql(sql.toString());
 			json.put("editData", objToJSONObject(list.get(0)));
 			json.put("recordsTotal", 1);
