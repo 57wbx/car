@@ -74,7 +74,7 @@ public class RolePermService extends BaseService{
 		sql.append("FROM sys_menu_permitem  item ").append("\r\n");
 		sql.append("LEFT JOIN sys_role_menu rp ON rp.PermItemID=item.FID").append("\r\n");
 		sql.append("LEFT JOIN sys_menu menu ON menu.menuid=item.FPARENTID").append("\r\n");
-		sql.append("WHERE  menu.FUICLASSNAME IS NOT NULL").append("\r\n");
+		sql.append("WHERE  menu.UICLASSNAME IS NOT NULL").append("\r\n");
 		sql.append("GROUP BY menu.menuid,menu.name,item.FID,item.FName,item.Fnumber").append("\r\n");
 		sql.append("ORDER BY menu.menuCode ASC,item.fnumber ASC").append("\r\n");
 		List<Object[]> list = dao.querySql(sql.toString());

@@ -46,7 +46,7 @@ app.controller('EmployeeEdit', ['$scope', '$http', '$state',  'uiLoad', 'JQ_CONF
     	$scope.$parent.reload();
 	};
     $scope.checkNull = function(){
-    	if($.trim($("#number").val())!=""&&$.trim($("#name").val())!=""&&$.trim($("#positionName").val())!=""){
+    	if($.trim($("#number").val())!=""&&$.trim($("#name").val())!=""){
     		$(".w100.btn.btn-success").attr("disabled",false);
     	}else{
     		$(".w100.btn.btn-success").attr("disabled",true);

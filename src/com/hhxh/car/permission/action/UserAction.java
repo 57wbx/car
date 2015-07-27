@@ -236,12 +236,12 @@ public class UserAction extends AbstractAction {
 		sql.append("SELECT").append(RT);
 		sql.append("t1.id,t1.userCode,t2.orgid orgId,t2.name orgName,t1.username,'','',t1.isForbidden,").append(RT);
 		sql.append("t1.DESCRIPTION,t1.CreateTime,t1.LastUpdateTime,t3.username creator,").append(RT);
-		sql.append("t4.username updateUser,t1.PERSONID personId,t5.fname personName,t1.Roleid roleId,t6.roleName roleName").append(RT);
+		sql.append("t4.username updateUser,t1.PERSONID personId,t5.name personName,t1.Roleid roleId,t6.roleName roleName").append(RT);
 		sql.append("FROM t_pm_user t1").append(RT);
 		sql.append("LEFT JOIN sys_org t2 ON t1.orgid=t2.orgid").append(RT);
 		sql.append("LEFT JOIN t_pm_user t3 ON t1.creatorId=t3.id").append(RT);
 		sql.append("LEFT JOIN t_pm_user t4 ON t1.LASTUPDATEUSERID=t4.id").append(RT);
-		sql.append("LEFT JOIN T_BD_Person t5 ON t1.personid=t5.fid").append(RT);
+		sql.append("LEFT JOIN base_employee t5 ON t1.personid=t5.id").append(RT);
 		sql.append("LEFT JOIN sys_role t6 ON t1.Roleid=t6.roleid").append(RT);
 		return sql;
 	}

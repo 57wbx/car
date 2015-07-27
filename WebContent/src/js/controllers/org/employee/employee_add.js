@@ -5,8 +5,6 @@ app.controller('EmployeeAdd', ['$scope', '$state', 'uiLoad','JQ_CONFIG',
     $scope.formData = {};
     $scope.formData.orgId=sessionStorage.getItem("orgId");
     $scope.formData.superName = sessionStorage.getItem("orgName");
-    $scope.formData.position = sessionStorage.getItem("positionId");
-    $scope.formData.positionName = sessionStorage.getItem("positionName");
     
     var postionList = $('#positionUnit');
     var positionChooseBtn = $('#positionChooseBtn');
@@ -16,7 +14,7 @@ app.controller('EmployeeAdd', ['$scope', '$state', 'uiLoad','JQ_CONFIG',
     if($scope.permBtn&&$scope.permBtn.length>0&&$scope.permBtn.indexOf("add")<0){//判断是否有权限
     	$("#add").remove();
     }
-    $scope.success = true;
+    $scope.success = false;
     $scope.submit = function() {
       var url = app.url.employee.api.save;
       app.utils.getData(url, $scope.formData, function(dt) {

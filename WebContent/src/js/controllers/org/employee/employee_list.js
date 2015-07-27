@@ -131,8 +131,6 @@ app.controller('EmployeeList', function($rootScope, $scope, $state, utils) {
         }, {
           "mDataProp": "orgName"
         },{
-          "mDataProp": "positionName"
-        },{
           "mDataProp": "state","render":function(o){
             return DataRender.State(o);
           }

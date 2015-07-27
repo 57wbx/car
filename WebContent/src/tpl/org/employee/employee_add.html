@@ -31,15 +31,17 @@
         	<input readonly type="text" class="form-control" ng-model="formData.superName">
 		</div>
       </div>
+      <!-- 
       <div class="form-group">
         <label class="col-sm-3 col-xs-11 control-label">职位<i class="fa fa-asterisk text-danger"></i></label>
         <div class="col-sm-6 col-xs-8">
-          <input id="positionName" readonly type="text" placeholder="选择职位" class="form-control" ng-model="formData.positionName" required>
+          <input id="positionName" readonly type="text" placeholder="选择职位" class="form-control" ng-model="formData.positionName" >
         </div>
         <div class="col-sm-2 col-xs-4">
           <a id="positionChooseBtn" ng-click="positionChoose()" class="w100 btn btn-info">选择</a>
         </div>
       </div>
+       -->
       <div class="form-group none" id="positionUnit">
         <div class="col-sm-offset-3 col-sm-8">
           <div class="fade-in-down smooth">
@@ -85,7 +87,7 @@
       <div class="line line-dashed b-b line-lg pull-in"></div>
       <div class="form-group">
         <div class="col-sm-offset-3 col-sm-2 col-xs-6">
-          <button type="button" id="add" class="w100 btn btn-success" ng-click="submit()" ng-disabled='success'>确定</button>
+          <button type="button" id="add" class="w100 btn btn-success" ng-click="submit()" ng-disabled='form.$invalid'>确定</button>
         </div>
         <div class="col-sm-2 col-xs-6">
           <a ng-click="return()" class="w100 btn btn-default">取消</a>

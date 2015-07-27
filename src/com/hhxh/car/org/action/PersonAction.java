@@ -43,6 +43,7 @@ public class PersonAction extends AbstractAction{
 	private String description;
 	private String FLongNumber;
 	
+	private String orgId;
 	
 	/**
 	 * 修改时获得信息
@@ -52,16 +53,16 @@ public class PersonAction extends AbstractAction{
 	{
 		StringBuffer sql = new StringBuffer();
 		sql.append("SELECT ").append(RT);
-		sql.append("t1.fid perId,t1.fnumber perNum,t1.fname perName,t1.Fgender,t1.fhighestDegreeName,").append(RT);
-		sql.append("t3.orgid orgId,t3.name orgName,t2.fid positionId,t2.fname positionName,t1.femployeeClassifyName, ").append(RT);
-		sql.append("t1.fstate perState,t1.fdescription perDes,t1.fcreatetime perCreateTime,t1.FLastUpdateTime perUpdateTime,").append(RT);
-		sql.append("t1.Fcell,t1.Faddress,t4.userName,t5.userName ").append(RT);
-		sql.append("FROM T_BD_Person t1 ").append(RT);
-		sql.append("LEFT JOIN T_ORG_Position t2 ON t1.FPositionID=t2.fid ").append(RT);
-		sql.append("LEFT JOIN sys_org t3 ON t2.FAdminOrgUnitID=t3.orgid ").append(RT);
-		sql.append("LEFT JOIN t_pm_user t4 on t1.FCreatorID=t4.id，").append(RT);
-		sql.append("LEFT JOIN t_pm_user t5 on t1.FLastUpdateUserID=t5.id").append(RT);
-		sql.append("where t1.fid='").append(id).append("'").append(RT);
+		sql.append("t1.id perId,t1.code perNum,t1.name perName,t1.gender,'',").append(RT);
+		sql.append("t3.orgid orgId,t3.name orgName,'t2.fid positionId','t2.fname positionName','t1.femployeeClassifyName', ").append(RT);
+		sql.append("t1.useState perState,t1.memo perDes,t1.createtime perCreateTime,t1.updateTime perUpdateTime,").append(RT);
+		sql.append("t1.cell,t1.address,t4.userName,t5.userName ").append(RT);
+		sql.append("FROM base_employee t1 ").append(RT);
+//		sql.append("LEFT JOIN T_ORG_Position t2 ON t1.FPositionID=t2.fid ").append(RT);
+		sql.append("LEFT JOIN sys_org t3 ON t1.orgid=t3.orgid ").append(RT);
+		sql.append("LEFT JOIN t_pm_user t4 on t1.CreatorID=t4.id").append(RT);
+		sql.append("LEFT JOIN t_pm_user t5 on t1.LastUpdateUserID=t5.id").append(RT);
+		sql.append("where t1.id='").append(id).append("'").append(RT);
 		List<Object[]> list = baseService.querySql(sql.toString());
 		JSONObject json = new JSONObject();
 		json.put("code", "1");
@@ -91,10 +92,10 @@ public class PersonAction extends AbstractAction{
 	 */
 	public void putParamsToObj(Person obj) throws Exception
 	{
-		if(position!=null&&!"".equals(position)){
-			Position p = new Position();
-			p.setId(position);
-			obj.setPosition(p);
+		if(orgId!=null&&!"".equals(orgId)){
+			AdminOrgUnit org = new AdminOrgUnit();
+			org.setId(orgId);
+			obj.setOrg(org);
 		}
 		obj.setNumber(number);
 		obj.setName(name);
@@ -165,11 +166,11 @@ public class PersonAction extends AbstractAction{
 		JSONObject json = new JSONObject();
 		StringBuffer sql = new StringBuffer();
 		sql.append("SELECT ").append(RT);
-		sql.append("t1.fid perId,t1.fnumber perNum,t1.fname perName").append(RT);
-		sql.append("FROM T_BD_Person t1 ").append(RT);
-		sql.append("LEFT JOIN T_ORG_Position t2 ON t1.FPositionID=t2.fid ").append(RT);
-		sql.append("LEFT JOIN sys_org t3 ON t2.FAdminOrgUnitID=t3.orgid ").append(RT);
-		sql.append("where t1.FID NOT IN (SELECT PERSONID FROM t_pm_user  WHERE PERSONID IS NOT NULL)").append(RT);
+		sql.append("t1.id perId,t1.code perNum,t1.name perName").append(RT);
+		sql.append("FROM base_employee t1 ").append(RT);
+//		sql.append("LEFT JOIN T_ORG_Position t2 ON t1.FPositionID=t2.fid ").append(RT);
+		sql.append("LEFT JOIN sys_org t3 ON t1.orgid=t3.orgid ").append(RT);
+		sql.append("where t1.ID NOT IN (SELECT PERSONID FROM t_pm_user  WHERE PERSONID IS NOT NULL)").append(RT);
 		if(user.getRootOrgUnit()!=null&&user.getRootOrgUnit().getFLongNumber()!=null)
 		{
 			sql.append("and t3.orgCode like '").append(user.getRootOrgUnit().getFLongNumber()).append("%'").append(RT);
@@ -184,8 +185,8 @@ public class PersonAction extends AbstractAction{
 		}
 		if(isNotEmpty(search))
 		{
-			sql.append("and (t1.fnumber like '%").append(search).append("%'").append(RT);
-			sql.append("or t1.fname like '%").append(search).append("%')").append(RT);
+			sql.append("and (t1.code like '%").append(search).append("%'").append(RT);
+			sql.append("or t1.name like '%").append(search).append("%')").append(RT);
 		}
 		List<Object[]> list = baseService.querySql(sql.toString());
 		int total = list.size();
@@ -215,26 +216,26 @@ public class PersonAction extends AbstractAction{
 		JSONObject json = new JSONObject();
 		StringBuffer sql = new StringBuffer();
 		sql.append("SELECT ").append(RT);
-		sql.append("t1.fid perId,t1.fnumber perNum,t1.fname perName,t1.Fgender,t1.fhighestDegreeName,").append(RT);
-		sql.append("t3.orgid orgId,t3.name orgName,t2.fid positionId,t2.fname positionName,t1.femployeeClassifyName, ").append(RT);
-		sql.append("t1.fstate perState,t1.fdescription perDes,t1.fcreatetime perCreateTime,t1.FLastUpdateTime perUpdateTime,").append(RT);
-		sql.append("t1.Fcell,t1.Faddress,t4.username,t5.username ").append(RT);
-		sql.append("FROM T_BD_Person t1 ").append(RT);
-		sql.append("LEFT JOIN T_ORG_Position t2 ON t1.FPositionID=t2.fid ").append(RT);
-		sql.append("LEFT JOIN sys_org t3 ON t2.FAdminOrgUnitID=t3.orgid ").append(RT);
-		sql.append("LEFT JOIN t_pm_user t4 on t1.FCreatorID=t4.ID").append(RT);
-		sql.append("LEFT JOIN t_pm_user t5 on t1.FLastUpdateUserID=t5.ID").append(RT);
+		sql.append("t1.id perId,t1.code perNum,t1.name perName,t1.gender,'t1.fhighestDegreeName',").append(RT);
+		sql.append("t3.orgid orgId,t3.name orgName,'t2.fid positionId','t2.fname positionName','t1.femployeeClassifyName', ").append(RT);
+		sql.append("t1.useState perState,t1.memo perDes,t1.createtime perCreateTime,t1.updateTime perUpdateTime,").append(RT);
+		sql.append("t1.cell,t1.address,t4.username,t5.username ").append(RT);
+		sql.append("FROM base_employee t1 ").append(RT);
+//		sql.append("LEFT JOIN T_ORG_Position t2 ON t1.FPositionID=t2.fid ").append(RT);
+		sql.append("LEFT JOIN sys_org t3 ON t1.orgid=t3.orgid ").append(RT);
+		sql.append("LEFT JOIN t_pm_user t4 on t1.CreatorID=t4.ID").append(RT);
+		sql.append("LEFT JOIN t_pm_user t5 on t1.LastUpdateUserID=t5.ID").append(RT);
 		sql.append("where 1=1").append(RT);
 		if(isNotEmpty(FLongNumber))
 		{
 			sql.append("and t3.orgCode like '").append(FLongNumber).append("%'").append(RT);
 		}else if(isNotEmpty(id)){
-			sql.append("and t1.FPositionID='").append(id).append("'").append(RT);
+//			sql.append("and t1.FPositionID='").append(id).append("'").append(RT);
 		}
 		if(isNotEmpty(search))
 		{
-			sql.append("and (t1.fnumber like '%").append(search).append("%'").append(RT);
-			sql.append("or t1.fname like '%").append(search).append("%')").append(RT);
+			sql.append("and (t1.code like '%").append(search).append("%'").append(RT);
+			sql.append("or t1.name like '%").append(search).append("%')").append(RT);
 		}
 		int total = baseService.querySql(sql.toString()).size();
 		List<Object[]> list = baseService.querySql(sql.toString(),start,pageSize);
@@ -325,22 +326,23 @@ public class PersonAction extends AbstractAction{
 		item.put("number", obj.getNumber()==null?"":obj.getNumber());
 		item.put("name", obj.getName()==null?"":obj.getName());
 		item.put("simpleName", obj.getSimpleName()==null?"":obj.getSimpleName());
-		item.put("highestDegreeName",obj.getHighestDegreeName()==null?"":obj.getHighestDegreeName());
-		item.put("employeeClassifyName",obj.getEmployeeClassifyName()==null?"":obj.getEmployeeClassifyName());
+//		item.put("highestDegreeName",obj.getHighestDegreeName()==null?"":obj.getHighestDegreeName());
+//		item.put("employeeClassifyName",obj.getEmployeeClassifyName()==null?"":obj.getEmployeeClassifyName());
 		item.put("description", obj.getDescription()==null?"":obj.getDescription());
 		item.put("gender", obj.getGender()==null?"":obj.getGender());
-		if(obj.getPosition()!=null&&obj.getPosition().getAdminOrgUnit()!=null){
-			AdminOrgUnit org = obj.getPosition().getAdminOrgUnit();
-			item.put("orgId", org.getId());
-			item.put("orgName", org.getName());
+//		if(obj.getPosition()!=null&&obj.getPosition().getAdminOrgUnit()!=null){
+		if(false){
+//			AdminOrgUnit org = obj.getPosition().getAdminOrgUnit();
+//			item.put("orgId", org.getId());
+//			item.put("orgName", org.getName());
 		}else{
 			item.put("orgId", "");
 			item.put("orgName", "");
 		}
-		item.put("positionId", obj.getPosition()==null?"":obj.getPosition().getId());
-		item.put("positionName", obj.getPosition()==null?"":obj.getPosition().getName());
+//		item.put("positionId", obj.getPosition()==null?"":obj.getPosition().getId());
+//		item.put("positionName", obj.getPosition()==null?"":obj.getPosition().getName());
 		item.put("state",obj.getState()==null?0:obj.getState());
-		item.put("officePhone", obj.getOfficePhone()==null?"":obj.getOfficePhone());
+//		item.put("officePhone", obj.getOfficePhone()==null?"":obj.getOfficePhone());
 		item.put("cell", obj.getCell()==null?"":obj.getCell());
 		item.put("email", obj.getEmail()==null?"":obj.getEmail());
 		item.put("qq", obj.getQq()==null?"":obj.getQq());
@@ -372,16 +374,16 @@ public class PersonAction extends AbstractAction{
 	private void commonQuery(StringBuffer positionHql,StringBuffer orgHql) throws IOException 
 	{
 		JSONArray items = new JSONArray();
-		List<Object[]> positionList = baseService.querySql(positionHql.toString());
-		for(Object[] obj : positionList)
-		{
-			JSONObject item = new JSONObject();
-			item.put("id", obj[0]);
-			item.put("name", obj[1]);
-			item.put("parent", obj[2]);
-			item.put("isPosition",true);
-			items.add(item);
-		}
+//		List<Object[]> positionList = baseService.querySql(positionHql.toString());
+//		for(Object[] obj : positionList)
+//		{
+//			JSONObject item = new JSONObject();
+//			item.put("id", obj[0]);
+//			item.put("name", obj[1]);
+//			item.put("parent", obj[2]);
+//			item.put("isPosition",true);
+//			items.add(item);
+//		}
 		List<Object[]> orgList = baseService.querySql(orgHql.toString());
 		for(Object[] obj : orgList)
 		{
@@ -394,7 +396,8 @@ public class PersonAction extends AbstractAction{
 			item.put("unitLayer", obj[4]);
 			items.add(item);
 		}
-		int total = positionList.size()+orgList.size();
+//		int total = positionList.size()+orgList.size();
+		int total = orgList.size();
 		JSONObject json = new JSONObject();
 		json.put("rows", items);
 		json.put("recordsTotal", total);
@@ -493,6 +496,15 @@ public class PersonAction extends AbstractAction{
 		FLongNumber = fLongNumber;
 	}
 
+	public String getOrgId() {
+		return orgId;
+	}
+
+	public void setOrgId(String orgId) {
+		this.orgId = orgId;
+	}
+
+	
 
 
 }
