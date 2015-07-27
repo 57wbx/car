@@ -461,7 +461,392 @@ angular.module('app').run(
 	                }
 	              ]
 	            }
-		      })
+		      }).state('app.carshop', {
+		            url: '/carshop',
+		            templateUrl: 'src/tpl/base/carshop/carshop.html',
+		            resolve: {
+		              deps: ['$ocLazyLoad', 'uiLoad',
+		                function($ocLazyLoad, uiLoad) {
+		                  return $ocLazyLoad.load('angularBootstrapNavTree').then(function() {
+		                    return $ocLazyLoad.load('src/js/controllers/base/carshop/CarShopController.js');
+		                  });
+		                }
+		              ]
+		            }
+			      })
+		        .state('app.carshop.list', {
+		            url: '/list',
+		            templateUrl: 'src/tpl/base/carshop/carshop_list.html',
+		            resolve: {
+		              deps: ['$ocLazyLoad','uiLoad',
+		                function($ocLazyLoad, uiLoad) {
+		                  return uiLoad.load(JQ_CONFIG.chosen).then(function() {
+		                    return $ocLazyLoad.load('src/js/controllers/base/carshop/CarShopListController.js');
+		                  });
+		                }
+		              ]
+		            }
+		        }).state('app.carshop.add', {
+		            url: '/add',
+		            templateUrl: 'src/tpl/base/carshop/carshop_add.html',
+		            resolve: {
+		              deps: ['$ocLazyLoad','uiLoad',
+		                function($ocLazyLoad, uiLoad) {
+		                  return uiLoad.load(JQ_CONFIG.chosen).then(function() {
+		                    return $ocLazyLoad.load('src/js/controllers/base/carshop/CarShopAddController.js');
+		                  });
+		                }
+		              ]
+		            }
+		        }).state('app.carshop.details', {
+		            url: '/details',
+		            templateUrl: 'src/tpl/base/carshop/carshop_details.html',
+		            resolve: {
+		              deps: ['$ocLazyLoad','uiLoad',
+		                function($ocLazyLoad, uiLoad) {
+		                  return uiLoad.load(JQ_CONFIG.chosen).then(function() {
+		                    return $ocLazyLoad.load('src/js/controllers/base/carshop/CarShopDetailsController.js');
+		                  });
+		                }
+		              ]
+		            }
+		        }).state('app.carshop.edit', {
+		            url: '/edit',
+		            templateUrl: 'src/tpl/base/carshop/carshop_edit.html',
+		            resolve: {
+		              deps: ['$ocLazyLoad','uiLoad',
+		                function($ocLazyLoad, uiLoad) {
+		                  return uiLoad.load(JQ_CONFIG.chosen).then(function() {
+		                    return $ocLazyLoad.load('src/js/controllers/base/carshop/CarShopEditController.js');
+		                  });
+		                }
+		              ]
+		            }
+		        }) .state('app.bustype', {
+		            url: '/bustype',
+		            templateUrl: 'src/tpl/base/bustype/bustype.html',
+		            resolve: {
+		              deps: ['$ocLazyLoad', 'uiLoad',
+		                function($ocLazyLoad, uiLoad) {
+		                  return $ocLazyLoad.load('angularBootstrapNavTree').then(function() {
+		                    return $ocLazyLoad.load('src/js/controllers/base/bustype/BusTypeController.js');
+		                  });
+		                }
+		              ]
+		            }
+			      }).state('app.bustype.edit', {
+			            url: '/edit',
+			            templateUrl: 'src/tpl/base/bustype/bustype_edit.html',
+			            resolve: {
+			              deps: ['$ocLazyLoad','uiLoad',
+			                function($ocLazyLoad, uiLoad) {
+			                  return uiLoad.load(JQ_CONFIG.chosen).then(function() {
+			                    return $ocLazyLoad.load('src/js/controllers/base/bustype/BusTypeEditController.js');
+			                  });
+			                }
+			              ]
+			            }
+			        }).state('app.autopart', {
+			            url: '/autopart',
+			            templateUrl: 'src/tpl/base/autopart/autopart.html',
+			            resolve: {
+			              deps: ['$ocLazyLoad', 'uiLoad',
+			                function($ocLazyLoad, uiLoad) {
+			                  return $ocLazyLoad.load('angularBootstrapNavTree').then(function() {
+			                    return $ocLazyLoad.load('src/js/controllers/base/autopart/AutoPartController.js');
+			                  });
+			                }
+			              ]
+			            }
+				      }).state('app.autopart.list', {
+				            url: '/list',
+				            templateUrl: 'src/tpl/base/autopart/autopart_list.html',
+				            resolve: {
+				              deps: ['$ocLazyLoad','uiLoad',
+				                function($ocLazyLoad, uiLoad) {
+				                  return uiLoad.load(JQ_CONFIG.chosen).then(function() {
+				                    return $ocLazyLoad.load('src/js/controllers/base/autopart/AutoPartListController.js');
+				                  });
+				                }
+				              ]
+				            }
+				        }).state('app.autopart.add', {
+				            url: '/add',
+				            templateUrl: 'src/tpl/base/autopart/autopart_add.html',
+				            resolve: {
+				              deps: ['$ocLazyLoad','uiLoad',
+				                function($ocLazyLoad, uiLoad) {
+				                  return uiLoad.load(JQ_CONFIG.chosen).then(function() {
+				                    return $ocLazyLoad.load('src/js/controllers/base/autopart/AutoPartAddController.js');
+				                  });
+				                }
+				              ]
+				            }
+				        }).state('app.autopart.edit', {
+				            url: '/edit',
+				            templateUrl: 'src/tpl/base/autopart/autopart_edit.html',
+				            resolve: {
+				              deps: ['$ocLazyLoad','uiLoad',
+				                function($ocLazyLoad, uiLoad) {
+				                  return uiLoad.load(JQ_CONFIG.chosen).then(function() {
+				                    return $ocLazyLoad.load('src/js/controllers/base/autopart/AutoPartEditController.js');
+				                  });
+				                }
+				              ]
+				            }
+				        }).state('app.autopart.details', {
+				            url: '/details',
+				            templateUrl: 'src/tpl/base/autopart/autopart_details.html',
+				            resolve: {
+				              deps: ['$ocLazyLoad','uiLoad',
+				                function($ocLazyLoad, uiLoad) {
+				                  return uiLoad.load(JQ_CONFIG.chosen).then(function() {
+				                    return $ocLazyLoad.load('src/js/controllers/base/autopart/AutoPartDetailsController.js');
+				                  });
+				                }
+				              ]
+				            }
+				        }).state('app.busatom', {
+				            url: '/busatom',
+				            templateUrl: 'src/tpl/base/busatom/busatom.html',
+				            resolve: {
+				              deps: ['$ocLazyLoad', 'uiLoad',
+				                function($ocLazyLoad, uiLoad) {
+				                  return $ocLazyLoad.load('angularBootstrapNavTree').then(function() {
+				                    return $ocLazyLoad.load('src/js/controllers/base/busatom/BusAtomController.js');
+				                  });
+				                }
+				              ]
+				            }
+					      }).state('app.busatom.list', {
+					            url: '/list',
+					            templateUrl: 'src/tpl/base/busatom/busatom_list.html',
+					            resolve: {
+					              deps: ['$ocLazyLoad','uiLoad',
+					                function($ocLazyLoad, uiLoad) {
+					                  return uiLoad.load(JQ_CONFIG.chosen).then(function() {
+					                    return $ocLazyLoad.load('src/js/controllers/base/busatom/BusAtomListController.js');
+					                  });
+					                }
+					              ]
+					            }
+					        }).state('app.busatom.add', {
+					            url: '/add',
+					            templateUrl: 'src/tpl/base/busatom/busatom_add.html',
+					            resolve: {
+					              deps: ['$ocLazyLoad','uiLoad',
+					                function($ocLazyLoad, uiLoad) {
+					                  return uiLoad.load(JQ_CONFIG.chosen).then(function() {
+					                    return $ocLazyLoad.load('src/js/controllers/base/busatom/BusAtomAddController.js');
+					                  });
+					                }
+					              ]
+					            }
+					        }).state('app.busatom.details', {
+					            url: '/details',
+					            templateUrl: 'src/tpl/base/busatom/busatom_details.html',
+					            resolve: {
+					              deps: ['$ocLazyLoad','uiLoad',
+					                function($ocLazyLoad, uiLoad) {
+					                  return uiLoad.load(JQ_CONFIG.chosen).then(function() {
+					                    return $ocLazyLoad.load('src/js/controllers/base/busatom/BusAtomDetailsController.js');
+					                  });
+					                }
+					              ]
+					            }
+					        }).state('app.busatom.edit', {
+					            url: '/edit',
+					            templateUrl: 'src/tpl/base/busatom/busatom_edit.html',
+					            resolve: {
+					              deps: ['$ocLazyLoad','uiLoad',
+					                function($ocLazyLoad, uiLoad) {
+					                  return uiLoad.load(JQ_CONFIG.chosen).then(function() {
+					                    return $ocLazyLoad.load('src/js/controllers/base/busatom/BusAtomEditController.js');
+					                  });
+					                }
+					              ]
+					            }
+					        }).state('app.busitem', {
+					            url: '/busitem',
+					            templateUrl: 'src/tpl/base/busitem/busitem.html',
+					            resolve: {
+					              deps: ['$ocLazyLoad', 'uiLoad',
+					                function($ocLazyLoad, uiLoad) {
+					                  return $ocLazyLoad.load('angularBootstrapNavTree').then(function() {
+					                    return $ocLazyLoad.load('src/js/controllers/base/busitem/BusItemController.js');
+					                  });
+					                }
+					              ]
+					            }
+						      }).state('app.busitem.list', {
+						            url: '/list',
+						            templateUrl: 'src/tpl/base/busitem/busitem_list.html',
+						            resolve: {
+						              deps: ['$ocLazyLoad','uiLoad',
+						                function($ocLazyLoad, uiLoad) {
+						                  return uiLoad.load(JQ_CONFIG.chosen).then(function() {
+						                    return $ocLazyLoad.load('src/js/controllers/base/busitem/BusItemListController.js');
+						                  });
+						                }
+						              ]
+						            }
+						        }).state('app.busitem.add', {
+						            url: '/add',
+						            templateUrl: 'src/tpl/base/busitem/busitem_add.html',
+						            resolve: {
+						              deps: ['$ocLazyLoad','uiLoad',
+						                function($ocLazyLoad, uiLoad) {
+						                  return uiLoad.load(JQ_CONFIG.chosen).then(function() {
+						                    return $ocLazyLoad.load('src/js/controllers/base/busitem/BusItemAddController.js');
+						                  });
+						                }
+						              ]
+						            }
+						        }).state('app.busitem.edit', {
+						            url: '/edit',
+						            templateUrl: 'src/tpl/base/busitem/busitem_edit.html',
+						            resolve: {
+						              deps: ['$ocLazyLoad','uiLoad',
+						                function($ocLazyLoad, uiLoad) {
+						                  return uiLoad.load(JQ_CONFIG.chosen).then(function() {
+						                    return $ocLazyLoad.load('src/js/controllers/base/busitem/BusItemEditController.js');
+						                  });
+						                }
+						              ]
+						            }
+						        }).state('app.busitem.details', {
+						            url: '/details',
+						            templateUrl: 'src/tpl/base/busitem/busitem_details.html',
+						            resolve: {
+						              deps: ['$ocLazyLoad','uiLoad',
+						                function($ocLazyLoad, uiLoad) {
+						                  return uiLoad.load(JQ_CONFIG.chosen).then(function() {
+						                    return $ocLazyLoad.load('src/js/controllers/base/busitem/BusItemDetailsController.js');
+						                  });
+						                }
+						              ]
+						            }
+						        }).state('app.buspackage', {
+						            url: '/buspackage',
+						            templateUrl: 'src/tpl/base/buspackage/buspackage.html',
+						            resolve: {
+						              deps: ['$ocLazyLoad', 'uiLoad',
+						                function($ocLazyLoad, uiLoad) {
+						                  return $ocLazyLoad.load('angularBootstrapNavTree').then(function() {
+						                    return $ocLazyLoad.load('src/js/controllers/base/buspackage/BusPackageController.js');
+						                  });
+						                }
+						              ]
+						            }
+							      }).state('app.buspackage.list', {
+							            url: '/list',
+							            templateUrl: 'src/tpl/base/buspackage/buspackage_list.html',
+							            resolve: {
+							              deps: ['$ocLazyLoad','uiLoad',
+							                function($ocLazyLoad, uiLoad) {
+							                  return uiLoad.load(JQ_CONFIG.chosen).then(function() {
+							                    return $ocLazyLoad.load('src/js/controllers/base/buspackage/BusPackageListController.js');
+							                  });
+							                }
+							              ]
+							            }
+							        }).state('app.buspackage.add', {
+							            url: '/add',
+							            templateUrl: 'src/tpl/base/buspackage/buspackage_add.html',
+							            resolve: {
+							              deps: ['$ocLazyLoad','uiLoad',
+							                function($ocLazyLoad, uiLoad) {
+							                  return uiLoad.load(JQ_CONFIG.chosen).then(function() {
+							                    return $ocLazyLoad.load('src/js/controllers/base/buspackage/BusPackageAddController.js');
+							                  });
+							                }
+							              ]
+							            }
+							        }).state('app.buspackage.edit', {
+							            url: '/edit',
+							            templateUrl: 'src/tpl/base/buspackage/buspackage_edit.html',
+							            resolve: {
+							              deps: ['$ocLazyLoad','uiLoad',
+							                function($ocLazyLoad, uiLoad) {
+							                  return uiLoad.load(JQ_CONFIG.chosen).then(function() {
+							                    return $ocLazyLoad.load('src/js/controllers/base/buspackage/BusPackageEditController.js');
+							                  });
+							                }
+							              ]
+							            }
+							        }).state('app.buspackage.details', {
+							            url: '/details',
+							            templateUrl: 'src/tpl/base/buspackage/buspackage_details.html',
+							            resolve: {
+							              deps: ['$ocLazyLoad','uiLoad',
+							                function($ocLazyLoad, uiLoad) {
+							                  return uiLoad.load(JQ_CONFIG.chosen).then(function() {
+							                    return $ocLazyLoad.load('src/js/controllers/base/buspackage/BusPackageDetailsController.js');
+							                  });
+							                }
+							              ]
+							            }
+							        }).state('app.updateversion', {
+							            url: '/updateversion',
+							            templateUrl: 'src/tpl/tig/updateversion/updateversion.html',
+							            resolve: {
+							              deps: ['$ocLazyLoad', 'uiLoad',
+							                function($ocLazyLoad, uiLoad) {
+							                  return $ocLazyLoad.load('angularBootstrapNavTree').then(function() {
+							                    return $ocLazyLoad.load('src/js/controllers/tig/updateversion/UpdateVersionController.js');
+							                  });
+							                }
+							              ]
+							            }
+								      }).state('app.updateversion.list', {
+								            url: '/list',
+								            templateUrl: 'src/tpl/tig/updateversion/updateversion_list.html',
+								            resolve: {
+								              deps: ['$ocLazyLoad','uiLoad',
+								                function($ocLazyLoad, uiLoad) {
+								                  return uiLoad.load(JQ_CONFIG.chosen).then(function() {
+								                    return $ocLazyLoad.load('src/js/controllers/tig/updateversion/UpdateVersionListController.js');
+								                  });
+								                }
+								              ]
+								            }
+								        }).state('app.updateversion.add', {
+								            url: '/add',
+								            templateUrl: 'src/tpl/tig/updateversion/updateversion_add.html',
+								            resolve: {
+								              deps: ['$ocLazyLoad','uiLoad',
+								                function($ocLazyLoad, uiLoad) {
+								                  return uiLoad.load(JQ_CONFIG.chosen).then(function() {
+								                    return $ocLazyLoad.load('src/js/controllers/tig/updateversion/UpdateVersionAddController.js');
+								                  });
+								                }
+								              ]
+								            }
+								        }).state('app.updateversion.edit', {
+								            url: '/edit',
+								            templateUrl: 'src/tpl/tig/updateversion/updateversion_edit.html',
+								            resolve: {
+								              deps: ['$ocLazyLoad','uiLoad',
+								                function($ocLazyLoad, uiLoad) {
+								                  return uiLoad.load(JQ_CONFIG.chosen).then(function() {
+								                    return $ocLazyLoad.load('src/js/controllers/tig/updateversion/UpdateVersionEditController.js');
+								                  });
+								                }
+								              ]
+								            }
+								        }).state('app.updateversion.details', {
+								            url: '/details',
+								            templateUrl: 'src/tpl/tig/updateversion/updateversion_details.html',
+								            resolve: {
+								              deps: ['$ocLazyLoad','uiLoad',
+								                function($ocLazyLoad, uiLoad) {
+								                  return uiLoad.load(JQ_CONFIG.chosen).then(function() {
+								                    return $ocLazyLoad.load('src/js/controllers/tig/updateversion/UpdateVersionDetailsController.js');
+								                  });
+								                }
+								              ]
+								            }
+								        })
       // form
       .state('app.form', {
         url: '/form',

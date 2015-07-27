@@ -1,0 +1,160 @@
+<div class="hbox hbox-auto-xs hbox-auto-sm" ng-controller="carShopDetailsController">
+  <div class="panel-heading font-bold text-center">
+    详情
+  </div>
+  <div class="panel-body">
+    <form class="form-horizontal" method="get">
+    
+      <div class="form-group">
+        <label class="col-sm-2 control-label">网店名称</label>
+        <p class="col-sm-4 form-text" ng-bind="details.shopName"></p>
+        <label class="col-sm-2 control-label">简称</label>
+        <p class="col-sm-4 form-text" ng-bind="details.simpleName"></p>
+      </div>
+      
+      <div class="form-group">
+        <label class="col-sm-2 control-label">店面性质</label>
+        <div ng-switch on="details.shopType">
+        	<!-- 0=加盟店、1=合作店、3=直营店、4=中心店（区域旗舰店） -->
+        	<p class="col-sm-4 form-text" ng-switch-default>&nbsp;</p>
+        	<p class="col-sm-4 form-text" ng-switch-when='0'>加盟店</p>
+        	<p class="col-sm-4 form-text" ng-switch-when='1'>合作店</p>
+        	<p class="col-sm-4 form-text" ng-switch-when='3'>直营店</p>
+        	<p class="col-sm-4 form-text" ng-switch-when='4'>中心店（区域旗舰店）</p>
+        </div>
+        <label class="col-sm-2 control-label">营业证号</label>
+        <p class="col-sm-4 form-text" ng-bind="details.busCard"></p>
+      </div>
+      
+      <div class="form-group">
+        <label class="col-sm-2 control-label">法人姓名</label>
+        <p class="col-sm-4 form-text" ng-bind="details.legalNAME"></p>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-2 control-label">法人手机号</label>
+        <p class="col-sm-4 form-text" ng-bind="details.legalCELL"></p>
+        <label class="col-sm-2 control-label">法人身份证号</label>
+        <p class="col-sm-4 form-text" ng-bind="details.IDCARDNO"></p>
+      </div>
+      
+      <div class="form-group">
+        <label class="col-sm-2 control-label">固定电话</label>
+        <p class="col-sm-4 form-text" ng-bind="details.telephone"></p>
+        <label class="col-sm-2 control-label">注册时间</label>
+        <p class="col-sm-4 form-text" ng-bind="details.registerDate | date:'yyyy-MM-dd'"></p>
+      </div>
+      
+       <div class="form-group">
+        <label class="col-sm-2 control-label">详细地址</label>
+        <p class="col-sm-4 form-text" ng-bind="details.address"></p>
+        <label class="col-sm-2 control-label">审核状态</label>
+        <!-- 0=初始（保存）、1=待审核、2=审核通过、3=退回 -->
+        <div ng-switch on="details.auditState">
+       		<p class="col-sm-4 form-text" ng-switch-default>&nbsp;</p>
+       		<p class="col-sm-4 form-text" ng-switch-when='0'>初始</p>
+       		<p class="col-sm-4 form-text" ng-switch-when='1'>待审核</p>
+       		<p class="col-sm-4 form-text" ng-switch-when='2'>审核通过</p>
+       		<p class="col-sm-4 form-text" ng-switch-when='3'>退回</p>
+        </div>
+      </div>
+      
+       <div class="form-group">
+        <label class="col-sm-2 control-label">使用状态</label>
+       	<!-- 1=正常、2=停用、3=注销（黑名单） -->
+       	<div ng-switch on="details.useState">
+       		 <p class="col-sm-4 form-text" ng-switch-default>&nbsp;</p>
+       		 <p class="col-sm-4 form-text" ng-switch-when="1">正常</p>
+       		 <p class="col-sm-4 form-text" ng-switch-when="2">停用</p>
+       		 <p class="col-sm-4 form-text" ng-switch-when="3">注销（黑名单）</p>
+       	</div>
+        <label class="col-sm-2 control-label">店面等级</label>
+        <!-- 0=0星、1=1星、2=2星、3=3星、4=4星、5=5星 -->
+        <div ng-switch on="details.VIPLevel">
+        	<p class="col-sm-4 form-text" ng-switch-default>&nbsp;</p>
+        	<p class="col-sm-4 form-text" ng-switch-when="0">0星</p>
+        	<p class="col-sm-4 form-text" ng-switch-when="1">1星</p>
+        	<p class="col-sm-4 form-text" ng-switch-when="2">2星</p>
+        	<p class="col-sm-4 form-text" ng-switch-when="3">3星</p>
+        	<p class="col-sm-4 form-text" ng-switch-when="4">4星</p>
+        	<p class="col-sm-4 form-text" ng-switch-when="5">5星</p>
+        </div>
+      </div>
+      
+       <div class="form-group">
+        <label class="col-sm-2 control-label">总体评价等级</label>
+        <!-- (1=很差、2=差、3=一般、4=良好、5=优秀) 通过评论表的结果反写 -->
+        <div ng-switch on="details.commentLevel">
+        	<p class="col-sm-4 form-text" ng-switch-default>&nbsp;</p>
+        	<p class="col-sm-4 form-text" ng-switch-when="1">很差</p>
+        	<p class="col-sm-4 form-text" ng-switch-when="2">差</p>
+        	<p class="col-sm-4 form-text" ng-switch-when="3">一般</p>
+        	<p class="col-sm-4 form-text" ng-switch-when="4">良好</p>
+        	<p class="col-sm-4 form-text" ng-switch-when="5">优秀</p>
+        </div>
+        <label class="col-sm-2 control-label">店面员工数</label>
+        <p class="col-sm-4 form-text" ng-bind="details.employeeNum"></p>
+      </div>
+      
+      <div class="form-group">
+        <label class="col-sm-2 control-label">企业邮箱</label>
+        <p class="col-sm-4 form-text" ng-bind="details.email"></p>
+        <label class="col-sm-2 control-label">qq号</label>
+        <p class="col-sm-4 form-text" ng-bind="details.qq"></p>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-2 control-label">微信公众号</label>
+        <p class="col-sm-4 form-text" ng-bind="details.weixin"></p>
+        <label class="col-sm-2 control-label">更新时间</label>
+        <p class="col-sm-4 form-text" ng-bind="details.updateTime | date:'yyyy-MM-dd'"></p>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-2 control-label">店面描述</label>
+        <p class="col-sm-4 form-text" ng-bind="details.description"></p>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-2 control-label">营业开始时间</label>
+        <p class="col-sm-4 form-text" ng-bind="details.busStartTime"></p>
+        <label class="col-sm-2 control-label">营业结束时间</label>
+        <p class="col-sm-4 form-text" ng-bind="details.busEndTime"></p>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-2 control-label">开卡银行</label>
+        <p class="col-sm-4 form-text" ng-bind="details.bankName"></p>
+        <label class="col-sm-2 control-label">银行卡号</label>
+        <p class="col-sm-4 form-text" ng-bind="details.bankCardNo"></p>
+      </div>
+      
+      <div class="form-group">
+        <label class="col-sm-2 control-label">备注</label>
+        <p class="col-sm-4 form-text" ng-bind="details.memo"></p>
+      </div>
+      
+      <div class="form-group">
+        <label class="col-sm-2 control-label">经度</label>
+        <p class="col-sm-4 form-text" ng-bind="details.mapY"  value="details.mapY" id="mapY"></p>
+        <label class="col-sm-2 control-label">纬度</label>
+        <p class="col-sm-4 form-text" ng-bind="details.mapX"  value="details.mapX" id="mapX"></p>
+      </div>
+      
+      <div class="form-group" id="baiduMap" >
+        <div class="col-sm-offset-1 col-sm-10">
+            <div class="panel panel-default">
+              <div class="panel-body">
+                <div class="wrapper-md">
+                <iframe src="src/tpl/base/carshop/baiduMapForDetails.html" width="100%" height="300px" style="border: 0px;"></iframe>
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      
+      <div class="line line-dashed b-b line-lg pull-in"></div>
+      <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-8 col-lg-offset-1 col-lg-6">
+          <a ng-click="return()" class="btn btn-info">&nbsp;&nbsp;返回&nbsp;&nbsp;</a>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

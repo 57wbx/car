@@ -1,0 +1,28 @@
+<div ng-init="loading=true" ng-if="loading" class="loading">
+  <i class="glyphicon glyphicon-repeat"></i>
+</div>
+<div ng-if="!loading" class="table-responsive" ng-controller="autoPartListController">
+  <table id="autoPartList" class="table table-striped b-t b-b" >
+    <thead>
+      <tr>
+        <th><label class="i-checks"><input type="checkbox"><i></i></label></th>
+        <th>编号(仓库)</th>
+        <th>名称</th>
+        <th>品牌</th>
+        <th>规格</th>
+        <th>型号</th>
+        <th>出厂单价</th>
+        <th>市场单价</th>
+        <th>优惠价</th>
+        <th>使用状态</th>
+        <th>是否参与聚惠（优惠活动）</th>
+        <th>库存数</th>
+        <th>更新时间</th>
+        <th>来源</th>
+        <th>备注</th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+</div>

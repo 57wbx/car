@@ -1,0 +1,102 @@
+<div class="hbox hbox-auto-xs hbox-auto-sm" ng-controller="autoPartDetailsController">
+  <div class="panel-heading font-bold text-center">
+    查看配件信息
+  </div>
+  <div class="panel-body">
+    <form name="form" class="form-horizontal form-validation" method="get" ng-model="formData" >
+      <div class="form-group">
+        <label class="col-sm-3 control-label">编号（仓库）<i class="fa fa-asterisk text-danger"></i></label>
+        <div class="col-sm-8">
+          <input type="text" placeholder="编号（仓库）" class="form-control" ng-model="formData.partCode" tabindex="1" required readonly>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-3 control-label">名称<i class="fa fa-asterisk text-danger"></i></label>
+        <div class="col-sm-8">
+          <input type="text" placeholder="名称"  class="form-control" ng-model="formData.partName" required readonly>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-3 control-label">品牌</label>
+        <div class="col-sm-8">
+          <input type="text" placeholder="品牌" class="form-control" ng-model="formData.brandName" readonly>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-3 control-label">规格</label>
+        <div class="col-sm-8">
+          <input type="text" placeholder="规格" class="form-control" ng-model="formData.spec" readonly>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-3 control-label">出厂价格</label>
+        <div class="col-sm-8">
+          <input type="text" placeholder="出厂价格" class="form-control" ng-model="formData.sunitPrice" readonly>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-3 control-label">市场价格<i class="fa fa-asterisk text-danger"></i></label>
+        <div class="col-sm-8">
+          <input type="text" placeholder="市场价格" class="form-control" ng-model="formData.eunitPrice" required readonly>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-3 control-label">优惠价格</label>
+        <div class="col-sm-8">
+          <input type="text" placeholder="优惠价格" class="form-control" ng-model="formData.yunitPrice" required readonly>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label class="col-sm-3 control-label">使用状态<i class="fa fa-asterisk text-danger"></i></label>
+        <div class="col-sm-8">
+          <select id="useState" class="form-control" required ng-model="formData.useState" readonly disabled>
+          	<!-- 0=初始化、1=待审核、2=发布（审核通过）、3=停止/下架、4=强制下架（违规） -->
+            <option value="0">初始化</option>
+            <option value="1">待审核</option>
+            <option value="2">发布（审核通过）</option>
+            <option value="3">停止/下架</option>
+            <option value="4">强制下架（违规）</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-3 control-label">是否参与聚会<i class="fa fa-asterisk text-danger"></i></label>
+        <div class="col-sm-8">
+          <select id="isActivity" class="form-control" required ng-model="formData.isActivity" readonly disabled>
+          	<!-- 0=不参加（默认），1=参加 -->
+            <option value="0">不参加</option>
+            <option value="1">参加</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label class="col-sm-3 control-label">库存数</label>
+        <div class="col-sm-8">
+          <input type="text" placeholder="库存数" class="form-control" ng-model="formData.stock" readonly>
+        </div>
+      </div>
+     
+      <div class="form-group">
+        <label class="col-sm-3 control-label">来源</label>
+        <div class="col-sm-8">
+          <input type="text" placeholder="来源" class="form-control" ng-model="formData.partSource" readonly >
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-3 control-label">备注</label>
+        <div class="col-sm-8">
+          <input type="text" placeholder="备注" class="form-control" ng-model="formData.memo" readonly>
+        </div>
+      </div>
+      
+      <div class="line line-dashed b-b line-lg pull-in"></div>
+      <div class="form-group">
+        <div class="col-sm-offset-5 col-sm-2 col-xs-6">
+          <a ng-click="return()" class="w100 btn btn-default">取消</a>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

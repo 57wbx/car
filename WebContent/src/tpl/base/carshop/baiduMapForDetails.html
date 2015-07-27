@@ -1,0 +1,38 @@
+<!DOCTYPE html>  
+<html>  
+<head>  
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />  
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />  
+<title>Hello, World</title>  
+<style type="text/css">  
+html{height:100%}  
+body{height:100%;margin:0px;padding:0px}  
+#container{height:100%}  
+</style>  
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=1.5&ak=3znu0v6PlbZ9QzkqyW1WV1RW">
+
+</script>
+</head>  
+ 
+<body>  
+<div id="container"></div> 
+<script type="text/javascript"> 
+var lat = parent.document.getElementById("mapY");
+var lng = parent.document.getElementById("mapX");
+var map = new BMap.Map("container"); 
+map.enableScrollWheelZoom();
+var point = null ;
+if(lng==null||lat==null||lat.innerHTML==null||lng.innerHTML==null||lat.innerHTML==""||lng.innerHTML==""){
+	point = new BMap.Point(116.404, 39.915); 
+}else{
+	point = new BMap.Point(lat.innerHTML,lng.innerHTML);
+	var initMark = new BMap.Marker(point);        // 创建标注    
+	map.addOverlay(initMark); 
+}
+map.centerAndZoom(point, 24);  
+
+//获取坐标地址
+              
+</script>  
+</body>  
+</html>

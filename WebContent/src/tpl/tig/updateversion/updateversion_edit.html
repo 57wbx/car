@@ -1,0 +1,88 @@
+<div class="hbox hbox-auto-xs hbox-auto-sm" ng-controller="updateVersionEditController">
+  <div class="panel-heading font-bold text-center">
+    修改APP版本
+  </div>
+  <div class="panel-body">
+    <form name="form" class="form-horizontal form-validation " method="get" ng-model="formData" novalidate>
+    
+     <div class="form-group">
+     	 
+     	<label class="col-sm-1 control-label">内部版本号<i class="fa fa-asterisk text-danger"></i></label>
+        <div class="col-sm-3">
+        	<div class="input-group">
+	     	     <input type="text" placeholder="内部版本号" name="versionCode" id="versionCode" class="form-control" ng-model="formData.versionCode"  required ng-pattern="/^[0-9]{1,9}\.?[0-9]?$/">
+	     	     <div class="input-group-addon" ng-show="!versionCodeIsUnique" style="background:red;"><span ng-bind="notUniqueMessage"></span></div>
+        	</div>
+          	
+        </div>
+     
+        <label class="col-sm-1 control-label">外部版本号<i class="fa fa-asterisk text-danger"></i></label>
+       	<div class="col-sm-3">
+       		<div class="input-group">
+	       		<input type="text" placeholder="外部版本号" name="versionName" id="versionName" class="form-control" ng-model="formData.versionName"  required >
+	       		<div class="input-group-addon" ng-show="!versionNameIsUnique" style="background:red;"><span ng-bind="notUniqueMessage"></span></div>
+       		</div>
+       	</div>
+        	
+        <label class="col-sm-1 control-label">系统类型<i class="fa fa-asterisk text-danger"></i></label>
+        <div class="col-sm-3">
+          <select id="phoneType" class="form-control" required ng-model="formData.phoneType">
+            <option value="0">android</option>
+            <option value="1">IOS</option>
+          </select>
+        </div>
+        
+      </div>
+      
+      <div class="form-group">
+        
+        <label class="col-sm-1 control-label">文件名称</label>
+        <div class="col-sm-3">
+          <input type="text"  placeholder="文件名称" class="form-control" ng-model="formData.fileName" >
+        </div>
+        
+       <label class="col-sm-1 control-label">文件路径</label>
+        <div class="col-sm-7">
+          <input type="url" placeholder="文件路径" class="form-control" ng-model="formData.filePath" >
+        </div>
+        
+      </div>
+      
+      <div class="form-group">
+      
+       <label class="col-sm-1 control-label">上传时间</label>
+        <div class="col-sm-3">
+          <input type="text" placeholder="上传时间" name="uploadTimeStr" id="uploadTimeStr"  class="form-control" ng-model="formData.uploadTimeStr" readonly >
+        </div>
+       
+        <label class="col-sm-1 control-label">安装包下载地址<i class="fa fa-asterisk text-danger"></i></label>
+        <div class="col-sm-7">
+        	<input type="url" placeholder="安装包下载地址" class="form-control" ng-model="formData.downLoadUrl" required>
+        </div>
+        
+      </div>
+      
+      <div class="form-group">
+      	  <label class="col-sm-1 control-label">更新内容</label>
+      	  <div class="col-sm-11">
+	      	  <textarea class="form-control" ng-model="formData.updateInfo"></textarea>
+      	  </div>
+      
+      </div>
+      
+      
+      <div class="line line-dashed b-b line-lg pull-in"></div>
+      <div class="form-group" id="busItemSumbit" >
+        <div class="col-sm-offset-4 col-sm-2 col-xs-6">
+          <button type="button" id="add" class="w100 btn btn-success" ng-click="submit()" ng-disabled='form.$invalid || !versionNameIsUnique || !versionCodeIsUnique'>确定</button>
+        </div>
+        <div class="col-sm-2 col-xs-6">
+          <a ng-click="cancel()" class="w100 btn btn-default">取消</a>
+        </div>
+      </div>
+  
+   
+  </div>
+    <div class="form-group">&nbsp;</div>
+   
+</div>

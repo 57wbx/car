@@ -1,0 +1,103 @@
+<div class="hbox hbox-auto-xs hbox-auto-sm" ng-controller="busTypeEditController" id="busTypeEdit">
+  <div class="panel-heading font-bold text-center" id="busTypeLabel">
+    修改业务信息
+  </div>
+  
+  	<div class="panel-body">
+    	<form name="form" class="form-horizontal form-validation" method="post" ng-model="formData" enctype="multipart/form-data">
+     <div class="form-group">
+        <label class="col-sm-3 control-label">编号<i class="fa fa-asterisk text-danger"></i></label>
+        <div class="col-sm-8">
+	        <div ng-if="!initBusTypeEditControllerDataObject.editable">
+	        <input type="text" placeholder="编号" class="form-control" ng-model="formData.busTypeCode" tabindex="1" required > 
+	        </div>
+	        <div ng-if="initBusTypeEditControllerDataObject.editable">
+	        <div class="input-group">
+		        <span class="input-group-addon" id="busTypeCode">{{formData.parentId}}</span>
+		        <input id="newBusTypeCode" type="text" placeholder="编号" class="form-control" ng-model="formData.newBusTypeCode" tabindex="1" required ng-disabled="!initBusTypeEditControllerDataObject.isNew">
+	        </div>
+	        </div>
+   		</div> 
+      </div>
+        <input type="hidden"  ng-model="formData.oldBusTypeCode"/><!-- 用来保存需要修改的的id数据 -->
+        <input type="hidden"  ng-model="formData.parentId"/><!-- 用来保存需要修改的的id数据 -->
+        
+      <div class="form-group">
+        <label class="col-sm-3 control-label">名称<i class="fa fa-asterisk text-danger"></i></label>
+        <div class="col-sm-8">
+         <input type="text" placeholder="名称"  class="form-control" ng-model="formData.busTypeName" required> 
+   			 </div> 
+      </div>
+      
+       <div class="form-group">
+        <label class="col-sm-3 control-label">简称<i class="fa fa-asterisk text-danger"></i></label>
+        <div class="col-sm-8">
+         <input type="text" placeholder="简称"  class="form-control" ng-model="formData.simpleName" required> 
+   			 </div> 
+      </div>
+      
+      
+      
+      <div class="form-group">
+        <label class="col-sm-3 control-label">是否叶子节点<i class="fa fa-asterisk text-danger"></i></label>
+        <div class="col-sm-8">
+          <select id="isLeaf" class="form-control" required ng-model="formData.isLeaf" required >
+          	<!-- 是否在主页作为一级目录显示，一级目录默认显示（1=显示、2=不显示）） -->
+            <option value="1">是</option>
+            <option value="2">不是</option>
+          </select>
+        </div>
+      </div>
+      
+ <div class="form-group">
+        <label class="col-sm-3 control-label">主页是否显示<i class="fa fa-asterisk text-danger"></i></label>
+        <div class="col-sm-8">
+          <select id="isShow" class="form-control" required ng-model="formData.isShow" required>
+          	<!-- 是否在主页作为一级目录显示，一级目录默认显示（1=显示、2=不显示）） -->
+            <option value="1">显示</option>
+            <option value="2">不显示</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label class="col-sm-3 control-label">使用状态<i class="fa fa-asterisk text-danger"></i></label>
+        <div class="col-sm-8">
+          <select id="useState" class="form-control" required ng-model="formData.useState" required>
+          	<!-- 1=正常、2=停用、3=注销（以后无此业务） -->
+            <option value="1">正常</option>
+            <option value="2">停用</option>
+            <option value="3">注销</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label class="col-sm-3 col-xs-11 control-label">排序</label>
+        <div class="col-sm-8 col-xs-8">
+          <input id="sortCode" type="text" placeholder="排序" class="form-control" ng-model="formData.sortCode">
+      	 </div>
+      </div>
+       
+       
+        <div class="form-group">
+        <label class="col-sm-3 col-xs-11 control-label">备注</label>
+        <div class="col-sm-8 col-xs-8">
+          <input id="busCard" type="text" placeholder="备注" class="form-control" ng-model="formData.memo">
+      	 </div>
+      </div>
+      
+       
+      
+      <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-2 col-xs-6">
+          <button type="button" id="confirmButton" class="w100 btn btn-success none" ng-click="submit()" ng-disabled='form.$invalid'>确定</button>
+        </div>
+        <div class="col-sm-2 col-xs-6">
+          <a ng-click="cancel()" class="w100 btn btn-default none" id="cancelButton">取消</a>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+

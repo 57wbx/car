@@ -1,0 +1,253 @@
+<div class="hbox hbox-auto-xs hbox-auto-sm" ng-controller="busItemAddController">
+  <div class="panel-heading font-bold text-center">
+    添加服务信息
+  </div>
+  <div class="panel-body">
+    <form name="busItemForm" class="form-horizontal form-validation " method="get" ng-model="formData" novalidate>
+    
+     <div class="form-group">
+     	 <label class="col-sm-1 control-label">业务类型<i class="fa fa-asterisk text-danger"></i></label>
+        <div class="col-sm-2">
+          <input type="text" placeholder="业务类型" id="busTypeName" class="form-control" ng-model="formData.busTypeName"  required disabled>
+          <div bus_type_ztree inputName="busTypeName" showElement="choseBusType" needClick="true"></div>
+        </div>
+        <div class="col-sm-1">
+          <button type="button" class="btn btn-info" id="choseBusType">选择</button>
+        </div>
+     
+        <label class="col-sm-1 control-label">项目编码<i class="fa fa-asterisk text-danger"></i></label>
+        <div class="col-sm-3">
+        	<div class="input-group">
+        		<div class="input-group-addon"><span ng-bind="formData.busTypeCode"></span></div>
+		          <input type="text" name="itemCode" placeholder="项目编码" id="itemCode" class="form-control" ng-model="formData.itemCode" tabindex="1" required ng-disabled="!formData.busTypeCode" ng-pattern="/^[0-9a-zA-z\.]{1,40}$/">
+		          <div class="input-group-addon" ng-show="!isUnique" style="background:red;"><span ng-bind="notUniqueMessage"></span></div>
+        	</div>
+        </div>
+        
+        <label class="col-sm-1 control-label">项目名称<i class="fa fa-asterisk text-danger"></i></label>
+        <div class="col-sm-3">
+          <input type="text" placeholder="项目名称" id="itemName" class="form-control" ng-model="formData.itemName"  required >
+          <!-- 
+           <input type="hidden" ng-model="formData.fItemId" />
+           -->
+        </div>
+        
+      </div>
+      
+      <div class="form-group">
+        
+        <label class="col-sm-1 control-label">标准价</label>
+        <div class="col-sm-3">
+          <input type="number"  placeholder="标准价" class="form-control" ng-model="formData.standardPrice" >
+        </div>
+        
+       <label class="col-sm-1 control-label">实际价<i class="fa fa-asterisk text-danger"></i></label>
+        <div class="col-sm-3">
+          <input type="number" placeholder="实际价" class="form-control" ng-model="formData.actualPrice" required>
+        </div>
+        <label class="col-sm-1 control-label">工时费</label>
+        <div class="col-sm-3">
+          <input type="number" placeholder="工时费" class="form-control" ng-model="formData.workHours">
+        </div>
+       
+        
+      </div>
+      
+      <div class="form-group">
+      
+       <label class="col-sm-1 control-label">配件合计价</label>
+        <div class="col-sm-3">
+          <input type="number" placeholder="配件合计价" class="form-control" ng-model="formData.autoPartsPrice" disabled>
+        </div>
+       
+        <label class="col-sm-1 control-label">使用状态<i class="fa fa-asterisk text-danger"></i></label>
+        <div class="col-sm-3">
+          <select id="useState" class="form-control" required ng-model="formData.useState">
+          	<!-- 0=初始化、1=待审核、2=发布（审核通过）、3=停止/下架、4=强制下架（违规） -->
+            <option value="0">初始化</option>
+            <option value="1">待审核</option>
+            <option value="2">发布（审核通过）</option>
+            <option value="3">停止/下架</option>
+            <option value="4">强制下架（违规）</option>
+          </select>
+        </div>
+        
+        <label class="col-sm-1 control-label">是否参与聚会<i class="fa fa-asterisk text-danger"></i></label>
+        <div class="col-sm-3">
+          <select id="isActivity" class="form-control" required ng-model="formData.isActivity">
+          	<!-- 0=不参加（默认），1=参加 -->
+            <option value="0">不参加</option>
+            <option value="1">参加</option>
+          </select>
+        </div>
+      </div>
+      
+     <div class="form-group">
+        <label class="col-sm-1  control-label">开始时间</label>
+        <div class="col-sm-3 ">
+          <input type="text" style="width: 100%" name="starTime" id="starTime"
+						class="form-control" value="" ng-model="formData.starTimeStr" />
+      	 </div>
+      	  <label class="col-sm-1  control-label">结束时间</label>
+        <div class="col-sm-3 ">
+          <input type="text" style="width: 100%" name="endTime" id="endTime"
+						class="form-control" value="" ng-model="formData.endTimeStr"/>
+      	 </div>
+      </div>
+   
+      
+      
+      <div class="form-group">
+        <label class="col-sm-1 control-label">服务描述<i class="fa fa-asterisk text-danger"></i></label>
+        <div class="col-sm-11">
+          <textarea class="form-control" rows="1" ng-model="formData.itemDes" required></textarea>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label class="col-sm-1 control-label">备注</label>
+        <div class="col-sm-11">
+          <textarea class="form-control" rows="1" ng-model="formData.memo" ></textarea>
+        </div>
+      </div>
+    
+    <!-- 一下为服务子项信息的增加页面 -->
+    
+   	<div class="row">
+   		<div class="line line-dashed b-b line-lg pull-in"></div>
+   		<div class="col-sm-offset-5 col-sm-4 font-bold ">
+   			服务子项列表信息
+ 	 	</div>
+ 	 	<div class=" col-sm-3">
+ 	 		<button id="showAddBusAtomForm" class="btn btn-success" ng-click="showAddBusAtomForm()">添加服务子项</button>
+ 	 	</div>
+ 	</div>
+     
+   <div>
+     
+     <table class="table table-striped" id="busAtomTable">
+		<thead>
+			<th>子项编号</th>
+			<th>子项名称</th>
+			<th>名称</th>
+			<th>品牌</th>
+			<th>规格</th>
+			<th>型号</th>
+			<th>配件单价</th>
+			<th>配件数</th>
+			<th>是否参与聚惠</th>
+			<th>备注</th>
+			<th>操作</th>
+			</tr>
+		</thead>
+	</table>
+   </div>
+
+    </form>
+   
+   <div class="line line-dashed b-b line-lg pull-in"></div>
+ 	
+
+    
+
+    
+  <form name="busAtomForm" class="form-horizontal form-validation none" >
+    <div class="row" style="margin-bottom: 20px;">
+   		<div class="col-sm-offset-4 col-sm-4 font-bold ">
+   			<div class="text-center"> 服务子项详细信息</div>
+ 	 	</div>
+ 	</div>
+     <div class="form-group">
+        <label class="col-sm-1 control-label">子项编码<i class="fa fa-asterisk text-danger"></i></label>
+        <div class="col-sm-3">
+        	<div class="input-group">
+		          <input type="text" name="atomCode" id="atomCode" placeholder="子项编码" class="form-control" ng-model="formData.atomCode" tabindex="1" required ng-pattern="/^[0-9a-zA-z\.]{1,40}$/">
+		          <div class="input-group-addon" ng-show="!atomCodeIsUnique" style="background:red;"><span ng-bind="notUniqueMessage"></span></div>
+        	</div>
+        </div>
+        <label class="col-sm-1 control-label">子项名称<i class="fa fa-asterisk text-danger"></i></label>
+        <div class="col-sm-3">
+          <input type="text" placeholder="子项名称" class="form-control" ng-model="formData.atomName" tabindex="1" required >
+        </div>
+       
+      </div>
+      
+      <div class="form-group" >
+      	<label class="col-sm-1 control-label">配件<i class="fa fa-asterisk text-danger"></i></label>
+        	<div class="col-sm-3">
+          		<input id="autoPartAllName" type="text" placeholder="名称+品牌+规格+型号" readonly class="form-control" ng-model="formData.autoPartAllName" required>
+          		
+          		<input type="hidden" ng-model="formData.autoPartId" >
+       		 </div>
+        
+        	<div class="col-sm-2">
+          		<button class="w100 btn btn-info" ng-click="choose()" ng-init="formData.chooseAutoPartName='选择';formData.chooseAutoPartButton=false;"><span ng-bind="formData.chooseAutoPartName"></span></button>
+        	</div>
+        <label class="col-sm-1 control-label">配件数<i class="fa fa-asterisk text-danger"></i></label>
+        <div class="col-sm-2">
+          <input type="text" placeholder="配件数" class="form-control" ng-model="formData.autoParts" required ng-pattern="/^[1-9][0-9]{0,8}$/">
+        </div>
+        
+         <label class="col-sm-1 control-label">配件单价</label>
+        <div class="col-sm-2">
+          <input type="number" placeholder="配件单价" class="form-control" ng-model="formData.eunitPrice">
+        </div>
+      </div>
+      
+     <div class="form-group">
+        <label class="col-sm-1 control-label">备注</label>
+        <div class="col-sm-11">
+          <textarea class="form-control" rows="1" ng-model="formData.busAtomMemo" ></textarea>
+        </div>
+      </div>
+      
+      <div class="form-group none" id="autoPartChooseTablePanel">
+      	<div class="col-md-12">
+      		<div class="panel panel-default">
+      			<div class="panel-body">
+      				<div class="table-responsive">
+	      				<table class="table table-striped b-t b-b" id="autoPartChooseTable">
+			      			<thead>
+			      				<tr>
+			      					<th>配件名称</th>
+			      					<th>品牌</th>
+			      					<th>规格</th>
+			      					<th>型号</th>
+			      					<th>市场单价</th>
+			      					<th>是否参加聚会</th>
+			      				</tr>
+			      			</thead>
+		      			</table>
+      				</div>
+      			</div>
+      		</div>
+      	</div>
+      </div>
+      
+       <div class="form-group">
+	       <div class="col-sm-offset-5 col-sm-4">
+        		<button type="button" class="btn btn-success" ng-click="drawTable()" ng-disabled="busAtomForm.$invalid || !atomCodeIsUnique">确认</button>
+        		<button type="button" class="btn" ng-click="hiddenAddBusAtomForm()" >返回</button>
+        	</div>
+       	 </div>
+      </div>
+     
+   </form>
+    
+    
+     <!-- 以上为服务新增列表 -->
+      <div class="line line-dashed b-b line-lg pull-in"></div>
+      <div class="form-group" id="busItemSumbit" >
+        <div class="col-sm-offset-4 col-sm-2 col-xs-6">
+          <button type="button" id="add" class="w100 btn btn-success" ng-click="submit()" ng-disabled='busItemForm.$invalid || !isUnique '>确定</button>
+        </div>
+        <div class="col-sm-2 col-xs-6">
+          <a ng-click="cancel()" class="w100 btn btn-default">取消</a>
+        </div>
+      </div>
+  
+   
+  </div>
+    <div class="form-group">&nbsp;</div>
+   
+</div>

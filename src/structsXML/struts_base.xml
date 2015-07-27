@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+	<package name="base" namespace="/base" extends="default">
+		<action name="carShopAction"
+			class="com.hhxh.car.base.carshop.action.CarShopAction" />
+		<action name="busTypeAction"
+			class="com.hhxh.car.base.bustype.action.BusTypeAction" />
+		<action name="autoPartAction"
+			class="com.hhxh.car.base.autopart.action.AutoPartAction" />
+		<action name="busAtomAction"
+			class="com.hhxh.car.base.busatom.action.BusAtomAction" />
+		<action name="busItemAction"
+			class="com.hhxh.car.base.busitem.action.BusItemAction" />
+		<action name="busPackageAction"
+			class="com.hhxh.car.base.buspackage.action.BusPackageAction" />
+	</package>
+
+</struts>
