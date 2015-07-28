@@ -2,7 +2,6 @@
 app.controller('carShopEditController', ['$scope', '$http', '$state',  'uiLoad', 'JQ_CONFIG',
   function($scope, $http, $state, uiLoad, JQ_CONFIG) {
     var id = $scope.$parent.ids[0];
-    console.info(id);
     // 获取要被编辑组织的数据
     $http({
       url: "base/carShopAction!detailsCarShopById.action",
@@ -13,7 +12,9 @@ app.controller('carShopEditController', ['$scope', '$http', '$state',  'uiLoad',
     }).then(function(dt) {
       dt = dt.data.details;
       $scope.formData = dt;//将ajax的数据反写到页面上
-
+      $scope.formData.orgId = dt.org.id;
+      $scope.formData.orgName = dt.org.name;
+      $scope.formData.org = undefined;
       
       initFormData(dt);//配置其他需要手动加工的数据
     });

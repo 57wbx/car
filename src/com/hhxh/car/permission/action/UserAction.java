@@ -2,7 +2,9 @@ package com.hhxh.car.permission.action;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -13,6 +15,8 @@ import net.sf.json.JSONObject;
 
 import org.apache.struts2.ServletActionContext;
 
+import com.hhxh.car.base.busitem.domain.BusItem;
+import com.hhxh.car.base.carshop.domain.CarShop;
 import com.hhxh.car.common.action.AbstractAction;
 import com.hhxh.car.common.util.DesCrypto;
 import com.hhxh.car.org.domain.AdminOrgUnit;
@@ -49,6 +53,7 @@ public class UserAction extends AbstractAction {
 	private String roleId;
 	private String[] ids;
 	private String FLongNumber;
+	private String carShopId ;
 	
 	@Resource
 	private UserService userService;
@@ -181,6 +186,37 @@ public class UserAction extends AbstractAction {
 		json.put("msg", "success");
 		putJson(json.toString());
 	}
+	
+	/**
+	 * 查询一个登陆账号是否唯一
+	 * 
+	 */
+	public void checkUserCodeUnique(){
+		Map<String,Object> paramMap = new HashMap<String,Object>();
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("code", 1);
+		if(id==null||"".equals(id)){
+			//属于新增操作的检查
+			paramMap.put("number", number);
+			User user = (User) this.baseService.get("From User b where b.number = :number", paramMap);
+			if(user!=null){
+				jsonObject.put("code", 0);
+			}
+		}else{
+			//属于修改操作
+			paramMap.put("number", number);
+			paramMap.put("id", id);
+			User user = (User) this.baseService.get("From User b where b.number = :number and b.id <> :id",paramMap);
+			if(user!=null){
+				jsonObject.put("code",0);
+			}
+		}
+		try {
+			this.putJson(jsonObject.toString());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
 	/**
 	 * 用户修改保存
@@ -236,7 +272,7 @@ public class UserAction extends AbstractAction {
 		sql.append("SELECT").append(RT);
 		sql.append("t1.id,t1.userCode,t2.orgid orgId,t2.name orgName,t1.username,'','',t1.isForbidden,").append(RT);
 		sql.append("t1.DESCRIPTION,t1.CreateTime,t1.LastUpdateTime,t3.username creator,").append(RT);
-		sql.append("t4.username updateUser,t1.PERSONID personId,t5.name personName,t1.Roleid roleId,t6.roleName roleName").append(RT);
+		sql.append("t4.username updateUser,t1.PERSONID personId,t5.name personName,t1.Roleid roleId,t6.roleName roleName,t1.password password").append(RT);
 		sql.append("FROM t_pm_user t1").append(RT);
 		sql.append("LEFT JOIN sys_org t2 ON t1.orgid=t2.orgid").append(RT);
 		sql.append("LEFT JOIN t_pm_user t3 ON t1.creatorId=t3.id").append(RT);
@@ -271,9 +307,100 @@ public class UserAction extends AbstractAction {
 		item.put("personName", checkNull(obj[14]));
 		item.put("roleId", checkNull(obj[15]));
 		item.put("roleName", checkNull(obj[16]));
+		try {
+			item.put("password", checkNull(DesCrypto.decrypt(null, obj[17].toString())));
+		} catch (Exception e) {
+		}
 		return item;
 	}
 	
+	/**
+	 * 保存商家的的后台用户
+	 * by zw
+	 */
+	public void saveCarShopUesr()  throws Exception{
+		User user = getLoginUser();
+		String hql = "from User where number='"+number+"' and rootOrgUnit.id='"+user.getRootOrgUnit().getId()+"'";
+		List<User> list = baseService.gets(hql);
+		if(list!=null&&list.size()>0)
+		{
+			JSONObject json = new JSONObject();
+			json.put("code", 2);
+			json.put("msg", "账号重复请重新输入");
+			putJson(json.toString());
+		}
+		else
+		{
+			User obj = new User();
+			obj.setName(name);
+			obj.setDescription(description);
+			if(isNotEmpty(orgId))
+			{
+				AdminOrgUnit org = baseService.get(AdminOrgUnit.class, orgId);
+				obj.setAdminOrgUnit(org);
+				while(org.getParent()!=null)
+				{
+					org = org.getParent();
+				}
+				obj.setRootOrgUnit(org);
+			}
+			if(isNotEmpty(carShopId)){
+				obj.setIsOprUser(1);//一是商家用户，0是平台用户
+				obj.setCarShop(new CarShop(carShopId));
+			}
+			if(isNotEmpty(roleId))
+			{
+				Role role = new Role();
+				role.setId(roleId);
+				obj.setRole(role);
+			}
+			obj.setLastModifyUser(user);
+			obj.setLastModifyTime(new Date());
+//			if(isNotEmpty(id))
+//			{
+//				baseService.save(obj);
+//			}
+//			else
+//			{
+				obj.setNumber(number);
+				obj.setAccount(number);
+				if(isNotEmpty(password)){
+					obj.setPassword(DesCrypto.encrypt(null,password));
+				}else{
+					obj.setPassword(DesCrypto.encrypt(null,"123456"));
+				}
+				obj.setIsEnable(1);//新增设置为启用
+				obj.setCreateUser(user);
+				obj.setCreateTime(new Date());
+				baseService.saveObject(obj);
+//			}
+			JSONObject json = new JSONObject();
+			json.put("code", "1");
+			json.put("msg", "success");
+			putJson(json.toString());
+		}
+	}
+	
+	
+	/**
+	 * 修改商户的的用户
+	 */
+	public void updateCarShopUser() throws Exception{
+		User user = this.baseService.get(User.class,id);
+		user.setName(name);
+		user.setNumber(number);
+		user.setPassword(DesCrypto.encrypt(null,password));
+		if(isNotEmpty(roleId)){
+			user.setRole(new Role(roleId));
+		}
+		user.setLastModifyTime(new Date());
+		user.setLastModifyUser(getLoginUser());
+		this.baseService.update(user);
+		
+		JSONObject json = new JSONObject();
+		json.put("code",1);
+		this.putJson(json.toString());
+	}
 	/**
 	 * 用户登陆校验
 	 * @throws IOException
@@ -415,6 +542,14 @@ public class UserAction extends AbstractAction {
 
 	public void setFLongNumber(String fLongNumber) {
 		FLongNumber = fLongNumber;
+	}
+
+	public String getCarShopId() {
+		return carShopId;
+	}
+
+	public void setCarShopId(String carShopId) {
+		this.carShopId = carShopId;
 	}
 	
 	

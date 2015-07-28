@@ -481,6 +481,7 @@ angular.module('app').run(
 		              deps: ['$ocLazyLoad','uiLoad',
 		                function($ocLazyLoad, uiLoad) {
 		                  return uiLoad.load(JQ_CONFIG.chosen).then(function() {
+		                	  $ocLazyLoad.load('src/js/controllers/base/carshop/AddManager.js');
 		                    return $ocLazyLoad.load('src/js/controllers/base/carshop/CarShopListController.js');
 		                  });
 		                }

@@ -56,7 +56,22 @@ app.factory("checkUniqueService",['$http',function($http){
 						versionName:versionName
 					}
 				});
+			},
+			/**
+			 * 检查后台用户登陆账号是否唯一
+			 */
+			checkUserCodeUnique:function(id,userCode){
+					return $http({
+						url:"basedata/userAction!checkUserCodeUnique.action",
+						method:"get",
+						params:{
+							id:id,
+							number:userCode
+						}
+				});
 			}
+			
+			//
 	};
 	return serviceInstance;
 }]);

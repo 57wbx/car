@@ -10,12 +10,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import com.hhxh.car.base.carshop.domain.CarShop;
 import com.hhxh.car.org.domain.AdminOrgUnit;
 import com.hhxh.car.org.domain.Person;
 
@@ -155,6 +157,12 @@ public class User implements Serializable,Comparable<Object> {
     @Column(name="isAdmin")
     private Integer isAdministrator;
 
+    @Column
+    private Integer isOprUser ;
+    
+    @OneToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name="shopid")
+    private CarShop carShop;
 
 	public Person getPerson() {
 		return person;
@@ -340,4 +348,30 @@ public class User implements Serializable,Comparable<Object> {
 	public int compareTo(Object o) {
 		return 0;
 	}
+
+	public Integer getIsAdministrator() {
+		return isAdministrator;
+	}
+
+	public void setIsAdministrator(Integer isAdministrator) {
+		this.isAdministrator = isAdministrator;
+	}
+
+	public Integer getIsOprUser() {
+		return isOprUser;
+	}
+
+	public void setIsOprUser(Integer isOprUser) {
+		this.isOprUser = isOprUser;
+	}
+
+	public CarShop getCarShop() {
+		return carShop;
+	}
+
+	public void setCarShop(CarShop carShop) {
+		this.carShop = carShop;
+	}
+	
+	
 }

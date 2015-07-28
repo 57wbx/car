@@ -1,7 +1,12 @@
 'use strict';
 
 app.controller('carShopDetailsController', function($http, $rootScope, $scope, $state) {
-	var id = $scope.$parent.ids[0];
+	
+	if(!$rootScope.ids||!$rootScope.ids[0]){
+		$state.go("app.carshop.list");
+		return;
+	}
+	var id = $rootScope.ids[0];
     $http({
       url: "base/carShopAction!detailsCarShopById.action",
       data: {

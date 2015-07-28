@@ -147,7 +147,7 @@ public class BusTypeAction extends BaseAction implements ModelDriven<BusType>{
 			map.put("id", bt.getBusTypeCode());
 			map.put("pId", bt.getParentId()!=null?bt.getParentId():0);
 			map.put("name", bt.getBusTypeName());
-			map.put("open", true);
+			map.put("open", false);
 			jsonList.add(map);
 		}
 		jsonObject.put("code", 1);

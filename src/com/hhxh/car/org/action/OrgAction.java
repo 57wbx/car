@@ -3,6 +3,7 @@ package com.hhxh.car.org.action;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -417,6 +418,27 @@ public class OrgAction extends AbstractAction {
 		json.put("msg", "success");
 		putJson(json.toString());
 	}
+	
+	
+	/**
+	 * 获取所有的组织机构不包括部门级的
+	 * by zw
+	 */
+	public void listOrgNoDept(){
+		//3 代表部门取出不为部门的
+		List<Map> orgs = this.baseService.querySqlToMap("select a.name name,a.orgid id,a.parentID pId from sys_org a where a.orgType<>3", 0, 0);//查询出所有的数据
+		JSONObject json = new JSONObject();
+		json.put("code",1);
+		json.put("orgNoDept", orgs);
+		
+		try {
+			this.putJson(json.toString());
+		} catch (IOException e) {
+		}
+		
+		
+	}
+	
 	
 	public String getId() {
 		return id;

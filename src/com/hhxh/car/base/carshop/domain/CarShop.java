@@ -4,11 +4,16 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
+
+import com.hhxh.car.org.domain.AdminOrgUnit;
 
 
 @Entity
@@ -227,6 +232,24 @@ public class CarShop {
 	@Column(name="Memo",length=255)
 	private String Memo ;
 	
+	/**
+	 * 该id可能是组织id
+	 */
+	@ManyToOne(fetch=FetchType.EAGER)
+	@JoinColumn(name="orgid")
+	private AdminOrgUnit org ;
+	
+	
+	
+	
+	
+	public CarShop() {
+	}
+
+	public CarShop(String id) {
+		this.id = id;
+	}
+
 	/**
 	 * @return
 	 */
@@ -508,6 +531,15 @@ public class CarShop {
 
 	public void setMemo(String memo) {
 		Memo = memo;
+	}
+	
+
+	public AdminOrgUnit getOrg() {
+		return org;
+	}
+
+	public void setOrg(AdminOrgUnit org) {
+		this.org = org;
 	}
 
 	@Override

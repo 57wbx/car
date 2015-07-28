@@ -201,4 +201,7 @@ public class BaseService {
 		return dao.querySql(sql, paramMap, start, size);
 	}
 
+	public List<Map> querySqlToMap(String sql,int start,int length){
+		return dao.querySqlToMap(sql, start, length);
+	}
 }

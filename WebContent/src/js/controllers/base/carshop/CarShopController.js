@@ -121,11 +121,11 @@ app.controller('carShopController', function($rootScope, $scope, $state, $timeou
 
   // 编辑某一组织（工具栏按钮）
   $scope.editIt = function(){
-    if($rootScope.obj['id']){
-      $rootScope.details = $rootScope.obj;
+//    if($rootScope.obj['id']){
+//      $rootScope.details = $rootScope.obj;
       setStatus(status_false);
       $state.go('app.carshop.edit');
-    }
+//    }
   };   
 
   var mask = $('<div class="mask"></div>');
@@ -171,11 +171,9 @@ app.controller('carShopController', function($rootScope, $scope, $state, $timeou
   // 查看某一组织详情（工具栏按钮）
   $scope.seeDetails = function(id){
     setStatus(status_false);
-    $rootScope.ids=[];
-    if(id==null){
-    	id = $rootScope.details.id;
+    if(id){
+    	$rootScope.ids.push(id);
     }
-    $rootScope.ids.push(id);
     
     $state.go('app.carshop.details');
 //    console.info($scope.ids);

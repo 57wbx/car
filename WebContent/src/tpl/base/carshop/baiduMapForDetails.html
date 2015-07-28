@@ -19,17 +19,23 @@ body{height:100%;margin:0px;padding:0px}
 <script type="text/javascript"> 
 var lat = parent.document.getElementById("mapY");
 var lng = parent.document.getElementById("mapX");
-var map = new BMap.Map("container"); 
-map.enableScrollWheelZoom();
-var point = null ;
-if(lng==null||lat==null||lat.innerHTML==null||lng.innerHTML==null||lat.innerHTML==""||lng.innerHTML==""){
-	point = new BMap.Point(116.404, 39.915); 
-}else{
-	point = new BMap.Point(lat.innerHTML,lng.innerHTML);
-	var initMark = new BMap.Marker(point);        // 创建标注    
-	map.addOverlay(initMark); 
-}
-map.centerAndZoom(point, 24);  
+setTimeout(function(){
+	var map = new BMap.Map("container"); 
+	map.enableScrollWheelZoom();
+	var point = null ;
+	if(lng==null||lat==null||lat.innerHTML==null||lng.innerHTML==null||lat.innerHTML==""||lng.innerHTML==""){
+		point = new BMap.Point(116.404, 39.915); 
+	}else{
+		point = new BMap.Point(lat.innerHTML,lng.innerHTML);
+		var initMark = new BMap.Marker(point);        // 创建标注    
+		map.addOverlay(initMark); 
+	}
+	map.centerAndZoom(point, 24);  
+	
+	
+},300);
+
+
 
 //获取坐标地址
               

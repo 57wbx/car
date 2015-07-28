@@ -16,6 +16,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
+import org.hibernate.transform.Transformers;
 import org.springframework.stereotype.Repository;
 
 
@@ -329,5 +330,24 @@ public class Dao{
 	
 	public List querySql(String sql) {
 		return querySql(sql,null);
+	}
+	
+	
+	/**
+	 * add by zw
+	 */
+	public List<Map> querySqlToMap(String sql,int start,int length){
+		Session session = getSession();
+		Query q = session.createSQLQuery(sql).setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+		List<Map> list = null;
+		if(start==0&&length==0){
+			list = q.list();
+					
+		}else{
+			list = q.setFirstResult(start)
+					.setMaxResults(length)
+					.list();
+		}
+		return list;
 	}
 }

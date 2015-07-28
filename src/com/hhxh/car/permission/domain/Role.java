@@ -82,6 +82,11 @@ public class Role implements Serializable {
     @JoinColumn(name="orgID")
 	private AdminOrgUnit adminOrgUnit;
 
+	public Role(String roleId) {
+		this.id = roleId;
+	}
+	public Role(){};
+
 	public String getId() {
 		return id;
 	}

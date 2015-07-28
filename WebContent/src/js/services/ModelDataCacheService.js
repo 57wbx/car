@@ -16,6 +16,12 @@ app.factory("modelDataCacheService",['$http','$q',function($http,$q){
 	var busTypeZtreeData = null;//该数据主要是为了业务ztree提供的缓存数据
 	var busTypeZtreeDataFlushTimes = 5;
 	var busTypeZtreeDataNowTimes = 0;
+	/**
+	 * 全局变量@3
+	 */
+	var orgNoDeptZtreeData = null;//该数据主要是为了业务ztree提供的缓存数据
+	var orgNoDeptZtreeDataFlushTimes = 5;
+	var orgNoDeptZtreeDataNowTimes = 0;
 	serviceInstance = {
 			/**
 			 * 使用全局变量 @1
@@ -70,8 +76,33 @@ app.factory("modelDataCacheService",['$http','$q',function($http,$q){
 					deferred.resolve(busTypeZtreeData);
 				}
 				return deferred.promise;
+			},
+			/**
+			 * 组织架构的选择树，在这个选择树中不能出现部门，其他的的组织都可以出现
+			 * @3
+			 */
+			orgNoDeptZtreeDataService:function(needFlush){
+				var deferred = $q.defer();
+				if(needFlush || !orgNoDeptZtreeData || (orgNoDeptZtreeDataNowTimes > orgNoDeptZtreeDataFlushTimes)){
+					//需要从网上刷新最新的数据
+					$http({
+						url:"basedata/orgAction!listOrgNoDept.action",
+						method : "get"
+					}).then(function(resp){
+						if(resp.data.code==1){
+							orgNoDeptZtreeData = resp.data.orgNoDept ;
+							orgNoDeptZtreeDataNowTimes = 0;
+						}
+						console.info("从网上获取数据@3");
+						deferred.resolve(orgNoDeptZtreeData);
+					});
+				}else{
+					orgNoDeptZtreeDataNowTimes ++;
+					console.info("缓存数据中读取数据@3");
+					deferred.resolve(orgNoDeptZtreeData);
+				}
+				return deferred.promise;
 			}
-			
 			//以上是方法定义
 	};
 	return serviceInstance;

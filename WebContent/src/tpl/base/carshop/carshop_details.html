@@ -22,13 +22,18 @@
         	<p class="col-sm-4 form-text" ng-switch-when='3'>直营店</p>
         	<p class="col-sm-4 form-text" ng-switch-when='4'>中心店（区域旗舰店）</p>
         </div>
-        <label class="col-sm-2 control-label">营业证号</label>
-        <p class="col-sm-4 form-text" ng-bind="details.busCard"></p>
+        
+         <label class="col-sm-2 control-label">组织</label>
+        <p class="col-sm-4 form-text" ng-bind="details.org.name"></p>
+       
       </div>
       
       <div class="form-group">
         <label class="col-sm-2 control-label">法人姓名</label>
         <p class="col-sm-4 form-text" ng-bind="details.legalNAME"></p>
+        
+         <label class="col-sm-2 control-label">营业证号</label>
+        <p class="col-sm-4 form-text" ng-bind="details.busCard"></p>
       </div>
       <div class="form-group">
         <label class="col-sm-2 control-label">法人手机号</label>
