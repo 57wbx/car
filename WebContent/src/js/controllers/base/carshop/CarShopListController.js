@@ -7,7 +7,7 @@ app.controller('carShopListController',['$rootScope','$scope','$state','$timeout
 		var carShopList , dTable;
 		function initTable(){
 			carShopList =  $("#store_List");
-			dTable = carShopList.dataTable({
+			dTable = carShopList.DataTable({
 				"sAjaxSource":"base/carShopAction!listCarShopWithMannager.action",
 		    	"bServerSide":true,
 		    	"sAjaxDataProp":"data",
@@ -67,11 +67,14 @@ app.controller('carShopListController',['$rootScope','$scope','$state','$timeout
 			    	"mDataProp":"username",
 			    	"render":function(param){
 			    		if(param){
-			    			return "<a href='#' style='text-decoration:underline;color:blue;'>"+param+"</a>";
+			    			return "<a name='operation' href='#' style='text-decoration:underline;color:blue;'>"+param+"</a>";
 			    		}else{
-			    			return "<button type='button' class='btn btn-default'>新增</button>";
+			    			return "<button name='operation'  type='button' class='btn btn-default'>新增</button>";
 			    		}
-			    	}
+			    	},
+			    	"fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
+	                    $(nTd).attr("name","operation");
+	                }
 			      }],
 			      "oLanguage": {
 			          "sLengthMenu": "每页 _MENU_ 条",
@@ -91,15 +94,16 @@ app.controller('carShopListController',['$rootScope','$scope','$state','$timeout
 			        "fnCreatedRow": function(nRow, aData, iDataIndex){
 			            $(nRow).attr('data-id', aData['ID']);
 			            $(nRow).find("button").click(function(e){
-			            	showModal(aData);
+			            	showModal(nRow,aData);
 			            });
 			            
 			            $(nRow).find("a").click(function(e){
-			            	showModal(aData);
+			            	showModal(nRow,aData);
 			            });
 			            
 			        },
 			       "drawCallback": function( settings ) {
+			    	   
 			              var input = carShopList.find('thead .i-checks input');
 			              var inputs = carShopList.find('tbody .i-checks input');
 			              var len = inputs.length, allChecked = true;
@@ -131,7 +135,7 @@ app.controller('carShopListController',['$rootScope','$scope','$state','$timeout
 		/**
 		 * 弹窗事件
 		 */
-		var showModal = function(aData){
+		var showModal = function(nRow,aData){
 			var modalInstance = $modal.open({
        	     templateUrl: 'src/tpl/base/carshop/addManager.html',
        	     size: 'lg',
@@ -149,9 +153,12 @@ app.controller('carShopListController',['$rootScope','$scope','$state','$timeout
            	         }
        	     }
        	   });
-			
+			/**
+			 * 弹窗关闭事件
+			 */
 			modalInstance.result.then(function (name) {
-        		
+				var operationTd = $(nRow).find("td[name=operation]") ;
+				var cellObject = dTable.cell(operationTd).data(name).draw();
         	});
 		}
 		

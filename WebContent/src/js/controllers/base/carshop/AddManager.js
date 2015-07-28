@@ -89,6 +89,5 @@ app.controller("addManager",['$scope','$modalInstance','$http','$timeout','carSh
 		    $modalInstance.dismiss('cancel');
 	};
 	
-	
 	//
 }]);
