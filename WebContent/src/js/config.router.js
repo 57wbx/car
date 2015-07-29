@@ -13,11 +13,19 @@ angular.module('app').run(
       $urlRouterProvider.otherwise('/app/home');
       $stateProvider.state('app', {
         abstract: true,
+        
         url: '/app',
         //templateUrl: 'src/tpl/app.html',
         views: {
           '': {
-            templateUrl: 'src/tpl/app.html'
+            templateUrl: 'src/tpl/app.html',
+            resolve: {
+                deps: ['$ocLazyLoad', 'uiLoad',
+                  function($ocLazyLoad, uiLoad) {
+                       $ocLazyLoad.load('src/js/CheckLoginController.js');
+                  }
+                ]
+              }
           },
           'footer': {
             template: '<div id="dialog-container" ui-view></div>'

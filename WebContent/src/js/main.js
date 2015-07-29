@@ -1,7 +1,7 @@
 'use strict';
 /* Controllers */
-angular.module('app').controller('AppCtrl', ['$scope', '$translate', '$localStorage', '$window', '$http', '$state','$cookieStore',
-  function($scope, $translate, $localStorage, $window, $http, $state,$cookieStore) {
+angular.module('app').controller('AppCtrl', ['$scope', '$translate', '$localStorage', '$window', '$http', '$state','$cookieStore','$location','loginedUserService',
+  function($scope, $translate, $localStorage, $window, $http, $state,$cookieStore,$location,loginedUserService) {
     // add 'ie' classes to html
     var isIE = !! navigator.userAgent.match(/MSIE/i);
     isIE && angular.element($window.document.body).addClass('ie');
@@ -79,6 +79,7 @@ angular.module('app').controller('AppCtrl', ['$scope', '$translate', '$localStor
 //        };
 //      });
 //    };
+    
     var uiInit = $scope.app.ui.init  = function(){
     	var cookie = $cookieStore.get('username');
         if(!cookie){
@@ -142,6 +143,7 @@ angular.module('app').controller('AppCtrl', ['$scope', '$translate', '$localStor
     	$http.post(app.url.logout).then(function(response) {
             if (response.data.code == 1) {
                $cookieStore.remove('username');
+               loginedUserService.logout();
                $state.go('access.signin');
             } else {
             	 console.log("Logout: " + response.data.msg);

@@ -16,6 +16,7 @@ app.controller('SigninFormController', ['$scope', '$http', '$state', '$cookieSto
           var exp = new Date();
           exp.setTime(exp.getTime() + 30 * 1000);
           $cookieStore.put('username', escape($scope.user.name) + ';expires=' + exp.toGMTString());
+          $cookieStore.put('user',JSON.stringify($scope.user));
           $state.go('app.home');
         } else {
           $scope.authError = '用户名或密码错误';
