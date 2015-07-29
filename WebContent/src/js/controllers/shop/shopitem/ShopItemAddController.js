@@ -1,33 +1,15 @@
-app.controller("busItemEditController",['$scope','$state','$http','checkUniqueService',function($scope,$state,$http,checkUniqueService){
+app.controller("shopItemAddController",['$scope','$state','$http','checkUniqueService',function($scope,$state,$http,checkUniqueService){
 	
 //	$scope.formData.fitemID  新增开始的时候需要从服务器中下载下来，以便于子项的操作
-	$scope.busItemAPI.hiddenBusTypeTree();
+	$scope.treeAPI.hiddenBusTypeTree();
 	
-	console.info("------------需要修改的id为："+$scope.rowIds[0]);
-	if(!$scope.rowIds[0]||$scope.rowIds[0]==""){
-		$state.go("app.busitem.list");//返回到列表界面
-	}
+	$scope.formData = {};
+	$scope.busAtomData = [];//用来保存该服务项中的所有子项，用来显示在列表中，并在保存的时候提交到服务器端
+	$scope.formData.busAtomDataStr = "";//该对象是将busAtomData对象进行字符串化，以便于后台进行操作
 	
-	getServerData();
-	/**
-	 * 从服务器端获取业务数据
-	 */
-	function getServerData(){
-		$http({
-			url:"base/busItemAction!detailsBusItem.action",
-			method:"get",
-			params:{
-				fid:$scope.rowIds[0]
-			}
-		}).then(function(resp){
-			var code = resp.data.code ;
-			if(code == 1){
-				renderData(resp.data);//渲染数据
-			}else{
-				$state.go("app.busitem.list");
-			}
-		});
-	}
+	//初始化选中的数据
+	$scope.setCanEdit(false);
+	$scope.clearRowIds();
 	
 	
 	/**
@@ -36,21 +18,22 @@ app.controller("busItemEditController",['$scope','$state','$http','checkUniqueSe
 	$scope.isUnique = true;
 	$scope.notUniqueMessage = "已存在";
 	$scope.checkIsUnique = function(fid,itemCode){//检查服务编码是否已经存在需要服务id和更新的服务编号
-		$http({
-			url:"base/busItemAction!checkItemCodeIsUnique.action",
-			method:"get",
-			params:{
-				itemCode : itemCode,
-				fid:fid
-			}
-		}).then(function(resp){
+//		$http({
+//			url:"base/busItemAction!checkItemCodeIsUnique.action",
+//			method:"get",
+//			params:{
+//				itemCode : $scope.formData.busTypeCode + itemCode,
+//				fid:fid
+//			}
+//		})
+//		.then(function(resp){
+		checkUniqueService.checkShopItemCodeUnique(fid,$scope.formData.busTypeCode + itemCode).then(function(resp){
 			if(resp.data.code==1){
 				$scope.isUnique = true;
 			}else{//存在
 				$scope.isUnique = false;
 			}
 		});
-		
 	}
 	$("#itemCode").change(function(e){
 		if($scope.busItemForm.itemCode.$valid){
@@ -58,13 +41,12 @@ app.controller("busItemEditController",['$scope','$state','$http','checkUniqueSe
 		}
 	});
 	
-	
 	/**
 	 * 检查服务子项编码是否已经存在
 	 */
 	$scope.atomCodeIsUnique = true;
 	$scope.checkAtomCodeIsUnique = function(fid,atomCode){//检查服务编码是否已经存在需要服务id和更新的服务编号
-		checkUniqueService.checkBusAtomCodeUnique(fid,atomCode).then(function(resp){
+		checkUniqueService.checkShopAtomCodeUnique(fid,atomCode).then(function(resp){
 			if(resp.data.code==1){
 				$scope.atomCodeIsUnique = true;
 			}else{
@@ -78,66 +60,6 @@ app.controller("busItemEditController",['$scope','$state','$http','checkUniqueSe
 		}
 	});
 	
-	
-	/**
-	 * 将获取的数据显示到页面上面
-	 */
-	function renderData(data){
-		/*
-		 * 渲染服务详细信息
-		 */
-		$scope.formData = data.details ;
-		$scope.formData.chooseAutoPartName='选择';
-		$scope.formData.chooseAutoPartButton=false;
-		//时间控件需要进行dom操作渲染
-		$("#starTime").val(data.details.starTime);
-		$("#endTime").val(data.details.endTime);
-		$scope.formData.starTimeStr = data.details.starTime;
-		$scope.formData.endTimeStr = data.details.endTime;
-		/*
-		 * 渲染子项列表信息
-		 */
-		var busAtomsArray = data.busAtoms;
-		if(busAtomsArray){
-			//填充数据
-			for(var i=0;i<busAtomsArray.length;i++){
-				var newBusAtom = {};
-				newBusAtom.fid = busAtomsArray[i].fid;
-				newBusAtom.atomCode = busAtomsArray[i].atomCode || "";
-				newBusAtom.atomName = busAtomsArray[i].atomName || "";
-				newBusAtom.autoParts = busAtomsArray[i].autoParts || "";
-				newBusAtom.partID = busAtomsArray[i].autoPart.id ;
-				newBusAtom.eunitPrice = busAtomsArray[i].eunitPrice || "";
-				newBusAtom.memo = busAtomsArray[i].memo || "";
-				newBusAtom.partName = busAtomsArray[i].autoPart.partName || "";
-				newBusAtom.brandName = busAtomsArray[i].autoPart.brandName || "";
-				newBusAtom.spec = busAtomsArray[i].autoPart.spec || "";
-				newBusAtom.model = busAtomsArray[i].autoPart.model || "";
-				newBusAtom.autoPartId = busAtomsArray[i].autoPart.id ;
-				
-				newBusAtom.isActivity = busAtomsArray[i].autoPart.isActivity ;
-				newBusAtom.yunitPrice = busAtomsArray[i].autoPart.yunitPrice ;
-				newBusAtom.eunitPrice1 = busAtomsArray[i].autoPart.eunitPrice ;
-				
-				busAtomTable.row.add(newBusAtom).draw();
-				$scope.busAtomData.push(newBusAtom);
-				
-			}
-			
-		}
-	}
-	
-	
-	
-	$scope.formData = {};
-	$scope.busAtomData = [];//用来保存该服务项中的所有子项，用来显示在列表中，并在保存的时候提交到服务器端
-	$scope.formData.busAtomDataStr = "";//该对象是将busAtomData对象进行字符串化，以便于后台进行操作
-	$scope.deleteBusAtomIds = [];//这个属性只有在修改页面才有，用来保存删除子项的id，上传到服务端进行删除操作
-	
-	
-	//初始化选中的数据
-	$scope.setCanEdit(false);
-	$scope.clearRowIds();
 	
 	//初始化时间控件
 	$('#starTime').focus(
@@ -204,10 +126,12 @@ app.controller("busItemEditController",['$scope','$state','$http','checkUniqueSe
             	default:
             		return "";break;
             	}}
-            },{"render": function(param){
+            },{
+        	"mDataProp":"memo"  
+          },{"render": function(param){
                       return '<button type="button" class="btn btn-default btn-sm" name="updateButton">'+
                       '<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button>'+
-                      		 '<button type="button" class="btn btn-danger btn-sm" name="deleteButton"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>';
+               		 '<button type="button" class="btn btn-danger btn-sm" name="deleteButton"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>';
                     }
           }],"language":{
         	  "emptyTable":"没有服务子项信息，请添加"
@@ -224,21 +148,14 @@ app.controller("busItemEditController",['$scope','$state','$http','checkUniqueSe
           }
 	});
 	/**
-	 * 删除一行，如果该一行是从后台获取的数据，那么有fid，删除该行的同时将fid保存到$scope.deleteBusAtomIds数组当中，方便后台进行修改
+	 * 删除一行
 	 */
 	$scope.deleteRow = function(nRow){
-		var index = busAtomTable.row(nRow).index();//每次获取的这个位置都是最新的，datatables会进行实时更新，利用这个顺序将缓存中的数据删减
+		var index = busAtomTable.row(nRow).index();
 		var oldData = busAtomTable.row(nRow).data();
 		$scope.deleteAutoPartsPrice(oldData.autoParts * oldData.eunitPrice);
 		busAtomTable.row(nRow).remove().draw();
-		if($scope.busAtomData[index].fid&&$scope.busAtomData[index].fid!=""){//当该数据有fid的时候，进行缓存id
-			$scope.deleteBusAtomIds.push($scope.busAtomData[index].fid);
-		}
 		$scope.busAtomData.splice(index,1);
-		console.info("删除的的fid有：");
-		console.info($scope.deleteBusAtomIds);
-		console.info("busatomData 中保存的数据：");
-		console.info($scope.busAtomData);
 	}
 	/**
 	 * 修改一行  用一个变量记录需要修改的记录，保存之后自动该把变量清空，
@@ -254,7 +171,6 @@ app.controller("busItemEditController",['$scope','$state','$http','checkUniqueSe
 		$scope.copyRow(nRow);
 		$scope.showAddBusAtomForm();
 	}
-
 	/**
 	 * 拷贝一行，双击一行，将表单中的空白部分进行填充
 	 */
@@ -303,7 +219,6 @@ app.controller("busItemEditController",['$scope','$state','$http','checkUniqueSe
 	}
 	
 	
-	
 	/**
 	 * 重新画子项的datatables列表
 	 */
@@ -316,7 +231,11 @@ app.controller("busItemEditController",['$scope','$state','$http','checkUniqueSe
 			//1、现将form中的数据更新到该缓存对象中，保证fid不能被更新
 			$scope.getUpdateBusAtom();
 			//渲染到列表中
+			
+			
 			busAtomTable.row($scope.needUpdateRowData.index).data($scope.needUpdateRowData);
+			//对服务表单中的配件合计做运算
+			$scope.addAutoPartsPrice($scope.needUpdateRowData.autoParts * $scope.needUpdateRowData.eunitPrice);//将价钱反写到服务中
 			//需要重新绑定更新按钮和删除按钮事件
 			var nRow = busAtomTable.row($scope.needUpdateRowData.index);
 			 nRow.$("button[name=updateButton]").click(function(){
@@ -335,24 +254,23 @@ app.controller("busItemEditController",['$scope','$state','$http','checkUniqueSe
 			$scope.addAutoPartsPrice(newBusAtom.autoParts * newBusAtom.eunitPrice);//将价钱反写到服务中
 		}
 		$scope.clearBusAtomForm();
-		console.info("新增或者修改之后的数据：");
 		console.info($scope.busAtomData);
+//		$scope.formData.busAtomDataStr = JSON.stringify($scope.busAtomData);
+//		console.info($scope.formData.busAtomDataStr);
 		$scope.hiddenAddBusAtomForm();
 	}
 	
 	/**
-	 * 获取子项详细信息和隐藏的信息，将该信息放到一个对象中，以便于在子项列表中显示，这是新增busatom时候调用的方法 下面的另一个方法是修改一条记录，
-	 * 在修改完成之后进行的操作
+	 * 获取子项详细信息和隐藏的信息，将该信息放到一个对象中，以便于在子项列表中显示
 	 */
 	$scope.getNewBusAtom = function(){
 		var newBusAtom = {};
-		newBusAtom.fid = "";
 		newBusAtom.atomCode = $scope.formData.atomCode ;
 		newBusAtom.atomName = $scope.formData.atomName ;
 		newBusAtom.fitemID = $scope.formData.fid ;
-		newBusAtom.autoParts = $scope.formData.autoParts || "";
+		newBusAtom.autoParts = $scope.formData.autoParts || 0;
 		newBusAtom.partID = $scope.formData.partID ;
-		newBusAtom.eunitPrice = $scope.formData.eunitPrice || "";
+		newBusAtom.eunitPrice = $scope.formData.eunitPrice || 0;
 		newBusAtom.memo = $scope.formData.busAtomMemo || "";
 		newBusAtom.partName = $scope.formData.partName ;
 		newBusAtom.brandName = $scope.formData.brandName ;
@@ -366,6 +284,7 @@ app.controller("busItemEditController",['$scope','$state','$http','checkUniqueSe
 		
 		return newBusAtom;
 	}
+	
 	/**
 	 * 修改记录之后需要调用的防范，作用：将修改之后的数据保存到缓存数据中和渲染到列表中
 	 */
@@ -387,6 +306,7 @@ app.controller("busItemEditController",['$scope','$state','$http','checkUniqueSe
 		$scope.needUpdateRowData.yunitPrice = $scope.formData.yunitPrice ;
 		$scope.needUpdateRowData.eunitPrice1 = $scope.formData.eunitPrice1 ;
 	}
+	
 	
 	/**
 	 * 清空子项信息的数据的按钮
@@ -510,17 +430,16 @@ app.controller("busItemEditController",['$scope','$state','$http','checkUniqueSe
 	 * 点击保存操作
 	 */
 	$scope.submit = function(){
-		$scope.formData.busAtomDataStr = JSON.stringify($scope.busAtomData);
-		$scope.formData.deleteBusAtomIds = $scope.deleteBusAtomIds;
-		$scope.formData.busPackages = undefined ;
+		$scope.formData.busAtomDataStr = JSON.stringify($scope.busAtomData);//对json数组进行序列化
+		$scope.formData.itemCode = ($scope.formData.busTypeCode || "") + $scope.formData.itemCode;
 		$http({
-			url:"base/busItemAction!saveBusItem.action",
+			url:"shop/shopItemAction!addShopItem.action",
 			method:'post',
 			data : $scope.formData
 		}).then(function(resp){
 			var code = resp.data.code ;
 			if(code == 1){//代表保存成功
-				$state.go("app.busitem.list");
+				$state.go("app.shopitem.list");
 			}else{//代表保存失败
 				alert("保存失败");
 			}
@@ -533,7 +452,7 @@ app.controller("busItemEditController",['$scope','$state','$http','checkUniqueSe
 	 * 取消按钮的操作，直接跳转到列表页面上
 	 */
 	$scope.cancel = function(){
-		$state.go("app.busitem.list");
+		$state.go("app.shopitem.list");
 	}
 	
 	/**
@@ -548,7 +467,6 @@ app.controller("busItemEditController",['$scope','$state','$http','checkUniqueSe
 		$scope.formData.autoPartsPrice = ($scope.formData.autoPartsPrice || 0) - autoPartsPrice;
 		$("#clickId").trigger("click");
 	}
-	
 	
 	/**
 	 * 页面显示控制功能，当显示服务信息的时候，不显示服务子项新增的页面

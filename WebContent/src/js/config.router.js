@@ -847,7 +847,127 @@ angular.module('app').run(
 								                }
 								              ]
 								            }
-								        })
+								        }).state('app.shopitem', {
+								            url: '/shopitem',
+								            templateUrl: 'src/tpl/shop/shopitem/shopitem.html',
+								            resolve: {
+								              deps: ['$ocLazyLoad', 'uiLoad',
+								                function($ocLazyLoad, uiLoad) {
+								                  return $ocLazyLoad.load('angularBootstrapNavTree').then(function() {
+								                    return $ocLazyLoad.load('src/js/controllers/shop/shopitem/ShopItemController.js');
+								                  });
+								                }
+								              ]
+								            }
+									      }).state('app.shopitem.list', {
+									            url: '/list',
+									            templateUrl: 'src/tpl/shop/shopitem/shopitem_list.html',
+									            resolve: {
+									              deps: ['$ocLazyLoad','uiLoad',
+									                function($ocLazyLoad, uiLoad) {
+									                  return uiLoad.load(JQ_CONFIG.chosen).then(function() {
+									                    return $ocLazyLoad.load('src/js/controllers/shop/shopitem/ShopItemListController.js');
+									                  });
+									                }
+									              ]
+									            }
+									        }).state('app.shopitem.add', {
+									            url: '/add',
+									            templateUrl: 'src/tpl/shop/shopitem/shopitem_add.html',
+									            resolve: {
+									              deps: ['$ocLazyLoad','uiLoad',
+									                function($ocLazyLoad, uiLoad) {
+									                  return uiLoad.load(JQ_CONFIG.chosen).then(function() {
+									                    return $ocLazyLoad.load('src/js/controllers/shop/shopitem/ShopItemAddController.js');
+									                  });
+									                }
+									              ]
+									            }
+									        }).state('app.shopitem.details', {
+									            url: '/details',
+									            templateUrl: 'src/tpl/shop/shopitem/shopitem_details.html',
+									            resolve: {
+									              deps: ['$ocLazyLoad','uiLoad',
+									                function($ocLazyLoad, uiLoad) {
+									                  return uiLoad.load(JQ_CONFIG.chosen).then(function() {
+									                    return $ocLazyLoad.load('src/js/controllers/shop/shopitem/ShopItemDetailsController.js');
+									                  });
+									                }
+									              ]
+									            }
+									        }).state('app.shopitem.edit', {
+									            url: '/edit',
+									            templateUrl: 'src/tpl/shop/shopitem/shopitem_edit.html',
+									            resolve: {
+									              deps: ['$ocLazyLoad','uiLoad',
+									                function($ocLazyLoad, uiLoad) {
+									                  return uiLoad.load(JQ_CONFIG.chosen).then(function() {
+									                    return $ocLazyLoad.load('src/js/controllers/shop/shopitem/ShopItemEditController.js');
+									                  });
+									                }
+									              ]
+									            }
+									        }).state('app.shoppackage', {
+									            url: '/shoppackage',
+									            templateUrl: 'src/tpl/shop/shoppackage/shoppackage.html',
+									            resolve: {
+									              deps: ['$ocLazyLoad', 'uiLoad',
+									                function($ocLazyLoad, uiLoad) {
+									                  return $ocLazyLoad.load('angularBootstrapNavTree').then(function() {
+									                    return $ocLazyLoad.load('src/js/controllers/shop/shoppackage/ShopPackageController.js');
+									                  });
+									                }
+									              ]
+									            }
+										      }).state('app.shoppackage.list', {
+										            url: '/list',
+										            templateUrl: 'src/tpl/shop/shoppackage/shoppackage_list.html',
+										            resolve: {
+										              deps: ['$ocLazyLoad','uiLoad',
+										                function($ocLazyLoad, uiLoad) {
+										                  return uiLoad.load(JQ_CONFIG.chosen).then(function() {
+										                    return $ocLazyLoad.load('src/js/controllers/shop/shoppackage/ShopPackageListController.js');
+										                  });
+										                }
+										              ]
+										            }
+										        }).state('app.shoppackage.add', {
+										            url: '/add',
+										            templateUrl: 'src/tpl/shop/shoppackage/shoppackage_add.html',
+										            resolve: {
+										              deps: ['$ocLazyLoad','uiLoad',
+										                function($ocLazyLoad, uiLoad) {
+										                  return uiLoad.load(JQ_CONFIG.chosen).then(function() {
+										                    return $ocLazyLoad.load('src/js/controllers/shop/shoppackage/ShopPackageAddController.js');
+										                  });
+										                }
+										              ]
+										            }
+										        }).state('app.shoppackage.edit', {
+										            url: '/edit',
+										            templateUrl: 'src/tpl/shop/shoppackage/shoppackage_edit.html',
+										            resolve: {
+										              deps: ['$ocLazyLoad','uiLoad',
+										                function($ocLazyLoad, uiLoad) {
+										                  return uiLoad.load(JQ_CONFIG.chosen).then(function() {
+										                    return $ocLazyLoad.load('src/js/controllers/shop/shoppackage/ShopPackageEditController.js');
+										                  });
+										                }
+										              ]
+										            }
+										        }).state('app.shoppackage.details', {
+										            url: '/details',
+										            templateUrl: 'src/tpl/shop/shoppackage/shoppackage_details.html',
+										            resolve: {
+										              deps: ['$ocLazyLoad','uiLoad',
+										                function($ocLazyLoad, uiLoad) {
+										                  return uiLoad.load(JQ_CONFIG.chosen).then(function() {
+										                    return $ocLazyLoad.load('src/js/controllers/shop/shoppackage/ShopPackageDetailsController.js');
+										                  });
+										                }
+										              ]
+										            }
+										        })
       // form
       .state('app.form', {
         url: '/form',

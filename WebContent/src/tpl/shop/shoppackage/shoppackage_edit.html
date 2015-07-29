@@ -1,0 +1,208 @@
+<div class="hbox hbox-auto-xs hbox-auto-sm" ng-controller="shopPackageEditController">
+  <div class="panel-heading font-bold text-center">
+  修改套餐信息
+  </div>
+  <div class="panel-body">
+    <form name="busPackageForm" id="busPackageForm" class="form-horizontal form-validation" method="get" ng-model="formData">
+     <div class="form-group">
+        <label class="col-sm-1 control-label ">业务类型<i class="fa fa-asterisk text-danger"></i></label>
+        <div class="col-sm-2">
+          <input type="text" id="busTypeName" placeholder="业务类型" class="form-control" ng-model="formData.busTypeName" tabindex="1" required disabled>
+          <input type="hidden"   ng-model="formData.busTypeCode"  required >
+            <!-- 业务类型ztree -->
+        <div id="menuContent" class="menuContent" style="display:none; position: absolute; z-index:20;background-color:white;border: 1px solid #617775;">
+			<ul id="treeDemo" class="ztree" style="margin-top:0; width:160px;"></ul>
+		</div>
+        </div>
+      
+        
+        <div class="col-sm-1">
+        	<button type="button" class="btn btn-info" ng-click="initBusTypeZTree()">选择</button>
+        </div>
+        
+        <label class="col-sm-1 control-label">套餐编号<i class="fa fa-asterisk text-danger"></i></label>
+        <div class="col-sm-3">
+        	<div class="input-group">
+        		<div class="input-group-addon"><span ng-bind="formData.busTypeCode"></span></div>
+	          <input type="text" name="packageCode" placeholder="+套餐编号" id="packageCode" class="form-control" ng-model="formData.packageCode"  required ng-disabled="!formData.busTypeCode" ng-pattern="/^[0-9a-zA-z\.]{1,40}$/">
+	          <div class="input-group-addon" ng-show="!isUnique" style="background:red;"><span ng-bind="notUniqueMessage"></span></div>
+        	</div>
+        </div>
+        
+        <label class="col-sm-1 control-label">套餐名称</label>
+        <div class="col-sm-3">
+          <input type="text" placeholder="套餐名称" class="form-control" ng-model="formData.packageName" ng-maxlength="50">
+        </div>
+        
+      </div>
+      
+      <div class="form-group">
+      
+	      <label class="col-sm-1 control-label">服务类型</label>
+	        <div class="col-sm-3">
+	          <select id="serviceType" class="form-control" required ng-model="formData.serviceType">
+	          	<!-- 1=标准型、2=经济型、3=高效型、4=原厂型 -->
+	            <option value="1">标准型</option>
+	            <option value="2">经济型</option>
+	            <option value="3">高效型</option>
+	            <option value="4">原厂型</option>
+	          </select>
+	        </div>
+       <label class="col-sm-1 control-label">工时费</label>
+        <div class="col-sm-3">
+          <input type="number" placeholder="工时费（合计）" class="form-control" ng-model="formData.workHours"  disabled>
+        </div>
+        <label class="col-sm-1 control-label">预计工时长</label>
+        <div class="col-sm-3">
+          <input type="text" placeholder="预计工时长" class="form-control" ng-model="formData.expectHours">
+        </div>
+        
+      </div>
+      
+      
+      <div class="form-group">
+      
+      <label class="col-sm-1 control-label">配件费</label>
+        <div class="col-sm-3">
+          <input type="number" placeholder="配件费（合计）" class="form-control" ng-model="formData.autoPartsPrice" disabled>
+        </div>
+       <label class="col-sm-1 control-label">标准价<i class="fa fa-asterisk text-danger"></i></label>
+        <div class="col-sm-3">
+          <input type="number" placeholder="标准价" class="form-control" ng-model="formData.standardPrice" >
+        </div>
+        <label class="col-sm-1 control-label">实际价</label>
+        <div class="col-sm-3">
+          <input type="number" placeholder="实际价" class="form-control" ng-model="formData.actualPrice">
+        </div>
+        
+      </div>
+      
+      
+      <div class="form-group">
+       
+        <label class="col-sm-1 control-label">使用状态<i class="fa fa-asterisk text-danger"></i></label>
+        <div class="col-sm-3">
+          <select id="useState" class="form-control" required ng-model="formData.useState">
+          	<!-- 0=初始化、1=待审核、2=发布（审核通过）、3=停止/下架、4=强制下架（违规） -->
+            <option value="0">初始化</option>
+            <option value="1">待审核</option>
+            <option value="2">发布（审核通过）</option>
+            <option value="3">停止/下架</option>
+            <option value="4">强制下架（违规）</option>
+          </select>
+        </div>
+        
+        <label class="col-sm-1 control-label">是否参与聚会<i class="fa fa-asterisk text-danger"></i></label>
+        <div class="col-sm-3">
+          <select id="isActivity" class="form-control" required ng-model="formData.isActivity">
+          	<!-- 0=不参加（默认），1=参加 -->
+            <option value="0">不参加</option>
+            <option value="1">参加</option>
+          </select>
+        </div>
+      </div>
+      
+     <div class="form-group">
+        <label class="col-sm-1  control-label">开始时间</label>
+        <div class="col-sm-3 ">
+          <input type="text" style="width: 100%" name="starTime" id="starTime"
+						class="form-control" value="" ng-model="formData.starTimeStr"/>
+      	 </div>
+      	  <label class="col-sm-1  control-label">结束时间</label>
+        <div class="col-sm-3 ">
+          <input type="text" style="width: 100%" name="endTime" id="endTime"
+						class="form-control" value="" ng-model="formData.endTimeStr"/>
+      	 </div>
+      </div>
+   
+      <div class="form-group">
+        <label class="col-sm-1 control-label">描述</label>
+        <div class="col-sm-11">
+          <textarea class="form-control" rows="1" ng-model="formData.packageDes" ></textarea>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label class="col-sm-1 control-label">备注</label>
+        <div class="col-sm-11">
+          <textarea class="form-control" rows="1" ng-model="formData.memo" ></textarea>
+        </div>
+      </div>
+     
+        <!-- 一下为服务子项信息的增加页面 -->
+    
+   	<div class="row">
+   		<div class="line line-dashed b-b line-lg pull-in"></div>
+   		<div class="col-sm-offset-5 col-sm-4 font-bold ">
+   			服务列表
+ 	 	</div>
+ 	 	<div class=" col-sm-3">
+ 	 		<button class="btn btn-success" ng-click="showOrHiddenItemTable()">添加服务</button>
+ 	 	</div>
+ 	</div>
+     
+   <div>
+       <div>
+		     <table class="table table-striped" id="busItemTable">
+				<thead>
+					<th>项目编号</th>
+					<th>项目名称</th>
+					<th>标准价</th>
+					<th>实际价</th>
+					<th>工时费</th>
+					<th>配件合计价</th>
+					<th>使用状态</th>
+					<th>是否参加聚惠</th>
+					<th>开始时间</th>
+					<th>结束时间</th>
+					<th>操作</th>
+					</tr>
+				</thead>
+			</table>
+  		 </div>
+    </div>
+   
+    
+      <div class="line line-dashed b-b line-lg pull-in"></div>
+      <div class="form-group" >
+        <div class="col-sm-offset-4 col-sm-2 col-xs-6">
+          <button type="button" id="add" class="w100 btn btn-success" ng-click="submit()" ng-disabled='busPackageForm.$invalid || !isUnique'>确定</button>
+        </div>
+        <div class="col-sm-2 col-xs-6">
+          <a ng-click="cancel()" class="w100 btn btn-default">取消</a>
+        </div>
+      </div>
+  </form>
+  
+		  <div id="chooseBusItemTable" class="none">
+				  <div class="form-group">&nbsp;</div>
+				  <div style="font-size: 18px;">
+				  	<div class="col-sm-3 text-center">目前已有的服务为：</div>
+				  	<div class="col-sm-9" id="busItemsText"></div>
+			  	  </div>
+			  	  <div>&nbsp;</div>
+			 	 <!-- 在这里添加服务列表进行选择 -->
+			   		<table class="table table-striped" id="busItemTableForChoose">
+							<thead>
+								<th class="text-center">操作</th>
+								<th>项目编号</th>
+								<th>项目名称</th>
+								<th>标准价</th>
+								<th>实际价</th>
+								<th>工时费</th>
+								<th>配件合计价</th>
+								<th>使用状态</th>
+								<th>是否参加聚惠</th>
+								<th>开始时间</th>
+								<th>结束时间</th>
+								</tr>
+							</thead>
+						</table>
+			  <div class="form-group">&nbsp;</div>								
+			  <div class="col-sm-12 text-center">
+			  	<button class="btn btn-success" ng-click="showOrHiddenItemTable()">确定</button>
+			  </div>
+		</div>
+ </div>
+    <div class="form-group">&nbsp;</div>
+</div>

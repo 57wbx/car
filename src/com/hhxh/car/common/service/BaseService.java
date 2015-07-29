@@ -179,6 +179,10 @@ public class BaseService {
 		return Integer.valueOf(dao.gets("select count(id) "+hql, null, null, null).get(0).toString());
 	}
 	
+	public <T> Integer getSize(String hql,Map<String,Object> map) {
+		return Integer.valueOf(dao.gets("select count(id) "+hql, map, null, null).get(0).toString());
+	}
+	
 	public Object get(String hql, Map<String, Object> paramMap) {
 		return dao.get(hql, paramMap);
 	}

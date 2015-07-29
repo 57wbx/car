@@ -81,7 +81,7 @@ public class AdminOrgUnit implements Serializable {
     /**
      * 上级组织
      */
-    @ManyToOne
+    @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="parentID")
     private AdminOrgUnit parent;
     

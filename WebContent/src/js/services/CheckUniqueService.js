@@ -69,7 +69,47 @@ app.factory("checkUniqueService",['$http',function($http){
 							number:userCode
 						}
 				});
+			},
+			/**
+			 * 检查商家的服务项是否重复
+			 */
+			checkShopItemCodeUnique:function(id,itemCode){
+				return $http({
+					url:"shop/shopItemAction!checkShopItemCodeUnique.action",
+					method:"get",
+					params:{
+						fid:id,
+						itemCode:itemCode
+					}
+			});
+			},
+			/**
+			 * 检查商家的服务子项编码是否存在
+			 */
+			checkShopAtomCodeUnique:function(fid,atomCode){
+				return $http({
+					url:"shop/shopAtomAction!checkShopAtomCodeUnique.action",
+					method:"get",
+					params:{
+						fid:fid,
+						atomCode:atomCode
+					}
+				});
+			},
+			/**
+			 * 检查商家的套餐编码是否重复
+			 */
+			checkShopPackageCodeIsUnique:function(fid,packageCode){
+				return $http({
+					url:"shop/shopPackageAction!checkShopPackageCodeIsUnique.action",
+					method:"get",
+					params:{
+						fid:fid,
+						packageCode:packageCode
+					}
+				});
 			}
+			
 			
 			//
 	};

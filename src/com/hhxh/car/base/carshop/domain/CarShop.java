@@ -1,6 +1,9 @@
 package com.hhxh.car.base.carshop.domain;
 
+import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,16 +12,18 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 
 import com.hhxh.car.org.domain.AdminOrgUnit;
+import com.hhxh.car.shop.domain.ShopItem;
 
 
 @Entity
 @Table(name="base_car_shop")
-public class CarShop {
+public class CarShop  implements Serializable{
 	
 	/**
 	 * 主键id
@@ -238,7 +243,6 @@ public class CarShop {
 	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="orgid")
 	private AdminOrgUnit org ;
-	
 	
 	
 	
@@ -541,6 +545,8 @@ public class CarShop {
 	public void setOrg(AdminOrgUnit org) {
 		this.org = org;
 	}
+	
+
 
 	@Override
 	public String toString() {
@@ -562,6 +568,7 @@ public class CarShop {
 				+ ", bankCardNo=" + bankCardNo + ", bankCardUrl=" + bankCardUrl
 				+ ", Memo=" + Memo + "]";
 	}
+	
 	
 	
 	

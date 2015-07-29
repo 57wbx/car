@@ -350,4 +350,9 @@ public class Dao{
 		}
 		return list;
 	}
+	
+	public String getUUID(){
+		String uuid = (String) this.getSession().createSQLQuery("select uuid() from dual").list().get(0);
+		return uuid ;
+	}
 }

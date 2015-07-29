@@ -160,7 +160,7 @@ public class User implements Serializable,Comparable<Object> {
     @Column
     private Integer isOprUser ;
     
-    @OneToOne(fetch=FetchType.LAZY)
+    @OneToOne(fetch=FetchType.EAGER)
     @JoinColumn(name="shopid")
     private CarShop carShop;
 

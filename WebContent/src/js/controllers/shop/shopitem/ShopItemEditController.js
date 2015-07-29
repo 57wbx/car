@@ -1,11 +1,11 @@
-app.controller("busItemEditController",['$scope','$state','$http','checkUniqueService',function($scope,$state,$http,checkUniqueService){
+app.controller("shopItemEditController",['$scope','$state','$http','checkUniqueService',function($scope,$state,$http,checkUniqueService){
 	
 //	$scope.formData.fitemID  新增开始的时候需要从服务器中下载下来，以便于子项的操作
-	$scope.busItemAPI.hiddenBusTypeTree();
+	$scope.treeAPI.hiddenBusTypeTree();
 	
 	console.info("------------需要修改的id为："+$scope.rowIds[0]);
 	if(!$scope.rowIds[0]||$scope.rowIds[0]==""){
-		$state.go("app.busitem.list");//返回到列表界面
+		$state.go("app.shopitem.list");//返回到列表界面
 	}
 	
 	getServerData();
@@ -14,7 +14,7 @@ app.controller("busItemEditController",['$scope','$state','$http','checkUniqueSe
 	 */
 	function getServerData(){
 		$http({
-			url:"base/busItemAction!detailsBusItem.action",
+			url:"shop/shopItemAction!detailsShopItem.action",
 			method:"get",
 			params:{
 				fid:$scope.rowIds[0]
@@ -24,7 +24,7 @@ app.controller("busItemEditController",['$scope','$state','$http','checkUniqueSe
 			if(code == 1){
 				renderData(resp.data);//渲染数据
 			}else{
-				$state.go("app.busitem.list");
+				$state.go("app.shopitem.list");
 			}
 		});
 	}
@@ -36,14 +36,7 @@ app.controller("busItemEditController",['$scope','$state','$http','checkUniqueSe
 	$scope.isUnique = true;
 	$scope.notUniqueMessage = "已存在";
 	$scope.checkIsUnique = function(fid,itemCode){//检查服务编码是否已经存在需要服务id和更新的服务编号
-		$http({
-			url:"base/busItemAction!checkItemCodeIsUnique.action",
-			method:"get",
-			params:{
-				itemCode : itemCode,
-				fid:fid
-			}
-		}).then(function(resp){
+		checkUniqueService.checkShopItemCodeUnique(fid,itemCode).then(function(resp){
 			if(resp.data.code==1){
 				$scope.isUnique = true;
 			}else{//存在
@@ -64,7 +57,7 @@ app.controller("busItemEditController",['$scope','$state','$http','checkUniqueSe
 	 */
 	$scope.atomCodeIsUnique = true;
 	$scope.checkAtomCodeIsUnique = function(fid,atomCode){//检查服务编码是否已经存在需要服务id和更新的服务编号
-		checkUniqueService.checkBusAtomCodeUnique(fid,atomCode).then(function(resp){
+		checkUniqueService.checkShopAtomCodeUnique(fid,atomCode).then(function(resp){
 			if(resp.data.code==1){
 				$scope.atomCodeIsUnique = true;
 			}else{
@@ -514,13 +507,13 @@ app.controller("busItemEditController",['$scope','$state','$http','checkUniqueSe
 		$scope.formData.deleteBusAtomIds = $scope.deleteBusAtomIds;
 		$scope.formData.busPackages = undefined ;
 		$http({
-			url:"base/busItemAction!saveBusItem.action",
+			url:"shop/shopItemAction!saveShopItem.action",
 			method:'post',
 			data : $scope.formData
 		}).then(function(resp){
 			var code = resp.data.code ;
 			if(code == 1){//代表保存成功
-				$state.go("app.busitem.list");
+				$state.go("app.shopitem.list");
 			}else{//代表保存失败
 				alert("保存失败");
 			}
@@ -533,7 +526,7 @@ app.controller("busItemEditController",['$scope','$state','$http','checkUniqueSe
 	 * 取消按钮的操作，直接跳转到列表页面上
 	 */
 	$scope.cancel = function(){
-		$state.go("app.busitem.list");
+		$state.go("app.shopitem.list");
 	}
 	
 	/**

@@ -23,6 +23,7 @@ import com.hhxh.car.base.busitem.service.BusItemService;
 import com.hhxh.car.base.buspackage.domain.BusPackage;
 import com.hhxh.car.common.action.BaseAction;
 import com.hhxh.car.common.util.JsonDateValueProcessor;
+import com.hhxh.car.common.util.TypeTranslate;
 import com.opensymphony.xwork2.ModelDriven;
 
 public class BusItemAction extends BaseAction implements ModelDriven<BusItem>{
@@ -117,7 +118,7 @@ public class BusItemAction extends BaseAction implements ModelDriven<BusItem>{
 				BusAtom ba = new BusAtom();
 				ba.setAtomCode((String)m.get("atomCode"));
 				ba.setAtomName((String)m.get("atomName"));
-				ba.setAutoParts((Integer)m.get("autoParts"));
+				ba.setAutoParts(TypeTranslate.getObjectInteger((m.get("autoParts"))));
 				Object eunitPrice = m.get("eunitPrice");
 				if(m.get("eunitPrice")!=null){
 					if(eunitPrice instanceof java.lang.Integer){
@@ -179,7 +180,7 @@ public class BusItemAction extends BaseAction implements ModelDriven<BusItem>{
 				ba.setFid((String)m.get("fid"));
 				ba.setAtomCode((String)m.get("atomCode"));
 				ba.setAtomName((String)m.get("atomName"));
-				ba.setAutoParts((Integer)m.get("autoParts"));
+				ba.setAutoParts(TypeTranslate.getObjectInteger((m.get("autoParts"))));
 				Object eunitPrice = m.get("eunitPrice");
 				if(m.get("eunitPrice")!=null){
 					if(eunitPrice instanceof java.lang.Integer){
