@@ -3,6 +3,7 @@ package com.hhxh.car.common.action;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -11,10 +12,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import net.sf.json.JsonConfig;
+import net.sf.json.util.CycleDetectionStrategy;
 
 import org.apache.struts2.ServletActionContext;
 
 import com.hhxh.car.common.service.BaseService;
+import com.hhxh.car.common.util.JsonDateValueProcessor;
 import com.hhxh.car.permission.domain.Role;
 import com.hhxh.car.permission.domain.User;
 import com.hhxh.car.permission.service.UserService;
@@ -122,6 +126,24 @@ public class BaseAction extends ActionSupport  {
         writer.write(json);
         writer.flush();
 	}
+    
+    /**
+     * 获取jsonconfig对象，子类只要传入需要忽略的对象或者属性名称数组就行了
+     * @return jsonConfig
+     * @param String[]
+     */
+    public JsonConfig getJsonConfig(String [] args){
+    	//设置json处理数据的规则
+		JsonConfig jsonConfig = new JsonConfig();  
+		jsonConfig.registerJsonValueProcessor(Date.class, new JsonDateValueProcessor()); 
+		if(args!=null&&args.length>0){
+			jsonConfig.setIgnoreDefaultExcludes(false); //设置默认忽略 
+			jsonConfig.setCycleDetectionStrategy(CycleDetectionStrategy.LENIENT);//设置循环策略为忽略    解决json最头疼的问题 死循环
+			jsonConfig.setExcludes(args);//此处是亮点，只要将所需忽略字段加到数组中即可
+		}
+	
+		return jsonConfig;
+    }
     
     /**
      * 获得当前登录用户

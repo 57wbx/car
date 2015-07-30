@@ -1,3 +1,9 @@
 *.jar
 src/hibernate.cfg.xml
 src/com/hhxh/car/org/action/OrgAction.java
+build/classes/hibernate.cfg.xml
+sql/readme.txt
+*.sql
+src/com/zw/test/hibernate/hibernate.cfg.xml
+src/com/zw/test/hibernate/hibernate.cfg.xml
+src/com/zw/test/hibernate/hibernate.cfg.xml
