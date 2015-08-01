@@ -1,67 +1,176 @@
 'use strict';
 
-app.controller('baseCityController',['$rootScope','$scope','$state','$timeout','$http',function($rootScope,$scope,$state,$timeout,$http){
+app.controller('baseCityController',['$rootScope','$scope','$state','$timeout','$http','sessionStorageService','utilService',function($rootScope,$scope,$state,$timeout,$http,sessionStorageService,utilService){
 	
 	$scope.rowIds = [];//用来保存所选列表的id
+	
+	$scope.province = [];
+	$scope.city = [];
+	$scope.area = [];
+	
+	$scope.show = {};
 	
 	$scope.select = {
 			province : null,
 			city:null,
 			area:null
 	}
-	$scope.province = [];
-	$scope.city = [];
-	$scope.area = [];
+	/**
+	 * 清除缓存中的除了指定数组中和永久缓存的数据
+	 */
+	var cacheKeys = ["province","select.province","city","select.city","area","select.area","show.titleName"];
+	sessionStorageService.clearNoCacheItem(cacheKeys);
+	/**
+	 * 刷新的时候获取这些数据
+	 */
+	$scope.province = sessionStorageService.getItemObj("province");
+	$scope.select.province = sessionStorageService.getItemStr("select.province");
+	$scope.city = sessionStorageService.getItemObj("city");
+	$scope.select.city = sessionStorageService.getItemStr("select.city");
+	$scope.area = sessionStorageService.getItemObj("area");
+	$scope.select.area = sessionStorageService.getItemStr("select.area");
+	$scope.show.titleName = sessionStorageService.getItemStr("show.titleName");
+	/**
+	 * 是否刚刚刷新的标识符,3代表不是刚刚刷新 0-3代表刚刚刷新 现在还在初始化
+	 */
+	var firstLen = 3;
+	if($scope.province){
+		firstLen = 0;
+	}
 	
-	$http({
-		url:"base/baseProvinceAction!listBaseProvinceNoCitys.action",
-		method:"get"
-	}).then(function(resp){
-		if(resp.data.code==1){
-			$scope.province = resp.data.data ;
-		}
-	});
+	
+	
+	/**
+	 * 保存在父容器中的API  需要在子容器中初始化
+	 */
+	$scope.cityAPI = {
+			/**
+			 * 当在选择框中选择省份、城市、区域的时候  刷新子view中城市或者区域的显示内容
+			 * 需要在子类中初始化
+			 * 调用方法  $scope.cityAPI.freshData();
+			 */
+			freshDataTable:undefined,
+			/**
+			 * 新增的方法，当用户点击新增的时候将调用这个方法
+			 * 需要在子类中初始化
+			 * 调用方法 $scope.cityAPI.addRow();
+			 */
+			addRow:undefined,
+			/**
+			 * 修改一行记录的方法
+			 * 需要在子类中初始化
+			 * 调用方法 $scope.cityAPI.editRow();
+			 */
+			editRow:undefined,
+			/**
+			 * 查看一条记录的详细信息
+			 * 需要在子类中初始化
+			 * 调用方法  $scope.cityAPI.seeDetails();
+			 */
+			seeDetails:undefined,
+			/**
+			 * 删除记录的方法
+			 * 需要在子类中初始化
+			 * 调用方法 $scope.cityAPI.deleteRow();
+			 */
+			deleteRow:undefined
+	};
+	
+	
+	if(firstLen>=3){
+		/**
+		 * 初始化省份内容，当用户是第一次进该页面的时候被调用
+		 */
+		$http({
+			url:"base/baseProvinceAction!listBaseProvinceNoCitys.action",
+			method:"get"
+		}).then(function(resp){
+			if(resp.data.code==1){
+				$scope.province = resp.data.data ;
+				sessionStorageService.setItem("province",$scope.province);
+			}
+		});
+	}
+	
 	
 	
 	  // 更换国家的时候清空省
 	  $scope.$watch('select.province', function(country) {
-		  if($scope.select.province){
-			  $http({
-				  url:"base/baseProvinceAction!listBaseCityByProvince.action",
-				  method:"get",
-				  params:{
-					  id:$scope.select.province
-				  }
-			  }).then(function(resp){
-				  if(resp.data.code==1){
-					  $scope.city = resp.data.data;
-					  $state.go("app.basecity.city");
-				  }
-			  });
+		  
+		  if(firstLen>=3){
+			  //调用子容器中需要显示的内容
+			  if($scope.cityAPI.freshData){
+				  $scope.cityAPI.freshData();
+			  }
+			  /**
+			   * 初始化城市内容
+			   */
+			  if($scope.select.province){
+				  $http({
+					  url:"base/baseProvinceAction!listBaseCityByProvince.action",
+					  method:"get",
+					  params:{
+						  id:$scope.select.province
+					  }
+				  }).then(function(resp){
+					  if(resp.data.code==1){
+						  $scope.city = resp.data.data;
+						  sessionStorageService.setItem("select.province",$scope.select.province);
+						  $scope.show.titleName = utilService.getObjectFromArray("id",$scope.select.province,$scope.province).name;
+						  sessionStorageService.setItem("show.titleName",$scope.show.titleName);
+						  sessionStorageService.setItem("city",$scope.city);
+						  $state.go("app.basecity.city");
+					  }
+				  });
+			  }
+			  
+			  $scope.select.city = null;
+			  sessionStorageService.removeItem("select.city");
+		  }else{
+			  firstLen++;
 		  }
-		  $scope.select.city = null;
 	  });
 	  // 更换省的时候清空城市
 	  $scope.$watch('select.city', function(province) {
-		  if($scope.select.city){
-			  $http({
-				  url:"base/baseCityAction!listBaseAreaByBaseCity.action",
-				  method:"get",
-				  params:{
-					  id:$scope.select.city
-				  }
-			  }).then(function(resp){
-				  if(resp.data.code==1){
-					  $scope.area = resp.data.data;
-					  $state.go("app.basecity.area");
-				  }
-			  });
+		  if(firstLen>=3){
+			  
+			//调用子容器中需要显示的内容
+			  if($scope.cityAPI.freshData){
+				  $scope.cityAPI.freshData();
+			  }
+			  
+			  if($scope.select.city){
+				  $http({
+					  url:"base/baseCityAction!listBaseAreaByBaseCity.action",
+					  method:"get",
+					  params:{
+						  id:$scope.select.city
+					  }
+				  }).then(function(resp){
+					  if(resp.data.code==1){
+						  $scope.area = resp.data.data;
+						  sessionStorageService.setItem("select.city",$scope.select.city);
+						  $scope.show.titleName = utilService.getObjectFromArray("id",$scope.select.city,$scope.city).cityName;
+						  sessionStorageService.setItem("show.titleName",$scope.show.titleName);
+						  sessionStorageService.setItem("area",$scope.area);
+						  $state.go("app.basecity.area");
+					  }
+				  });
+			  }
+			  
+			  $scope.select.area = null;
+			  sessionStorageService.removeItem("select.area");
+		  }else{
+			  firstLen++;
 		  }
-		  $scope.select.area = null;
 	  });
 	  // 更换地区的时候查询子地区的信息
 	  $scope.$watch('select.area', function(province) {
-		  
+		  sessionStorageService.setItem("select.area",$scope.select.area);
+		  if(firstLen<3){
+			  firstLen++;
+		  }
+		  console.info(firstLen)
 	  });
 	
 	
@@ -120,8 +229,9 @@ app.controller('baseCityController',['$rootScope','$scope','$state','$timeout','
 	 * 新增按钮的方法
 	 */
 	$scope.addRow = function(){
-		$state.go("app.shopitem.add");
-		$scope.treeAPI.hiddenBusTypeTree();
+		if($scope.cityAPI.addRow){
+			$scope.cityAPI.addRow();
+		}
 	}
 	
 	/**
@@ -134,8 +244,9 @@ app.controller('baseCityController',['$rootScope','$scope','$state','$timeout','
 		}else if($scope.editId){
 			$scope.rowIds.push($scope.editId);
 		}
-		$state.go("app.shopitem.details");
-		$scope.treeAPI.hiddenBusTypeTree();
+		 if($scope.cityAPI.seeDetails){
+			 $scope.cityAPI.seeDetails();
+		 }
 	}
 	
 	/**
@@ -146,8 +257,9 @@ app.controller('baseCityController',['$rootScope','$scope','$state','$timeout','
 			$scope.clearRowIds();
 			$scope.rowIds.push($scope.editId);
 		}
-		$state.go("app.shopitem.edit");
-		$scope.treeAPI.hiddenBusTypeTree();
+		if($scope.cityAPI.editRow){
+			$scope.cityAPI.editRow();
+		}
 	}
 	
 	/**
@@ -170,36 +282,21 @@ app.controller('baseCityController',['$rootScope','$scope','$state','$timeout','
 	 * 删除方法的按钮
 	 */
 	$scope.deleteRow = function(){
-		 mask.insertBefore(container);
-		 container.removeClass('none');
-		 doIt = function(){
-			 if($scope.rowIds.length>0){
-					$http({
-						url:'shop/shopItemAction!deleteShopItemByIds.action',
-						method:'get',
-						params:{
-							ids:$scope.rowIds
-						}
-					}).then(function(resp){
-						if(resp.data.code==1){//代表成功
-							$state.reload();
-						}else{
-							alert("删除失败");
-						}
-					});
-				}
-		 }
+		if($scope.cityAPI.deleteRow){
+			 mask.insertBefore(container);
+			 container.removeClass('none');
+			 doIt = function(){
+				 if($scope.rowIds.length>0){
+					 $scope.cityAPI.deleteRow();
+					 mask.remove();
+					  container.addClass('none');
+				  }
+			 }
+		}
 	}
 	
 	
-	/**
-	 * 树的初始化和操作
-	 */
-	$scope.tree_data = [{data:"sdf",label:"sdfd"}];
-	$scope.org_tree = {name:"sdfd"};
-	$scope.tree_handler = function(branch){
-		alert(branch.label);
-	}
+	
 	
 	
 	//结束方法

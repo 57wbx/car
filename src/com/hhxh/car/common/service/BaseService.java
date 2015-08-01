@@ -212,4 +212,18 @@ public class BaseService {
 	public String getUUID(){
 		return this.dao.getUUID();
 	}
+	
+	
+	/**
+	 * 删除一个数组的数据对象
+	 * by zw
+	 */
+	public void deleteByIds(Class clazz,String[] ids)throws Exception{
+		if(ids!=null&&ids.length>0){
+			for(int i=0;i<ids.length;i++){
+				this.delete(clazz, ids[i]);
+			}
+		}
+	}
+	
 }

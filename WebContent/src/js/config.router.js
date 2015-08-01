@@ -814,7 +814,8 @@ angular.module('app').run(
 								              deps: ['$ocLazyLoad', 'uiLoad',
 								                function($ocLazyLoad, uiLoad) {
 								                  return $ocLazyLoad.load('angularBootstrapNavTree').then(function() {
-								                    return $ocLazyLoad.load('src/js/controllers/base/district/city/BaseCityController.js');
+								                    $ocLazyLoad.load('src/js/controllers/base/district/city/AddCityController.js');
+								                    return $ocLazyLoad.load('src/js/controllers/base/district/city/CitysController.js');
 								                  });
 								                }
 								              ]
