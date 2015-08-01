@@ -208,4 +208,8 @@ public class BaseService {
 	public List<Map> querySqlToMap(String sql,int start,int length){
 		return dao.querySqlToMap(sql, start, length);
 	}
+	
+	public String getUUID(){
+		return this.dao.getUUID();
+	}
 }

@@ -1,5 +1,6 @@
 package com.hhxh.car.common.action;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
@@ -15,6 +16,7 @@ import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 import net.sf.json.util.CycleDetectionStrategy;
 
+import org.apache.log4j.Logger;
 import org.apache.struts2.ServletActionContext;
 
 import com.hhxh.car.common.service.BaseService;
@@ -35,6 +37,21 @@ import com.opensymphony.xwork2.ActionSupport;
 @SuppressWarnings("serial")
 public class BaseAction extends ActionSupport  {
 
+	/**
+	 * 日志类
+	 */
+	protected Logger log = Logger.getLogger(this.getClass());
+	
+	/**
+	 * 成功的返回的代码
+	 */
+	protected static final int SUCCESS = 1;
+	/**
+	 * 失败返回的代码
+	 */
+	protected static final int ERROR = 0;
+	
+	
 	@Resource
 	protected BaseService baseService;
 	
@@ -52,15 +69,25 @@ public class BaseAction extends ActionSupport  {
 	 */
 	private int iDisplayStart ;
 	private int iDisplayLength ;
-
+	
+	/**
+	 * 文件上传的参数
+	 */
+	private List<File> files ;
+	private List<String> filesFileName ;  
+    private List<String> filesContentType ; 
 	
 	protected String menuNum;//菜单id
 	
 	protected SimpleDateFormat ymdhm = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 	protected SimpleDateFormat ymd = new SimpleDateFormat("yyyy-MM-dd");
 	
-	
+	/**
+	 * 假如需要传输的数据不复杂，所有的数据都通过该json对象进行传输
+	 */
 	protected JSONObject jsonObject = new JSONObject();
+	
+	
 	
     /**
      * 获得会话
@@ -126,6 +153,42 @@ public class BaseAction extends ActionSupport  {
         writer.write(json);
         writer.flush();
 	}
+   
+    /**
+     * 
+     * @param isSuccess  是否是发送成功的数据出去，如果是成功的数据，就直接将jsonObject中的数据传输出去
+     * 如果不是成功的，就将code = 0 的数据传输出去
+     * @param message 输出去的提示信息
+     * @throws IOException
+     */
+    protected void putJson(boolean isSuccess,String message)  {
+        HttpServletResponse response = ServletActionContext.getResponse();
+        response.setContentType("text/json; charset=utf-8");
+        PrintWriter writer = null;
+		try {
+			writer = response.getWriter();
+		} catch (IOException e) {
+			log.warn("获取输出流失败");
+		}
+        if(isSuccess){
+        	jsonObject.put("code", SUCCESS);
+        }else{
+        	jsonObject.put("code", ERROR);
+        }
+        if(isNotEmpty(message)){
+        	jsonObject.put("message", message);
+        }
+        writer.write(jsonObject.toString());
+        writer.flush();
+	}
+    
+    /**
+     * 默认将成功的json数据输出出去
+     */
+    protected void putJson(){
+    	//成功、没有提示信息
+    	this.putJson(true, null);
+    }
     
     /**
      * 获取jsonconfig对象，子类只要传入需要忽略的对象或者属性名称数组就行了
@@ -265,6 +328,31 @@ public class BaseAction extends ActionSupport  {
 		}
 	}
 
+	public List<File> getFiles() {
+		return files;
+	}
+
+	public void setFiles(List<File> files) {
+		this.files = files;
+	}
+
+	public List<String> getFilesFileName() {
+		return filesFileName;
+	}
+
+	public void setFilesFileName(List<String> filesFileName) {
+		this.filesFileName = filesFileName;
+	}
+
+	public List<String> getFilesContentType() {
+		return filesContentType;
+	}
+
+	public void setFilesContentType(List<String> filesContentType) {
+		this.filesContentType = filesContentType;
+	}
+
+	
     
 
 }

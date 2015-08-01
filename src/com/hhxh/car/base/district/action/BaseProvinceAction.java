@@ -31,6 +31,20 @@ public class BaseProvinceAction extends BaseAction implements ModelDriven<BasePr
 		this.putJson(jsonObject.toString());
 	}
 	
+	/**
+	 * 根据省份返回所有的城市信息
+	 * @throws IOException 
+	 */
+	public void listBaseCityByProvince() throws IOException{
+		if(isNotEmpty(baseProvince.getId())){
+			baseProvince = this.baseService.get(BaseProvince.class,baseProvince.getId());
+			this.jsonObject.put("code",1);
+			this.jsonObject.accumulate("data",baseProvince.getBaseCitys(),this.getJsonConfig(new String[]{"baseProvince","baseAreas"}) );
+		}else{
+			this.jsonObject.put("code", 0);
+		}
+		this.putJson(jsonObject.toString());
+	}
 	
 	
 	@Override

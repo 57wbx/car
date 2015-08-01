@@ -795,7 +795,55 @@ angular.module('app').run(
 							                }
 							              ]
 							            }
-							        }).state('app.updateversion', {
+							        }).state('app.basecity', {
+							            url: '/basecity',
+							            templateUrl: 'src/tpl/base/district/city/basecity.html',
+							            resolve: {
+							              deps: ['$ocLazyLoad', 'uiLoad',
+							                function($ocLazyLoad, uiLoad) {
+							                  return $ocLazyLoad.load('angularBootstrapNavTree').then(function() {
+							                    return $ocLazyLoad.load('src/js/controllers/base/district/city/BaseCityController.js');
+							                  });
+							                }
+							              ]
+							            }
+								      }).state('app.basecity.city', {
+								            url: '/city',
+								            templateUrl: 'src/tpl/base/district/city/citys.html',
+								            resolve: {
+								              deps: ['$ocLazyLoad', 'uiLoad',
+								                function($ocLazyLoad, uiLoad) {
+								                  return $ocLazyLoad.load('angularBootstrapNavTree').then(function() {
+								                    return $ocLazyLoad.load('src/js/controllers/base/district/city/BaseCityController.js');
+								                  });
+								                }
+								              ]
+								            }
+									      }).state('app.basecity.area', {
+									            url: '/area',
+									            templateUrl: 'src/tpl/base/district/city/areas.html',
+									            resolve: {
+									              deps: ['$ocLazyLoad', 'uiLoad',
+									                function($ocLazyLoad, uiLoad) {
+									                  return $ocLazyLoad.load('angularBootstrapNavTree').then(function() {
+									                    return $ocLazyLoad.load('src/js/controllers/base/district/city/BaseCityController.js');
+									                  });
+									                }
+									              ]
+									            }
+										      }).state('app.manageimg', {
+										            url: '/manageimg',
+										            templateUrl: 'src/tpl/shop/carshop/manageimg.html',
+										            resolve: {
+										              deps: ['$ocLazyLoad', 'uiLoad',
+										                function($ocLazyLoad, uiLoad) {
+										                  return $ocLazyLoad.load('angularBootstrapNavTree').then(function() {
+										                    return $ocLazyLoad.load('src/js/controllers/shop/carshop/ManageImgController.js');
+										                  });
+										                }
+										              ]
+										            }
+											      }).state('app.updateversion', {
 							            url: '/updateversion',
 							            templateUrl: 'src/tpl/tig/updateversion/updateversion.html',
 							            resolve: {

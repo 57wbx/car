@@ -1,29 +1,36 @@
 'use strict';
-app.controller('carShopAddController', ['$scope', '$state', 'uiLoad','JQ_CONFIG',
-  function($scope, $state, uiLoad, JQ_CONFIG) {
+app.controller('carShopAddController', ['$scope', '$state', 'uiLoad','JQ_CONFIG','FileUploader',
+  function($scope, $state, uiLoad, JQ_CONFIG,FileUploader) {
     uiLoad.load(JQ_CONFIG.dataTable);
     $scope.formData = {};
     $scope.viewData = {};
     
+    var uploader = $scope.uploader = new FileUploader({
+        url: 'base/carShopAction!testUploadImg.action',
+        alias:"files"
+    });
     
+    uploader.onAfterAddingFile = function(fileItem) {
+        console.info('onAfterAddingFile', fileItem);
+    };
     
     var superList = $('#superUnit');
     var chooseBtn = $('#chooseBtn');
     var step, firstTime = true;
-    if($scope.ids&&$scope.ids.length !== 0){
-      var type = $scope.details['unitLayerType'];
-      if(type){
-        if(type['id'] < 3){
-          $scope.formData['unitLayerType.id'] = parseInt(type['id']) + 1;
-        }else{
-          $scope.formData['unitLayerType.id'] = 2;
-        }
-        $('#orgType').val($scope.formData['unitLayerType.id']);
-      }
-      $scope.formData.parent = $scope.details['id'];
-      $scope.viewData.superName = $scope.details['name'];
-      //chooseBtn.addClass('disabled');
-    }
+//    if($scope.ids&&$scope.ids.length !== 0){
+//      var type = $scope.details['unitLayerType'];
+//      if(type){
+//        if(type['id'] < 3){
+//          $scope.formData['unitLayerType.id'] = parseInt(type['id']) + 1;
+//        }else{
+//          $scope.formData['unitLayerType.id'] = 2;
+//        }
+//        $('#orgType').val($scope.formData['unitLayerType.id']);
+//      }
+//      $scope.formData.parent = $scope.details['id'];
+//      $scope.viewData.superName = $scope.details['name'];
+//      //chooseBtn.addClass('disabled');
+//    }
     // 提交并添加数据
     $scope.submit = function() {
     	
@@ -38,8 +45,10 @@ app.controller('carShopAddController', ['$scope', '$state', 'uiLoad','JQ_CONFIG'
       
       
       app.utils.getData("base/carShopAction!saveCarShop.action", $scope.formData, function(dt) {
+    	  
         $state.go('app.carshop.list');
       });
+//      $scope.uploader.uploadAll();
     };
     $scope.choose = function() {
       var url = app.url.org.api.list;

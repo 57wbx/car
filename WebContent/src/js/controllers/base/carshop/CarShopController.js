@@ -1,6 +1,6 @@
 'use strict';
 
-app.controller('carShopController', function($rootScope, $scope, $state, $timeout) {
+app.controller('carShopController', function($rootScope, $scope, $state, $timeout,$location) {
   var url = app.url.org.api.list; // 后台API路径
   var data = null;
 
@@ -174,7 +174,6 @@ app.controller('carShopController', function($rootScope, $scope, $state, $timeou
     if(id){
     	$rootScope.ids.push(id);
     }
-    
     $state.go('app.carshop.details');
 //    console.info($scope.ids);
   };
