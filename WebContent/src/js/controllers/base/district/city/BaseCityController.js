@@ -134,10 +134,7 @@ app.controller('baseCityController',['$rootScope','$scope','$state','$timeout','
 	  $scope.$watch('select.city', function(province) {
 		  if(firstLen>=3){
 			  
-			//调用子容器中需要显示的内容
-			  if($scope.cityAPI.freshData){
-				  $scope.cityAPI.freshData();
-			  }
+		
 			  
 			  if($scope.select.city){
 				  $http({
@@ -160,17 +157,36 @@ app.controller('baseCityController',['$rootScope','$scope','$state','$timeout','
 			  
 			  $scope.select.area = null;
 			  sessionStorageService.removeItem("select.area");
+			  
+			//调用子容器中需要显示的内容
+			  if($scope.cityAPI.freshData){
+				  $scope.cityAPI.freshData();
+			  }
 		  }else{
 			  firstLen++;
 		  }
 	  });
 	  // 更换地区的时候查询子地区的信息
 	  $scope.$watch('select.area', function(province) {
-		  sessionStorageService.setItem("select.area",$scope.select.area);
-		  if(firstLen<3){
-			  firstLen++;
-		  }
-		  console.info(firstLen)
+		  if(firstLen>=3){
+				  sessionStorageService.setItem("select.area",$scope.select.area);
+				  if(utilService.getObjectFromArray("id",$scope.select.area,$scope.area)||utilService.getObjectFromArray("id",$scope.select.city,$scope.city)){
+					  $scope.show.titleName = utilService.getObjectFromArray("id",$scope.select.area,$scope.area)?
+							  utilService.getObjectFromArray("id",$scope.select.area,$scope.area).name
+							  :utilService.getObjectFromArray("id",$scope.select.city,$scope.city).cityName;
+							  sessionStorageService.setItem("show.titleName",$scope.show.titleName);
+				  }
+				  
+				  sessionStorageService.setItem("area",$scope.area);
+				  
+				  
+					//调用子容器中需要显示的内容
+				  if($scope.cityAPI.freshData){
+					  $scope.cityAPI.freshData();
+				  }
+			  }else{
+				  firstLen++;
+			  }
 	  });
 	
 	

@@ -215,7 +215,7 @@ public class BaseService {
 	
 	
 	/**
-	 * 删除一个数组的数据对象
+	 * 删除一个数组的数据对象 不考虑是否有相关联的数据
 	 * by zw
 	 */
 	public void deleteByIds(Class clazz,String[] ids)throws Exception{

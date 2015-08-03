@@ -19,6 +19,7 @@
 			class="com.hhxh.car.base.buspackage.action.BusPackageAction" />
 			<action name="baseProvinceAction" class="com.hhxh.car.base.district.action.BaseProvinceAction"></action>
 			<action name="baseCityAction" class="com.hhxh.car.base.district.action.BaseCityAction"></action>
+			<action name="baseAreaAction" class="com.hhxh.car.base.district.action.BaseAreaAction"></action>
 	</package>
 
 </struts>

@@ -1,6 +1,7 @@
 package com.hhxh.car.common.util;
 
 import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
@@ -20,6 +21,7 @@ public class ConfigResourcesGetter {
 	private static final Logger log = Logger.getLogger(ConfigResourcesGetter.class);
 	
 	private static final String CONFIG_PATH = "/config.properties";
+	private static final String MESSAGE_PATH = "/message.properties" ;
 	/**
 	 * 所有的配置属性都放在这里保存
 	 */
@@ -27,7 +29,8 @@ public class ConfigResourcesGetter {
 	static {//初始化配置文件
 		pro  = new Properties();
 		try {
-			pro.load(ConfigResourcesGetter.class.getResourceAsStream(CONFIG_PATH));
+			pro.load(new InputStreamReader(ConfigResourcesGetter.class.getResourceAsStream(CONFIG_PATH),"utf-8"));
+			pro.load(new InputStreamReader(ConfigResourcesGetter.class.getResourceAsStream(MESSAGE_PATH),"utf-8"));
 		} catch (Exception e) {
 			log.error("初始化配件文件失败");
 		}

@@ -40,17 +40,20 @@ public class BaseArea implements java.io.Serializable {
 	/**
 	 * 單向一对多
 	 */
-	@OneToMany(fetch=FetchType.LAZY)
-	@JoinColumns(value={@JoinColumn(name="parentID",referencedColumnName="areaId")})
+	@OneToMany(fetch=FetchType.LAZY,mappedBy="baseAreaParent")
+//	@JoinColumns(value={@JoinColumn(name="parentID",referencedColumnName="areaId")})
 	private Set<BaseArea> baseAreas = new HashSet<BaseArea>();
+	
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="parentID")
+	private BaseArea baseAreaParent ;
 	
 
 	public BaseArea() {
 	}
 
-	public BaseArea(String areaId, String name) {
+	public BaseArea(String areaId) {
 		this.id = areaId;
-		this.name = name;
 	}
 
 	public BaseArea(String areaId, String cityId, String cellCode, String name,
@@ -115,6 +118,14 @@ public class BaseArea implements java.io.Serializable {
 	public String toString() {
 		return "BaseArea [id=" + id + ", cellCode=" + cellCode + ", name="
 				+ name + ", sortCode=" + sortCode ;
+	}
+
+	public BaseArea getBaseAreaParent() {
+		return baseAreaParent;
+	}
+
+	public void setBaseAreaParent(BaseArea baseAreaParent) {
+		this.baseAreaParent = baseAreaParent;
 	}
 
 	

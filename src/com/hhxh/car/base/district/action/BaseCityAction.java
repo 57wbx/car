@@ -2,9 +2,14 @@ package com.hhxh.car.base.district.action;
 
 import java.io.IOException;
 
+import javax.annotation.Resource;
+
+import com.hhxh.car.base.district.domain.BaseArea;
 import com.hhxh.car.base.district.domain.BaseCity;
 import com.hhxh.car.base.district.domain.BaseProvince;
+import com.hhxh.car.base.district.service.BaseCityService;
 import com.hhxh.car.common.action.BaseAction;
+import com.hhxh.car.common.util.ErrorMessageException;
 import com.opensymphony.xwork2.ModelDriven;
 
 public class BaseCityAction extends BaseAction implements ModelDriven<BaseCity>{
@@ -15,19 +20,47 @@ public class BaseCityAction extends BaseAction implements ModelDriven<BaseCity>{
 	
 	private String[] ids;
 	
+	private String parenAreaId ;
+	
+	@Resource
+	private BaseCityService baseCityService ;
+	
 	/**
 	 * 更具城市返回所有的大区域
 	 * @throws IOException 
 	 */
-	public void listBaseAreaByBaseCity() throws IOException{
-		if(isNotEmpty(baseCity.getId())){
+	public void listBaseAreaByBaseCity() {
+		if(isNotEmpty(parenAreaId)){
+			listBaseAreaByBaseArea();//如果是查询地区下面的地区的操作方法
+		}else if(isNotEmpty(baseCity.getId())){
 			baseCity  = this.baseService.get(BaseCity.class,baseCity.getId());
-			this.jsonObject.put("code", 1);
 			this.jsonObject.accumulate("data", baseCity.getBaseAreas(),this.getJsonConfig(new String[]{"baseCity","baseAreas"}));
+			jsonObject.put("recordsTotal",baseCity.getBaseAreas().size());
+			jsonObject.put("recordsFiltered",baseCity.getBaseAreas().size());
+			this.putJson();
 		}else{
-			this.jsonObject.put("code", 0);
+			this.putJson(false, "查询失败");
 		}
-		this.putJson(jsonObject.toString());
+	}
+	
+	/**
+	 * 查询area下面的子area
+	 */
+	public void listBaseAreaByBaseArea(){
+		if(isNotEmpty(parenAreaId)){
+			try{
+				BaseArea area = this.baseService.get(BaseArea.class,parenAreaId);
+				this.jsonObject.accumulate("data",area.getBaseAreas(),this.getJsonConfig(new String[]{"baseCity","baseAreas"}));
+				this.jsonObject.put("recordsTotal", area.getBaseAreas().size());
+				this.jsonObject.put("recordsFiltered", area.getBaseAreas().size());
+				this.putJson();
+			}catch(Exception e){
+				log.error(e);
+				this.putJson(false,"数据库异常");
+			}
+		}else{
+			this.putJson(false, "查询失败,没有上级地区id");
+		}
 	}
 	
 	/**
@@ -69,13 +102,18 @@ public class BaseCityAction extends BaseAction implements ModelDriven<BaseCity>{
 	 */
 	public void deleteBaseCityByIds(){
 		try {
-			this.baseService.deleteByIds(BaseCity.class, ids);
+			this.baseCityService.deleteBaseCity(ids);
 			this.putJson();
-		} catch (Exception e) {
-			log.error("删除失败");
+		} catch (ErrorMessageException e) {
+			log.error("删除失败",e);
+			this.putJson(false, e.getMessage());
+		}catch (Exception e) {
+			log.error("删除失败",e);
 			this.putJson(false, "删除城市信息失败");
 		}
 	}
+	
+	
 	
 	@Override
 	public BaseCity getModel() {
@@ -97,6 +135,14 @@ public class BaseCityAction extends BaseAction implements ModelDriven<BaseCity>{
 
 	public void setIds(String[] ids) {
 		this.ids = ids;
+	}
+
+	public String getParenAreaId() {
+		return parenAreaId;
+	}
+
+	public void setParenAreaId(String parenAreaId) {
+		this.parenAreaId = parenAreaId;
 	}
 
 	

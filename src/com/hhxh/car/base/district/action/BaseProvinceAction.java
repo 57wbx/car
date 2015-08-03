@@ -38,12 +38,13 @@ public class BaseProvinceAction extends BaseAction implements ModelDriven<BasePr
 	public void listBaseCityByProvince() throws IOException{
 		if(isNotEmpty(baseProvince.getId())){
 			baseProvince = this.baseService.get(BaseProvince.class,baseProvince.getId());
-			this.jsonObject.put("code",1);
 			this.jsonObject.accumulate("data",baseProvince.getBaseCitys(),this.getJsonConfig(new String[]{"baseProvince","baseAreas"}) );
+			jsonObject.put("recordsTotal",baseProvince.getBaseCitys().size());
+			jsonObject.put("recordsFiltered",baseProvince.getBaseCitys().size());
+			this.putJson();
 		}else{
-			this.jsonObject.put("code", 0);
+			this.putJson(false,"查询失败");
 		}
-		this.putJson(jsonObject.toString());
 	}
 	
 	

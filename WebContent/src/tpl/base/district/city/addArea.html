@@ -1,0 +1,49 @@
+    <div class="modal-content" >
+      <div class="modal-header">
+        <button type="button" class="close"  ng-click="cancel()" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" >地区信息</h4>
+      </div>
+      <div class="modal-body">
+      	<div class="container-fluid">
+	        <form name="addAreaForm" id="addAreaForm" ng-model="formData" class="form-horizontal form-validation"> 
+	        
+		          <div class="form-group">
+		           		<label class="col-sm-2 control-label">上级地域<i class="fa fa-asterisk text-danger"></i></label>
+			            <div class="col-sm-4">
+			            	<input type="text" class="form-control"  disabled ng-model="formData.parentName">
+			            </div>
+	        		</div>
+	        		
+		          <div class="form-group">
+		           		<label class="col-sm-2 control-label">编号<i class="fa fa-asterisk text-danger"></i></label>
+			            <div class="col-sm-4">
+			            	<input type="text" class="form-control"  ng-model="formData.cellCode" required>
+			            </div>
+			            
+			            <label class="col-sm-2 control-label">名称<i class="fa fa-asterisk text-danger"></i></label>
+			            <div class="col-sm-4">
+			            	<input type="text" class="form-control"  ng-model="formData.name" required>
+			            </div>
+	        		</div>
+	        		
+	        		
+	        		 <div class="form-group">
+		           		<label class="col-sm-2 control-label">排序号<i class="fa fa-asterisk text-danger"></i></label>
+			            <div class="col-sm-4">
+			            	<input type="text" class="form-control"  ng-model="formData.sortCode" required>
+			            </div>
+			            
+	        		</div>
+	        		
+	        		
+	        </form>
+	        </div>
+      </div>
+      <div class="modal-footer ">
+	      	<div class="text-center">
+		        <button type="button" class="btn btn-success" id="areaSubmit" ng-click="ok()" ng-disabled="addAreaForm.$invalid ">确定</button>
+		        <button type="button" class="btn btn-primary" ng-click="cancel()">取消</button>
+	      </div>
+      	</div>
+    </div>
+ </form>
