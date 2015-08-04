@@ -1,26 +1,18 @@
 package com.hhxh.car.base.carshop.action;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
 
-import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 import net.sf.json.util.CycleDetectionStrategy;
 
-import org.springframework.stereotype.Service;
-
-import com.baidu.ueditor.upload.Uploader;
-import com.hhxh.car.base.busitem.domain.BusItem;
 import com.hhxh.car.base.carshop.domain.CarShop;
 import com.hhxh.car.base.carshop.domain.CarShopImg;
 import com.hhxh.car.base.carshop.service.CarShopService;
@@ -29,7 +21,6 @@ import com.hhxh.car.common.util.FileUploadUtil;
 import com.hhxh.car.common.util.JsonDateValueProcessor;
 import com.hhxh.car.common.util.UrlUtils;
 import com.hhxh.car.org.domain.AdminOrgUnit;
-import com.hhxh.car.org.domain.Position;
 import com.opensymphony.xwork2.ModelDriven;
 
 public class CarShopAction extends BaseAction implements ModelDriven<CarShop>{

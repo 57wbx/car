@@ -5,60 +5,73 @@
   
   	<div class="panel-body">
     	<form name="form" class="form-horizontal form-validation" method="post" ng-model="formData" enctype="multipart/form-data">
+    	
      	 <div class="form-group">
-        <label class="col-sm-3 control-label">店面名称<i class="fa fa-asterisk text-danger"></i></label>
-        <div class="col-sm-8">
-          <input type="text" placeholder="店面全称" class="form-control" ng-model="formData.shopName" tabindex="1" required>
-        </div>
+     	 
+		    	 <label class="col-sm-1 control-label">公司ID<i class="fa fa-asterisk text-danger"></i></label>
+		       <div class="col-sm-2">
+		         <input type="text" name="orgName" id="orgName" placeholder="公司ID" class="form-control" ng-model="formData.orgName" readonly required>
+		         <input type="hidden"   ng-model="formData.orgId"  required >
+		           <!-- 业务类型ztree -->
+		         <div org_ztree inputName="orgName" showElement="choseOrg" needClick="true"></div>
+		       </div>
+		       <div class="col-sm-1">
+		         <button type="button" class="btn btn-info" id="choseOrg">选择</button>
+		       </div>
+     	 
+		        <label class="col-sm-1 control-label">店面名称<i class="fa fa-asterisk text-danger"></i></label>
+		        <div class="col-sm-3">
+		          <input type="text" placeholder="店面全称" class="form-control" ng-model="formData.shopName" tabindex="1" required>
+		        </div>
+        
+		       <label class="col-sm-1 control-label">简称<i class="fa fa-asterisk text-danger"></i></label>
+		       <div class="col-sm-3">
+		         <input type="text" placeholder="店面简称"  class="form-control" ng-model="formData.simpleName" required>
+		       </div>
       </div>
       
-      <div class="form-group">
-        <label class="col-sm-3 control-label">简称<i class="fa fa-asterisk text-danger"></i></label>
-        <div class="col-sm-8">
-          <input type="text" placeholder="店面简称"  class="form-control" ng-model="formData.simpleName" required>
-        </div>
-      </div>
       
       <div class="form-group">
-        <label class="col-sm-3 control-label">公司ID<i class="fa fa-asterisk text-danger"></i></label>
-        <div class="col-sm-6">
-          <input type="text" name="orgName" id="orgName" placeholder="公司ID" class="form-control" ng-model="formData.orgName" readonly required>
-          
-          <input type="hidden"   ng-model="formData.orgId"  required >
-            <!-- 业务类型ztree -->
-          <div org_ztree inputName="orgName" showElement="choseOrg" needClick="true"></div>
-        </div>
-        <div class="col-sm-3">
-          <button type="button" class="btn btn-info" id="choseOrg">选择</button>
-        </div>
+      
+	        <label class="col-sm-1 control-label">店面类型<i class="fa fa-asterisk text-danger"></i></label>
+	        <div class="col-sm-3">
+	          <select id="shopType" class="form-control" required ng-model="formData.shopType" >
+	          	<!-- 0=加盟店、1=合作店、3=直营店、4=中心店（区域旗舰店） -->
+	            <option value="0">加盟店</option>
+	            <option value="1">合作店</option>
+	            <option value="3">直营店</option>
+	            <option value="4">中心店（区域旗舰店）</option>
+	          </select>
+	        </div>
+        
+	        <label class="col-sm-1  control-label">营业证号</label>
+	        <div class="col-sm-3 ">
+	          <input id="busCard" type="text" placeholder="营业证号" class="form-control" ng-model="formData.busCard">
+	      	 </div>
         
       </div>
       
-      <div class="form-group">
-        <label class="col-sm-3 control-label">店面类型<i class="fa fa-asterisk text-danger"></i></label>
-        <div class="col-sm-8">
-          <select id="shopType" class="form-control" required ng-model="formData.shopType" >
-          	<!-- 0=加盟店、1=合作店、3=直营店、4=中心店（区域旗舰店） -->
-            <option value="0">加盟店</option>
-            <option value="1">合作店</option>
-            <option value="3">直营店</option>
-            <option value="4">中心店（区域旗舰店）</option>
-          </select>
-        </div>
-      </div>
-      
-      <div class="form-group">
-        <label class="col-sm-3 col-xs-11 control-label">营业证号</label>
-        <div class="col-sm-8 col-xs-8">
-          <input id="busCard" type="text" placeholder="营业证号" class="form-control" ng-model="formData.busCard">
-      	 </div>
-      </div>
        
        <div class="form-group">
-	       <label class="col-sm-3 control-label">营业执照照片</label>
-	       <div class="col-sm-3">
-	 	       <input type="file" nv-file-select="" uploader="uploader" />
+       
+	       <label class="col-sm-1 control-label">营业执照照片</label>
+	       <div class="col-sm-8">
+	 	       <input type="file" nv-file-select="" uploader="uploader" class="form-control upload" />
 	       </div>
+	       <div class="col-sm-2">
+	 	        <button class="btn btn-success" role="button">上传</button>
+	       </div>
+	       
+       </div>
+       
+       <div class="form-group">
+       		<table class="col-sm-offset-1 col-sm-8  table">
+       			<tr>
+       				<th>sdfd</th>
+       				<th>sdfd</th>
+       				<th>sdfd</th>
+       			</tr>
+       		</table>
        </div>
        
       <div class="form-group">

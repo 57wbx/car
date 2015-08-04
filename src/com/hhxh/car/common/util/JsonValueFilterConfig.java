@@ -13,7 +13,7 @@ package com.hhxh.car.common.util;
 public class JsonValueFilterConfig {
 	private JsonValueFilterConfig(){};//私有化构造方法
 	/**
-	 * baseArea 的需要在json中排除的数据  ，提供一个只有baseArea的对象
+	 *  baseArea 的需要在json中排除的数据  ，提供一个只有baseArea的对象
 	 */
 	public static final String[] BASEAREA_ONLY_BASEAREA = new String[]{"baseCity","baseAreas","baseAreaParent"};
 	

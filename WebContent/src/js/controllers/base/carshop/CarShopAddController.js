@@ -7,7 +7,8 @@ app.controller('carShopAddController', ['$scope', '$state', 'uiLoad','JQ_CONFIG'
     
     var uploader = $scope.uploader = new FileUploader({
         url: 'base/carShopAction!testUploadImg.action',
-        alias:"files"
+        alias:"files",
+        autoUpload:true
     });
     
     uploader.onAfterAddingFile = function(fileItem) {

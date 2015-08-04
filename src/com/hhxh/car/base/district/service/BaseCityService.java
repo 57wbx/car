@@ -23,7 +23,7 @@ public class BaseCityService extends BaseService{
 	public void deleteBaseCity(String[] ids) throws ErrorMessageException{
 		if(ids!=null&&ids.length>0){
 			for(String id : ids){
-				BaseCity city = this.get(BaseCity.class,id);
+				BaseCity city = this.get(BaseCity.class,id); 
 				if(city.getBaseAreas().size()==0){
 					//没有相关数据，可以进行删除操作
 					this.delete(city);

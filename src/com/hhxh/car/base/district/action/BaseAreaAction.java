@@ -117,6 +117,4 @@ public class BaseAreaAction extends BaseAction implements ModelDriven<BaseArea>{
 		this.ids = ids;
 	}
 	
-	
-
 }
