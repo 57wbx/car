@@ -5,10 +5,10 @@
 		<div class="row">
 			<!-- <div class="col-md-4 col-xs-0"></div> -->
 			<div class="col-md-7  ">
-				<h2 class="leave-title text-right"><span class="text-center">服务图片管理</span></h2>
+				<h2 class="leave-title text-right"><span class="text-center"><span ng-bind="busItemName"></span>-服务图片管理</span></h2>
 				<input type="file" class="hidden" id="addImage" nv-file-select="" uploader="uploader"  accept="image/*"/>
 			</div>
-			<div class="col-md-offset-2 col-md-2 ">
+			<div class="col-md-offset-1 col-md-4 ">
 				<span class="btn btn-success btn-sm " role="button"  style="margin-top:25px" ng-click="seleceImg()">新增图片</span>
 				<span class="btn btn-danger btn-sm " role="button"  style="margin-top:25px" ng-click="back()">返回列表界面</span>
 			</div>	
@@ -24,7 +24,7 @@
 					      <img ng-src="http://{{item.serverIp}}:{{item.port}}/{{item.filePath}}" alt="1">
 					
 					      <div class="caption">
-					       <h3>类型：{{item.fileType}}<br/>
+					       <h3>
           						<small><strong>内容：</strong>{{item.content}}</small>
       						  </h3>
 					        <p class="text-center">

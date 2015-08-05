@@ -241,38 +241,35 @@ public class BusItemAction extends BaseAction implements ModelDriven<BusItem>{
 	 * 查看一个指定id的详细信息，包括子集信息
 	 */
 	public void detailsBusItem(){
-		if(busItem.getFid()==null||"".equals(busItem.getFid())){
-			jsonObject.put("code", 0);//获取失败
-		}else{
-			//在这里执行查询操作
-			busItem = this.baseService.get(BusItem.class, busItem.getFid());
-			Set<BusAtom> busAtoms = busItem.getBusAtoms();
-			List<BusAtom> busAtomsReturnValue = new ArrayList<BusAtom>();
-			if(busAtoms!=null&&busAtoms.size()>0){
-				for(BusAtom ba : busAtoms){
-					ba.setBusItem(null);
-					busAtomsReturnValue.add(ba);
-				}
+		try{
+			if(busItem.getFid()==null||"".equals(busItem.getFid()))
+			{
+				this.putJson(false, "查询失败，没有需要查询的服务项id");
 			}
-			
-			//设置json处理数据的规则
-			JsonConfig jsonConfig = new JsonConfig();  
-			jsonConfig.registerJsonValueProcessor(Date.class, new JsonDateValueProcessor()); 
-			jsonConfig.setIgnoreDefaultExcludes(false); //设置默认忽略 
-			jsonConfig.setCycleDetectionStrategy(CycleDetectionStrategy.LENIENT);//设置循环策略为忽略    解决json最头疼的问题 死循环
-			jsonConfig.setExcludes(JsonValueFilterConfig.BASEITEM_ONLY_BASEITEM);//此处是亮点，只要将所需忽略字段加到数组中即可
-			
-			jsonObject.put("code", 1);
-			jsonObject.accumulate("details", busItem,jsonConfig);
-			jsonObject.accumulate("busAtoms", busAtomsReturnValue,jsonConfig);
-			
+			else
+			{
+				//在这里执行查询操作
+				busItem = this.baseService.get(BusItem.class, busItem.getFid());
+				Set<BusAtom> busAtoms = busItem.getBusAtoms();
+				List<BusAtom> busAtomsReturnValue = new ArrayList<BusAtom>();
+				if(busAtoms!=null&&busAtoms.size()>0)
+				{
+					for(BusAtom ba : busAtoms)
+					{
+						ba.setBusItem(null);
+						busAtomsReturnValue.add(ba);
+					}
+				}
+				jsonObject.accumulate("details", busItem,this.getJsonConfig(JsonValueFilterConfig.BASEITEM_ONLY_BASEITEM));
+				jsonObject.accumulate("busAtoms", busAtomsReturnValue,this.getJsonConfig(JsonValueFilterConfig.BASEITEM_ONLY_BASEITEM));
+				this.putJson();
+			}
 		}
-		try {
-			this.putJson(jsonObject.toString());
-		} catch (IOException e) {
-			e.printStackTrace();
+		catch(Exception e)
+		{
+			log.error("查询服务项详细信息失败！",e);
+			this.putJson(false, "查询信息失败");
 		}
-		
 	}
 	
 	/**

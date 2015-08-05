@@ -1,9 +1,8 @@
-app.controller("manageItemImgDetailsController",['$scope','$modalInstance','$http','imgId','content','fileType',function($scope,$modalInstance,$http,imgId,content,fileType){
+app.controller("manageItemImgDetailsController",['$scope','$modalInstance','$http','imgId','content',function($scope,$modalInstance,$http,imgId,content){
 	
 	$scope.formData = {};
 	$scope.formData.id = imgId ;
 	$scope.formData.content = content ;
-	$scope.formData.fileType = fileType ;
 	
 	
 	var submit = function(){

@@ -15,6 +15,9 @@ app.controller('manageItemImgController',['$rootScope','$scope','$state','$timeo
 		$scope.rowIds[0] = itemId ;
 	}
 	
+	/**
+	 * 返回所有的图片列表
+	 */
 	$http({
 		url:"base/busItemAction!listItemImgByBusItem.action",
 		method:"get",
@@ -24,6 +27,20 @@ app.controller('manageItemImgController',['$rootScope','$scope','$state','$timeo
 	}).then(function(resp){
 		if(resp.data.code==1){
 			$scope.imgs = resp.data.images;
+		}
+	});
+	/**
+	 * 返回服务项的名称
+	 */
+	$http({
+		url:"base/busItemAction!detailsBusItem.action",
+		method:"params",
+		params:{
+			fid:itemId
+		}
+	}).then(function(resp){
+		if(resp.data.code){
+			$scope.busItemName = resp.data.details.itemName ;
 		}
 	});
 	
@@ -67,6 +84,7 @@ app.controller('manageItemImgController',['$rootScope','$scope','$state','$timeo
          if(response.code==1){
         	 $scope.imgs.push({
         		//http://{{item.serverIp}}:{{item.port}}/{{item.filePath}}
+        		 id:response.id,
         		 serverIp:response.serverIp,
         		 port:response.port,
         		 filePath:response.filePath
@@ -132,9 +150,6 @@ app.controller('manageItemImgController',['$rootScope','$scope','$state','$timeo
     	    	 },
     	    	 content:function(){
     	    		 return item.content;
-    	    	 },
-    	    	 fileType:function(){
-    	    		 return item.fileType;
     	    	 }
     	     }
     	   });
@@ -144,7 +159,6 @@ app.controller('manageItemImgController',['$rootScope','$scope','$state','$timeo
 			modalInstance.result.then(function (formData) {
 				var item = utilService.getObjectFromArray("id",formData.id,$scope.imgs);
 				if(item){
-					item.fileType = formData.fileType;
 					item.content = formData.content;
 				}
 			});
