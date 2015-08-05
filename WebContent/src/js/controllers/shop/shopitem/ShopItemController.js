@@ -1,10 +1,26 @@
 'use strict';
 
-app.controller('shopItemController',['$rootScope','$scope','$state','$timeout','$http',function($rootScope,$scope,$state,$timeout,$http){
+app.controller('shopItemController',['$rootScope','$scope','$state','$timeout','$http','sessionStorageService',function($rootScope,$scope,$state,$timeout,$http,sessionStorageService){
 	
 	$scope.rowIds = [];//用来保存所选列表的id
 	
+	/**
+	 * 在session中不能清除的内容，应该包含子缓存对象
+	 */
+	$scope.session = {};
+	$scope.session.cacheArray = ["shopItemIdForImg"];
+	sessionStorageService.clearNoCacheItem($scope.session.cacheArray);
 	
+	/**
+	 * 模块路由路径统一管理
+	 */
+	$scope.state = {
+			list:"app.shopitem.list",
+			add:"app.shopitem.add",
+			edit:"app.shopitem.edit",
+			details:"app.shopitem.details",
+			manageimg:"app.shopitem.manageimg"
+	}
 	
 	/**
 	 * 并无实际的意义，但是如果没有用这个方法的话，页面中菜单按钮将不会根据属性的值进行变化
@@ -61,7 +77,7 @@ app.controller('shopItemController',['$rootScope','$scope','$state','$timeout','
 	 * 新增按钮的方法
 	 */
 	$scope.addRow = function(){
-		$state.go("app.shopitem.add");
+		$state.go($scope.state.add);
 		$scope.treeAPI.hiddenBusTypeTree();
 	}
 	
@@ -75,7 +91,7 @@ app.controller('shopItemController',['$rootScope','$scope','$state','$timeout','
 		}else if($scope.editId){
 			$scope.rowIds.push($scope.editId);
 		}
-		$state.go("app.shopitem.details");
+		$state.go($scope.state.details);
 		$scope.treeAPI.hiddenBusTypeTree();
 	}
 	
@@ -87,7 +103,19 @@ app.controller('shopItemController',['$rootScope','$scope','$state','$timeout','
 			$scope.clearRowIds();
 			$scope.rowIds.push($scope.editId);
 		}
-		$state.go("app.shopitem.edit");
+		$state.go($scope.state.edit);
+		$scope.treeAPI.hiddenBusTypeTree();
+	}
+	
+	/**
+	 * 管理图片的方法
+	 */
+	$scope.manageImg = function(){
+		if($scope.editId){
+			$scope.clearRowIds();
+			$scope.rowIds.push($scope.editId);
+		}
+		$state.go($scope.state.manageimg);
 		$scope.treeAPI.hiddenBusTypeTree();
 	}
 	

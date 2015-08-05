@@ -34,9 +34,6 @@ public class TestBusItem {
 		for(BusItem i:list){
 			System.out.println(i);
 		}
-	
-		
-		
 		transaction.commit();
 	}
 	
@@ -93,6 +90,8 @@ public class TestBusItem {
 	
 	@Test
 	public void deleteBusItem(){
-		
+		BaseService service = (BaseService) SpringUtil.getContext().getBean("baseService");
+//		service.delete(new BusItem("BY03"));
+		service.delete(BusItem.class, "sdfasfasd");
 	}
 }

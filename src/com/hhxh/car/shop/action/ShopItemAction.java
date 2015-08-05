@@ -20,10 +20,13 @@ import com.hhxh.car.base.busatom.domain.BusAtom;
 import com.hhxh.car.base.busitem.domain.BusItem;
 import com.hhxh.car.base.carshop.domain.CarShop;
 import com.hhxh.car.common.action.BaseAction;
+import com.hhxh.car.common.util.ConfigResourcesGetter;
 import com.hhxh.car.common.util.JsonDateValueProcessor;
+import com.hhxh.car.common.util.JsonValueFilterConfig;
 import com.hhxh.car.common.util.TypeTranslate;
 import com.hhxh.car.shop.domain.ShopAtom;
 import com.hhxh.car.shop.domain.ShopItem;
+import com.hhxh.car.shop.domain.ShopItemImg;
 import com.hhxh.car.shop.service.ShopItemService;
 import com.opensymphony.xwork2.ModelDriven;
 
@@ -49,38 +52,36 @@ public class ShopItemAction extends BaseAction implements ModelDriven<ShopItem> 
 	/**
 	 * 获取所有的商家服务项
 	 */
-	public void listShopItem(){
-		
-		Map<String,Object> paramMap = new HashMap<String,Object>();
-		paramMap.put("carShop",this.getLoginUser().getCarShop());//只能查本单位的所有数据
-		
-		List<ShopItem> shopItems = null;
-		int recordsTotal ;
-		if(this.getBusTypeCode()!=null&&!"".equals(this.getBusTypeCode())){
-			paramMap.put("busTypeCode",this.getBusTypeCode()+'%');
-			shopItems = this.baseService.gets("From ShopItem b where b.itemCode like :busTypeCode and b.carShop=:carShop",paramMap, this.getIDisplayStart(), this.getIDisplayLength());
-			recordsTotal = this.baseService.getSize("From ShopItem b where b.itemCode like :busTypeCode and b.carShop=:carShop",paramMap);
-		}else{
-			shopItems = this.baseService.gets("From ShopItem b where  b.carShop=:carShop",paramMap, this.getIDisplayStart(), this.getIDisplayLength());
-			recordsTotal = this.baseService.getSize("From ShopItem b where  b.carShop=:carShop",paramMap);
+	public void listShopItem()
+	{
+		try{
+			
+			Map<String,Object> paramMap = new HashMap<String,Object>();
+			paramMap.put("carShop",this.getLoginUser().getCarShop());//只能查本单位的所有数据
+			
+			List<ShopItem> shopItems = null;
+			int recordsTotal ;
+			
+			if(isNotEmpty(this.getBusTypeCode()))
+			{
+				paramMap.put("busTypeCode",this.getBusTypeCode()+'%');
+				shopItems = this.baseService.gets("From ShopItem b where b.itemCode like :busTypeCode and b.carShop=:carShop",paramMap, this.getIDisplayStart(), this.getIDisplayLength());
+				recordsTotal = this.baseService.getSize("From ShopItem b where b.itemCode like :busTypeCode and b.carShop=:carShop",paramMap);
+			}
+			else
+			{
+				shopItems = this.baseService.gets("From ShopItem b where  b.carShop=:carShop",paramMap, this.getIDisplayStart(), this.getIDisplayLength());
+				recordsTotal = this.baseService.getSize("From ShopItem b where  b.carShop=:carShop",paramMap);
+			}
+			jsonObject.accumulate("data", shopItems, this.getJsonConfig(JsonValueFilterConfig.SHOPITEM_ONLY_SHOPITEM));
+			jsonObject.put("recordsTotal",recordsTotal);
+			jsonObject.put("recordsFiltered",recordsTotal);
+			this.putJson();
 		}
-		
-		//设置json处理数据的规则
-		JsonConfig jsonConfig = new JsonConfig();  
-		jsonConfig.registerJsonValueProcessor(Date.class, new JsonDateValueProcessor()); 
-		jsonConfig.setIgnoreDefaultExcludes(false); //设置默认忽略 
-		jsonConfig.setCycleDetectionStrategy(CycleDetectionStrategy.LENIENT);//设置循环策略为忽略    解决json最头疼的问题 死循环
-		jsonConfig.setExcludes(new String[] {"carShop","shopPackages","shopAtoms","shopItems","org","createUser","lastUpdateUser"});//此处是亮点，只要将所需忽略字段加到数组中即可
-		
-		jsonObject.accumulate("data", shopItems, jsonConfig);
-		
-		jsonObject.put("recordsTotal",recordsTotal);
-		jsonObject.put("recordsFiltered",recordsTotal);
-		
-		try {
-			this.putJson(jsonObject.toString());
-		} catch (IOException e) {
-			e.printStackTrace();
+		catch(Exception e)
+		{
+			log.error("获取商家服务", e);
+			this.putJson(false, this.getMessageFromConfig("listShopItemError"));
 		}
 	}
 	
@@ -249,37 +250,45 @@ public class ShopItemAction extends BaseAction implements ModelDriven<ShopItem> 
 	/**
 	 * 获取一个指定id的详细数据
 	 */
-	public void detailsShopItem(){
-		if(shopItem.getFid()==null||"".equals(shopItem.getFid())){
-			jsonObject.put("code", 0);//获取失败
-		}else{
-			//在这里执行查询操作
-			shopItem = this.baseService.get(ShopItem.class, shopItem.getFid());
-			Set<ShopAtom> shopAtoms = shopItem.getShopAtoms();
-			List<ShopAtom> busAtomsReturnValue = new ArrayList<ShopAtom>();
-			if(shopAtoms!=null&&shopAtoms.size()>0){
-				for(ShopAtom ba : shopAtoms){
-					ba.setShopItem(null);
-					busAtomsReturnValue.add(ba);
+	public void detailsShopItem()
+	{
+		try{
+			if(isNotEmpty(shopItem.getFid())){
+				//在这里执行查询操作
+				shopItem = this.baseService.get(ShopItem.class, shopItem.getFid());
+				if(shopItem!=null)
+				{
+					Set<ShopAtom> shopAtoms = shopItem.getShopAtoms();
+					List<ShopAtom> busAtomsReturnValue = new ArrayList<ShopAtom>();
+					if(shopAtoms!=null&&shopAtoms.size()>0)
+					{
+						for(ShopAtom ba : shopAtoms)
+						{
+	//						ba.setShopItem(null);
+							busAtomsReturnValue.add(ba);
+						}
+					}
+					
+					jsonObject.accumulate("details", shopItem,this.getJsonConfig(JsonValueFilterConfig.SHOPITEM_ONLY_SHOPITEM));
+					jsonObject.accumulate("busAtoms", busAtomsReturnValue,this.getJsonConfig(JsonValueFilterConfig.SHOPATOM_HAS_AUTOPART));
+					this.putJson();
+					return;
+				}
+				else
+				{
+					this.putJson(false, this.getMessageFromConfig("shopItemIdError"));
+					return;
 				}
 			}
-			
-			//设置json处理数据的规则
-			JsonConfig jsonConfig = new JsonConfig();  
-			jsonConfig.registerJsonValueProcessor(Date.class, new JsonDateValueProcessor()); 
-			jsonConfig.setIgnoreDefaultExcludes(false); //设置默认忽略 
-			jsonConfig.setCycleDetectionStrategy(CycleDetectionStrategy.LENIENT);//设置循环策略为忽略    解决json最头疼的问题 死循环
-			jsonConfig.setExcludes(new String[] {"shopAtoms","shopItem","carShop","shopPackages"});//此处是亮点，只要将所需忽略字段加到数组中即可
-			
-			jsonObject.put("code", 1);
-			jsonObject.accumulate("details", shopItem,jsonConfig);
-			jsonObject.accumulate("busAtoms", busAtomsReturnValue,jsonConfig);
-			
+			else
+			{
+				this.putJson(false, this.getMessageFromConfig("needShopItemId"));
+			}
 		}
-		try {
-			this.putJson(jsonObject.toString());
-		} catch (IOException e) {
-			e.printStackTrace();
+		catch(Exception e)
+		{
+			log.error("获取商家服务详细信息失败", e);
+			this.putJson(false, this.getMessageFromConfig("listShopItemError"));
 		}
 	}
 	
@@ -333,6 +342,38 @@ public class ShopItemAction extends BaseAction implements ModelDriven<ShopItem> 
 		}
 	}
 	
+	/**
+	 * 获取一个商家服务下面的所有图片信息
+	 */
+	public void listShopItemImgByShopItem()
+	{
+		try
+		{
+			if(isNotEmpty(shopItem.getFid()))
+			{
+				shopItem = this.baseService.get(ShopItem.class,shopItem.getFid());
+				if(shopItem!=null)
+				{
+					List<ShopItemImg> list = new ArrayList<ShopItemImg>(shopItem.getShopItemImgs());
+					this.jsonObject.accumulate("images", list, this.getJsonConfig(JsonValueFilterConfig.SHOPITEMIMG_ONLY_SHOPITEMIMG));
+					this.putJson();
+				}
+				else
+				{
+					this.putJson(false, this.getMessageFromConfig("shopItemIdError"));
+				}
+			}
+			else
+			{
+				this.putJson(false, this.getMessageFromConfig("needShopItemId"));
+			}
+		}
+		catch(Exception e)
+		{
+			log.error("获取商家服务图片信息列表失败", e);
+			this.putJson(false, this.getMessageFromConfig("listImg_error"));
+		}
+	}
 	
 
 	@Override

@@ -20,6 +20,7 @@ import org.apache.log4j.Logger;
 import org.apache.struts2.ServletActionContext;
 
 import com.hhxh.car.common.service.BaseService;
+import com.hhxh.car.common.util.ConfigResourcesGetter;
 import com.hhxh.car.common.util.JsonDateValueProcessor;
 import com.hhxh.car.permission.domain.Role;
 import com.hhxh.car.permission.domain.User;
@@ -352,7 +353,25 @@ public class BaseAction extends ActionSupport  {
 		this.filesContentType = filesContentType;
 	}
 
-	
+	/**
+	 * 从配置文件中获取提示消息
+	 * 如果key为空，或者在配置文件中没有key这个配置信息，那么将返回
+	 * message.properties-->common_deflaut_message中的信息
+	 * @return
+	 */
+	public String getMessageFromConfig(String key)
+	{
+		String message = ConfigResourcesGetter.getProperties(key);
+		if("common_deflaut_message".equals(key)&&!isNotEmpty(message)){
+			//配置文件中找不到common_deflaut_message该提示消息的时候
+			return "系统错误，缺少配置文件，请联系系统管理员！";
+		}
+		if(isNotEmpty(message))
+		{
+			return message;
+		}
+		return getMessageFromConfig("common_deflaut_message");
+	}
     
 
 }

@@ -439,7 +439,7 @@ app.controller("shopItemAddController",['$scope','$state','$http','checkUniqueSe
 		}).then(function(resp){
 			var code = resp.data.code ;
 			if(code == 1){//代表保存成功
-				$state.go("app.shopitem.list");
+				$state.go($scope.state.list);
 			}else{//代表保存失败
 				alert("保存失败");
 			}
@@ -452,7 +452,7 @@ app.controller("shopItemAddController",['$scope','$state','$http','checkUniqueSe
 	 * 取消按钮的操作，直接跳转到列表页面上
 	 */
 	$scope.cancel = function(){
-		$state.go("app.shopitem.list");
+		$state.go($scope.state.list);
 	}
 	
 	/**

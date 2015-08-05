@@ -30,7 +30,7 @@ public class BusItem implements java.io.Serializable {
 
 	@Id
 	private String fid ;
-	@Column(nullable=false,unique=true)
+	@Column
 	private String itemCode;
 	@Column
 	private String itemName;

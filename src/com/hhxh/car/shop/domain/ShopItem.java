@@ -77,6 +77,9 @@ public class ShopItem implements java.io.Serializable {
 	@OneToMany(mappedBy="shopItem",fetch=FetchType.LAZY)
 	private Set<ShopAtom> shopAtoms = new HashSet<ShopAtom>();
 	
+	@OneToMany(mappedBy="shopItem",fetch=FetchType.LAZY)
+	private Set<ShopItemImg> shopItemImgs = new HashSet<ShopItemImg>();
+	
 
 	public ShopItem() {
 	}
@@ -270,6 +273,12 @@ public class ShopItem implements java.io.Serializable {
 		this.carShop = carShop;
 	}
 
-	
+	public Set<ShopItemImg> getShopItemImgs() {
+		return shopItemImgs;
+	}
+
+	public void setShopItemImgs(Set<ShopItemImg> shopItemImgs) {
+		this.shopItemImgs = shopItemImgs;
+	}
 	
 }

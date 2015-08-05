@@ -1,34 +1,32 @@
-package com.hhxh.car.base.busitem.action;
+package com.hhxh.car.shop.action;
 
 import java.util.Date;
 
 import net.sf.json.JSONObject;
 
-import com.hhxh.car.base.busitem.domain.BusItem;
-import com.hhxh.car.base.busitem.domain.BusItemImg;
 import com.hhxh.car.common.action.BaseAction;
 import com.hhxh.car.common.util.FileUploadUtil;
 import com.hhxh.car.common.util.UrlUtils;
+import com.hhxh.car.shop.domain.ShopItem;
+import com.hhxh.car.shop.domain.ShopItemImg;
 import com.opensymphony.xwork2.ModelDriven;
 
 /**
- * 处理服务项图片的action
+ * 商家服务项图片action
  * @author zw
- * @date 2015年8月4日 下午6:27:36
+ * @date 2015年8月5日 下午2:26:20
  *
  */
-public class BusItemImgAction extends BaseAction implements ModelDriven<BusItemImg>{
+public class ShopItemImgAction extends BaseAction implements ModelDriven<ShopItemImg> {
 	
-	private BusItemImg busItemImg ;
+	private ShopItemImg shopItemImg ;
 	
 	private String itemId ;
-	
-	private String useId ;
-	
+
 	/**
-	 * 根据服务项id保存一个图片信息
+	 * 根据商家服务项id保存一个图片信息
 	 */
-	public void addBusItemImg()
+	public void addShopItemImg()
 	{
 		try
 		{
@@ -47,16 +45,16 @@ public class BusItemImgAction extends BaseAction implements ModelDriven<BusItemI
 						
 						//保存到数据库中
 						String uuid = this.baseService.getUUID();
-						busItemImg.setId(uuid);
-						busItemImg.setBusItem(new BusItem(itemId));
-						busItemImg.setFileName(this.getFilesFileName().get(0));
-						busItemImg.setFilePath(UrlUtils.getResourcesPath(imgServerPath));
-						busItemImg.setPort(Integer.parseInt(UrlUtils.getPort(imgServerPath)));
-						busItemImg.setServerIp(UrlUtils.getHost(imgServerPath));
-						busItemImg.setUploadTime(new Date());
-						busItemImg.setUser(this.getLoginUser());
+						shopItemImg.setId(uuid);
+						shopItemImg.setShopItem(new ShopItem(itemId));
+						shopItemImg.setFileName(this.getFilesFileName().get(0));
+						shopItemImg.setFilePath(UrlUtils.getResourcesPath(imgServerPath));
+						shopItemImg.setPort(Integer.parseInt(UrlUtils.getPort(imgServerPath)));
+						shopItemImg.setServerIp(UrlUtils.getHost(imgServerPath));
+						shopItemImg.setUploadTime(new Date());
+						shopItemImg.setUser(this.getLoginUser());
 						//保存
-						this.baseService.save(busItemImg);
+						this.baseService.save(shopItemImg);
 						//将保存成功的图片反写到前台
 						jsonObject.put("imgPath",imgServerPath );
 						//http://{{item.serverIp}}:{{item.port}}/{{item.filePath}}
@@ -74,18 +72,44 @@ public class BusItemImgAction extends BaseAction implements ModelDriven<BusItemI
 				}
 				else
 				{
-					this.putJson(false,"没有图片需要保存，请正确上传图片！");
+					this.putJson(false,this.getMessageFromConfig("upload_noImg"));
 					return;
 				}
 			}else{
-				this.putJson(false,"没有指定服务项id");
+				this.putJson(false,this.getMessageFromConfig("needShopItemId"));
 				return ;
 			}
 		}
 		catch(Exception e)
 		{
 			log.error("保存图片出错",e);
-			this.putJson(false,"保存图片出错");
+			this.putJson(false,this.getMessageFromConfig("upload_img_server_error"));
+		}
+	}
+	
+	/**
+	 * 删除图片
+	 */
+	public void deleteItemImgById()
+	{
+		try
+		{
+			if(isNotEmpty(shopItemImg.getId()))
+			{
+				//用该删除方法如果没有该记录则会抛出异常
+				this.baseService.delete(ShopItemImg.class,shopItemImg.getId());
+				this.jsonObject.put("id", shopItemImg.getId());
+				this.putJson();
+			}
+			else
+			{
+				this.putJson(false,this.getMessageFromConfig("upload_delete_img_needId"));
+			}
+		}
+		catch(Exception t)
+		{
+			log.error("删除图片失败",t);
+			this.putJson(false,this.getMessageFromConfig("upload_delete_img_error"));
 		}
 	}
 	
@@ -98,21 +122,21 @@ public class BusItemImgAction extends BaseAction implements ModelDriven<BusItemI
 		try
 		{
 			//获取后台数据信息，因为该新增或这修改方法只是修改content字段和filetype字段
-			String content = busItemImg.getContent();
-			String fileType = busItemImg.getFileType();
-			busItemImg = this.baseService.get(BusItemImg.class,busItemImg.getId());
-			if(busItemImg!=null)
+			String content = shopItemImg.getContent();
+			String fileType = shopItemImg.getFileType();
+			shopItemImg = this.baseService.get(ShopItemImg.class,shopItemImg.getId());
+			if(shopItemImg!=null)
 			{
 				//填充服务图片信息
-				busItemImg.setContent(content);
-				busItemImg.setFileType(fileType);
+				shopItemImg.setContent(content);
+				shopItemImg.setFileType(fileType);
 				
-				this.baseService.update(busItemImg);
+				this.baseService.update(shopItemImg);
 				this.putJson();	
 			}
 			else
 			{
-				this.putJson(false, this.getMessageFromConfig("busItemIdError"));
+				this.putJson(false, this.getMessageFromConfig("saveImgDetails_IdError"));
 			}
 		}
 		catch(Exception e)
@@ -122,24 +146,18 @@ public class BusItemImgAction extends BaseAction implements ModelDriven<BusItemI
 		}
 	}
 	
-
-
-
 	@Override
-	public BusItemImg getModel() {
-		this.busItemImg = new BusItemImg();
-		return this.busItemImg;
+	public ShopItemImg getModel() {
+		this.shopItemImg = new ShopItemImg();
+		return this.shopItemImg;
 	}
+
 	public String getItemId() {
 		return itemId;
 	}
+
 	public void setItemId(String itemId) {
 		this.itemId = itemId;
 	}
-	public String getUseId() {
-		return useId;
-	}
-	public void setUseId(String useId) {
-		this.useId = useId;
-	}
+	
 }

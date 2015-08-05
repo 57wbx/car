@@ -1,0 +1,45 @@
+<div class="leave hbox hbox-auto-xs hbox-auto-sm"
+	ng-controller="manageShopItemImgController">
+<div class="panel panel-default">
+	<div class="panel-heading">
+		<div class="row">
+			<!-- <div class="col-md-4 col-xs-0"></div> -->
+			<div class="col-md-7  ">
+				<h2 class="leave-title text-right"><span class="text-center"><span ng-bind="shopItemName"></span>-服务图片管理</span></h2>
+				<input type="file" class="hidden" id="addImage" nv-file-select="" uploader="uploader"  accept="image/*"/>
+			</div>
+			<div class="col-md-offset-1 col-md-4 ">
+				<span class="btn btn-success btn-sm " role="button"  style="margin-top:25px" ng-click="seleceImg()">新增图片</span>
+				<span class="btn btn-danger btn-sm " role="button"  style="margin-top:25px" ng-click="back()">返回列表界面</span>
+			</div>	
+		</div>
+		</div>
+  <div class="panel-body">
+		<div class="row"><div class="progress" style="height:5px;">
+  <div class="progress-bar" role="progressbar" ng-style="{ 'width': uploader.progress + '%' }"></div>
+</div></div>
+			<div class="row">
+					  <div class=" col-md-4" ng-repeat="item in imgs">
+					    <div class="thumbnail">
+					      <img ng-src="http://{{item.serverIp}}:{{item.port}}/{{item.filePath}}" alt="1">
+					
+					      <div class="caption">
+					       <h3>
+          						<small><strong>内容：</strong>{{item.content}}</small>
+      						  </h3>
+					        <p class="text-center">
+					        <span class="btn btn-info btn-sm" role="button" ng-click="addOrUpdateDetails(item)">详细信息</span>
+					        <span class="btn btn-info btn-sm" role="button"  ng-click="showImg(item)">查看原图</span>
+					          <span class="btn btn-danger btn-sm" role="button"  ng-click="deleteImg(item)">删除</span>
+					        </p>
+					      </div>
+					    </div>
+					  </div>
+					</div>
+		
+		<div class="row" style="height:6px"><hr/></div>		
+		
+	</div>	
+		<div class="row" style="height:6px"><hr/></div>		
+	</div>
+</div>

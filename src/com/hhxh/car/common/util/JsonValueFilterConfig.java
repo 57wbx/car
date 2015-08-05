@@ -37,4 +37,26 @@ public class JsonValueFilterConfig {
 	 */
 	public static final String[] BASEATOM_HAS_BUSITEM = new String[]{"busPackages","busAtoms","busItemImgs"};
 	
+	/**
+	 * shopitem 商家服务项需要过滤的数据
+	 */
+	public static final String[] SHOPITEM_ONLY_SHOPITEM = new String[]{"shopAtoms","shopItem","carShop","shopPackages","shopItemImgs"};
+
+	/**
+	 * shopItemImg 商家服务项图片需要过滤的数据
+	 */
+	public static final String[] SHOPITEMIMG_ONLY_SHOPITEMIMG = new String[]{"shopItem","user"};
+	
+	/**
+	 * shopAtom 商家服务子项需要过滤的数据
+	 */
+	public static final String[] SHOPATOM_ONLY_SHOPATOM = new String[]{"autoPart","shopItem","carShop"};
+	public static final String[] SHOPATOM_HAS_AUTOPART = new String[]{"shopItem","carShop"};
+	
+	/**
+	 * shopPackage 商家套餐
+	 */
+	public static final String[] SHOPPACKAGE_ONLY_SHOPPACKAGE = new String[]{"shopItems","carShop"};
+	public static final String[] SHOPPACKAGE_HAS_SHOPITEM = new String[]{"carShop","shopPackages","shopItemImgs","shopAtoms"};
+	
 }

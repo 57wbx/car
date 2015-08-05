@@ -5,7 +5,7 @@ app.controller("shopItemEditController",['$scope','$state','$http','checkUniqueS
 	
 	console.info("------------需要修改的id为："+$scope.rowIds[0]);
 	if(!$scope.rowIds[0]||$scope.rowIds[0]==""){
-		$state.go("app.shopitem.list");//返回到列表界面
+		$state.go($scope.state.list);//返回到列表界面
 	}
 	
 	getServerData();
@@ -24,7 +24,7 @@ app.controller("shopItemEditController",['$scope','$state','$http','checkUniqueS
 			if(code == 1){
 				renderData(resp.data);//渲染数据
 			}else{
-				$state.go("app.shopitem.list");
+				$state.go($scope.state.list);
 			}
 		});
 	}
@@ -513,7 +513,7 @@ app.controller("shopItemEditController",['$scope','$state','$http','checkUniqueS
 		}).then(function(resp){
 			var code = resp.data.code ;
 			if(code == 1){//代表保存成功
-				$state.go("app.shopitem.list");
+				$state.go($scope.state.list);
 			}else{//代表保存失败
 				alert("保存失败");
 			}
@@ -526,7 +526,7 @@ app.controller("shopItemEditController",['$scope','$state','$http','checkUniqueS
 	 * 取消按钮的操作，直接跳转到列表页面上
 	 */
 	$scope.cancel = function(){
-		$state.go("app.shopitem.list");
+		$state.go($scope.state.list);
 	}
 	
 	/**

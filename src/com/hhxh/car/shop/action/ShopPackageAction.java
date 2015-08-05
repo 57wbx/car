@@ -18,6 +18,7 @@ import com.hhxh.car.base.buspackage.service.BusPackageService;
 import com.hhxh.car.base.bustype.domain.BusType;
 import com.hhxh.car.common.action.BaseAction;
 import com.hhxh.car.common.util.JsonDateValueProcessor;
+import com.hhxh.car.common.util.JsonValueFilterConfig;
 import com.hhxh.car.shop.domain.ShopItem;
 import com.hhxh.car.shop.domain.ShopPackage;
 import com.hhxh.car.shop.service.ShopPackageService;
@@ -91,27 +92,33 @@ public class ShopPackageAction extends BaseAction implements ModelDriven<ShopPac
 	 * @return
 	 */
 	public void getShopItemsByShopPackage(){
-		if(shopPackage.getFid()!=null&&!"".equals(shopPackage.getFid())){
-			ShopPackage bp = this.baseService.get(ShopPackage.class,shopPackage.getFid());
-			Set<ShopItem> shopItems = bp.getShopItems();
-			
-			//设置json处理数据的规则
-			JsonConfig jsonConfig = new JsonConfig();  
-			jsonConfig.registerJsonValueProcessor(Date.class, new JsonDateValueProcessor()); 
-			jsonConfig.setIgnoreDefaultExcludes(false); //设置默认忽略 
-			jsonConfig.setCycleDetectionStrategy(CycleDetectionStrategy.LENIENT);//设置循环策略为忽略    解决json最头疼的问题 死循环
-			jsonConfig.setExcludes(new String[] {"shopPackages","carShop","shopItems"});//此处是亮点，只要将所需忽略字段加到数组中即可
-			
-			this.jsonObject.put("code", 1);
-			this.jsonObject.accumulate("data", new ArrayList<ShopItem>(shopItems),jsonConfig);
-		}else{
-			this.jsonObject.put("data", "[]");
+		try{
+			if(isNotEmpty(shopPackage.getFid()))
+			{
+				ShopPackage bp = this.baseService.get(ShopPackage.class,shopPackage.getFid());
+				if(bp!=null)
+				{
+					Set<ShopItem> shopItems = bp.getShopItems();
+					
+					this.jsonObject.accumulate("data", new ArrayList<ShopItem>(shopItems),this.getJsonConfig(JsonValueFilterConfig.SHOPITEM_ONLY_SHOPITEM));
+					this.putJson();
+				}
+				else
+				{
+					this.putJson(false, this.getMessageFromConfig("busPackageIdError"));
+				}
+			}
+			else
+			{
+				this.putJson(false, this.getMessageFromConfig("needBusPackageId"));
+			}
+		}
+		catch(Exception e)
+		{
+			log.error("查询套餐下的服务失败", e);
+			this.putJson(false, this.getMessageFromConfig("busPackageError"));
 		}
 		
-		try {
-			this.putJson(jsonObject.toString());
-		} catch (IOException e) {
-		}
 	}
 	
 	/**
@@ -134,16 +141,18 @@ public class ShopPackageAction extends BaseAction implements ModelDriven<ShopPac
 			shopPackage.setUpdateTime(new Date());
 			shopPackage.setCarShop(this.getLoginUser().getCarShop());
 			//添加套餐与服务的联系
-			if(itemIds!=null&&itemIds.length>0){
+			if(itemIds!=null&&itemIds.length>0)
+			{
 				Set<ShopItem> shopItems = new HashSet<ShopItem>();
 				for(String id:itemIds){
 					shopItems.add(new ShopItem(id));
 				}
 				shopPackage.setShopItems(shopItems);
-			}else{
+			}
+			else
+			{
 				shopPackage.setShopItems(null);
 			}
-			
 			this.shopPackageService.saveShopPackageWithNoFid(shopPackage);
 			this.jsonObject.put("code", 1);
 		}catch(Exception e){
@@ -162,26 +171,39 @@ public class ShopPackageAction extends BaseAction implements ModelDriven<ShopPac
 	 * 查询一条记录的详细信息
 	 */
 	public void detailsShopPackage(){
-		shopPackage = this.baseService.get(ShopPackage.class,shopPackage.getFid());
-		BusType busType = this.baseService.get(BusType.class,shopPackage.getBusTypeCode());
-		//设置json处理数据的规则
-		JsonConfig jsonConfig = new JsonConfig();  
-		jsonConfig.registerJsonValueProcessor(Date.class, new JsonDateValueProcessor()); 
-		jsonConfig.setIgnoreDefaultExcludes(false); //设置默认忽略 
-		jsonConfig.setCycleDetectionStrategy(CycleDetectionStrategy.LENIENT);//设置循环策略为忽略    解决json最头疼的问题 死循环
-		jsonConfig.setExcludes(new String[] {"shopPackages","shopAtoms","carShop"});//此处是亮点，只要将所需忽略字段加到数组中即可
-		
-		jsonObject.put("code", 1);
-		jsonObject.put("busTypeName",busType.getBusTypeName());
-		jsonObject.accumulate("details", shopPackage,jsonConfig);
-		
-		
-		try {
-			this.putJson(jsonObject.toString());
-		} catch (IOException e) {
-			e.printStackTrace();
+		try
+		{
+			if(isNotEmpty(shopPackage.getFid()))
+			{
+				shopPackage = this.baseService.get(ShopPackage.class,shopPackage.getFid());
+				if(shopPackage!=null)
+				{
+					BusType busType = this.baseService.get(BusType.class,shopPackage.getBusTypeCode());
+					jsonObject.put("busTypeName",busType.getBusTypeName());
+					jsonObject.accumulate("details", shopPackage,this.getJsonConfig(JsonValueFilterConfig.SHOPPACKAGE_HAS_SHOPITEM));
+					this.putJson();
+					return;
+				}
+				else
+				{
+					//没有指定id的套餐
+					this.putJson(false, this.getMessageFromConfig("busPackageIdError"));
+					return;
+				}
+			}
+			else
+			{
+				//没有上传id
+				this.putJson(false, this.getMessageFromConfig("needBusPackageId"));
+				return;
+			}
 		}
-		
+		catch(Exception e)
+		{
+			//出错
+			log.error("查询套餐详细信息失败", e);
+			this.putJson(false, this.getMessageFromConfig("busPackageError"));
+		}
 	}
 	
 	
