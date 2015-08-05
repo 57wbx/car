@@ -10,7 +10,7 @@ app.controller("busAtomDetailsController",["$scope","$state","$http",function($s
 		id = $scope.busAtomIds[0];
 		$scope.clearBusAtomIds();//清除数据
 	}else{
-		$state.go("app.busatom.list");
+		$state.go($scope.state.list);
 	}
 	
 	
@@ -38,7 +38,7 @@ app.controller("busAtomDetailsController",["$scope","$state","$http",function($s
 	 * 返回的方法
 	 */
 	$scope.cancel = function(){
-		$state.go("app.busatom.list");
+		$state.go($scope.state.list);
 	}
 	
 	//方法结束

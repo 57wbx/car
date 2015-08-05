@@ -8,6 +8,16 @@ app.controller('busAtomController',['$rootScope','$scope','$state','$timeout','$
 	$scope.busAtomIds = [];
 	
 	/**
+	 * 模块路由路径统一管理
+	 */
+	$scope.state = {
+			list:"app.busatom.list",
+			add:"app.busatom.add",
+			edit:"app.busatom.edit",
+			details:"app.busatom.details"
+	}
+	
+	/**
 	 * 并无实际的意义，但是如果没有用这个方法的话，页面中菜单按钮将不会根据属性的值进行变化
 	 * 
 	 * 2015.7.15 利用一个隐藏的按钮来解决按钮状态值更新的事件clickId
@@ -56,7 +66,7 @@ app.controller('busAtomController',['$rootScope','$scope','$state','$timeout','$
 	 * 新增按钮的方法
 	 */
 	$scope.addBusAtom = function(){
-		$state.go("app.busatom.add");
+		$state.go($scope.state.add);
 		$scope.treeAPI.hiddenBusTypeTree();
 	}
 	
@@ -68,7 +78,7 @@ app.controller('busAtomController',['$rootScope','$scope','$state','$timeout','$
 			$scope.clearBusAtomIds();
 			$scope.busAtomIds.push(id);
 		}
-		$state.go("app.busatom.details");
+		$state.go($scope.state.details);
 		$scope.treeAPI.hiddenBusTypeTree();
 	}
 	
@@ -76,7 +86,7 @@ app.controller('busAtomController',['$rootScope','$scope','$state','$timeout','$
 	 * 修改方法的按钮
 	 */
 	$scope.editBusAtom = function(){
-		$state.go("app.busatom.edit");
+		$state.go($scope.state.edit);
 		$scope.treeAPI.hiddenBusTypeTree();
 	}
 	

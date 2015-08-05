@@ -9,7 +9,7 @@ app.controller("busAtomEditController",["$scope","$state","$http",'checkUniqueSe
 		id = $scope.busAtomIds[0];
 		$scope.clearBusAtomIds();//清除数据
 	}else{
-		$state.go("app.busatom.list");
+		$state.go($scope.state.list);
 	}
 	
 	//从服务端获取数据
@@ -257,7 +257,7 @@ app.controller("busAtomEditController",["$scope","$state","$http",'checkUniqueSe
 		}).then(function(resp){
 			var code = resp.data.code ;
 			if(code == 1){//成功
-				$state.go("app.busatom.list");
+				$state.go($scope.state.list);
 			}else{
 				alert("修改失败");
 			}
@@ -268,7 +268,7 @@ app.controller("busAtomEditController",["$scope","$state","$http",'checkUniqueSe
 	 * 取消方法
 	 */
 	$scope.cancel = function(){
-		$state.go("app.busatom.list");
+		$state.go($scope.state.list);
 	}
 	
 	

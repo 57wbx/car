@@ -214,7 +214,7 @@ app.controller("busAtomAddController",['$scope','$state','$http','checkUniqueSer
 		}).then(function(resp){
 			var code = resp.data.code ;
 			if(code == 1){//代表保存成功
-				$state.go("app.busatom.list");
+				$state.go($scope.state.list);
 			}else{//代表保存失败
 				alert("保存失败");
 			}
@@ -227,7 +227,7 @@ app.controller("busAtomAddController",['$scope','$state','$http','checkUniqueSer
 	 * 取消按钮的操作，直接跳转到列表页面上
 	 */
 	$scope.cancel = function(){
-		$state.go("app.busatom.list");
+		$state.go($scope.state.list);
 	}
 	
 	
