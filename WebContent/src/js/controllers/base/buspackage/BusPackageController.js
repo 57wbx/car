@@ -219,7 +219,7 @@ app.controller('busPackageController', ['$rootScope','$scope','$state','$timeout
     var container_a = [], container_b = [], ln = treeData.length;
     for(var i=0; i<ln; i++){
       if(treeData[i].children.length !== 0){
-        treeData[i].expanded = true;
+        treeData[i].expanded = false;
         container_a.push(treeData[i]);
       } else{
         container_b.push(treeData[i]);

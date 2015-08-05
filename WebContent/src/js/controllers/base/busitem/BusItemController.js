@@ -6,7 +6,7 @@ app.controller('busItemController',['$rootScope','$scope','$state','$timeout','$
 	 * 在session中不能清除的内容，应该包含子缓存对象
 	 */
 	$scope.session = {};
-	$scope.session.cacheArray = ["busItemId"];
+	$scope.session.cacheArray = ["busItemIdForImg"];
 	sessionStorageService.clearNoCacheItem($scope.session.cacheArray);
 	
 	$scope.rowIds = [];//用来保存所选列表的id

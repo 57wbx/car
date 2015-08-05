@@ -9,9 +9,9 @@ app.controller('manageItemImgController',['$rootScope','$scope','$state','$timeo
 	
 	if($scope.rowIds[0]){
 		itemId = $scope.rowIds[0];
-		sessionStorageService.setItem("busItemId",$scope.rowIds[0]);
+		sessionStorageService.setItem("busItemIdForImg",$scope.rowIds[0]);
 	}else{
-		itemId = sessionStorageService.getItemStr("busItemId");
+		itemId = sessionStorageService.getItemStr("busItemIdForImg");
 		$scope.rowIds[0] = itemId ;
 	}
 	
