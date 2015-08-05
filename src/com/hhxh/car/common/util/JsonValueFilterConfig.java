@@ -20,12 +20,21 @@ public class JsonValueFilterConfig {
 	/**
 	 * busitem 服务项需要排除的数据
 	 */
-	public static final String[] BASEITEM_ONLY_BASEITEM = new String[]{"busAtoms","busItem","busItemImgs"};
+	public static final String[] BASEITEM_ONLY_BASEITEM = new String[]{"busPackages","busAtoms","busItem","busItemImgs"};
 	
 	/**
 	 * busitemImg 服务项图片需要排除的数据
 	 */
 	public static final String[] BASEITEMIMG_ONLY_BASEITEMIMG = new String[]{"busItem","user"};
 	
+	/**
+	 * buspackage 平台套餐需要过滤的数据
+	 */
+	public static final String[] BASEPACKAGE_HAS_BUSITEMS = new String[]{"busPackages","busAtoms","busItemImgs"};
+	
+	/**
+	 * busatom 平台服务子项需要过滤的数据
+	 */
+	public static final String[] BASEATOM_HAS_BUSITEM = new String[]{"busPackages","busAtoms","busItemImgs"};
 	
 }

@@ -22,41 +22,6 @@ app.controller('busAtomController',['$rootScope','$scope','$state','$timeout','$
 	
 	
 	
-	$scope.busTypeTree = {//用来保存现在选中的的业务类型$scope.busTypeTree.selectedTypeCode
-			selectedTypeCode:""
-	};//用来保存现在选中的
-	/**
-	 * 用来保存该模块中一系列的操作方法
-	 */
-	$scope.busAtomAPI = {
-			/**
-			 * 用来进行对list页面的服务选择筛选出树所指向的业务类型的数据
-			 * 需要在子类listcontroller中进行维护
-			 * 该方法在BusItemListController中初始化。
-			 * $scope.busAtomAPI.clickTreeListReload
-			 */
-			clickTreeListReload:null,
-			/**
-			 * 显示或者隐藏树
-			 * 在该controller中已经初始化
-			 * $scope.busAtomAPI.showOrHiddenBusTypeTree
-			 */
-			showOrHiddenBusTypeTree:null,
-			/**
-			 * 显示树
-			 * 在该controller中已经初始化
-			 * $scope.busAtomAPI.showBusTypeTree
-			 */
-			showBusTypeTree:null,
-			/**
-			 * 隐藏树
-			 * 在该controller中已经初始化
-			 * $scope.busAtomAPI.hiddenBusTypeTree
-			 */
-			hiddenBusTypeTree:null
-	}
-	
-	
 	/**
 	 * 设置按钮的状态按钮 其中包括三个属性 当选择0个 、1个、多个
 	 * 0个 都不显示
@@ -92,7 +57,7 @@ app.controller('busAtomController',['$rootScope','$scope','$state','$timeout','$
 	 */
 	$scope.addBusAtom = function(){
 		$state.go("app.busatom.add");
-		$scope.busAtomAPI.hiddenBusTypeTree();
+		$scope.treeAPI.hiddenBusTypeTree();
 	}
 	
 	/**
@@ -104,7 +69,7 @@ app.controller('busAtomController',['$rootScope','$scope','$state','$timeout','$
 			$scope.busAtomIds.push(id);
 		}
 		$state.go("app.busatom.details");
-		$scope.busAtomAPI.hiddenBusTypeTree();
+		$scope.treeAPI.hiddenBusTypeTree();
 	}
 	
 	/**
@@ -112,7 +77,7 @@ app.controller('busAtomController',['$rootScope','$scope','$state','$timeout','$
 	 */
 	$scope.editBusAtom = function(){
 		$state.go("app.busatom.edit");
-		$scope.busAtomAPI.hiddenBusTypeTree();
+		$scope.treeAPI.hiddenBusTypeTree();
 	}
 	
 	/**
@@ -157,149 +122,6 @@ app.controller('busAtomController',['$rootScope','$scope','$state','$timeout','$
 		
 	}
 	
-	/**
-	 * 树的方法
-	 */
-	/**
-	 * 树的相关操作
-	 */
-	var url = "base/busTypeAction!listBusType.action";
-	var data = null;
-	 // 从后台获取数据
-	  initTree();
-
-	  function initTree(){
-		  app.utils.getData(url, function callback(dt){
-			    data = dt;
-			    initData();
-			    $scope.loading = false;
-			    $scope.loading_sub = false;
-			  });
-	  }
-	  
-	  var nodes = {};
-	  var treeData = [];
-
-	  // 构造节点
-	  function setNode(dt) {
-	    if (!nodes['busTypeCode' + dt['busTypeCode']]) {
-	      var node = {};
-	    } else {
-	      return nodes['busTypeCode' + dt['busTypeCode']];
-	    }
-	    node['label'] = dt.simpleName || '没有名字';
-	    node['data'] = dt.busTypeCode || '没有数据';
-	    node['children'] = node['children'] || [];
-	    node['parent'] = dt.parentId;
-	    
-	    node['onSelect'] = item_selected;
-	    if (dt['parentId']) {
-	      setParentNode(node, dt['parentId']);  // 若存在父节点，则先构造父节点
-	    } else {
-	      node['parent'] = null;
-	    }
-	    nodes['busTypeCode' + dt['busTypeCode']] = node;
-	    return node;
-	  }
-
-	  // 构造父节点
-	  function setParentNode(node, id) {
-	    var len = data.length;
-	    for (var i = 0; i < len; i++) {
-	      if (data[i]['busTypeCode'] === id) {
-	        var parentNode = setNode(data[i]);
-	        parentNode['children'].push(node);
-	      }
-	    }
-	  }
-
-	  // 列表树数据
-	  $scope.tree_data = [];
-	  $scope.org_tree = {};
-
-	  // 初始化数据并生成列表树所需的数据结构
-	  function initData() {
-	    // data = formatData(data);
-	    var len = data.length;
-	    for (var i = 0; i < len; i++) {
-	      var node = setNode(data[i]);
-	      if (node['parent'] === null) {
-	        treeData.push(node);
-	      }
-	    }
-	    var container_a = [], container_b = [], ln = treeData.length;
-	    for(var i=0; i<ln; i++){
-	      if(treeData[i].children.length !== 0){
-	        treeData[i].expanded = true;
-	        container_a.push(treeData[i]);
-	      } else{
-	        container_b.push(treeData[i]);
-	      }
-	    }
-	    treeData = container_a.concat(container_b);
-	    console.log(treeData);
-
-	    // 列表树数据传值
-	    $scope.tree_data = treeData;
-	  }
-
-	  // 选择列表树中的一项
-	  var item_selected = function(branch) {
-	    $rootScope.item_id = branch.data;
-	    $rootScope.busTypePatentId = branch.parent;
-	    $rootScope.busTypeBranch = branch ;
-	    $rootScope.ids = [];
-	    try {
-	    	$scope.init();
-	    } catch (e) {
-	    }
-	    
-	    
-	    console.log(branch);
-	    console.log($rootScope.busTypePatentId);
-	    
-	    
-	    tree_handler(branch);
-	  };  
-
-	  
-	  
-	  // 选择列表树中的一项
-	  var tree_handler = function(branch) {
-		  var busTypeCode = branch.data ;
-		  $scope.busTypeTree.selectedTypeCode = busTypeCode ;
-		  if($scope.busAtomAPI.clickTreeListReload){
-			  $scope.busAtomAPI.clickTreeListReload(busTypeCode);
-		  }else if($scope.busAtomAPI.clickTreeAddOrUpdateReload){
-			  $scope.busAtomAPI.clickTreeAddOrUpdateReload();
-		  }
-	  };
-
-	  /**
-	   * 以下为API中方法的初始化过程
-	   */
-	  /**
-		 * 用来切换视图的方法，该cotroller的view还包含了一个子的view，通过该方法切换是否显示业务类型的树
-		 */
-		//显示或者不显示业务类型的树
-		$scope.busAtomAPI.showOrHiddenBusTypeTree = function(){
-			if($("#modelBusTypeTree").attr("class").indexOf("none")>0){//此时的树是隐藏的
-				$scope.busAtomAPI.showBusTypeTree();
-			}else{
-				$scope.busAtomAPI.hiddenBusTypeTree();
-			}
-		}
-		$scope.busAtomAPI.showBusTypeTree = function(){
-			$("#modelContent").removeClass("col-md-12");
-			$("#modelContent").addClass("col-md-10");
-			$("#modelBusTypeTree").removeClass("none");
-		}
-		$scope.busAtomAPI.hiddenBusTypeTree = function(){
-			$("#modelBusTypeTree").addClass("none");
-			$("#modelContent").removeClass("col-md-10");
-			$("#modelContent").addClass("col-md-12");
-		}
-	  
 	
 	//结束方法
 }]);

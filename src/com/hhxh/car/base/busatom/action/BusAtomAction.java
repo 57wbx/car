@@ -18,6 +18,7 @@ import com.hhxh.car.base.busatom.service.BusAtomService;
 import com.hhxh.car.base.busitem.domain.BusItem;
 import com.hhxh.car.common.action.BaseAction;
 import com.hhxh.car.common.util.JsonDateValueProcessor;
+import com.hhxh.car.common.util.JsonValueFilterConfig;
 import com.opensymphony.xwork2.ModelDriven;
 
 public class BusAtomAction extends BaseAction implements ModelDriven<BusAtom>{
@@ -130,23 +131,33 @@ public class BusAtomAction extends BaseAction implements ModelDriven<BusAtom>{
 	 * 
 	 * 后期修改改成查找fid来获取详细信息
 	 */
-	public void detailsBusAtomByFid(){
-		System.out.println("--------------------------------------"+busAtom.getFid());
-		BusAtom ba = this.baseService.get(BusAtom.class,busAtom.getFid());
-		
-		if(ba!=null){
-			ba.getBusItem().setBusAtoms(null);
-			ba.getBusItem().setBusPackages(null);
-			jsonObject.put("code", 1);//代表成功
-			jsonObject.put("details", ba);
-		}else{
-			jsonObject.put("code", 0);//代表失败
+	public void detailsBusAtomByFid()
+	{
+		try
+		{
+			if(isNotEmpty(busAtom.getFid()))
+			{
+				BusAtom ba = this.baseService.get(BusAtom.class,busAtom.getFid());
+				if(ba!=null){
+					ba.getBusItem().setBusAtoms(null);
+					ba.getBusItem().setBusPackages(null);
+					this.jsonObject.accumulate("details", ba, this.getJsonConfig(JsonValueFilterConfig.BASEATOM_HAS_BUSITEM));
+					this.putJson();
+					return;
+				}else{
+					this.putJson(false, "没有指定的服务子项详细信息");
+					return;
+				}
+			}
+			else
+			{
+				this.putJson(false, "查询失败，请指定需要查询的服务子项id");
+			}
 		}
-		
-		try {
-			this.putJson(jsonObject.toString());
-		} catch (IOException e) {
-			e.printStackTrace();
+		catch(Exception e)
+		{
+			log.error("查询服务子项详细信息失败", e);
+			this.putJson(false, "查询服务子项信息失败！");
 		}
 	}
 	

@@ -1,6 +1,6 @@
 app.controller("busAtomAddController",['$scope','$state','$http','checkUniqueService',function($scope,$state,$http,checkUniqueService){
 	
-	$scope.busAtomAPI.hiddenBusTypeTree();
+	$scope.treeAPI.hiddenBusTypeTree();
 	
 	$scope.formData = {};
 	//初始化选中的数据

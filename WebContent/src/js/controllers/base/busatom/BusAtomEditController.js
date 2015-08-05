@@ -1,6 +1,6 @@
 app.controller("busAtomEditController",["$scope","$state","$http",'checkUniqueService',function($scope,$state,$http,checkUniqueService){
 	
-	$scope.busAtomAPI.hiddenBusTypeTree();
+	$scope.treeAPI.hiddenBusTypeTree();
 	
 	$scope.formData = {};
 	var id ;//所查看数据的id

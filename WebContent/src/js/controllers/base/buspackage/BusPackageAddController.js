@@ -2,7 +2,7 @@ app.controller("busPackageAddController",['$scope','$state','$http',function($sc
 	/*
 	 * 初始化 隐藏树 
 	 */
-	$scope.busPackageAPI.hiddenBusTypeTree();
+	$scope.treeAPI.hiddenBusTypeTree();
 	
 	$scope.formData = {};
 	
@@ -42,8 +42,8 @@ app.controller("busPackageAddController",['$scope','$state','$http',function($sc
 	/**
 	 * 初始化树点击的方法,注销其他的点击树的方法
 	 */
-	$scope.busPackageAPI.clickTreeListReload = null;
-	$scope.busPackageAPI.clickTreeAddOrUpdateReload = function(){
+	$scope.treeAPI.clickTreeListReload = null;
+	$scope.treeAPI.clickTreeAddOrUpdateReload = function(){
 		if(busItemTableForChoose){//给服务选择列表进行重新加载数据操作
 			busItemTableForChoose.ajax.reload();
 		}
@@ -366,8 +366,8 @@ app.controller("busPackageAddController",['$scope','$state','$http',function($sc
 		}).then(function(resp){
 			var code = resp.data.code ;
 			if(code == 1){//代表保存成功
-				$state.go("app.buspackage.list");
-				$scope.busPackageAPI.showBusTypeTree();
+				$state.go($scope.state.list);
+				$scope.treeAPI.showBusTypeTree();
 			}else{//代表保存失败
 				alert("保存失败");
 			}
@@ -380,8 +380,8 @@ app.controller("busPackageAddController",['$scope','$state','$http',function($sc
 	 * 取消按钮的操作，直接跳转到列表页面上
 	 */
 	$scope.cancel = function(){
-		$state.go("app.buspackage.list");
-		$scope.busPackageAPI.showBusTypeTree();
+		$state.go($scope.state.list);
+		$scope.treeAPI.showBusTypeTree();
 	}
 	/**
 	 * 显示或者隐藏增加服务的列表
@@ -391,7 +391,7 @@ app.controller("busPackageAddController",['$scope','$state','$http',function($sc
 			$("#busPackageForm").removeClass("none");
 			$("#chooseBusItemTable").addClass("none");
 			//因残树
-			$scope.busPackageAPI.hiddenBusTypeTree();
+			$scope.treeAPI.hiddenBusTypeTree();
 		}else{
 			if(!busItemTableForChoose){
 				initBusItemTableForChoose();//初始化选择服务的表格
@@ -399,7 +399,7 @@ app.controller("busPackageAddController",['$scope','$state','$http',function($sc
 			$("#busPackageForm").addClass("none");
 			$("#chooseBusItemTable").removeClass("none");
 			//显示树
-			$scope.busPackageAPI.showBusTypeTree();
+			$scope.treeAPI.showBusTypeTree();
 		}
 	}
 	/**

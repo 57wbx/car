@@ -1,12 +1,12 @@
 app.controller("busPackageDetailsController",['$scope','$state','$http',function($scope,$state,$http){
 	
 	if(!$scope.editId){
-		$state.go("app.buspackage.list");
+		$state.go($scope.state.list);
 	}
 	/*
 	 * 初始化 隐藏树 
 	 */
-	$scope.busPackageAPI.hiddenBusTypeTree();
+	$scope.treeAPI.hiddenBusTypeTree();
 	
 	$scope.formData = {};
 	
@@ -18,8 +18,8 @@ app.controller("busPackageDetailsController",['$scope','$state','$http',function
 	/**
 	 * 初始化树点击的方法,注销其他的点击树的方法
 	 */
-	$scope.busPackageAPI.clickTreeListReload = null;
-	$scope.busPackageAPI.clickTreeAddOrUpdateReload = function(){
+	$scope.treeAPI.clickTreeListReload = null;
+	$scope.treeAPI.clickTreeAddOrUpdateReload = function(){
 		if(busItemTableForChoose){//给服务选择列表进行重新加载数据操作
 			busItemTableForChoose.ajax.reload();
 		}
@@ -219,8 +219,8 @@ app.controller("busPackageDetailsController",['$scope','$state','$http',function
 		}).then(function(resp){
 			var code = resp.data.code ;
 			if(code == 1){//代表保存成功
-				$state.go("app.buspackage.list");
-				$scope.busPackageAPI.showBusTypeTree();
+				$state.go($scope.state.list);
+				$scope.treeAPI.showBusTypeTree();
 			}else{//代表保存失败
 				alert("保存失败");
 			}
@@ -233,8 +233,8 @@ app.controller("busPackageDetailsController",['$scope','$state','$http',function
 	 * 取消按钮的操作，直接跳转到列表页面上
 	 */
 	$scope.cancel = function(){
-		$state.go("app.buspackage.list");
-		$scope.busPackageAPI.showBusTypeTree();
+		$state.go($scope.state.list);
+		$scope.treeAPI.showBusTypeTree();
 	}
 	/**
 	 * 显示或者隐藏增加服务的列表
@@ -244,7 +244,7 @@ app.controller("busPackageDetailsController",['$scope','$state','$http',function
 			$("#busPackageForm").removeClass("none");
 			$("#chooseBusItemTable").addClass("none");
 			//因残树
-			$scope.busPackageAPI.hiddenBusTypeTree();
+			$scope.treeAPI.hiddenBusTypeTree();
 		}else{
 			if(!busItemTableForChoose){
 				initBusItemTableForChoose();//初始化选择服务的表格
@@ -252,7 +252,7 @@ app.controller("busPackageDetailsController",['$scope','$state','$http',function
 			$("#busPackageForm").addClass("none");
 			$("#chooseBusItemTable").removeClass("none");
 			//显示树
-			$scope.busPackageAPI.showBusTypeTree();
+			$scope.treeAPI.showBusTypeTree();
 		}
 	}
 	/**
@@ -353,7 +353,7 @@ app.controller("busPackageDetailsController",['$scope','$state','$http',function
 				$scope.formData.updateTime = undefined;
 				
 			}else{
-				$state.go("app.buspackage.list");
+				$state.go($scope.state.list);
 			}
 		});
 	
