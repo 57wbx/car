@@ -1,6 +1,13 @@
 'use strict';
 
-app.controller('busItemController',['$rootScope','$scope','$state','$timeout','$http',function($rootScope,$scope,$state,$timeout,$http){
+app.controller('busItemController',['$rootScope','$scope','$state','$timeout','$http','sessionStorageService',function($rootScope,$scope,$state,$timeout,$http,sessionStorageService){
+	
+	/**
+	 * 在session中不能清除的内容，应该包含子缓存对象
+	 */
+	$scope.session = {};
+	$scope.session.cacheArray = ["busItemId"];
+	sessionStorageService.clearNoCacheItem($scope.session.cacheArray);
 	
 	$scope.rowIds = [];//用来保存所选列表的id
 	
@@ -93,6 +100,18 @@ app.controller('busItemController',['$rootScope','$scope','$state','$timeout','$
 	 */
 	$scope.addRow = function(){
 		$state.go("app.busitem.add");
+		$scope.busItemAPI.hiddenBusTypeTree();
+	}
+	
+	/**
+	 * 管理图片的方法
+	 */
+	$scope.manageImg = function(){
+		if($scope.editId){
+			$scope.clearRowIds();
+			$scope.rowIds.push($scope.editId);
+		}
+		$state.go("app.busitem.manageimg");
 		$scope.busItemAPI.hiddenBusTypeTree();
 	}
 	
@@ -233,7 +252,7 @@ app.controller('busItemController',['$rootScope','$scope','$state','$timeout','$
 	    var container_a = [], container_b = [], ln = treeData.length;
 	    for(var i=0; i<ln; i++){
 	      if(treeData[i].children.length !== 0){
-	        treeData[i].expanded = true;
+	        treeData[i].expanded = false;
 	        container_a.push(treeData[i]);
 	      } else{
 	        container_b.push(treeData[i]);

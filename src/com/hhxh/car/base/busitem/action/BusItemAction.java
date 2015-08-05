@@ -23,6 +23,7 @@ import com.hhxh.car.base.busitem.service.BusItemService;
 import com.hhxh.car.base.buspackage.domain.BusPackage;
 import com.hhxh.car.common.action.BaseAction;
 import com.hhxh.car.common.util.JsonDateValueProcessor;
+import com.hhxh.car.common.util.JsonValueFilterConfig;
 import com.hhxh.car.common.util.TypeTranslate;
 import com.opensymphony.xwork2.ModelDriven;
 
@@ -80,7 +81,7 @@ public class BusItemAction extends BaseAction implements ModelDriven<BusItem>{
 		jsonConfig.registerJsonValueProcessor(Date.class, new JsonDateValueProcessor()); 
 		jsonConfig.setIgnoreDefaultExcludes(false); //设置默认忽略 
 		jsonConfig.setCycleDetectionStrategy(CycleDetectionStrategy.LENIENT);//设置循环策略为忽略    解决json最头疼的问题 死循环
-		jsonConfig.setExcludes(new String[] {"busAtoms","busItem"});//此处是亮点，只要将所需忽略字段加到数组中即可
+		jsonConfig.setExcludes(JsonValueFilterConfig.BASEITEM_ONLY_BASEITEM);//此处是亮点，只要将所需忽略字段加到数组中即可
 		
 		jsonObject.accumulate("data", busItems, jsonConfig);
 		
@@ -259,7 +260,7 @@ public class BusItemAction extends BaseAction implements ModelDriven<BusItem>{
 			jsonConfig.registerJsonValueProcessor(Date.class, new JsonDateValueProcessor()); 
 			jsonConfig.setIgnoreDefaultExcludes(false); //设置默认忽略 
 			jsonConfig.setCycleDetectionStrategy(CycleDetectionStrategy.LENIENT);//设置循环策略为忽略    解决json最头疼的问题 死循环
-			jsonConfig.setExcludes(new String[] {"busAtoms","busItem"});//此处是亮点，只要将所需忽略字段加到数组中即可
+			jsonConfig.setExcludes(JsonValueFilterConfig.BASEITEM_ONLY_BASEITEM);//此处是亮点，只要将所需忽略字段加到数组中即可
 			
 			jsonObject.put("code", 1);
 			jsonObject.accumulate("details", busItem,jsonConfig);
@@ -297,7 +298,7 @@ public class BusItemAction extends BaseAction implements ModelDriven<BusItem>{
 		jsonConfig.registerJsonValueProcessor(Date.class, new JsonDateValueProcessor()); 
 		jsonConfig.setIgnoreDefaultExcludes(false); //设置默认忽略 
 		jsonConfig.setCycleDetectionStrategy(CycleDetectionStrategy.LENIENT);//设置循环策略为忽略    解决json最头疼的问题 死循环
-		jsonConfig.setExcludes(new String[] {"busItems"});//此处是亮点，只要将所需忽略字段加到数组中即可
+		jsonConfig.setExcludes(new String[] {"busItems","busItemImgs"});//此处是亮点，只要将所需忽略字段加到数组中即可
 		
 		this.jsonObject.put("code", 1);
 		this.jsonObject.accumulate("data",busItems,jsonConfig);
@@ -340,6 +341,36 @@ public class BusItemAction extends BaseAction implements ModelDriven<BusItem>{
 			this.putJson(jsonObject.toString());
 		} catch (IOException e) {
 			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * 根据一个服务项来查询所有的图片
+	 */
+	public void listItemImgByBusItem(){
+		try
+		{
+			if(isNotEmpty(this.busItem.getFid()))
+			{
+				this.busItem = this.baseService.get(BusItem.class,this.busItem.getFid());
+				if(busItem!=null)
+				{
+					this.jsonObject.accumulate("images", busItem.getBusItemImgs(),this.getJsonConfig(JsonValueFilterConfig.BASEITEMIMG_ONLY_BASEITEMIMG));
+					this.putJson();
+					return ;
+				}else
+				{
+					this.putJson(false, "操作出错，没有指定的服务项");
+					return ;
+				}
+			}else{
+				this.putJson(false,"操作出错，请指定服务项id");
+			}
+		}
+		catch(Exception e)
+		{
+			log.error("查询服务项出错",e);
+			this.putJson(false,"查询出错");
 		}
 	}
 	

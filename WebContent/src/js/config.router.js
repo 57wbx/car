@@ -723,6 +723,19 @@ angular.module('app').run(
 						                }
 						              ]
 						            }
+						        }).state('app.busitem.manageimg', {
+						            url: '/manageimg',
+						            templateUrl: 'src/tpl/base/busitem/manage_itemimg.html',
+						            resolve: {
+						              deps: ['$ocLazyLoad','uiLoad',
+						                function($ocLazyLoad, uiLoad) {
+						                  return uiLoad.load(JQ_CONFIG.chosen).then(function() {
+						                	  $ocLazyLoad.load('src/js/controllers/base/busitem/ManageItemImgDetailsController.js')
+						                    return $ocLazyLoad.load('src/js/controllers/base/busitem/ManageItemImgController.js');
+						                  });
+						                }
+						              ]
+						            }
 						        }).state('app.busitem.details', {
 						            url: '/details',
 						            templateUrl: 'src/tpl/base/busitem/busitem_details.html',

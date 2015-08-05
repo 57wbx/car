@@ -17,4 +17,15 @@ public class JsonValueFilterConfig {
 	 */
 	public static final String[] BASEAREA_ONLY_BASEAREA = new String[]{"baseCity","baseAreas","baseAreaParent"};
 	
+	/**
+	 * busitem 服务项需要排除的数据
+	 */
+	public static final String[] BASEITEM_ONLY_BASEITEM = new String[]{"busAtoms","busItem","busItemImgs"};
+	
+	/**
+	 * busitemImg 服务项图片需要排除的数据
+	 */
+	public static final String[] BASEITEMIMG_ONLY_BASEITEMIMG = new String[]{"busItem","user"};
+	
+	
 }

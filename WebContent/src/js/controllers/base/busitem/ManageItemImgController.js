@@ -1,10 +1,26 @@
 'use strict';
 
-app.controller('manageImgController',['$rootScope','$scope','$state','$timeout','$http','FileUploader','previewService','hintService',
-                                      function($rootScope,$scope,$state,$timeout,$http,FileUploader,previewService,hintService){
+app.controller('manageItemImgController',['$rootScope','$scope','$state','$timeout','$http','$modal','FileUploader','previewService','hintService','sessionStorageService','utilService',
+                                      function($rootScope,$scope,$state,$timeout,$http,$modal,FileUploader,previewService,hintService,sessionStorageService,utilService){
+	//用来缓存服务项id
+	var itemId ;
 
+	$scope.busItemAPI.hiddenBusTypeTree();
+	
+	if($scope.rowIds[0]){
+		itemId = $scope.rowIds[0];
+		sessionStorageService.setItem("busItemId",$scope.rowIds[0]);
+	}else{
+		itemId = sessionStorageService.getItemStr("busItemId");
+		$scope.rowIds[0] = itemId ;
+	}
+	
 	$http({
-		url:"base/carShopAction!listCarShopImgByLoginUser.action"
+		url:"base/busItemAction!listItemImgByBusItem.action",
+		method:"get",
+		params:{
+			fid:itemId
+		}
 	}).then(function(resp){
 		if(resp.data.code==1){
 			$scope.imgs = resp.data.images;
@@ -16,10 +32,13 @@ app.controller('manageImgController',['$rootScope','$scope','$state','$timeout',
 	}
 	
 	 var uploader = $scope.uploader = new FileUploader({
-	        url: 'base/carShopAction!saveCarShopImg.action',
+	        url: 'base/busItemImgAction!addBusItemImg.action',
 	        alias:"files",
 	        autoUpload:true,
-	        removeAfterUpload:true
+	        removeAfterUpload:true,
+	        formData:[{
+	        	itemId:itemId
+	        }]
 	    });
 	 
 	 /**
@@ -58,7 +77,7 @@ app.controller('manageImgController',['$rootScope','$scope','$state','$timeout',
      
      $scope.deleteImg = function(item){
     	 $http({
-    		 url:"base/carShopAction!deleteCarShopImgById.action",
+    		 url:"base/busItemImgAction!deleteItemImgById.action",
     		 method:"get",
     		 params:{
     			 id:item.id
@@ -87,6 +106,49 @@ app.controller('manageImgController',['$rootScope','$scope','$state','$timeout',
      $scope.showImg = function(item){
     	 previewService.preview("http://"+item.serverIp+":"+item.port+"/"+item.filePath);
      }
+     
+     
+     $scope.addOrUpdateDetails = function(item){
+    	 showModal(item);
+     }
+     
+     $scope.back = function(){
+    	 $state.go("^.list");
+     }
+     
+     
+     /**
+		 * 弹窗事件
+		 */
+		var showModal = function(item){
+			var modalInstance = $modal.open({
+    	     templateUrl: 'src/tpl/base/busitem/manage_itemimg_model.html',
+    	     size: 'lg',
+    	     backdrop:true,
+    	     controller:"manageItemImgDetailsController",
+    	     resolve: {
+    	    	 imgId:function(){
+    	    		 return item.id;
+    	    	 },
+    	    	 content:function(){
+    	    		 return item.content;
+    	    	 },
+    	    	 fileType:function(){
+    	    		 return item.fileType;
+    	    	 }
+    	     }
+    	   });
+			/**
+			 * 弹窗关闭事件
+			 */
+			modalInstance.result.then(function (formData) {
+				var item = utilService.getObjectFromArray("id",formData.id,$scope.imgs);
+				if(item){
+					item.fileType = formData.fileType;
+					item.content = formData.content;
+				}
+			});
+		}
      
      
 	//结束方法

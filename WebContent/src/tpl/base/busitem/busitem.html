@@ -19,6 +19,10 @@
 						ng-disabled="!canEdit">
 						<i class="fa fa-fw fa-pencil"></i> <span class="hid">修改</span>
 					</button>
+					<button type="button" class="btn btn-info" ng-click="manageImg()"
+						ng-disabled="!canEdit">
+						<i class=" glyphicon glyphicon-picture"></i> <span class="hid">管理显示图片</span>
+					</button>
 					<button type="button" class="btn btn-danger" ng-click="deleteRow()"
 						ng-disabled="!isMulti && !isSingle">
 						<i class="fa fa-fw fa-minus"></i> <span class="hid">删除</span>

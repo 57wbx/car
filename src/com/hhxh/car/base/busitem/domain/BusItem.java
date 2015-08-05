@@ -65,6 +65,9 @@ public class BusItem implements java.io.Serializable {
 	@OneToMany(mappedBy="busItem",fetch=FetchType.LAZY)
 	private Set<BusAtom> busAtoms = new HashSet<BusAtom>();
 	
+	@OneToMany(mappedBy="busItem",fetch=FetchType.LAZY)
+	private Set<BusItemImg> busItemImgs = new HashSet<BusItemImg>();
+	
 
 	public BusItem() {
 	}
@@ -242,6 +245,14 @@ public class BusItem implements java.io.Serializable {
 				+ useState + ", isActivity=" + isActivity + ", updateTime="
 				+ updateTime + ", memo=" + memo + ", starTime=" + starTime
 				+ ", endTime=" + endTime + ", busAtoms=" + busAtoms + "]";
+	}
+
+	public Set<BusItemImg> getBusItemImgs() {
+		return busItemImgs;
+	}
+
+	public void setBusItemImgs(Set<BusItemImg> busItemImgs) {
+		this.busItemImgs = busItemImgs;
 	}
 
 	
