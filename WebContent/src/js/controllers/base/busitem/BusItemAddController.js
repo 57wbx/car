@@ -1,7 +1,7 @@
 app.controller("busItemAddController",['$scope','$state','$http','checkUniqueService',function($scope,$state,$http,checkUniqueService){
 	
 //	$scope.formData.fitemID  新增开始的时候需要从服务器中下载下来，以便于子项的操作
-	$scope.busItemAPI.hiddenBusTypeTree();
+	$scope.treeAPI.hiddenBusTypeTree();
 	
 	$scope.formData = {};
 	$scope.busAtomData = [];//用来保存该服务项中的所有子项，用来显示在列表中，并在保存的时候提交到服务器端
@@ -437,7 +437,7 @@ app.controller("busItemAddController",['$scope','$state','$http','checkUniqueSer
 		}).then(function(resp){
 			var code = resp.data.code ;
 			if(code == 1){//代表保存成功
-				$state.go("app.busitem.list");
+				$state.go($scope.state.list);
 			}else{//代表保存失败
 				alert("保存失败");
 			}
@@ -450,7 +450,7 @@ app.controller("busItemAddController",['$scope','$state','$http','checkUniqueSer
 	 * 取消按钮的操作，直接跳转到列表页面上
 	 */
 	$scope.cancel = function(){
-		$state.go("app.busitem.list");
+		$state.go($scope.state.list);
 	}
 	
 	/**

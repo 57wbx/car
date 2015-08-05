@@ -5,7 +5,7 @@ app.controller('manageItemImgController',['$rootScope','$scope','$state','$timeo
 	//用来缓存服务项id
 	var itemId ;
 
-	$scope.busItemAPI.hiddenBusTypeTree();
+	$scope.treeAPI.hiddenBusTypeTree();
 	
 	if($scope.rowIds[0]){
 		itemId = $scope.rowIds[0];
@@ -131,7 +131,7 @@ app.controller('manageItemImgController',['$rootScope','$scope','$state','$timeo
      }
      
      $scope.back = function(){
-    	 $state.go("^.list");
+    	 $state.go($scope.state.list);
      }
      
      

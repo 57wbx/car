@@ -1,12 +1,12 @@
 app.controller("busItemDetailsController",['$scope','$state','$http',function($scope,$state,$http){
 	
 //	$scope.formData.fitemID  新增开始的时候需要从服务器中下载下来，以便于子项的操作
-	$scope.busItemAPI.hiddenBusTypeTree();
+	$scope.treeAPI.hiddenBusTypeTree();
 	
 	
 	console.info("------------需要修改的id为："+$scope.rowIds[0]);
 	if(!$scope.rowIds[0]||$scope.rowIds[0]==""){
-		$state.go("app.busitem.list");//返回到列表界面
+		$state.go($scope.state.list);//返回到列表界面
 	}
 	$("form[name=busItemDetailsform] input").attr("disabled",true);
 	$("form[name=busItemDetailsform] select").attr("disabled",true);
@@ -27,7 +27,7 @@ app.controller("busItemDetailsController",['$scope','$state','$http',function($s
 			if(code == 1){
 				renderData(resp.data);//渲染数据
 			}else{
-				$state.go("app.busitem.list");
+				$state.go($scope.state.list);
 			}
 		});
 	}
@@ -190,7 +190,7 @@ app.controller("busItemDetailsController",['$scope','$state','$http',function($s
 	 * 取消按钮的操作，直接跳转到列表页面上
 	 */
 	$scope.cancel = function(){
-		$state.go("app.busitem.list");
+		$state.go($scope.state.list);
 	}
 	
 	

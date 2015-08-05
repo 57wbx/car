@@ -58,14 +58,14 @@ app.controller('busItemListController',['$scope','$state','$timeout','$http',fun
         }
 	}
 	
-	$scope.busItemAPI.showBusTypeTree();
+	$scope.treeAPI.showBusTypeTree();
 	/**
 	 * 初始化该页面的api
 	 * 提供给buspapckageController调用
 	 * 注销其他方法
 	 */
-	$scope.busItemAPI.clickTreeAddOrUpdateReload = null;//注销其他的方法
-	$scope.busItemAPI.clickTreeListReload = function(busTypeCode){
+	$scope.treeAPI.clickTreeAddOrUpdateReload = null;//注销其他的方法
+	$scope.treeAPI.clickTreeListReload = function(busTypeCode){
 		//绑定一次后后面所有的请求都具有该参数了
 		busItemTable.ajax.reload();//重新加载数据
 	}
