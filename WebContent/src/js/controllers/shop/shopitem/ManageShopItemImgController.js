@@ -8,6 +8,8 @@ app.controller('manageShopItemImgController',['$rootScope','$scope','$state','$t
 
 	$scope.treeAPI.hiddenBusTypeTree();
 	
+	$scope.needCacheArray = ["shopItemIdForImg"];
+	sessionStorageService.clearNoCacheItem($scope.needCacheArray);
 	if($scope.rowIds[0]){
 		itemId = $scope.rowIds[0];
 		sessionStorageService.setItem("shopItemIdForImg",$scope.rowIds[0]);

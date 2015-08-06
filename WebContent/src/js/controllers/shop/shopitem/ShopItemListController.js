@@ -1,6 +1,8 @@
 'use strict';
 
-app.controller('shopItemListController',['$scope','$state','$timeout','$http',function($scope,$state,$timeout,$http){
+app.controller('shopItemListController',['$scope','$state','$timeout','$http','sessionStorageService',function($scope,$state,$timeout,$http,sessionStorageService){
+	
+	sessionStorageService.clearNoCacheItem();
 	//单击表格中的一行应该调用这个方法
 	function clickTr(e,inp){
 	      var evt = e || window.event;

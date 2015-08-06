@@ -1,7 +1,16 @@
-app.controller("shopItemEditController",['$scope','$state','$http','checkUniqueService','FileUploader','hintService',function($scope,$state,$http,checkUniqueService,FileUploader,hintService){
+app.controller("shopItemEditController",['$scope','$state','$http','checkUniqueService','FileUploader','hintService','sessionStorageService',
+                                         function($scope,$state,$http,checkUniqueService,FileUploader,hintService,sessionStorageService){
 	
 //	$scope.formData.fitemID  新增开始的时候需要从服务器中下载下来，以便于子项的操作
 	$scope.treeAPI.hiddenBusTypeTree();
+	
+	$scope.needCacheArray = ["shopItemIdForEdit"];
+	sessionStorageService.clearNoCacheItem($scope.needCacheArray);
+	if($scope.rowIds[0]){
+		sessionStorageService.setItem("shopItemIdForEdit",$scope.rowIds[0]);
+	}else{
+		$scope.rowIds[0]  = sessionStorageService.getItemStr("shopItemIdForEdit");
+	}
 	
 	console.info("------------需要修改的id为："+$scope.rowIds[0]);
 	if(!$scope.rowIds[0]||$scope.rowIds[0]==""){

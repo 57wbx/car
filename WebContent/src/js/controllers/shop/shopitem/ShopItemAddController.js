@@ -1,4 +1,4 @@
-app.controller("shopItemAddController",['$scope','$state','$http','checkUniqueService','FileUploader','hintService',function($scope,$state,$http,checkUniqueService,FileUploader,hintService){
+app.controller("shopItemAddController",['$scope','$state','$http','checkUniqueService','FileUploader','hintService','sessionStorageService',function($scope,$state,$http,checkUniqueService,FileUploader,hintService,sessionStorageService){
 	
 //	$scope.formData.fitemID  新增开始的时候需要从服务器中下载下来，以便于子项的操作
 	$scope.treeAPI.hiddenBusTypeTree();
@@ -11,6 +11,7 @@ app.controller("shopItemAddController",['$scope','$state','$http','checkUniqueSe
 	$scope.setCanEdit(false);
 	$scope.clearRowIds();
 	
+	sessionStorageService.clearNoCacheItem();
 	
 	/**
 	 * 服务编码是否已经存在的标识符

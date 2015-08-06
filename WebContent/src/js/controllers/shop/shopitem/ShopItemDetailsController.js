@@ -1,7 +1,15 @@
-app.controller("shopItemDetailsController",['$scope','$state','$http',function($scope,$state,$http){
+app.controller("shopItemDetailsController",['$scope','$state','$http','sessionStorageService',function($scope,$state,$http,sessionStorageService){
 	
 //	$scope.formData.fitemID  新增开始的时候需要从服务器中下载下来，以便于子项的操作
 	$scope.treeAPI.hiddenBusTypeTree();
+	
+	$scope.needCacheArray = ["shopItemIdForDetails"];
+	sessionStorageService.clearNoCacheItem($scope.needCacheArray);
+	if($scope.rowIds[0]){
+		sessionStorageService.setItem("shopItemIdForDetails",$scope.rowIds[0]);
+	}else{
+		$scope.rowIds[0]  = sessionStorageService.getItemStr("shopItemIdForDetails");
+	}
 	
 	
 	console.info("------------需要修改的id为："+$scope.rowIds[0]);
