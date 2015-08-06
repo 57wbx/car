@@ -28,7 +28,7 @@ public class TypeTranslate {
 	public static Integer getObjectInteger(Object obj){
 		String simpleName = obj.getClass().getSimpleName();
 		if(simpleName.equals("String")){
-			return Integer.getInteger((String)obj);
+			return Integer.parseInt((String)obj);
 		}else if(simpleName.equals("Integer")){
 			return (Integer) obj;
 		}

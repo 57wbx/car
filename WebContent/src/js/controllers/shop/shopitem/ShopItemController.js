@@ -1,6 +1,6 @@
 'use strict';
 
-app.controller('shopItemController',['$rootScope','$scope','$state','$timeout','$http','sessionStorageService',function($rootScope,$scope,$state,$timeout,$http,sessionStorageService){
+app.controller('shopItemController',['$rootScope','$scope','$state','$timeout','$http','sessionStorageService','previewService',function($rootScope,$scope,$state,$timeout,$http,sessionStorageService,previewService){
 	
 	$scope.rowIds = [];//用来保存所选列表的id
 	
@@ -160,6 +160,17 @@ app.controller('shopItemController',['$rootScope','$scope','$state','$timeout','
 		 }
 	}
 	
+	
+	 /**
+     * 显示原始图片的方法
+     */
+	$scope.API = {};
+    $scope.API.showImg = function(item){
+   	 previewService.preview(item);
+    }
+    $scope.API.deleteImg = function(urlObject){
+    	urlObject.atomPhotoUrl = undefined;
+    }
 	
 	
 	//结束方法

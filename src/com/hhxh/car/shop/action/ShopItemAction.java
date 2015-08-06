@@ -86,54 +86,64 @@ public class ShopItemAction extends BaseAction implements ModelDriven<ShopItem> 
 	}
 	
 	/**
-	 * 添加一個服务项
+	 * 添加一個服务项,和服务子项一起保存，其中服务子项是以字符串的形式上传上来的
 	 */
-	public void addShopItem(){
+	public void addShopItem()
+	{
 		/**
 		 * busAtomDataStr = [{\"atomCode\":\"123\",\"atomName\":\"123\",\"autoParts\":123,\"eunitPrice\":\"\"
 		 * ,\"memo\":\"\",\"partName\":\"前刹车片\"
 		 * ,\"brandName\":\"迈氏\",\"spec\":\"GB5763-200\",\"model\":\"广州本田飞度1.3L 五档手动 两厢\",\"isActivity\":0},
 		 * {\"atomCode\":\"123\",\"atomName\":\"123\",\"autoParts\":123,\"eunitPrice\":\"\",\"memo\":\"\",\"partName\":\"前刹车片\",\"brandName\":\"迈氏\",\"spec\":\"GB5763-2008\",\"model\":\"广州本田飞度1.3L 五档手动 两厢\""autoPartId":"5",\"isActivity\":0}]
 		 */
-		this.shopItem.setCarShop(new CarShop(this.getLoginUser().getCarShop().getId()));
+		try{
+			this.shopItem.setCarShop(this.getLoginUser().getCarShop());
 		
-		JSONArray shopAtoms = null ;
-		List<ShopAtom> shopAtomList = null  ;
-		if(busAtomDataStr!=null&&!"".equals(busAtomDataStr)){
-			shopAtoms = JSONArray.fromObject(busAtomDataStr);
-		}
-		if(shopAtoms!=null&&shopAtoms.size()>0){
-			shopAtomList = new ArrayList<ShopAtom>();
-			for(int i=0;i<shopAtoms.size();i++){
-				Map<String,Object> m = (Map<String, Object>) shopAtoms.get(i);
-				ShopAtom ba = new ShopAtom();
-				ba.setAtomCode((String)m.get("atomCode"));
-				ba.setAtomName((String)m.get("atomName"));
-				ba.setAutoParts(TypeTranslate.getObjectInteger((m.get("autoParts"))));
-				Object eunitPrice = m.get("eunitPrice");
-				if(m.get("eunitPrice")!=null){
-					if(eunitPrice instanceof java.lang.Integer){
-						ba.setEunitPrice(new BigDecimal((int)eunitPrice));
-					}else if(eunitPrice instanceof java.lang.Double){
-						ba.setEunitPrice(new BigDecimal((double)eunitPrice));
-						
-					}
-				}
-				ba.setMemo((String)m.get("memo"));
-				ba.setAutoPart(new AutoPart((String)m.get("autoPartId")));
-				ba.setUpdateTime(new Date());
-				shopAtomList.add(ba);
+			JSONArray shopAtoms = null ;
+			List<ShopAtom> shopAtomList = null  ;
+			if(busAtomDataStr!=null&&!"".equals(busAtomDataStr))
+			{
+				shopAtoms = JSONArray.fromObject(busAtomDataStr);
 			}
-		}
-		try {
-			
+			if(shopAtoms!=null&&shopAtoms.size()>0)
+			{
+				shopAtomList = new ArrayList<ShopAtom>();
+				for(int i=0;i<shopAtoms.size();i++)
+				{
+					Map<String,Object> m = (Map<String, Object>) shopAtoms.get(i);
+					ShopAtom ba = new ShopAtom();
+					ba.setAtomCode((String)m.get("atomCode"));
+					ba.setAtomName((String)m.get("atomName"));
+					ba.setPhotoUrl((String)m.get("photoUrl"));
+					ba.setAutoParts(TypeTranslate.getObjectInteger((m.get("autoParts"))));
+					Object eunitPrice = m.get("eunitPrice");
+					if(m.get("eunitPrice")!=null)
+					{
+						if(eunitPrice instanceof java.lang.Integer)
+						{
+							ba.setEunitPrice(new BigDecimal((int)eunitPrice));
+						}
+						else if(eunitPrice instanceof java.lang.Double)
+						{
+							ba.setEunitPrice(new BigDecimal((double)eunitPrice));
+						}
+					}
+					ba.setMemo((String)m.get("memo"));
+					ba.setAutoPart(new AutoPart((String)m.get("autoPartId")));
+					ba.setUpdateTime(new Date());
+					ba.setCarShop(this.getLoginUser().getCarShop());
+					shopAtomList.add(ba);
+				}
+			}
 			Date starTime = null ;
 			Date endTime = null ;
 			
-			if(starTimeStr!=null && !"".equals(starTimeStr)){
+			if(isNotEmpty(starTimeStr))
+			{
 				starTime = ymdhm.parse(starTimeStr);
 			}
-			if(endTimeStr!=null&&!"".equals(endTimeStr)){
+			if(isNotEmpty(endTimeStr))
+			{
 				endTime = ymdhm.parse(endTimeStr);
 			}
 			this.shopItem.setShopAtoms(null);
@@ -142,15 +152,12 @@ public class ShopItemAction extends BaseAction implements ModelDriven<ShopItem> 
 			this.shopItem.setUpdateTime(new Date());
 //			this.busItemService.saveBusItemContainsBusAtomWithNoId(busItem,busAtomList);
 			this.shopItemService.saveShopItemContainsShopAtomWithNoId(shopItem, shopAtomList);
-			jsonObject.put("code", 1);//保存成功
-		} catch (Exception e) {
-			jsonObject.put("code", 0);
-			e.printStackTrace();
+			this.putJson();
 		}
-		try {
-			this.putJson(jsonObject.toString());
-		} catch (IOException e) {
-			e.printStackTrace();
+		catch(Exception e)
+		{
+			log.error("新增商家服务项失败", e);
+			this.putJson(false, this.getMessageFromConfig("saveShopItemError"));
 		}
 	}
 	
@@ -204,6 +211,7 @@ public class ShopItemAction extends BaseAction implements ModelDriven<ShopItem> 
 				ba.setFid((String)m.get("fid"));
 				ba.setAtomCode((String)m.get("atomCode"));
 				ba.setAtomName((String)m.get("atomName"));
+				ba.setPhotoUrl((String)m.get("photoUrl"));
 				ba.setAutoParts(TypeTranslate.getObjectInteger((m.get("autoParts"))));
 				Object eunitPrice = m.get("eunitPrice");
 				if(m.get("eunitPrice")!=null){

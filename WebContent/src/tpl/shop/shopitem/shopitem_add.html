@@ -151,48 +151,80 @@
     
 
     
-  <form name="busAtomForm" class="form-horizontal form-validation none" >
-    <div class="row" style="margin-bottom: 20px;">
+  <form name="busAtomForm" class="form-horizontal form-validation none"  novalidate>
+    	<div class="row" style="margin-bottom: 20px;">
    		<div class="col-sm-offset-4 col-sm-4 font-bold ">
    			<div class="text-center"> 服务子项详细信息</div>
  	 	</div>
  	</div>
-     <div class="form-group">
-        <label class="col-sm-1 control-label">子项编码<i class="fa fa-asterisk text-danger"></i></label>
-        <div class="col-sm-3">
-        	<div class="input-group">
-		          <input type="text" name="atomCode" id="atomCode" placeholder="子项编码" class="form-control" ng-model="formData.atomCode" tabindex="1" required ng-pattern="/^[0-9a-zA-z\.]{1,40}$/">
-		          <div class="input-group-addon" ng-show="!atomCodeIsUnique" style="background:red;"><span ng-bind="notUniqueMessage"></span></div>
-        	</div>
-        </div>
-        <label class="col-sm-1 control-label">子项名称<i class="fa fa-asterisk text-danger"></i></label>
-        <div class="col-sm-3">
-          <input type="text" placeholder="子项名称" class="form-control" ng-model="formData.atomName" tabindex="1" required >
-        </div>
-       
-      </div>
-      
-      <div class="form-group" >
-      	<label class="col-sm-1 control-label">配件<i class="fa fa-asterisk text-danger"></i></label>
-        	<div class="col-sm-3">
-          		<input id="autoPartAllName" type="text" placeholder="名称+品牌+规格+型号" readonly class="form-control" ng-model="formData.autoPartAllName" required>
-          		
-          		<input type="hidden" ng-model="formData.autoPartId" >
-       		 </div>
-        
-        	<div class="col-sm-2">
-          		<button class="w100 btn btn-info" ng-click="choose()" ng-init="formData.chooseAutoPartName='选择';formData.chooseAutoPartButton=false;"><span ng-bind="formData.chooseAutoPartName"></span></button>
-        	</div>
-        <label class="col-sm-1 control-label">配件数<i class="fa fa-asterisk text-danger"></i></label>
-        <div class="col-sm-2">
-          <input type="text" placeholder="配件数" class="form-control" ng-model="formData.autoParts" required ng-pattern="/^[1-9][0-9]{0,8}$/">
-        </div>
-        
-         <label class="col-sm-1 control-label">配件单价</label>
-        <div class="col-sm-2">
-          <input type="number" placeholder="配件单价" class="form-control" ng-model="formData.eunitPrice">
-        </div>
-      </div>
+ 	
+ 	<div class="row">
+ 		<div class="col-sm-8">
+			 	<div class="form-group">
+			        	<label class="col-sm-2 control-label">子项编码<i class="fa fa-asterisk text-danger"></i></label>
+			        	<div class="col-sm-4">
+				        	<div class="input-group">
+						          <input type="text" name="atomCode" id="atomCode" placeholder="子项编码" class="form-control" ng-model="formData.atomCode" tabindex="1" required ng-pattern="/^[0-9a-zA-z\.]{1,40}$/">
+						          <div class="input-group-addon" ng-show="!atomCodeIsUnique" style="background:red;"><span ng-bind="notUniqueMessage"></span></div>
+				        	</div>
+			        	</div>
+			        	<label class="col-sm-2 control-label">子项名称<i class="fa fa-asterisk text-danger"></i></label>
+			        	<div class="col-sm-4">
+			          		<input type="text" placeholder="子项名称" class="form-control" ng-model="formData.atomName" tabindex="1" required >
+			        	</div>
+			      </div>
+			      
+			      <div class="form-group" >
+			      		<label class="col-sm-2 control-label">配件<i class="fa fa-asterisk text-danger"></i></label>
+			        	<div class="col-sm-8">
+			          		<input id="autoPartAllName" type="text" placeholder="名称+品牌+规格+型号" readonly class="form-control" ng-model="formData.autoPartAllName" required>
+			          		<input type="hidden" ng-model="formData.autoPartId" >
+			       		 </div>
+			        	<div class="col-sm-2">
+			          		<button class="w100 btn btn-info" ng-click="choose()" ng-init="formData.chooseAutoPartName='选择';formData.chooseAutoPartButton=false;"><span ng-bind="formData.chooseAutoPartName"></span></button>
+			        	</div>
+			        	
+			        	
+			      </div>
+			      
+			      <div class="form-group">
+				         <label class="col-sm-2 control-label">配件数<i class="fa fa-asterisk text-danger"></i></label>
+				        <div class="col-sm-4">
+				          <input type="text" placeholder="配件数" class="form-control" ng-model="formData.autoParts" required ng-pattern="/^[1-9][0-9]{0,8}$/">
+				        </div>
+				        
+				         <label class="col-sm-2 control-label">配件单价</label>
+				        <div class="col-sm-4">
+				          <input type="number" placeholder="配件单价" class="form-control" ng-model="formData.eunitPrice">
+				        </div>
+			      </div>
+ 		</div>
+ 		
+ 		<div class="col-sm-4">
+ 					<div ng-if="!formData.atomPhotoUrl&&!uploading">
+	 					<label class="col-sm-2 control-label">图片<i class="fa fa-asterisk text-danger"></i></label>
+				        	<div class="col-sm-10">
+				       			<input type="file" class="form-control" nv-file-select uploader="uploader"  accept="image/*"/>
+				     		</div>
+ 					</div>
+			     		<div  class="col-sm-12 loading" style="height: 70px;" ng-if="uploading" >
+			                  	<i class="glyphicon glyphicon-repeat"></i><br/>正在上传...
+			                </div>
+			                <div class="col-sm-12" ng-if="formData.atomPhotoUrl">
+					         <div class="thumbnail">
+							<img ng-src="{{formData.atomPhotoUrl}}" alt="服务子项图片" style="height: 100px;">
+							<div class="caption">
+							    	<p class="text-center">
+							        	<span class="btn btn-info btn-sm" role="button"  ng-click="API.showImg(formData.atomPhotoUrl)">查看原图</span>
+							          	<span class="btn btn-danger btn-sm" role="button"  ng-click="API.deleteImg(formData)">删除</span>
+							        </p>
+							</div>
+						</div>
+			                </div>
+ 		</div>
+ 	</div>
+ 	
+     	
       
      <div class="form-group">
         <label class="col-sm-1 control-label">备注</label>
@@ -226,7 +258,7 @@
       
        <div class="form-group">
 	       <div class="col-sm-offset-5 col-sm-4">
-        		<button type="button" class="btn btn-success" ng-click="drawTable()" ng-disabled="busAtomForm.$invalid || !atomCodeIsUnique">确认</button>
+        		<button type="button" class="btn btn-success" ng-click="drawTable()" ng-disabled="busAtomForm.$invalid || !atomCodeIsUnique || uploading">确认</button>
         		<button type="button" class="btn" ng-click="hiddenAddBusAtomForm()" >返回</button>
         	</div>
        	 </div>

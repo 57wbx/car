@@ -1,4 +1,4 @@
-app.controller("shopItemEditController",['$scope','$state','$http','checkUniqueService',function($scope,$state,$http,checkUniqueService){
+app.controller("shopItemEditController",['$scope','$state','$http','checkUniqueService','FileUploader','hintService',function($scope,$state,$http,checkUniqueService,FileUploader,hintService){
 	
 //	$scope.formData.fitemID  新增开始的时候需要从服务器中下载下来，以便于子项的操作
 	$scope.treeAPI.hiddenBusTypeTree();
@@ -71,6 +71,50 @@ app.controller("shopItemEditController",['$scope','$state','$http','checkUniqueS
 		}
 	});
 	
+	/**
+	 * 初始化文件上传控件
+	 */
+	 var uploader = $scope.uploader = new FileUploader({
+	        url: 'common/fileUploadAction!uploadOnePictrue.action',
+	        alias:"files",
+	        autoUpload:true,
+	        removeAfterUpload:true
+	    });
+	
+	 /**
+	  * 过滤器
+	  */
+	  uploader.filters.push({
+          name: 'imageFilter',
+          fn: function(item /*{File|FileLikeObject}*/, options) {
+        	  var isImage = false;
+        	  isImage = item.type.indexOf("image")>=0;
+        	  if(!isImage){
+        		  alert("请选择图片文件!");
+        	  }
+              return isImage;
+          }
+      });
+	  /**
+	   * 上传开始之前
+	   */
+	  uploader.onBeforeUploadItem = function(item) {
+		  $scope.uploading = true ;
+      };
+	  /**
+		  * 返回值
+		  */
+		 uploader.onSuccessItem = function(fileItem, response, status, headers) {
+			 $scope.uploading = false ;
+	         if(response.code==1){
+	        	 hintService.hint({title: "成功", content: "上传成功！" });
+	        	 //上传成功的返回数据：{"name":"13293618_1200x1000_0.jpg","code":1,"url":"http://120.25.149.142:8048/group1/M00/00/0C/eBmVjlXCvHCERq5wAAAAAKmTBbk746.jpg"}
+	        	$scope.formData.atomPhotoUrl = response.url ;
+	         }else{
+	        	 alert(response.message)
+	         }
+	     };
+	
 	
 	/**
 	 * 将获取的数据显示到页面上面
@@ -99,6 +143,7 @@ app.controller("shopItemEditController",['$scope','$state','$http','checkUniqueS
 				newBusAtom.atomCode = busAtomsArray[i].atomCode || "";
 				newBusAtom.atomName = busAtomsArray[i].atomName || "";
 				newBusAtom.autoParts = busAtomsArray[i].autoParts || "";
+				newBusAtom.photoUrl = busAtomsArray[i].photoUrl || "";
 				newBusAtom.partID = busAtomsArray[i].autoPart.id ;
 				newBusAtom.eunitPrice = busAtomsArray[i].eunitPrice || "";
 				newBusAtom.memo = busAtomsArray[i].memo || "";
@@ -241,11 +286,10 @@ app.controller("shopItemEditController",['$scope','$state','$http','checkUniqueS
 	$scope.needUpdateRowData = null;
 	$scope.updateRowTable = function(nRow){
 		var index = busAtomTable.row(nRow).index();
+		$scope.showAddBusAtomForm();
 		$scope.needUpdateRowData = $scope.busAtomData[index];
 		$scope.needUpdateRowData.index = index;//保存该数据的位置，用来找到在缓存中的数据，替换缓存中的数据
-		
 		$scope.copyRow(nRow);
-		$scope.showAddBusAtomForm();
 	}
 
 	/**
@@ -290,9 +334,13 @@ app.controller("shopItemEditController",['$scope','$state','$http','checkUniqueS
 		if(!$scope.formData.busAtomMemo || $scope.formData.busAtomMemo==""){
 			$scope.formData.busAtomMemo = data.memo ;
 		}
+		if(!$scope.formData.atomPhotoUrl || $scope.formData.atomPhotoUrl==""){
+			$scope.formData.atomPhotoUrl = data.photoUrl ;
+		}
 		
-		var hiddenButton = $("#clickId");
-		hiddenButton.trigger("click");
+		$scope.$evalAsync();
+//		var hiddenButton = $("#clickId");
+//		hiddenButton.trigger("click");
 	}
 	
 	
@@ -352,6 +400,7 @@ app.controller("shopItemEditController",['$scope','$state','$http','checkUniqueS
 		newBusAtom.spec = $scope.formData.spec ;
 		newBusAtom.model = $scope.formData.model ;
 		newBusAtom.autoPartId = $scope.formData.autoPartId ;
+		newBusAtom.photoUrl = $scope.formData.atomPhotoUrl ;
 		
 		newBusAtom.isActivity = $scope.formData.autoIsActivity ;
 		newBusAtom.yunitPrice = $scope.formData.yunitPrice ;
@@ -375,6 +424,7 @@ app.controller("shopItemEditController",['$scope','$state','$http','checkUniqueS
 		$scope.needUpdateRowData.spec = $scope.formData.spec ;
 		$scope.needUpdateRowData.model = $scope.formData.model ;
 		$scope.needUpdateRowData.autoPartId = $scope.formData.autoPartId ;
+		$scope.needUpdateRowData.photoUrl = $scope.formData.atomPhotoUrl ;
 		
 		$scope.needUpdateRowData.isActivity = $scope.formData.autoIsActivity ;
 		$scope.needUpdateRowData.yunitPrice = $scope.formData.yunitPrice ;
@@ -399,6 +449,7 @@ app.controller("shopItemEditController",['$scope','$state','$http','checkUniqueS
 		$scope.formData.model = undefined ;
 		$scope.formData.autoIsActivity = undefined ;
 		$scope.formData.autoPartAllName = undefined ;
+		$scope.formData.atomPhotoUrl = undefined ;
 		
 		$scope.formData.atomCode = undefined ;
 		$scope.formData.atomName = undefined ;
@@ -539,7 +590,8 @@ app.controller("shopItemEditController",['$scope','$state','$http','checkUniqueS
 	//减少配件合计价
 	$scope.deleteAutoPartsPrice = function(autoPartsPrice){
 		$scope.formData.autoPartsPrice = ($scope.formData.autoPartsPrice || 0) - autoPartsPrice;
-		$("#clickId").trigger("click");
+//		$("#clickId").trigger("click");
+		$scope.$evalAsync();
 	}
 	
 	
@@ -548,6 +600,8 @@ app.controller("shopItemEditController",['$scope','$state','$http','checkUniqueS
 	 * 当显示服务子项页面的时候 不显示服务信息页面
 	 */
 	$scope.showAddBusAtomForm = function(){
+		$scope.needUpdateRowData = null ;//清空需要更新的对象
+		$scope.clearBusAtomForm();
 		$("form[name=busAtomForm]").removeClass(" none ");
 		$("form[name=busItemForm]").addClass(" none ");
 		$("#busItemSumbit").addClass("none");

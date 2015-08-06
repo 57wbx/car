@@ -59,6 +59,9 @@ public class ShopAtom implements java.io.Serializable {
 	@JoinColumn(name="shopId")
 	private CarShop carShop ;
 
+	@Column
+	private String photoUrl ;
+	
 	public ShopAtom() {
 	}
 
@@ -159,6 +162,12 @@ public class ShopAtom implements java.io.Serializable {
 		this.fid = fid;
 	}
 
+	public String getPhotoUrl() {
+		return photoUrl;
+	}
 
+	public void setPhotoUrl(String photoUrl) {
+		this.photoUrl = photoUrl;
+	}
 	
 }

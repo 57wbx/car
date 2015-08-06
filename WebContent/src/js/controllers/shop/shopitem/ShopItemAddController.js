@@ -1,4 +1,4 @@
-app.controller("shopItemAddController",['$scope','$state','$http','checkUniqueService',function($scope,$state,$http,checkUniqueService){
+app.controller("shopItemAddController",['$scope','$state','$http','checkUniqueService','FileUploader','hintService',function($scope,$state,$http,checkUniqueService,FileUploader,hintService){
 	
 //	$scope.formData.fitemID  新增开始的时候需要从服务器中下载下来，以便于子项的操作
 	$scope.treeAPI.hiddenBusTypeTree();
@@ -18,15 +18,6 @@ app.controller("shopItemAddController",['$scope','$state','$http','checkUniqueSe
 	$scope.isUnique = true;
 	$scope.notUniqueMessage = "已存在";
 	$scope.checkIsUnique = function(fid,itemCode){//检查服务编码是否已经存在需要服务id和更新的服务编号
-//		$http({
-//			url:"base/busItemAction!checkItemCodeIsUnique.action",
-//			method:"get",
-//			params:{
-//				itemCode : $scope.formData.busTypeCode + itemCode,
-//				fid:fid
-//			}
-//		})
-//		.then(function(resp){
 		checkUniqueService.checkShopItemCodeUnique(fid,$scope.formData.busTypeCode + itemCode).then(function(resp){
 			if(resp.data.code==1){
 				$scope.isUnique = true;
@@ -60,7 +51,6 @@ app.controller("shopItemAddController",['$scope','$state','$http','checkUniqueSe
 		}
 	});
 	
-	
 	//初始化时间控件
 	$('#starTime').focus(
 	    		function(){
@@ -86,6 +76,49 @@ app.controller("shopItemAddController",['$scope','$state','$http','checkUniqueSe
 	    		});
     		}
 	);
+	/**
+	 * 初始化文件上传控件
+	 */
+	 var uploader = $scope.uploader = new FileUploader({
+	        url: 'common/fileUploadAction!uploadOnePictrue.action',
+	        alias:"files",
+	        autoUpload:true,
+	        removeAfterUpload:true
+	    });
+	
+	 /**
+	  * 过滤器
+	  */
+	  uploader.filters.push({
+          name: 'imageFilter',
+          fn: function(item /*{File|FileLikeObject}*/, options) {
+        	  var isImage = false;
+        	  isImage = item.type.indexOf("image")>=0;
+        	  if(!isImage){
+        		  alert("请选择图片文件!");
+        	  }
+              return isImage;
+          }
+      });
+	  /**
+	   * 上传开始之前
+	   */
+	  uploader.onBeforeUploadItem = function(item) {
+		  $scope.uploading = true ;
+      };
+	  /**
+		  * 返回值
+		  */
+		 uploader.onSuccessItem = function(fileItem, response, status, headers) {
+			 $scope.uploading = false ;
+	         if(response.code==1){
+	        	 hintService.hint({title: "成功", content: "上传成功！" });
+	        	 //上传成功的返回数据：{"name":"13293618_1200x1000_0.jpg","code":1,"url":"http://120.25.149.142:8048/group1/M00/00/0C/eBmVjlXCvHCERq5wAAAAAKmTBbk746.jpg"}
+	        	$scope.formData.atomPhotoUrl = response.url ;
+	         }else{
+	        	 alert(response.message)
+	         }
+	     };
 	
 	/**
 	 * 初始化服务子项的datatables列表
@@ -165,11 +198,10 @@ app.controller("shopItemAddController",['$scope','$state','$http','checkUniqueSe
 	$scope.needUpdateRowData = null;
 	$scope.updateRowTable = function(nRow){
 		var index = busAtomTable.row(nRow).index();
+		$scope.showAddBusAtomForm();
 		$scope.needUpdateRowData = $scope.busAtomData[index];
 		$scope.needUpdateRowData.index = index;//保存该数据的位置，用来找到在缓存中的数据，替换缓存中的数据
-		
 		$scope.copyRow(nRow);
-		$scope.showAddBusAtomForm();
 	}
 	/**
 	 * 拷贝一行，双击一行，将表单中的空白部分进行填充
@@ -213,9 +245,12 @@ app.controller("shopItemAddController",['$scope','$state','$http','checkUniqueSe
 		if(!$scope.formData.busAtomMemo || $scope.formData.busAtomMemo==""){
 			$scope.formData.busAtomMemo = data.memo ;
 		}
-		
-		var hiddenButton = $("#clickId");
-		hiddenButton.trigger("click");
+		if(!$scope.formData.atomPhotoUrl || $scope.formData.atomPhotoUrl==""){
+			$scope.formData.atomPhotoUrl = data.photoUrl ;
+		}
+		$scope.$evalAsync();
+//		var hiddenButton = $("#clickId");
+//		hiddenButton.trigger("click");
 	}
 	
 	
@@ -277,6 +312,7 @@ app.controller("shopItemAddController",['$scope','$state','$http','checkUniqueSe
 		newBusAtom.spec = $scope.formData.spec ;
 		newBusAtom.model = $scope.formData.model ;
 		newBusAtom.autoPartId = $scope.formData.autoPartId ;
+		newBusAtom.photoUrl = $scope.formData.atomPhotoUrl ;
 		
 		newBusAtom.isActivity = $scope.formData.autoIsActivity ;
 		newBusAtom.yunitPrice = $scope.formData.yunitPrice ;
@@ -301,6 +337,7 @@ app.controller("shopItemAddController",['$scope','$state','$http','checkUniqueSe
 		$scope.needUpdateRowData.spec = $scope.formData.spec ;
 		$scope.needUpdateRowData.model = $scope.formData.model ;
 		$scope.needUpdateRowData.autoPartId = $scope.formData.autoPartId ;
+		$scope.needUpdateRowData.photoUrl = $scope.formData.atomPhotoUrl ;
 		
 		$scope.needUpdateRowData.isActivity = $scope.formData.autoIsActivity ;
 		$scope.needUpdateRowData.yunitPrice = $scope.formData.yunitPrice ;
@@ -326,6 +363,7 @@ app.controller("shopItemAddController",['$scope','$state','$http','checkUniqueSe
 		$scope.formData.model = undefined ;
 		$scope.formData.autoIsActivity = undefined ;
 		$scope.formData.autoPartAllName = undefined ;
+		$scope.formData.atomPhotoUrl = undefined ;
 		
 		$scope.formData.atomCode = undefined ;
 		$scope.formData.atomName = undefined ;
@@ -465,7 +503,8 @@ app.controller("shopItemAddController",['$scope','$state','$http','checkUniqueSe
 	//减少配件合计价
 	$scope.deleteAutoPartsPrice = function(autoPartsPrice){
 		$scope.formData.autoPartsPrice = ($scope.formData.autoPartsPrice || 0) - autoPartsPrice;
-		$("#clickId").trigger("click");
+		$scope.$evalAsync();
+//		$("#clickId").trigger("click");
 	}
 	
 	/**
@@ -473,6 +512,8 @@ app.controller("shopItemAddController",['$scope','$state','$http','checkUniqueSe
 	 * 当显示服务子项页面的时候 不显示服务信息页面
 	 */
 	$scope.showAddBusAtomForm = function(){
+		$scope.needUpdateRowData = null ;//清空需要更新的对象
+		$scope.resetBusAtomButton();
 		$("form[name=busAtomForm]").removeClass(" none ");
 		$("form[name=busItemForm]").addClass(" none ");
 		$("#busItemSumbit").addClass("none");
