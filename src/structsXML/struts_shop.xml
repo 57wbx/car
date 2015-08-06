@@ -9,6 +9,7 @@
 				<action name="shopAtomAction" class="com.hhxh.car.shop.action.ShopAtomAction"></action>
 				<action name="shopPackageAction" class="com.hhxh.car.shop.action.ShopPackageAction"></action>
 				<action name="shopItemImgAction" class="com.hhxh.car.shop.action.ShopItemImgAction"></action>
+				<action name="shopPackageImgAction" class="com.hhxh.car.shop.action.ShopPackageImgAction"></action>
 	</package>
 
 </struts>

@@ -1,16 +1,23 @@
 'use strict';
 
-app.controller('shopPackageController', ['$rootScope','$scope','$state','$timeout','$http',function($rootScope, $scope, $state, $timeout,$http) {
+app.controller('shopPackageController', ['$rootScope','$scope','$state','$timeout','$http','sessionStorageService',function($rootScope, $scope, $state, $timeout,$http,sessionStorageService) {
 //  var url = app.url.org.api.list; // 后台API路径
-	$scope.routerUrl = {};
-	$scope.routerUrl.list = "app.shoppackage.list";
-	$scope.routerUrl.add = "app.shoppackage.add";
-	$scope.routerUrl.edit = "app.shoppackage.edit";
-	$scope.routerUrl.details = "app.shoppackage.details";
+	$scope.state = {};
+	$scope.state.list = "app.shoppackage.list";
+	$scope.state.add = "app.shoppackage.add";
+	$scope.state.edit = "app.shoppackage.edit";
+	$scope.state.details = "app.shoppackage.details";
+	$scope.state.manageimg = "app.shoppackage.manageimg";
 	
 
 	$scope.rowIds = [];//用来保存所选列表的id
 	
+	/**
+	 * 在session中不能清除的内容，应该包含子缓存对象
+	 */
+	$scope.session = {};
+	$scope.session.cacheArray = ["shopPackageIdForImg"];
+	sessionStorageService.clearNoCacheItem($scope.session.cacheArray);
 	
 	
 	/**
@@ -67,7 +74,7 @@ app.controller('shopPackageController', ['$rootScope','$scope','$state','$timeou
 	 * 新增按钮的方法
 	 */
 	$scope.addRow = function(){
-		$state.go($scope.routerUrl.add);
+		$state.go($scope.state.add);
 	}
 	
 	/**
@@ -80,7 +87,7 @@ app.controller('shopPackageController', ['$rootScope','$scope','$state','$timeou
 		}else if($scope.editId){
 			$scope.rowIds.push($scope.editId);
 		}
-		$state.go($scope.routerUrl.details);
+		$state.go($scope.state.details);
 	}
 	
 	/**
@@ -91,7 +98,7 @@ app.controller('shopPackageController', ['$rootScope','$scope','$state','$timeou
 			$scope.clearRowIds();
 			$scope.rowIds.push($scope.editId);
 		}
-		$state.go($scope.routerUrl.edit);
+		$state.go($scope.state.edit);
 	}
 	/**
 	 * 删除方法的按钮
@@ -119,7 +126,17 @@ app.controller('shopPackageController', ['$rootScope','$scope','$state','$timeou
 	}
 	
 	
-  
+	/**
+	 * 管理图片的方法
+	 */
+	$scope.manageImg = function(){
+		if($scope.editId){
+			$scope.clearRowIds();
+			$scope.rowIds.push($scope.editId);
+		}
+		$state.go($scope.state.manageimg);
+		$scope.treeAPI.hiddenBusTypeTree();
+	}
 
   
  

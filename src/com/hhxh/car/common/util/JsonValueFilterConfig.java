@@ -56,7 +56,11 @@ public class JsonValueFilterConfig {
 	/**
 	 * shopPackage 商家套餐
 	 */
-	public static final String[] SHOPPACKAGE_ONLY_SHOPPACKAGE = new String[]{"shopItems","carShop"};
-	public static final String[] SHOPPACKAGE_HAS_SHOPITEM = new String[]{"carShop","shopPackages","shopItemImgs","shopAtoms"};
+	public static final String[] SHOPPACKAGE_ONLY_SHOPPACKAGE = new String[]{"shopItems","carShop","shopPackageImgs"};
+	public static final String[] SHOPPACKAGE_HAS_SHOPITEM = new String[]{"carShop","shopPackages","shopItemImgs","shopAtoms","shopPackageImgs"};
 	
+	/**
+	 * shopPackageImg 商家套餐需要过滤的数据
+	 */
+	public static final String[] SHOPPACKAGEIMG_ONLY_SHOPPACKAGEIMG = new String[]{"shopPackage","user"};
 }

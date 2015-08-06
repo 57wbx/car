@@ -11,16 +11,13 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
-import net.sf.json.JsonConfig;
-import net.sf.json.util.CycleDetectionStrategy;
 
-import com.hhxh.car.base.buspackage.service.BusPackageService;
 import com.hhxh.car.base.bustype.domain.BusType;
 import com.hhxh.car.common.action.BaseAction;
-import com.hhxh.car.common.util.JsonDateValueProcessor;
 import com.hhxh.car.common.util.JsonValueFilterConfig;
 import com.hhxh.car.shop.domain.ShopItem;
 import com.hhxh.car.shop.domain.ShopPackage;
+import com.hhxh.car.shop.domain.ShopPackageImg;
 import com.hhxh.car.shop.service.ShopPackageService;
 import com.opensymphony.xwork2.ModelDriven;
 
@@ -66,15 +63,9 @@ public class ShopPackageAction extends BaseAction implements ModelDriven<ShopPac
 		}
 		
 		
-		//设置json处理数据的规则
-		JsonConfig jsonConfig = new JsonConfig();  
-		jsonConfig.registerJsonValueProcessor(Date.class, new JsonDateValueProcessor()); 
-		jsonConfig.setIgnoreDefaultExcludes(false); //设置默认忽略 
-		jsonConfig.setCycleDetectionStrategy(CycleDetectionStrategy.LENIENT);//设置循环策略为忽略    解决json最头疼的问题 死循环
-		jsonConfig.setExcludes(new String[] {"shopItems","carShop"});//此处是亮点，只要将所需忽略字段加到数组中即可
 		
 		this.jsonObject.put("code", 1);
-		this.jsonObject.accumulate("data",shopPackages,jsonConfig);
+		this.jsonObject.accumulate("data",shopPackages,this.getJsonConfig(JsonValueFilterConfig.SHOPPACKAGE_ONLY_SHOPPACKAGE));
 		
 		jsonObject.put("recordsTotal",recordsTotal);
 		jsonObject.put("recordsFiltered",recordsTotal);
@@ -118,7 +109,6 @@ public class ShopPackageAction extends BaseAction implements ModelDriven<ShopPac
 			log.error("查询套餐下的服务失败", e);
 			this.putJson(false, this.getMessageFromConfig("busPackageError"));
 		}
-		
 	}
 	
 	/**
@@ -292,6 +282,39 @@ public class ShopPackageAction extends BaseAction implements ModelDriven<ShopPac
 			this.putJson(jsonObject.toString());
 		} catch (IOException e) {
 			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * 获取一个套餐下面的所有图片
+	 */
+	public void listShopPackageImgByShopPackage()
+	{
+		try
+		{
+			if(isNotEmpty(shopPackage.getFid()))
+			{
+				shopPackage = this.baseService.get(ShopPackage.class,shopPackage.getFid());
+				if(shopPackage!=null)
+				{
+					List<ShopPackageImg> list = new ArrayList<ShopPackageImg>(shopPackage.getShopPackageImgs());
+					this.jsonObject.accumulate("images", list, this.getJsonConfig(JsonValueFilterConfig.SHOPPACKAGEIMG_ONLY_SHOPPACKAGEIMG));
+					this.putJson();
+				}
+				else
+				{
+					this.putJson(false, this.getMessageFromConfig("busPackageIdError"));
+				}
+			}
+			else
+			{
+				this.putJson(false, this.getMessageFromConfig("needBusPackageId"));
+			}
+		}
+		catch(Exception e)
+		{
+			log.error("获取商家套餐图片信息列表失败", e);
+			this.putJson(false, this.getMessageFromConfig("busPackageError"));
 		}
 	}
 	

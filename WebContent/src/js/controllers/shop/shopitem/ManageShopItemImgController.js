@@ -81,8 +81,9 @@ app.controller('manageShopItemImgController',['$rootScope','$scope','$state','$t
 	 uploader.onSuccessItem = function(fileItem, response, status, headers) {
          console.info('onSuccessItem', fileItem, response, status, headers);
          // response = {imgPath: "http://120.25.149.142:8048/group1/M00/00/04/eBmVjlW7RIKELGqbAAAAALC8Z0Q272.jpg", code: 1}
-         hintService.hint({title: "成功", content: "上传成功！" });
+         
          if(response.code==1){
+        	 hintService.hint({title: "成功", content: "上传成功！" });
         	 $scope.imgs.push({
         		//http://{{item.serverIp}}:{{item.port}}/{{item.filePath}}
         		 id:response.id,
@@ -90,6 +91,8 @@ app.controller('manageShopItemImgController',['$rootScope','$scope','$state','$t
         		 port:response.port,
         		 filePath:response.filePath
         	 });
+         }else{
+        	 alert(response.message);
          }
      };
      

@@ -1,7 +1,7 @@
 app.controller("shopPackageDetailsController",['$scope','$state','$http',function($scope,$state,$http){
 	
 	if(!$scope.editId){
-		$state.go($scope.routerUrl.list);
+		$state.go($scope.state.list);
 	}
 	/*
 	 * 初始化 隐藏树 
@@ -219,7 +219,7 @@ app.controller("shopPackageDetailsController",['$scope','$state','$http',functio
 		}).then(function(resp){
 			var code = resp.data.code ;
 			if(code == 1){//代表保存成功
-				$state.go($scope.routerUrl.list);
+				$state.go($scope.state.list);
 				$scope.treeAPI.showBusTypeTree();
 			}else{//代表保存失败
 				alert("保存失败");
@@ -233,7 +233,7 @@ app.controller("shopPackageDetailsController",['$scope','$state','$http',functio
 	 * 取消按钮的操作，直接跳转到列表页面上
 	 */
 	$scope.cancel = function(){
-		$state.go($scope.routerUrl.list);
+		$state.go($scope.state.list);
 		$scope.treeAPI.showBusTypeTree();
 	}
 	/**
@@ -353,7 +353,7 @@ app.controller("shopPackageDetailsController",['$scope','$state','$http',functio
 				$scope.formData.updateTime = undefined;
 				
 			}else{
-				$state.go($scope.routerUrl.list);
+				$state.go($scope.state.list);
 			}
 		});
 	

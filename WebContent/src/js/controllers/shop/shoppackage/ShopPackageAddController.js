@@ -366,7 +366,7 @@ app.controller("shopPackageAddController",['$scope','$state','$http',function($s
 		}).then(function(resp){
 			var code = resp.data.code ;
 			if(code == 1){//代表保存成功
-				$state.go($scope.routerUrl.list );
+				$state.go($scope.state.list );
 				$scope.treeAPI.showBusTypeTree();
 			}else{//代表保存失败
 				alert("保存失败");
@@ -380,7 +380,7 @@ app.controller("shopPackageAddController",['$scope','$state','$http',function($s
 	 * 取消按钮的操作，直接跳转到列表页面上
 	 */
 	$scope.cancel = function(){
-		$state.go($scope.routerUrl.list );
+		$state.go($scope.state.list );
 		$scope.treeAPI.showBusTypeTree();
 	}
 	/**

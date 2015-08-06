@@ -15,6 +15,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.hhxh.car.base.busitem.domain.BusItem;
@@ -77,6 +78,9 @@ public class ShopPackage implements java.io.Serializable {
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="shopid")
 	private CarShop carShop ;
+	
+	@OneToMany(mappedBy="shopPackage")
+	private Set<ShopPackageImg> shopPackageImgs = new HashSet<ShopPackageImg>();
 
 	public ShopPackage() {
 	}
@@ -315,6 +319,16 @@ public class ShopPackage implements java.io.Serializable {
 				+ ", publishTime=" + publishTime + ", updateTime=" + updateTime
 				+ ", memo=" + memo + ", starTime=" + starTime + ", endTime="
 				+ endTime + "]";
+	}
+
+
+	public Set<ShopPackageImg> getShopPackageImgs() {
+		return shopPackageImgs;
+	}
+
+
+	public void setShopPackageImgs(Set<ShopPackageImg> shopPackageImgs) {
+		this.shopPackageImgs = shopPackageImgs;
 	}
 
 	

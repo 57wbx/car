@@ -1052,6 +1052,19 @@ angular.module('app').run(
 										                }
 										              ]
 										            }
+										        }).state('app.shoppackage.manageimg', {
+										            url: '/manageimg',
+										            templateUrl: 'src/tpl/shop/shoppackage/manage_shoppackageimg.html',
+										            resolve: {
+										              deps: ['$ocLazyLoad','uiLoad',
+										                function($ocLazyLoad, uiLoad) {
+										                  return uiLoad.load(JQ_CONFIG.chosen).then(function() {
+										                    $ocLazyLoad.load('src/js/controllers/shop/shoppackage/ManageShopPackageImgDetailsController.js');
+										                    return $ocLazyLoad.load('src/js/controllers/shop/shoppackage/ManageShopPackageImgController.js');
+										                  });
+										                }
+										              ]
+										            }
 										        })
       // form
       .state('app.form', {

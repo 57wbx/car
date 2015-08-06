@@ -29,13 +29,13 @@ public class BusAtom implements java.io.Serializable {
 	@Id
 	private String fid ;
 	
-	@Column(nullable=false,unique=true)
+	@Column
 	private String atomCode;
 	@Column
 	private String atomName;
 
 	@ManyToOne(fetch=FetchType.EAGER)
-	@JoinColumn(name="itemCode")
+	@JoinColumn(name="fitemID")
 	private BusItem busItem;
 	@Column
 	private Integer autoParts;
