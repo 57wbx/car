@@ -3,6 +3,7 @@ package com.hhxh.car.common.action;
 import net.sf.json.JSONObject;
 
 import com.hhxh.car.common.util.FileUploadUtil;
+import com.hhxh.car.common.util.UrlUtils;
 
 /**
  * 部分单文件上传，只需要上传到文件服务器，然后返回一个地址就可以了，所以特意创建一个文件上传action，
@@ -19,7 +20,7 @@ public class FileUploadAction extends BaseAction{
 	{
 		try
 		{
-			Thread.sleep(5000);//模拟网络不好的情况下
+//			Thread.sleep(5000);//模拟网络不好的情况下
 			if(this.getFiles()!=null&&this.getFiles().size()>0)
 			{
 				log.info(this.getFiles().get(0).getName());
@@ -32,6 +33,9 @@ public class FileUploadAction extends BaseAction{
 					{
 						String fileName = this.getFilesFileName().get(0);
 						jsonObject.put("url",successObject.get(fileName) );
+						jsonObject.put("host", UrlUtils.getHost((String)successObject.get(fileName)));
+						jsonObject.put("port", UrlUtils.getPort((String)successObject.get(fileName)));
+						jsonObject.put("resourcesPath", UrlUtils.getResourcesPath((String)successObject.get(fileName)));
 						jsonObject.put("name", fileName);
 						this.putJson();
 						return;

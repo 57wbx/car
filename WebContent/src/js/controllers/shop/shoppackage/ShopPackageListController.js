@@ -108,7 +108,11 @@ app.controller('shopPackageListController',['$scope','$state','$timeout','$http'
 	              "render": function(param){
 	                return '<label class="i-checks"><input type="checkbox"><i></i></label>';
 	              }
-	            },{
+	            } ,{
+	                "render":function( data, type, row ){
+	                	return row.shopPackageImgs.length;
+	                }
+	              },{
 	            "mDataProp": "packageCode",
 	          }, {
 	            "mDataProp": "packageName",
@@ -315,7 +319,7 @@ app.controller('shopPackageListController',['$scope','$state','$timeout','$http'
 		}else if(!table.row(nRow).child()){//当child中没有数据的时候从网上获取
 			//从网上获取数据，并将数据添加到子行中
 			$http({
-				url:"shop/shopItemAction!detailsShoptem.action",
+				url:"shop/shopItemAction!detailsShopItem.action",
 				method:"get",
 				params:{
 					fid:itemId

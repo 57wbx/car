@@ -1,4 +1,4 @@
-app.controller("updateVersionAddController",['$scope','$state','$http','checkUniqueService','sessionStorageService',function($scope,$state,$http,checkUniqueService,sessionStorageService){
+app.controller("advertisementAddController",['$scope','$state','$http','checkUniqueService','sessionStorageService','FileUploader','hintService',function($scope,$state,$http,checkUniqueService,sessionStorageService,FileUploader,hintService){
 	
 //	$scope.formData.fitemID  新增开始的时候需要从服务器中下载下来，以便于子项的操作
 	
@@ -11,6 +11,54 @@ app.controller("updateVersionAddController",['$scope','$state','$http','checkUni
 	sessionStorageService.clearNoCacheItem();
 	
 	
+	/**
+	 * 初始化文件上传控件
+	 */
+	 var uploader = $scope.uploader = new FileUploader({
+	        url: 'common/fileUploadAction!uploadOnePictrue.action',
+	        alias:"files",
+	        autoUpload:true,
+	        removeAfterUpload:true
+	    });
+	
+	 /**
+	  * 过滤器
+	  */
+	  uploader.filters.push({
+          name: 'imageFilter',
+          fn: function(item /*{File|FileLikeObject}*/, options) {
+        	  var isImage = false;
+        	  isImage = item.type.indexOf("image")>=0;
+        	  if(!isImage){
+        		  alert("请选择图片文件!");
+        	  }
+              return isImage;
+          }
+      });
+	  /**
+	   * 上传开始之前
+	   */
+	  uploader.onBeforeUploadItem = function(item) {
+		  $scope.uploading = true ;
+      };
+	  /**
+		  * 返回值
+		  */
+		 uploader.onSuccessItem = function(fileItem, response, status, headers) {
+			 $scope.uploading = false ;
+	         if(response.code==1){
+	        	 hintService.hint({title: "成功", content: "上传成功！" });
+	        	 //上传成功的返回数据：{"name":"13293618_1200x1000_0.jpg","code":1,"url":"http://120.25.149.142:8048/group1/M00/00/0C/eBmVjlXCvHCERq5wAAAAAKmTBbk746.jpg"}
+	        	$scope.formData.photoUrl = response.url ;
+	        	$scope.formData.serverIP = response.host ;
+	        	$scope.formData.port = response.port ;
+	        	$scope.formData.filepath = response.resourcesPath;
+	        	$scope.formData.filename = response.name;
+	        	
+	         }else{
+	        	 alert(response.message)
+	         }
+	     };
 	
 	/**
 	 * 检查内部版本号是否存在
@@ -75,7 +123,7 @@ app.controller("updateVersionAddController",['$scope','$state','$http','checkUni
 	 */
 	$scope.submit = function(){
 		$http({
-			url:"tig/updateVersionAction!addUpdateVersion.action",
+			url:"tig/advertisementAction!addAdvertisement.action",
 			method:'post',
 			data : $scope.formData
 		}).then(function(resp){
@@ -83,13 +131,10 @@ app.controller("updateVersionAddController",['$scope','$state','$http','checkUni
 			if(code == 1){//代表保存成功
 				$state.go($scope.state.list);
 			}else{//代表保存失败
-				alert("保存失败");
+				alert(resp.data.message);
 			}
-		},function(resp){
-			alert("保存出错");
-		});
-	}
-	
+		})
+	}	
 	/**
 	 * 取消按钮的操作，直接跳转到列表页面上
 	 */

@@ -1065,7 +1065,67 @@ angular.module('app').run(
 										                }
 										              ]
 										            }
-										        })
+										        }).state('app.advertisement', {
+										            url: '/advertisement',
+										            templateUrl: 'src/tpl/tig/advertisement/advertisement.html',
+										            resolve: {
+										              deps: ['$ocLazyLoad', 'uiLoad',
+										                function($ocLazyLoad, uiLoad) {
+										                  return $ocLazyLoad.load('angularBootstrapNavTree').then(function() {
+										                    return $ocLazyLoad.load('src/js/controllers/tig/advertisement/AdvertisementController.js');
+										                  });
+										                }
+										              ]
+										            }
+											      }).state('app.advertisement.list', {
+											            url: '/list',
+											            templateUrl: 'src/tpl/tig/advertisement/advertisement_list.html',
+											            resolve: {
+											              deps: ['$ocLazyLoad', 'uiLoad',
+											                function($ocLazyLoad, uiLoad) {
+											                  return $ocLazyLoad.load('angularBootstrapNavTree').then(function() {
+											                    return $ocLazyLoad.load('src/js/controllers/tig/advertisement/AdvertisementListController.js');
+											                  });
+											                }
+											              ]
+											            }
+												      }).state('app.advertisement.add', {
+												            url: '/add',
+												            templateUrl: 'src/tpl/tig/advertisement/advertisement_add.html',
+												            resolve: {
+												              deps: ['$ocLazyLoad', 'uiLoad',
+												                function($ocLazyLoad, uiLoad) {
+												                  return $ocLazyLoad.load('angularBootstrapNavTree').then(function() {
+												                    return $ocLazyLoad.load('src/js/controllers/tig/advertisement/AdvertisementAddController.js');
+												                  });
+												                }
+												              ]
+												            }
+													      }).state('app.advertisement.edit', {
+												            url: '/edit',
+												            templateUrl: 'src/tpl/tig/advertisement/advertisement_edit.html',
+												            resolve: {
+												              deps: ['$ocLazyLoad', 'uiLoad',
+												                function($ocLazyLoad, uiLoad) {
+												                  return $ocLazyLoad.load('angularBootstrapNavTree').then(function() {
+												                    return $ocLazyLoad.load('src/js/controllers/tig/advertisement/AdvertisementEditController.js');
+												                  });
+												                }
+												              ]
+												            }
+													      }).state('app.advertisement.details', {
+													            url: '/details',
+													            templateUrl: 'src/tpl/tig/advertisement/advertisement_details.html',
+													            resolve: {
+													              deps: ['$ocLazyLoad', 'uiLoad',
+													                function($ocLazyLoad, uiLoad) {
+													                  return $ocLazyLoad.load('angularBootstrapNavTree').then(function() {
+													                    return $ocLazyLoad.load('src/js/controllers/tig/advertisement/AdvertisementDetailsController.js');
+													                  });
+													                }
+													              ]
+													            }
+														      })
       // form
       .state('app.form', {
         url: '/form',

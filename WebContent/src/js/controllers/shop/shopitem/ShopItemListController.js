@@ -109,6 +109,10 @@ app.controller('shopItemListController',['$scope','$state','$timeout','$http','s
               return '<label class="i-checks"><input type="checkbox"><i></i></label>';
             }
           }, {
+            "render":function( data, type, row ){
+            	return row.shopItemImgs.length;
+            }
+          }, {
             "mDataProp": "itemCode",
           }, {
             "mDataProp": "itemName",

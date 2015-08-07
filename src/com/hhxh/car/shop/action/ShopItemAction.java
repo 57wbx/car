@@ -73,7 +73,7 @@ public class ShopItemAction extends BaseAction implements ModelDriven<ShopItem> 
 				shopItems = this.baseService.gets("From ShopItem b where  b.carShop=:carShop",paramMap, this.getIDisplayStart(), this.getIDisplayLength());
 				recordsTotal = this.baseService.getSize("From ShopItem b where  b.carShop=:carShop",paramMap);
 			}
-			jsonObject.accumulate("data", shopItems, this.getJsonConfig(JsonValueFilterConfig.SHOPITEM_ONLY_SHOPITEM));
+			jsonObject.accumulate("data", shopItems, this.getJsonConfig(JsonValueFilterConfig.SHOPITEM_HAS_SHOPITEMIMG));
 			jsonObject.put("recordsTotal",recordsTotal);
 			jsonObject.put("recordsFiltered",recordsTotal);
 			this.putJson();

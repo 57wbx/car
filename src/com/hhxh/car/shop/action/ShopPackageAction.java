@@ -65,7 +65,7 @@ public class ShopPackageAction extends BaseAction implements ModelDriven<ShopPac
 		
 		
 		this.jsonObject.put("code", 1);
-		this.jsonObject.accumulate("data",shopPackages,this.getJsonConfig(JsonValueFilterConfig.SHOPPACKAGE_ONLY_SHOPPACKAGE));
+		this.jsonObject.accumulate("data",shopPackages,this.getJsonConfig(JsonValueFilterConfig.SHOPPACKAGE_HAS_SHOPPACKAGEIMG));
 		
 		jsonObject.put("recordsTotal",recordsTotal);
 		jsonObject.put("recordsFiltered",recordsTotal);

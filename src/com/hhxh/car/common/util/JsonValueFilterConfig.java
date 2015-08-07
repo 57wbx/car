@@ -41,6 +41,7 @@ public class JsonValueFilterConfig {
 	 * shopitem 商家服务项需要过滤的数据
 	 */
 	public static final String[] SHOPITEM_ONLY_SHOPITEM = new String[]{"shopAtoms","shopItem","carShop","shopPackages","shopItemImgs"};
+	public static final String[] SHOPITEM_HAS_SHOPITEMIMG = new String[]{"shopAtoms","shopItem","carShop","shopPackages","user"};
 
 	/**
 	 * shopItemImg 商家服务项图片需要过滤的数据
@@ -58,9 +59,16 @@ public class JsonValueFilterConfig {
 	 */
 	public static final String[] SHOPPACKAGE_ONLY_SHOPPACKAGE = new String[]{"shopItems","carShop","shopPackageImgs"};
 	public static final String[] SHOPPACKAGE_HAS_SHOPITEM = new String[]{"carShop","shopPackages","shopItemImgs","shopAtoms","shopPackageImgs"};
+	public static final String[] SHOPPACKAGE_HAS_SHOPPACKAGEIMG = new String[]{"carShop","shopPackages","shopItemImgs","shopItems","shopAtoms","user"};
 	
 	/**
 	 * shopPackageImg 商家套餐需要过滤的数据
 	 */
 	public static final String[] SHOPPACKAGEIMG_ONLY_SHOPPACKAGEIMG = new String[]{"shopPackage","user"};
+	
+	/**
+	 * advertisement 广告需要过滤的数据
+	 */
+	public static final String[] ADVERTISEMENT_ONLY_ADVERTISEMENT = new String[]{"user"};
+	
 }

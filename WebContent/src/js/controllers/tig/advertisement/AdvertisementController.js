@@ -1,21 +1,21 @@
 'use strict';
 
-app.controller('updateVersionController',['$rootScope','$scope','$state','$timeout','$http','sessionStorageService',function($rootScope,$scope,$state,$timeout,$http,sessionStorageService){
+app.controller('advertisementController',['$rootScope','$scope','$state','$timeout','$http','sessionStorageService','previewService',function($rootScope,$scope,$state,$timeout,$http,sessionStorageService,previewService){
 	
 	$scope.rowIds = [];//用来保存所选列表的id
 	
 	$scope.session = {};
-	$scope.session.cacheArray = ["updateVersionIdForEdit","updateVersionIdForDetails"];
+	$scope.session.cacheArray = ["advertisementIdForEdit","advertisementIdForDetails"];
 	sessionStorageService.clearNoCacheItem($scope.session.cacheArray);
 	
 	/**
 	 * 模块路由路径统一管理
 	 */
 	$scope.state = {
-			list:"app.updateversion.list",
-			add:"app.updateversion.add",
-			edit:"app.updateversion.edit",
-			details:"app.updateversion.details"
+			list:"app.advertisement.list",
+			add:"app.advertisement.add",
+			edit:"app.advertisement.edit",
+			details:"app.advertisement.details"
 	}
 	/**
 	 * 并无实际的意义，但是如果没有用这个方法的话，页面中菜单按钮将不会根据属性的值进行变化
@@ -124,7 +124,7 @@ app.controller('updateVersionController',['$rootScope','$scope','$state','$timeo
 		 doIt = function(){
 			 if($scope.rowIds.length>0){
 					$http({
-						url:'tig/updateVersionAction!deleteUpdateVersionByIds.action',
+						url:'tig/advertisementAction!deleteAdvertisementByIds.action',
 						method:'get',
 						params:{
 							ids:$scope.rowIds
@@ -140,6 +140,20 @@ app.controller('updateVersionController',['$rootScope','$scope','$state','$timeo
 		 }
 	}
 	
+	 /**
+     * 显示原始图片的方法
+     */
+	$scope.API = {};
+    $scope.API.showImg = function(item){
+   	 previewService.preview(item);
+    }
+    $scope.API.deleteImg = function(urlObject){
+    	urlObject.photoUrl = undefined;
+    	urlObject.serverIP = undefined ;
+    	urlObject.port = undefined ;
+    	urlObject.filepath = undefined;
+    	urlObject.filename = undefined;
+    }
 	
 	
 	//结束方法

@@ -1,16 +1,16 @@
-app.controller("updateVersionDetailsController",['$scope','$state','$http','checkUniqueService','sessionStorageService',function($scope,$state,$http,checkUniqueService,sessionStorageService){
+app.controller("advertisementDetailsController",['$scope','$state','$http','checkUniqueService','sessionStorageService',function($scope,$state,$http,checkUniqueService,sessionStorageService){
 	
 //	$scope.formData.fitemID  新增开始的时候需要从服务器中下载下来，以便于子项的操作
 	
 	$scope.formData = {};
 	
 	
-	$scope.needCacheArray = ["updateVersionIdForDetails"];
+	$scope.needCacheArray = ["advertisementIdForDetails"];
 	sessionStorageService.clearNoCacheItem($scope.needCacheArray);
 	if($scope.rowIds[0]){
-		sessionStorageService.setItem("updateVersionIdForDetails",$scope.rowIds[0]);
+		sessionStorageService.setItem("advertisementIdForDetails",$scope.rowIds[0]);
 	}else{
-		$scope.rowIds[0]  = sessionStorageService.getItemStr("updateVersionIdForDetails");
+		$scope.rowIds[0]  = sessionStorageService.getItemStr("advertisementIdForDetails");
 	}
 	
 	if(!$scope.rowIds[0]||$scope.rowIds[0]==""){
@@ -21,7 +21,7 @@ app.controller("updateVersionDetailsController",['$scope','$state','$http','chec
 	 * 初始化信息
 	 */
 	$http({
-		url:"tig/updateVersionAction!detailsUpdateVersion.action",
+		url:"tig/advertisementAction!detailsAdvertisement.action",
 		method:"get",
 		params:{
 			id:$scope.rowIds[0]
@@ -29,8 +29,8 @@ app.controller("updateVersionDetailsController",['$scope','$state','$http','chec
 	}).then(function(resp){
 		var code = resp.data.code ;
 		if(code == 1){
-			$scope.formData = resp.data.updateVersion;
-			$scope.formData.uploadTimeStr = resp.data.updateVersion.uploadTime ;
+			$scope.formData = resp.data.details;
+			$scope.formData.photoUrl = "http://"+$scope.formData.serverIP+":"+$scope.formData.port+"/"+$scope.formData.filepath;
 		}else{
 			$state.go($scope.state.list);
 		}

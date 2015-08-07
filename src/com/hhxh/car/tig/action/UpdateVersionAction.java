@@ -21,6 +21,8 @@ public class UpdateVersionAction extends BaseAction implements ModelDriven<Updat
 	private UpdateVersion updateVersion ;
 	
 	private String uploadTimeStr ;//用来接收时间参数的
+	
+	private String[] ids ;
 
 	public void listUpdateVersion(){
 		List<UpdateVersion> updateVersions = this.baseService.gets(UpdateVersion.class, this.getIDisplayStart(), this.getIDisplayLength());
@@ -70,6 +72,29 @@ public class UpdateVersionAction extends BaseAction implements ModelDriven<Updat
 		}
 	}
 	
+	/**
+	 * 删除指定数组中的版本信息
+	 */
+	public void deleteUpdateVersionByIds()
+	{
+		try
+		{
+			if(ids!=null&&ids.length>0)
+			{
+				this.baseService.deleteByIds(UpdateVersion.class, ids);
+				this.putJson();
+			}
+			else
+			{
+				this.putJson(false, this.getMessageFromConfig("updateVersion_needId"));
+			}
+		}
+		catch(Exception e)
+		{
+			log.error("删除版本信息失败", e);
+			this.putJson(false, this.getMessageFromConfig("updateVersion_deleteError"));
+		}
+	}
 	/**
 	 * 检查外部版本号是否存在
 	 */
@@ -179,6 +204,12 @@ public class UpdateVersionAction extends BaseAction implements ModelDriven<Updat
 	public void setUploadTimeStr(String uploadTimeStr) {
 		this.uploadTimeStr = uploadTimeStr;
 	}
-	
+
+	public String[] getIds() {
+		return ids;
+	}
+	public void setIds(String[] ids) {
+		this.ids = ids;
+	}
 
 }

@@ -1,6 +1,6 @@
 'use strict';
 
-app.controller('updateVersionListController',['$scope','$state','$timeout','$http','sessionStorageService',function($scope,$state,$timeout,$http,sessionStorageService){
+app.controller('advertisementListController',['$scope','$state','$timeout','$http','sessionStorageService',function($scope,$state,$timeout,$http,sessionStorageService){
 	
 	sessionStorageService.clearNoCacheItem();
 	
@@ -50,14 +50,14 @@ app.controller('updateVersionListController',['$scope','$state','$timeout','$htt
 			target.removeClass('selected');
 			target.find("td").css("background-color","white");
 			$scope.setCanEdit(false);//设置不可以查看和修改
-			showInfoByChild(target);
+//			showInfoByChild(target);
         }else {
-        	updateVersionTable.$('tr.selected').find("td").css("background-color","white");
-        	updateVersionTable.$('tr.selected').removeClass('selected');
+        	advertisementTable.$('tr.selected').find("td").css("background-color","white");
+        	advertisementTable.$('tr.selected').removeClass('selected');
         	target.addClass('selected');
         	target.find("td").css("background-color","#b0bed9");
         	$scope.setCanEdit(true,id);//设置可以查看和修改
-        	showInfoByChild(target);
+//        	showInfoByChild(target);
         }
 	}
 	/**
@@ -89,16 +89,13 @@ app.controller('updateVersionListController',['$scope','$state','$timeout','$htt
 	}
 	
 	
-	//延迟加载 客户端不会报错，具体原因还不清楚
-//	$timeout(function(){
-	$scope.$evalAsync(initDataTable);
-//		initDataTable();
-//	},30);
-	var updateVersionTable ;
+	$scope.$evalAsync(initDataTable);//延迟加载列表
+	
+	var advertisementTable ;
 	function initDataTable(){
 		
-		updateVersionTable = $("#updateVersionTable").DataTable({
-		"sAjaxSource":"tig/updateVersionAction!listUpdateVersion.action",
+		advertisementTable = $("#advertisementTable").DataTable({
+		"sAjaxSource":"tig/advertisementAction!listAdvertisement.action",
     	"bServerSide":true,
     	"sAjaxDataProp":"data",
     	"pageLength":10,
@@ -123,24 +120,51 @@ app.controller('updateVersionListController',['$scope','$state','$timeout','$htt
               return '<label class="i-checks"><input type="checkbox"><i></i></label>';
             }
           }, {
-            "mDataProp": "versionCode",
+            "mDataProp": "adverCode",
           }, {
-            "mDataProp": "phoneType",
+            "mDataProp": "name",
+          }, {
+            "mDataProp": "adverType",
+            "render":function(param){
+            	switch (param) {
+				case 1:
+					return "项目广告";
+					break;
+				case 2:
+					return "网页广告";
+					break;
+				case 3:
+					return "网页地址";
+					break;
+				case 4:
+					return "活动广告";
+					break;
+				default:
+					return "";
+					break;
+				}
+            }
+          }, {
+            "mDataProp": "filename",
+          }, {
+            "render":function( data, type, row ){
+            	return "http://"+row.serverIP+":"+row.port+"/"+row.filepath;
+            }
+          }, {
+            "mDataProp": "imgUrl",
+          }, {
+            "mDataProp": "isEnable",
             "render":function(param){
             	switch(param){
-            	case 0: return "android";break;
-            	case 1: return "IOS";break;
-            	default:return "";break;
+            	case 1: return "启用";break;
+            	case 0: return "禁用";break;
+            	default:return ""; break;
             	}
             }
           }, {
-            "mDataProp": "versionName",
+            "mDataProp": "createTime",
           }, {
-            "mDataProp": "uploadTime",
-          }, {
-            "mDataProp": "fileName",
-          }, {
-            "mDataProp": "filePath",
+            "mDataProp": "memo",
           }],
           "fnCreatedRow": function(nRow, aData, iDataIndex){
         	  $(nRow).attr("data-id",aData['id']);
@@ -157,7 +181,7 @@ app.controller('updateVersionListController',['$scope','$state','$timeout','$htt
         		  clickTr(e,$(this));
         	  });
         	  //设置详细信息的显示方式
-        	  updateVersionTable.row(nRow).child(format(aData));
+//        	  updateVersionTable.row(nRow).child(format(aData));
           },
           "drawCallback":function(setting){
         	  $scope.clearRowIds();//首先清空上级controller中的ids

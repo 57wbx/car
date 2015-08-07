@@ -1,0 +1,102 @@
+<div class="hbox hbox-auto-xs hbox-auto-sm" ng-controller="advertisementDetailsController">
+  <div class="panel-heading font-bold text-center">
+    广告详细信息
+  </div>
+  <div class="panel-body">
+    <form name="form" class="form-horizontal form-validation " method="get" ng-model="formData" novalidate>
+    
+    
+    <div class="row">
+    		<div class="col-sm-8">
+    		
+    			<div class="form-group">
+    				<label class="col-sm-2 control-label">编号<i class="fa fa-asterisk text-danger"></i></label>
+    				<div class="col-sm-4">
+	    				<input class="form-control" type="text"  ng-model="formData.adverCode" required /> 
+    				</div>
+    				<label class="col-sm-2 control-label">广告名称<i class="fa fa-asterisk text-danger"></i></label>
+    				<div class="col-sm-4">
+    					<input class="form-control" type="text"  ng-model="formData.name" required /> 
+    				</div>
+    			</div>
+    			
+    			<div class="form-group">
+    				<label class="col-sm-2 control-label">文件类型<i class="fa fa-asterisk text-danger"></i></label>
+    				<div class="col-sm-4">
+	    				<select class="form-control" ng-model="formData.adverType" required="required">
+	    					<!-- 1:项目广告2:网页广告3:网页地址4:活动广告 -->
+	    					<option value="1" >项目广告</option>
+	    					<option value="2">网页广告</option>
+	    					<option value="3">网页地址</option>
+	    					<option value="4">活动广告</option>
+	    				</select>
+    				</div>
+    				<label class="col-sm-2 control-label">是否启用<i class="fa fa-asterisk text-danger"></i></label>
+    				<div class="col-sm-4">
+	    				<select class="form-control" ng-model="formData.isEnable" required="required">
+	    					<!-- 1:启用0:禁用 -->
+	    					<option value="1" >启用</option>
+	    					<option value="0">禁用</option>
+	    				</select>
+    				</div>
+    			</div>
+    			
+    			<div class="form-group">
+    				<label class="col-sm-2 control-label">图片附带路径<i class="fa fa-asterisk text-danger"></i></label>
+    				<div class="col-sm-10">
+    					<input class="form-control" type="text" ng-model="formData.imgUrl" required />
+    				</div>
+    			</div>
+    			
+    			<div class="form-group">
+    				<label class="col-sm-2 control-label">广告内容<i class="fa fa-asterisk text-danger"></i></label>
+    				<div class="col-sm-10">
+    					<textarea rows="2" class="form-control" ng-model="formData.content" required></textarea>
+    				</div>
+    			</div>
+    			
+    			<div class="form-group">
+    				<label class="col-sm-2 control-label">备注</label>
+    				<div class="col-sm-10">
+    					<textarea rows="2" class="form-control" ng-model="formData.memo" ></textarea>
+    				</div>
+    			</div>
+    			
+    			
+    		</div>
+    		<div class="col-sm-4">
+    					<div class="form-group" ng-if="!formData.photoUrl"><div>&nbsp;</div></div>
+			                <div class="form-group" ng-if="!formData.photoUrl"><div>&nbsp;</div></div>
+			                <div class="form-group" ng-if="!formData.photoUrl"><div>&nbsp;</div></div>
+			                
+			                <div class="col-sm-12" ng-if="formData.photoUrl">
+					         <div class="thumbnail">
+							<img ng-src="{{formData.photoUrl}}" alt="图片" >
+							<div class="caption">
+							    	<p class="text-center">
+							        	<span class="btn btn-info btn-sm" role="button"  ng-click="API.showImg(formData.photoUrl)">查看原图</span>
+							        </p>
+							</div>
+						</div>
+			                </div>
+    		</div>
+    </div>
+    
+    
+    
+    
+    
+      
+      <div class="line line-dashed b-b line-lg pull-in"></div>
+      <div class="form-group" id="busItemSumbit" >
+        </div>
+        <div class="col-sm-offset-5 col-sm-2 col-xs-6">
+          <a ng-click="cancel()" class="w100 btn btn-default">返回</a>
+        </div>
+      </div>
+  
+   
+  </div>
+    <div class="form-group">&nbsp;</div>
+   
+</div>

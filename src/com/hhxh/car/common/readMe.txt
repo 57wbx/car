@@ -1,0 +1,1 @@
+common包为公共包，提供了工具action、公共service、dao和工具类。

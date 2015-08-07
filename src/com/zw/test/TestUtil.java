@@ -12,9 +12,12 @@ import org.apache.commons.fileupload.FileUpload;
 import org.junit.Test;
 
 import com.hhxh.car.common.util.ConfigResourcesGetter;
+import com.hhxh.car.common.util.CopyObjectUtil;
 import com.hhxh.car.common.util.FileUploadUtil;
 import com.hhxh.car.common.util.TypeTranslate;
 import com.hhxh.car.common.util.UrlUtils;
+import com.hhxh.car.tig.domain.Advertisement;
+import com.sun.jndi.url.corbaname.corbanameURLContextFactory;
 
 public class TestUtil {
 	   @Test
@@ -60,6 +63,9 @@ public class TestUtil {
 	   @Test
 	   public void testConfig(){
 		  String value =  ConfigResourcesGetter.getProperties("imgUploadPath");
+		  System.out.println(value);
+		  String message = ConfigResourcesGetter.getProperties("hasLinkedData_messsage");
+		  System.out.println(message);
 	   }
 	   
 	   @Test
@@ -77,4 +83,20 @@ public class TestUtil {
 	   public void testJson(){
 //		   String str = "{\"success\":{\"张文.jpg\":\"http:\/\/120.25.149.142:8048\/group1\/M00\/00\/04\/eBmVjlW7L4OETE7CAAAAAFaxxFs926.jpg\"}}";
 	   }
+	   
+	   @Test
+	   public void testCopy(){
+		   try {
+			   Advertisement ad = new Advertisement("12312");
+			   ad.setContent("sadfsdfasdfadfasd");
+			Object o = CopyObjectUtil.copyValueToObject(ad, new Advertisement(), new String[]{"user","memo","createTime"});
+			System.out.println(o);
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		   System.out.println( CopyObjectUtil.firstToUpcase("hello"));
+	   }
+	   
 }
