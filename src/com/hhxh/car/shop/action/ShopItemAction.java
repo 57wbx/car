@@ -30,119 +30,121 @@ import com.hhxh.car.shop.domain.ShopItemImg;
 import com.hhxh.car.shop.service.ShopItemService;
 import com.opensymphony.xwork2.ModelDriven;
 
-public class ShopItemAction extends BaseAction implements ModelDriven<ShopItem> {
-	
-	private ShopItem shopItem ;
-	
-	private String busTypeCode ;
-	
-	private String busAtomDataStr ;
-	
-	private String starTimeStr ;
-	private String endTimeStr ;
-	
-	
-	private String[] deleteBusAtomIds ;
-	
-	private String[] ids ;
-	
+public class ShopItemAction extends BaseAction implements ModelDriven<ShopItem>
+{
+
+	private ShopItem shopItem;
+
+	private String busTypeCode;
+
+	private String busAtomDataStr;
+
+	private String starTimeStr;
+	private String endTimeStr;
+
+	private String[] deleteBusAtomIds;
+
+	private String[] ids;
+
 	@Resource
-	private ShopItemService shopItemService ;
-	
+	private ShopItemService shopItemService;
+
 	/**
 	 * 获取所有的商家服务项
 	 */
 	public void listShopItem()
 	{
-		try{
-			
-			Map<String,Object> paramMap = new HashMap<String,Object>();
-			paramMap.put("carShop",this.getLoginUser().getCarShop());//只能查本单位的所有数据
-			
+		try
+		{
+
+			Map<String, Object> paramMap = new HashMap<String, Object>();
+			paramMap.put("carShop", this.getLoginUser().getCarShop());// 只能查本单位的所有数据
+
 			List<ShopItem> shopItems = null;
-			int recordsTotal ;
-			
-			if(isNotEmpty(this.getBusTypeCode()))
+			int recordsTotal;
+
+			if (isNotEmpty(this.getBusTypeCode()))
 			{
-				paramMap.put("busTypeCode",this.getBusTypeCode()+'%');
-				shopItems = this.baseService.gets("From ShopItem b where b.itemCode like :busTypeCode and b.carShop=:carShop",paramMap, this.getIDisplayStart(), this.getIDisplayLength());
-				recordsTotal = this.baseService.getSize("From ShopItem b where b.itemCode like :busTypeCode and b.carShop=:carShop",paramMap);
-			}
-			else
+				paramMap.put("busTypeCode", this.getBusTypeCode() + '%');
+				shopItems = this.baseService.gets("From ShopItem b where b.itemCode like :busTypeCode and b.carShop=:carShop", paramMap, this.getIDisplayStart(), this.getIDisplayLength());
+				recordsTotal = this.baseService.getSize("From ShopItem b where b.itemCode like :busTypeCode and b.carShop=:carShop", paramMap);
+			} else
 			{
-				shopItems = this.baseService.gets("From ShopItem b where  b.carShop=:carShop",paramMap, this.getIDisplayStart(), this.getIDisplayLength());
-				recordsTotal = this.baseService.getSize("From ShopItem b where  b.carShop=:carShop",paramMap);
+				shopItems = this.baseService.gets("From ShopItem b where  b.carShop=:carShop", paramMap, this.getIDisplayStart(), this.getIDisplayLength());
+				recordsTotal = this.baseService.getSize("From ShopItem b where  b.carShop=:carShop", paramMap);
 			}
 			jsonObject.accumulate("data", shopItems, this.getJsonConfig(JsonValueFilterConfig.SHOPITEM_HAS_SHOPITEMIMG));
-			jsonObject.put("recordsTotal",recordsTotal);
-			jsonObject.put("recordsFiltered",recordsTotal);
+			jsonObject.put("recordsTotal", recordsTotal);
+			jsonObject.put("recordsFiltered", recordsTotal);
 			this.putJson();
-		}
-		catch(Exception e)
+		} catch (Exception e)
 		{
 			log.error("获取商家服务", e);
 			this.putJson(false, this.getMessageFromConfig("listShopItemError"));
 		}
 	}
-	
+
 	/**
 	 * 添加一個服务项,和服务子项一起保存，其中服务子项是以字符串的形式上传上来的
 	 */
 	public void addShopItem()
 	{
 		/**
-		 * busAtomDataStr = [{\"atomCode\":\"123\",\"atomName\":\"123\",\"autoParts\":123,\"eunitPrice\":\"\"
-		 * ,\"memo\":\"\",\"partName\":\"前刹车片\"
-		 * ,\"brandName\":\"迈氏\",\"spec\":\"GB5763-200\",\"model\":\"广州本田飞度1.3L 五档手动 两厢\",\"isActivity\":0},
-		 * {\"atomCode\":\"123\",\"atomName\":\"123\",\"autoParts\":123,\"eunitPrice\":\"\",\"memo\":\"\",\"partName\":\"前刹车片\",\"brandName\":\"迈氏\",\"spec\":\"GB5763-2008\",\"model\":\"广州本田飞度1.3L 五档手动 两厢\""autoPartId":"5",\"isActivity\":0}]
+		 * busAtomDataStr = [{\
+		 * "atomCode\":\"123\",\"atomName\":\"123\",\"autoParts\":123,\"eunitPrice\":\"\
+		 * " ,\"memo\":\"\",\"partName\":\"前刹车片\" ,\
+		 * "brandName\":\"迈氏\",\"spec\":\"GB5763-200\",\"model\":\"广州本田飞度1.3L
+		 * 五档手动 两厢\",\"isActivity\":0}, {\
+		 * "atomCode\":\"123\",\"atomName\":\"123\",\"autoParts\":123,\"eunitPrice\":\"\",\"memo\":\"\",\"partName\":\"前刹车片\",\"brandName\":\"迈氏\",\"spec\":\"GB5763-2008\",\"model\":\"广州本田飞度1.3L 五档手动 两厢\""
+		 * autoPartId":"5",\"isActivity\":0}]
 		 */
-		try{
+		try
+		{
 			this.shopItem.setCarShop(this.getLoginUser().getCarShop());
-		
-			JSONArray shopAtoms = null ;
-			List<ShopAtom> shopAtomList = null  ;
-			if(busAtomDataStr!=null&&!"".equals(busAtomDataStr))
+
+			JSONArray shopAtoms = null;
+			List<ShopAtom> shopAtomList = null;
+			if (busAtomDataStr != null && !"".equals(busAtomDataStr))
 			{
 				shopAtoms = JSONArray.fromObject(busAtomDataStr);
 			}
-			if(shopAtoms!=null&&shopAtoms.size()>0)
+			if (shopAtoms != null && shopAtoms.size() > 0)
 			{
 				shopAtomList = new ArrayList<ShopAtom>();
-				for(int i=0;i<shopAtoms.size();i++)
+				for (int i = 0; i < shopAtoms.size(); i++)
 				{
-					Map<String,Object> m = (Map<String, Object>) shopAtoms.get(i);
+					Map<String, Object> m = (Map<String, Object>) shopAtoms.get(i);
 					ShopAtom ba = new ShopAtom();
-					ba.setAtomCode((String)m.get("atomCode"));
-					ba.setAtomName((String)m.get("atomName"));
-					ba.setPhotoUrl((String)m.get("photoUrl"));
+					ba.setAtomCode((String) m.get("atomCode"));
+					ba.setAtomName((String) m.get("atomName"));
+					ba.setPhotoUrl((String) m.get("photoUrl"));
 					ba.setAutoParts(TypeTranslate.getObjectInteger((m.get("autoParts"))));
 					Object eunitPrice = m.get("eunitPrice");
-					if(m.get("eunitPrice")!=null)
+					if (m.get("eunitPrice") != null)
 					{
-						if(eunitPrice instanceof java.lang.Integer)
+						if (eunitPrice instanceof java.lang.Integer)
 						{
-							ba.setEunitPrice(new BigDecimal((int)eunitPrice));
-						}
-						else if(eunitPrice instanceof java.lang.Double)
+							ba.setEunitPrice(new BigDecimal((int) eunitPrice));
+						} else if (eunitPrice instanceof java.lang.Double)
 						{
-							ba.setEunitPrice(new BigDecimal((double)eunitPrice));
+							ba.setEunitPrice(new BigDecimal((double) eunitPrice));
 						}
 					}
-					ba.setMemo((String)m.get("memo"));
-					ba.setAutoPart(new AutoPart((String)m.get("autoPartId")));
+					ba.setMemo((String) m.get("memo"));
+					ba.setAutoPart(new AutoPart((String) m.get("autoPartId")));
 					ba.setUpdateTime(new Date());
 					ba.setCarShop(this.getLoginUser().getCarShop());
 					shopAtomList.add(ba);
 				}
 			}
-			Date starTime = null ;
-			Date endTime = null ;
-			
-			if(isNotEmpty(starTimeStr))
+			Date starTime = null;
+			Date endTime = null;
+
+			if (isNotEmpty(starTimeStr))
 			{
 				starTime = ymdhm.parse(starTimeStr);
 			}
-			if(isNotEmpty(endTimeStr))
+			if (isNotEmpty(endTimeStr))
 			{
 				endTime = ymdhm.parse(endTimeStr);
 			}
@@ -150,91 +152,106 @@ public class ShopItemAction extends BaseAction implements ModelDriven<ShopItem> 
 			this.shopItem.setStarTime(starTime);
 			this.shopItem.setEndTime(endTime);
 			this.shopItem.setUpdateTime(new Date());
-//			this.busItemService.saveBusItemContainsBusAtomWithNoId(busItem,busAtomList);
+			// this.busItemService.saveBusItemContainsBusAtomWithNoId(busItem,busAtomList);
 			this.shopItemService.saveShopItemContainsShopAtomWithNoId(shopItem, shopAtomList);
 			this.putJson();
-		}
-		catch(Exception e)
+		} catch (Exception e)
 		{
 			log.error("新增商家服务项失败", e);
 			this.putJson(false, this.getMessageFromConfig("saveShopItemError"));
 		}
 	}
-	
+
 	/**
 	 * 检查编码是否存在
 	 */
-	public void checkShopItemCodeUnique(){
-		Map<String,Object> paramMap = new HashMap<String,Object>();
+	public void checkShopItemCodeUnique()
+	{
+		Map<String, Object> paramMap = new HashMap<String, Object>();
 		CarShop carShop = this.getLoginUser().getCarShop();
 		jsonObject.put("code", 1);
-		if(shopItem.getFid()==null||"".equals(shopItem.getFid())){
-			//属于新增操作的检查
+		if (shopItem.getFid() == null || "".equals(shopItem.getFid()))
+		{
+			// 属于新增操作的检查
 			paramMap.put("itemCode", shopItem.getItemCode());
 			paramMap.put("carShop", carShop);
 			shopItem = (ShopItem) this.baseService.get("From ShopItem b where b.itemCode = :itemCode and b.carShop = :carShop", paramMap);
-			if(shopItem!=null){
+			if (shopItem != null)
+			{
 				jsonObject.put("code", 0);
 			}
-		}else{
-			//属于修改操作
+		} else
+		{
+			// 属于修改操作
 			paramMap.put("itemCode", shopItem.getItemCode());
 			paramMap.put("fid", shopItem.getFid());
 			paramMap.put("carShop", carShop);
-			shopItem = (ShopItem) this.baseService.get("From ShopItem b where b.itemCode = :itemCode and b.fid <> :fid  and b.carShop = :carShop",paramMap);
-			if(shopItem!=null){
-				jsonObject.put("code",0);
+			shopItem = (ShopItem) this.baseService.get("From ShopItem b where b.itemCode = :itemCode and b.fid <> :fid  and b.carShop = :carShop", paramMap);
+			if (shopItem != null)
+			{
+				jsonObject.put("code", 0);
 			}
 		}
-		try {
+		try
+		{
 			this.putJson(jsonObject.toString());
-		} catch (IOException e) {
+		} catch (IOException e)
+		{
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * 用来做修改的方法,
 	 */
-	public void saveShopItem(){
-		
-		JSONArray shopAtoms = null ;
-		List<ShopAtom> shopAtomList = null  ;
-		if(busAtomDataStr!=null&&!"".equals(busAtomDataStr)){
+	public void saveShopItem()
+	{
+		JSONArray shopAtoms = null;
+		List<ShopAtom> shopAtomList = null;
+		if (busAtomDataStr != null && !"".equals(busAtomDataStr))
+		{
 			shopAtoms = JSONArray.fromObject(busAtomDataStr);
 		}
-		if(shopAtoms!=null&&shopAtoms.size()>0){
+		if (shopAtoms != null && shopAtoms.size() > 0)
+		{
 			shopAtomList = new ArrayList<ShopAtom>();
-			for(int i=0;i<shopAtoms.size();i++){
-				Map<String,Object> m = (Map<String, Object>) shopAtoms.get(i);
+			for (int i = 0; i < shopAtoms.size(); i++)
+			{
+				Map<String, Object> m = (Map<String, Object>) shopAtoms.get(i);
 				ShopAtom ba = new ShopAtom();
-				ba.setFid((String)m.get("fid"));
-				ba.setAtomCode((String)m.get("atomCode"));
-				ba.setAtomName((String)m.get("atomName"));
-				ba.setPhotoUrl((String)m.get("photoUrl"));
+				ba.setFid((String) m.get("fid"));
+				ba.setAtomCode((String) m.get("atomCode"));
+				ba.setAtomName((String) m.get("atomName"));
+				ba.setPhotoUrl((String) m.get("photoUrl"));
 				ba.setAutoParts(TypeTranslate.getObjectInteger((m.get("autoParts"))));
 				Object eunitPrice = m.get("eunitPrice");
-				if(m.get("eunitPrice")!=null){
-					if(eunitPrice instanceof java.lang.Integer){
-						ba.setEunitPrice(new BigDecimal((int)eunitPrice));
-					}else if(eunitPrice instanceof java.lang.Double){
-						ba.setEunitPrice(new BigDecimal((double)eunitPrice));
+				if (m.get("eunitPrice") != null)
+				{
+					if (eunitPrice instanceof java.lang.Integer)
+					{
+						ba.setEunitPrice(new BigDecimal((int) eunitPrice));
+					} else if (eunitPrice instanceof java.lang.Double)
+					{
+						ba.setEunitPrice(new BigDecimal((double) eunitPrice));
 					}
 				}
-				ba.setMemo((String)m.get("memo"));
-				ba.setAutoPart(new AutoPart((String)m.get("autoPartId")));
+				ba.setMemo((String) m.get("memo"));
+				ba.setAutoPart(new AutoPart((String) m.get("autoPartId")));
 				ba.setUpdateTime(new Date());
 				shopAtomList.add(ba);
 			}
 		}
-		try {
-			Date starTime = null ;
-			Date endTime = null ;
-			
-			if(starTimeStr!=null && !"".equals(starTimeStr)){
+		try
+		{
+			Date starTime = null;
+			Date endTime = null;
+
+			if (starTimeStr != null && !"".equals(starTimeStr))
+			{
 				starTime = ymdhm.parse(starTimeStr);
 			}
-			if(endTimeStr!=null&&!"".equals(endTimeStr)){
+			if (endTimeStr != null && !"".equals(endTimeStr))
+			{
 				endTime = ymdhm.parse(endTimeStr);
 			}
 			this.shopItem.setShopAtoms(null);
@@ -243,113 +260,127 @@ public class ShopItemAction extends BaseAction implements ModelDriven<ShopItem> 
 			this.shopItem.setUpdateTime(new Date());
 			this.shopItem.setCarShop(this.getLoginUser().getCarShop());
 			this.shopItemService.updateBusItemWithBusAtom(shopItem, shopAtomList, deleteBusAtomIds);
-			jsonObject.put("code", 1);//保存成功
-		} catch (Exception e) {
+			jsonObject.put("code", 1);// 保存成功
+		} catch (Exception e)
+		{
 			jsonObject.put("code", 0);
 			e.printStackTrace();
 		}
-		try {
+		try
+		{
 			this.putJson(jsonObject.toString());
-		} catch (IOException e) {
+		} catch (IOException e)
+		{
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * 获取一个指定id的详细数据
 	 */
 	public void detailsShopItem()
 	{
-		try{
-			if(isNotEmpty(shopItem.getFid())){
-				//在这里执行查询操作
+		try
+		{
+			if (isNotEmpty(shopItem.getFid()))
+			{
+				// 在这里执行查询操作
 				shopItem = this.baseService.get(ShopItem.class, shopItem.getFid());
-				if(shopItem!=null)
+				if (shopItem != null)
 				{
 					Set<ShopAtom> shopAtoms = shopItem.getShopAtoms();
 					List<ShopAtom> busAtomsReturnValue = new ArrayList<ShopAtom>();
-					if(shopAtoms!=null&&shopAtoms.size()>0)
+					if (shopAtoms != null && shopAtoms.size() > 0)
 					{
-						for(ShopAtom ba : shopAtoms)
+						for (ShopAtom ba : shopAtoms)
 						{
-	//						ba.setShopItem(null);
+							// ba.setShopItem(null);
 							busAtomsReturnValue.add(ba);
 						}
 					}
-					
-					jsonObject.accumulate("details", shopItem,this.getJsonConfig(JsonValueFilterConfig.SHOPITEM_ONLY_SHOPITEM));
-					jsonObject.accumulate("busAtoms", busAtomsReturnValue,this.getJsonConfig(JsonValueFilterConfig.SHOPATOM_HAS_AUTOPART));
+
+					jsonObject.accumulate("details", shopItem, this.getJsonConfig(JsonValueFilterConfig.SHOPITEM_ONLY_SHOPITEM));
+					jsonObject.accumulate("busAtoms", busAtomsReturnValue, this.getJsonConfig(JsonValueFilterConfig.SHOPATOM_HAS_AUTOPART));
 					this.putJson();
 					return;
-				}
-				else
+				} else
 				{
 					this.putJson(false, this.getMessageFromConfig("shopItemIdError"));
 					return;
 				}
-			}
-			else
+			} else
 			{
 				this.putJson(false, this.getMessageFromConfig("needShopItemId"));
 			}
-		}
-		catch(Exception e)
+		} catch (Exception e)
 		{
 			log.error("获取商家服务详细信息失败", e);
 			this.putJson(false, this.getMessageFromConfig("listShopItemError"));
 		}
 	}
-	
+
 	/**
 	 * 删除一组数据的方法
 	 */
-	public void deleteShopItemByIds(){
+	public void deleteShopItemByIds()
+	{
 		this.shopItemService.deleteShopItemByIds(ids);
 		jsonObject.put("code", 1);
-		try {
+		try
+		{
 			this.putJson(jsonObject.toString());
-		} catch (IOException e) {
+		} catch (IOException e)
+		{
 		}
 	}
-	
+
 	/**
 	 * 查看一个指定id的详细信息，包括子集信息
 	 */
-	public void detailsShoptem(){
-		if(shopItem.getFid()==null||"".equals(shopItem.getFid())){
-			jsonObject.put("code", 0);//获取失败
-		}else{
-			//在这里执行查询操作
+	public void detailsShoptem()
+	{
+		if (shopItem.getFid() == null || "".equals(shopItem.getFid()))
+		{
+			jsonObject.put("code", 0);// 获取失败
+		} else
+		{
+			// 在这里执行查询操作
 			shopItem = this.baseService.get(ShopItem.class, shopItem.getFid());
 			Set<ShopAtom> shopAtoms = shopItem.getShopAtoms();
 			List<ShopAtom> busAtomsReturnValue = new ArrayList<ShopAtom>();
-			if(shopAtoms!=null&&shopAtoms.size()>0){
-				for(ShopAtom ba : shopAtoms){
+			if (shopAtoms != null && shopAtoms.size() > 0)
+			{
+				for (ShopAtom ba : shopAtoms)
+				{
 					ba.setShopItem(null);
 					ba.setCarShop(null);
 					busAtomsReturnValue.add(ba);
 				}
 			}
-			
-			//设置json处理数据的规则
-			JsonConfig jsonConfig = new JsonConfig();  
-			jsonConfig.registerJsonValueProcessor(Date.class, new JsonDateValueProcessor()); 
-			jsonConfig.setIgnoreDefaultExcludes(false); //设置默认忽略 
-			jsonConfig.setCycleDetectionStrategy(CycleDetectionStrategy.LENIENT);//设置循环策略为忽略    解决json最头疼的问题 死循环
-			jsonConfig.setExcludes(new String[] {"carShop","shopAtoms","shopItem","shopPackages"});//此处是亮点，只要将所需忽略字段加到数组中即可
-			
+
+			// 设置json处理数据的规则
+			JsonConfig jsonConfig = new JsonConfig();
+			jsonConfig.registerJsonValueProcessor(Date.class, new JsonDateValueProcessor());
+			jsonConfig.setIgnoreDefaultExcludes(false); // 设置默认忽略
+			jsonConfig.setCycleDetectionStrategy(CycleDetectionStrategy.LENIENT);// 设置循环策略为忽略
+																					// 解决json最头疼的问题
+																					// 死循环
+			jsonConfig.setExcludes(new String[] { "carShop", "shopAtoms", "shopItem", "shopPackages" });// 此处是亮点，只要将所需忽略字段加到数组中即可
+
 			jsonObject.put("code", 1);
-			jsonObject.accumulate("details", shopItem,jsonConfig);
-			jsonObject.accumulate("busAtoms", busAtomsReturnValue,jsonConfig);
-			
+			jsonObject.accumulate("details", shopItem, jsonConfig);
+			jsonObject.accumulate("busAtoms", busAtomsReturnValue, jsonConfig);
+
 		}
-		try {
+		try
+		{
 			this.putJson(jsonObject.toString());
-		} catch (IOException e) {
+		} catch (IOException e)
+		{
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * 获取一个商家服务下面的所有图片信息
 	 */
@@ -357,87 +388,93 @@ public class ShopItemAction extends BaseAction implements ModelDriven<ShopItem> 
 	{
 		try
 		{
-			if(isNotEmpty(shopItem.getFid()))
+			if (isNotEmpty(shopItem.getFid()))
 			{
-				shopItem = this.baseService.get(ShopItem.class,shopItem.getFid());
-				if(shopItem!=null)
+				shopItem = this.baseService.get(ShopItem.class, shopItem.getFid());
+				if (shopItem != null)
 				{
 					List<ShopItemImg> list = new ArrayList<ShopItemImg>(shopItem.getShopItemImgs());
 					this.jsonObject.accumulate("images", list, this.getJsonConfig(JsonValueFilterConfig.SHOPITEMIMG_ONLY_SHOPITEMIMG));
 					this.putJson();
-				}
-				else
+				} else
 				{
 					this.putJson(false, this.getMessageFromConfig("shopItemIdError"));
 				}
-			}
-			else
+			} else
 			{
 				this.putJson(false, this.getMessageFromConfig("needShopItemId"));
 			}
-		}
-		catch(Exception e)
+		} catch (Exception e)
 		{
 			log.error("获取商家服务图片信息列表失败", e);
 			this.putJson(false, this.getMessageFromConfig("listImg_error"));
 		}
 	}
-	
 
 	@Override
-	public ShopItem getModel() {
+	public ShopItem getModel()
+	{
 		this.shopItem = new ShopItem();
 		return this.shopItem;
 	}
 
-
-
-
-	public String getBusTypeCode() {
+	public String getBusTypeCode()
+	{
 		return busTypeCode;
 	}
 
-	public void setBusTypeCode(String busTypeCode) {
+	public void setBusTypeCode(String busTypeCode)
+	{
 		this.busTypeCode = busTypeCode;
 	}
 
-	public String getBusAtomDataStr() {
+	public String getBusAtomDataStr()
+	{
 		return busAtomDataStr;
 	}
 
-	public void setBusAtomDataStr(String busAtomDataStr) {
+	public void setBusAtomDataStr(String busAtomDataStr)
+	{
 		this.busAtomDataStr = busAtomDataStr;
 	}
 
-	public String getStarTimeStr() {
+	public String getStarTimeStr()
+	{
 		return starTimeStr;
 	}
 
-	public void setStarTimeStr(String starTimeStr) {
+	public void setStarTimeStr(String starTimeStr)
+	{
 		this.starTimeStr = starTimeStr;
 	}
 
-	public String getEndTimeStr() {
+	public String getEndTimeStr()
+	{
 		return endTimeStr;
 	}
 
-	public void setEndTimeStr(String endTimeStr) {
+	public void setEndTimeStr(String endTimeStr)
+	{
 		this.endTimeStr = endTimeStr;
 	}
 
-	public String[] getDeleteBusAtomIds() {
+	public String[] getDeleteBusAtomIds()
+	{
 		return deleteBusAtomIds;
 	}
 
-	public void setDeleteBusAtomIds(String[] deleteBusAtomIds) {
+	public void setDeleteBusAtomIds(String[] deleteBusAtomIds)
+	{
 		this.deleteBusAtomIds = deleteBusAtomIds;
 	}
 
-	public String[] getIds() {
+	public String[] getIds()
+	{
 		return ids;
 	}
 
-	public void setIds(String[] ids) {
+	public void setIds(String[] ids)
+	{
 		this.ids = ids;
 	}
 }

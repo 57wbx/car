@@ -21,6 +21,7 @@ public class JsonValueFilterConfig {
 	 * busitem 服务项需要排除的数据
 	 */
 	public static final String[] BASEITEM_ONLY_BASEITEM = new String[]{"busPackages","busAtoms","busItem","busItemImgs"};
+	public static final String[] BASEITEM_HAS_BASEITEMIMG = new String[]{"busPackages","busAtoms","busItem","user"};
 	
 	/**
 	 * busitemImg 服务项图片需要排除的数据

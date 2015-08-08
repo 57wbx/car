@@ -107,6 +107,10 @@ app.controller('busItemListController',['$scope','$state','$timeout','$http',fun
               return '<label class="i-checks"><input type="checkbox"><i></i></label>';
             }
           }, {
+              "render":function( data, type, row ){
+              	return row.busItemImgs.length;
+              }
+            }, {
             "mDataProp": "itemCode",
           }, {
             "mDataProp": "itemName",

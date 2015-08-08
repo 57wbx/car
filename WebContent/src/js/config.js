@@ -12,7 +12,8 @@ var app = angular.module('app').config(
       app.value = $provide.value;
       // API路径集合
       //app.urlRoot = '/weixun/';
-      app.urlRoot = 'http://localhost:8080/car/';
+//      app.urlRoot = 'http://192.168.0.105:8080/car/';
+      app.urlRoot = '';
       var common = {
         list: 'loadList.action',
         save: 'save.action',
@@ -190,6 +191,7 @@ var app = angular.module('app').config(
   ['$httpProvider',
     function($httpProvider) {
       $httpProvider.interceptors.push('authorityInterceptor');
+//      $httpProvider.defaults.withCredentials = true;
       $httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
       $httpProvider.defaults.transformRequest = [
 

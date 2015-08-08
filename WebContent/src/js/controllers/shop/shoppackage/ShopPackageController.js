@@ -8,7 +8,6 @@ app.controller('shopPackageController', ['$rootScope','$scope','$state','$timeou
 	$scope.state.edit = "app.shoppackage.edit";
 	$scope.state.details = "app.shoppackage.details";
 	$scope.state.manageimg = "app.shoppackage.manageimg";
-	
 
 	$scope.rowIds = [];//用来保存所选列表的id
 	
@@ -138,11 +137,6 @@ app.controller('shopPackageController', ['$rootScope','$scope','$state','$timeou
 		$scope.treeAPI.hiddenBusTypeTree();
 	}
 
-  
- 
-  
-  
-  
   $scope.click = function(){};
 
   var mask = $('<div class="mask"></div>');
@@ -152,8 +146,6 @@ app.controller('shopPackageController', ['$rootScope','$scope','$state','$timeou
   var dialog = $('#dialog');
   var hButton = $('#clickId');
   var doIt = function(){};
-
- 
 
   // 执行操作
   $rootScope.do = function(){
@@ -166,11 +158,5 @@ app.controller('shopPackageController', ['$rootScope','$scope','$state','$timeou
     container.addClass('none');
     message_body.html(old_message_body);
   };  
-
- 
-  
-
-
-  
 
 }]);

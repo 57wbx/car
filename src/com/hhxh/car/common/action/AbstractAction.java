@@ -107,6 +107,7 @@ public class AbstractAction extends ActionSupport {
      */
     protected void putJson(String json) throws IOException {
         HttpServletResponse response = ServletActionContext.getResponse();
+        response.setHeader("Access-Control-Allow-Origin", "*");
         response.setContentType("text/json; charset=utf-8");
         PrintWriter writer = response.getWriter();
         writer.write(json);

@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Example;
 import org.hibernate.criterion.Order;
 import org.springframework.stereotype.Service;
 
@@ -54,7 +55,7 @@ public class BaseService {
 	public <T> Integer getSize(Class<T> clazz) {
 		return dao.getSize(clazz);
 	}
-	//
+	
 	public <T> List<T> gets(Class<T> clazz, List<Criterion> params,
 			Integer start, Integer maxsize) {
 		return dao.gets(clazz, params, start, maxsize);

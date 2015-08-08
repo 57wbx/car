@@ -1,16 +1,23 @@
-app.controller('carShopListController',['$rootScope','$scope','$state','$timeout','$modal','$ocLazyLoad','utils', function($rootScope, $scope, $state, $timeout,$modal,$ocLazyLoad,utils) {
+app.controller('carShopListController',['$rootScope','$scope','$state','$timeout','$modal','$ocLazyLoad','$compile','utils','dataTableSearchService', function($rootScope, $scope, $state, $timeout,$modal,$ocLazyLoad,$compile,utils,dataTableSearchService) {
 		
 	$timeout(function(){
 		initTable();
 	},30);
-		
+	
+	$scope.search = {};
+	
 		var carShopList , dTable;
 		function initTable(){
 			carShopList =  $("#store_List");
-			dTable = carShopList.DataTable({
+			dTable = carShopList.on('preXhr.dt', function ( e, settings, data ){
+//				data.busTypeCode = $scope.busTypeTree.selectedTypeCode ;
+				data.shopName = $scope.search.shopName ;
+				data.hello = $scope.search.shopType;
+			}).DataTable({
 				"sAjaxSource":"base/carShopAction!listCarShopWithMannager.action",
 		    	"bServerSide":true,
 		    	"sAjaxDataProp":"data",
+		    	 "dom": '<"top">rt<"bottom"p><"clear">',
 				"aoColumns": [{
 			        "orderable": false,
 			        "render": function(param){
@@ -83,7 +90,7 @@ app.controller('carShopListController',['$rootScope','$scope','$state','$timeout
 			          "sInfo": "当前第 _START_ - _END_ 条，共 _TOTAL_ 条",
 			          "sInfoEmpty": "没有记录",
 			          "sInfoFiltered": "(从 _MAX_ 条记录中过滤)",
-			          "sSearch": "搜索",
+			          "sSearch": "店面名称",
 			          "oPaginate": {
 			            "sFirst": "<<",
 			            "sPrevious": "<",
@@ -103,7 +110,6 @@ app.controller('carShopListController',['$rootScope','$scope','$state','$timeout
 			            
 			        },
 			       "drawCallback": function( settings ) {
-			    	   
 			              var input = carShopList.find('thead .i-checks input');
 			              var inputs = carShopList.find('tbody .i-checks input');
 			              var len = inputs.length, allChecked = true;
@@ -129,6 +135,9 @@ app.controller('carShopListController',['$rootScope','$scope','$state','$timeout
 			              });
 			              initClickEvent();
 			            },
+			            "initComplete":function(settings,json){
+			            	initSearchDiv(settings,json);
+			            }
 			       });
 			
 		}
@@ -162,10 +171,31 @@ app.controller('carShopListController',['$rootScope','$scope','$state','$timeout
         	});
 		}
 		
+		//初始化搜索框
+		var initSearchDiv = function(settings,json){
+			dataTableSearchService.initSearch([
+				  {formDataName:'search.shopName',placeholder:'店家名称'},
+                  {
+               	   formDataName:'search.shopType',
+               	   label:'店家类型',
+               	   options:[{
+				               		   value:0,
+				               		   label:"hello"
+				               	   	},{
+			                		   value:1,
+			                   		   label:"hello1"
+			                   	   	},{
+			                    		   value:2,
+			                       		   label:"hello2"
+			                       	 }
+                   	]
+                  },{formDataName:'search.hello',placeholder:'sfsdfsfsd'}
+			],$scope,settings,dTable);
+		}
+		
+		
 		
 		// 表格行事件
-		
-		
 		
 		function initClickEvent(){
 			dTable.$('tr').dblclick(function(e, settings) {
