@@ -1,8 +1,19 @@
 'use strict';
 
-app.controller('shopPackageListController',['$scope','$state','$timeout','$http',function($scope,$state,$timeout,$http){
+app.controller('shopPackageListController',['$scope','$state','$timeout','$http','sessionStorageService','dataTableSearchService',function($scope,$state,$timeout,$http,sessionStorageService,dataTableSearchService){
 	
 	
+	var isF5 = true ;
+	$scope.search = {};
+	$scope.shopPackageDataTableProperties = null;
+	$scope.needCacheArray = ["shopPackageDataTableProperties"];
+	sessionStorageService.clearNoCacheItem($scope.needCacheArray);
+	$scope.shopPackageDataTableProperties  = sessionStorageService.getItemObj("shopPackageDataTableProperties");
+	
+	$scope.setShopPackageDataTableProperties = function(obj){
+		$scope.shopPackageDataTableProperties = obj;
+		sessionStorageService.setItem("shopPackageDataTableProperties",obj);
+	}
 	//显示树
 	$scope.treeAPI.showBusTypeTree();
 	/**
@@ -81,7 +92,25 @@ app.controller('shopPackageListController',['$scope','$state','$timeout','$http'
 	var busPackageTable ;
 	function initDataTable(){
 		busPackageTable = $("#busPackageTable").on('preXhr.dt', function ( e, settings, data ){
-			data.busTypeCode = $scope.busTypeTree.selectedTypeCode ;
+			if(isF5){
+				isF5 = false ;
+				var oldData = sessionStorageService.getItemObj("shopPackageDataTableProperties"); 
+				if(oldData){
+					angular.copy(oldData,data);
+//					data = oldData ;
+//					$scope.search.itemCode = data.itemCode ;
+					$scope.search.packageName = data.packageName ;
+					$scope.search.isActivity = data.isActivity ;
+					$scope.busTypeTree.selectedTypeCode = data.busTypeCode ;
+				}
+			}else{
+//				data.itemCode = $scope.search.itemCode ;
+				data.packageName = $scope.search.packageName;
+				data.isActivity = $scope.search.isActivity;
+				data.busTypeCode = $scope.busTypeTree.selectedTypeCode ;
+				$scope.setShopPackageDataTableProperties(data);
+			}
+			
 		}).DataTable({
 			"sAjaxSource":"shop/shopPackageAction!listShopPackage.action",
 	    	"bServerSide":true,
@@ -213,14 +242,37 @@ app.controller('shopPackageListController',['$scope','$state','$timeout','$http'
 	        		  }
 	        	  });
 	        	  
-	          }
+	          },
+	          "initComplete":function(settings,json){
+	            	if( $scope.shopPackageDataTableProperties){
+	            		var pageIndex = $scope.shopPackageDataTableProperties.iDisplayStart/$scope.shopPackageDataTableProperties.iDisplayLength;
+	            		busPackageTable.page(pageIndex).draw(false);
+	            	}
+	            	initSearchDiv(settings,json);
+	            }
 		});
 	
 	}//结束初始化方法
 	
-	/*
-	 * 服务的表格
-	 */
+	//初始化搜索框
+	var initSearchDiv = function(settings,json){
+		dataTableSearchService.initSearch([
+			  {formDataName:'search.packageName',placeholder:'套餐名称'},
+              {
+           	   formDataName:'search.isActivity',
+           	   label:'是否参加聚惠',
+           	   options:[{label:'全部'},{
+           		//0=加盟店、1=合作店、3=直营店、4=中心店（区域旗舰店）
+			               		   value:0,
+			               		   label:"不参加"
+			               	   	},{
+		                		   value:1,
+		                   		   label:"参加"
+		                   			   }
+               	]
+              }
+		],$scope,settings,busPackageTable);
+	}
 	
 	
 	/**

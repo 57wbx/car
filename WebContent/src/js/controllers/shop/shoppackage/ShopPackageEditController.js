@@ -1,8 +1,18 @@
-app.controller("shopPackageEditController",['$scope','$state','$http',function($scope,$state,$http){
+app.controller("shopPackageEditController",['$scope','$state','$http','sessionStorageService',function($scope,$state,$http,sessionStorageService){
 	
-	if(!$scope.editId){
-		$state.go($scope.state.list);
+	$scope.needCacheArray = ["shopPackageDataTableProperties","shopPackageIdForEdit"];
+	sessionStorageService.clearNoCacheItem($scope.needCacheArray);
+	if($scope.rowIds[0]){
+		sessionStorageService.setItem("shopPackageIdForEdit",$scope.rowIds[0]);
+	}else{
+		$scope.rowIds[0]  = sessionStorageService.getItemStr("shopPackageIdForEdit");
 	}
+	
+	console.info("------------需要修改的id为："+$scope.rowIds[0]);
+	if(!$scope.rowIds[0]||$scope.rowIds[0]==""){
+		$state.go($scope.state.list);//返回到列表界面
+	}
+	
 	/*
 	 * 初始化 隐藏树 
 	 */
@@ -54,11 +64,7 @@ app.controller("shopPackageEditController",['$scope','$state','$http',function($
 		}
 	}
 	
-	
-	//初始化选中的数据
-	$scope.setCanEdit(false);
-	$scope.clearRowIds();
-	
+
 	
 	
 	
@@ -489,7 +495,7 @@ app.controller("shopPackageEditController",['$scope','$state','$http',function($
 			url:"shop/shopPackageAction!detailsShopPackage.action",
 			method:"get",
 			params:{
-				fid:$scope.editId
+				fid:$scope.rowIds[0]
 			}
 		}).then(function(resp){
 			if(resp.data.code == 1){//返回成功
@@ -520,6 +526,8 @@ app.controller("shopPackageEditController",['$scope','$state','$http',function($
 			}
 		});
 		
-	
+		//初始化选中的数据
+		$scope.setCanEdit(false);
+		$scope.clearRowIds();
 	
 }]);

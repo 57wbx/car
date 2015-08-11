@@ -1,11 +1,22 @@
-app.controller("shopPackageDetailsController",['$scope','$state','$http',function($scope,$state,$http){
+app.controller("shopPackageDetailsController",['$scope','$state','$http','sessionStorageService',function($scope,$state,$http,sessionStorageService){
 	
-	if(!$scope.editId){
-		$state.go($scope.state.list);
+	
+	$scope.needCacheArray = ["shopPackageDataTableProperties","shopPackageIdForDetails"];
+	sessionStorageService.clearNoCacheItem($scope.needCacheArray);
+	if($scope.rowIds[0]){
+		sessionStorageService.setItem("shopPackageIdForDetails",$scope.rowIds[0]);
+	}else{
+		$scope.rowIds[0]  = sessionStorageService.getItemStr("shopPackageIdForDetails");
+	}
+	
+	console.info("------------需要修改的id为："+$scope.rowIds[0]);
+	if(!$scope.rowIds[0]||$scope.rowIds[0]==""){
+		$state.go($scope.state.list);//返回到列表界面
 	}
 	/*
 	 * 初始化 隐藏树 
 	 */
+	
 	$scope.treeAPI.hiddenBusTypeTree();
 	
 	$scope.formData = {};
@@ -25,10 +36,8 @@ app.controller("shopPackageDetailsController",['$scope','$state','$http',functio
 		}
 	}
 	
+
 	
-	//初始化选中的数据
-	$scope.setCanEdit(false);
-	$scope.clearRowIds();
 	
 	//初始化时间控件
 	$('#starTime').focus(
@@ -326,7 +335,7 @@ app.controller("shopPackageDetailsController",['$scope','$state','$http',functio
 			url:"shop/shopPackageAction!detailsShopPackage.action",
 			method:"get",
 			params:{
-				fid:$scope.editId
+				fid:$scope.rowIds[0]
 			}
 		}).then(function(resp){
 			if(resp.data.code == 1){//返回成功
@@ -353,9 +362,14 @@ app.controller("shopPackageDetailsController",['$scope','$state','$http',functio
 				$scope.formData.updateTime = undefined;
 				
 			}else{
+				alert(resp.data.message);
 				$state.go($scope.state.list);
 			}
 		});
+		
+		//初始化选中的数据
+		$scope.setCanEdit(false);
+		$scope.clearRowIds();
 	
 	
 }]);

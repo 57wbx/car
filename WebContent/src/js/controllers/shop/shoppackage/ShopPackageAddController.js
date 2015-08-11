@@ -1,10 +1,13 @@
-app.controller("shopPackageAddController",['$scope','$state','$http',function($scope,$state,$http){
+app.controller("shopPackageAddController",['$scope','$state','$http','sessionStorageService',function($scope,$state,$http,sessionStorageService){
 	/*
 	 * 初始化 隐藏树 
 	 */
 	$scope.treeAPI.hiddenBusTypeTree();
 	
 	$scope.formData = {};
+	
+	$scope.needCacheArray = ["shopPackageDataTableProperties"];
+	sessionStorageService.clearNoCacheItem($scope.needCacheArray);
 	
 	/**
 	 * 用来缓存该套餐中的服务的所有id

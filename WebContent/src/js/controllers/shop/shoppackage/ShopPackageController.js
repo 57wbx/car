@@ -15,7 +15,7 @@ app.controller('shopPackageController', ['$rootScope','$scope','$state','$timeou
 	 * 在session中不能清除的内容，应该包含子缓存对象
 	 */
 	$scope.session = {};
-	$scope.session.cacheArray = ["shopPackageIdForImg"];
+	$scope.session.cacheArray = ['shopPackageDataTableProperties',"shopPackageIdForImg","shopPackageIdForEdit","shopPackageIdForDetails"];
 	sessionStorageService.clearNoCacheItem($scope.session.cacheArray);
 	
 	
