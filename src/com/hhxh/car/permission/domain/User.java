@@ -168,6 +168,22 @@ public class User implements Serializable,Comparable<Object> {
 		return person;
 	}
 
+	
+	
+	public User()
+	{
+	}
+
+
+
+	public User(String id)
+	{
+		super();
+		this.id = id;
+	}
+
+
+
 	public void setPerson(Person person) {
 		this.person = person;
 	}

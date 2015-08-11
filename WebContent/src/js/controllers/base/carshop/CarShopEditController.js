@@ -1,7 +1,21 @@
 'use strict';
-app.controller('carShopEditController', ['$scope', '$http', '$state',  'uiLoad', 'JQ_CONFIG',
-  function($scope, $http, $state, uiLoad, JQ_CONFIG) {
-    var id = $scope.$parent.ids[0];
+app.controller('carShopEditController', ['$rootScope','$scope', '$http', '$state',  'uiLoad', 'JQ_CONFIG','FileUploader','previewService','sessionStorageService',
+  function($rootScope,$scope, $http, $state, uiLoad, JQ_CONFIG,FileUploader,previewService,sessionStorageService) {
+	
+	$scope.needCacheArray = ["carShopListDataTableProperties","carShopIdForEdit"];
+	sessionStorageService.clearNoCacheItem($scope.needCacheArray);
+	if($scope.rowIds&&$scope.rowIds[0]){
+		sessionStorageService.setItem("carShopIdForEdit",$scope.rowIds[0]);
+	}else{
+		$scope.rowIds[0]  = sessionStorageService.getItemStr("carShopIdForEdit");
+	}
+	
+	if(!$scope.rowIds||$scope.rowIds[0]==""){
+		$state.go($scope.state.list);//返回到列表界面
+	}
+	var id = $scope.rowIds[0];
+	
+	
     // 获取要被编辑组织的数据
     $http({
       url: "base/carShopAction!detailsCarShopById.action",
@@ -16,8 +30,104 @@ app.controller('carShopEditController', ['$scope', '$http', '$state',  'uiLoad',
       $scope.formData.orgName = dt.org.name;
       $scope.formData.org = undefined;
       
+      $scope.formData.IDCARDURLName = dt.IDCARDURL?"请点击&nbsp;<a href='#' style='color: blue; text-decoration: underline;'  onClick='$(\"#IDCARDURL\").click();'>预览！</a>":undefined;
+      $scope.formData.bankCardUrlName = dt.bankCardUrl ?"请点击&nbsp;<a href='#' style='color: blue; text-decoration: underline;'  onClick='$(\"#bankCardUrl\").click();'>预览！</a>":undefined;
+      $scope.formData.busCardUrlName = dt.busCardUrl?"请点击&nbsp;<a href='#' style='color: blue; text-decoration: underline;'  onClick='$(\"#busCardUrl\").click();'>预览！</a>":undefined;
+      $scope.formData.photoUrlName = dt.photoUrl?"请点击&nbsp;<a href='#' style='color: blue; text-decoration: underline;'  onClick='$(\"#photoUrl\").click();'>预览！</a>":undefined;
+      
+      
       initFormData(dt);//配置其他需要手动加工的数据
     });
+    
+    
+    var uploader = $scope.uploader = new FileUploader({
+        url: 'common/fileUploadAction!uploadOnePictrue.action',
+        alias:"files",
+        autoUpload:false,
+        removeAfterUpload:true
+    });
+    
+    /**
+	  * 过滤器
+	  */
+    uploader.filters.push({
+         name: 'imageFilter',
+         fn: function(item /*{File|FileLikeObject}*/, options) {
+       	  var isImage = false;
+       	  isImage = item.type.indexOf("image")>=0;
+       	  if(!isImage){
+       		  console.info(item);
+       		  alert("请选择图片文件!");
+       	  }else{
+       		  //清除之前的有的，每个单一文件只能有一个
+       		 if(uploader.queue&&uploader.queue.length>0){
+          	   for(var i=0;i<uploader.queue.length;i++){
+          		   if(options.name==uploader.queue[i].name){
+          			   uploader.removeFromQueue(i);
+          		   }
+          	   }
+             }
+       	  }
+          return isImage;
+         }
+     });
+    /**
+     * 预览图片功能
+     */
+    var previewImg = $scope.previewImg = function(name){
+    	 previewService.preview($scope.formData[name]);
+    }
+    /**
+     * 删除一张图片，删除图片只能删除图片formdata中的记录，目前后台不做任何操作
+     */
+    $scope.deleteImg = function(name){
+    	$scope.formData[name] = undefined;
+    	$scope.formData[name+"Name"] = undefined;
+    }
+    
+    
+    /**
+     * 上传一张图片，根据图片的name来上传指定的图片
+     */
+    $scope.uploadImg = function(alias){
+    	if(uploader.queue&&uploader.queue.length>0){
+    		for(var i=0;i<uploader.queue.length;i++){
+    			if(uploader.queue[i].name==alias){
+    				//禁用上传按钮
+    				buttonClick(uploader.queue[i].name);
+    				//上传
+    				uploader.uploadItem(i);
+    				return ;
+    			}
+    		}
+    	}else{
+    		alert("请选择图片文件!");
+    	}
+    }
+    /**
+     * 当成功上传一个文件的时候调用
+     */
+    uploader.onSuccessItem = function(fileItem, response, status, headers) {
+    	if(response.code){//成功上传
+    		var name = fileItem.name;
+    		$scope.formData[name] = response.url;
+    		$scope.formData[name+"Name"] = response.name;
+    		console.info($scope.formData);
+    	}else{
+    		alert(response.message);
+    	}
+    };
+    
+    /**
+     * 当上传按钮被点击的时候，将该按钮变为disblead，并改变其中的html
+     */
+    var buttonClick = function(name){
+    	var buttonName = "#"+name+"Button";
+    	$(buttonName).attr("disabled","disabled");
+    	$(buttonName).html("上传中...");
+    }
+    
+    
     
     /**
      * 特殊的属性需要在这里配置一下
@@ -25,7 +135,7 @@ app.controller('carShopEditController', ['$scope', '$http', '$state',  'uiLoad',
     function initFormData(data){
     	var busStartTimeH = data.busStartTime.split(":")[0];
     	var busStartTimeM = data.busStartTime.split(":")[1];
-    	var busEndTimeH = data.busEndTime.split(":")[1];
+    	var busEndTimeH = data.busEndTime.split(":")[0];
     	var busEndTimeM = data.busEndTime.split(":")[1];
     	$("#busStartTimeH").val(busStartTimeH);
     	$("#busStartTimeM").val(busStartTimeM);
@@ -71,26 +181,9 @@ app.controller('carShopEditController', ['$scope', '$http', '$state',  'uiLoad',
 
       
       app.utils.getData(url, $scope.formData, function(dt) {
-        $state.go('app.carshop.list');
+        $state.go($scope.state.list);
       });
     };
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     
     
     $scope.openMapButton = function(){
@@ -102,9 +195,6 @@ app.controller('carShopEditController', ['$scope', '$http', '$state',  'uiLoad',
   			$scope.mapMessage = "关闭地图";
   		}
   	}
-    
-    
-    
     
     $scope.checkNull = function(){
     	if($.trim($("#number").val())!=""&&$.trim($("#name").val())!=""&&$.trim($("#superName").val())!=""){
@@ -145,6 +235,8 @@ app.controller('carShopEditController', ['$scope', '$http', '$state',  'uiLoad',
       }
     };
 
+    $scope.clearRowIds();
+    
     function initTable(data) {
       var dTable = $('#orgAddList').dataTable({
         "data": data,

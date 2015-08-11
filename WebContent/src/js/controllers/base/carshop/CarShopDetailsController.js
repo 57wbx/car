@@ -1,19 +1,28 @@
 'use strict';
 
-app.controller('carShopDetailsController', function($http, $rootScope, $scope, $state) {
+app.controller('carShopDetailsController', ['$http','$rootScope','$scope','$state','sessionStorageService',function($http, $rootScope, $scope, $state,sessionStorageService) {
 	
-	if(!$rootScope.ids||!$rootScope.ids[0]){
-		$state.go("app.carshop.list");
-		return;
+	$scope.needCacheArray = ["carShopIdForDetails","carShopListDataTableProperties"];
+	sessionStorageService.clearNoCacheItem($scope.needCacheArray);
+	if($scope.rowIds[0]){
+		sessionStorageService.setItem("carShopIdForDetails",$scope.rowIds[0]);
+	}else{
+		$scope.rowIds[0]  = sessionStorageService.getItemStr("carShopIdForDetails");
 	}
-	var id = $rootScope.ids[0];
+	
+	
+	if(!$scope.rowIds[0]||$scope.rowIds[0]==""){
+		$state.go($scope.state.list);//返回到列表界面
+	}
     $http({
       url: "base/carShopAction!detailsCarShopById.action",
       data: {
-        id: id
+        id: $scope.rowIds[0]
       },
       method: 'POST'
     }).then(function(dt) {
       $scope.details = dt.data.details;
     });
-});
+    
+    $scope.clearRowIds();
+}]);

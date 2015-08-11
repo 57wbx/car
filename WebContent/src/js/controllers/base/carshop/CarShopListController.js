@@ -1,23 +1,47 @@
-app.controller('carShopListController',['$rootScope','$scope','$state','$timeout','$modal','$ocLazyLoad','$compile','utils','dataTableSearchService', function($rootScope, $scope, $state, $timeout,$modal,$ocLazyLoad,$compile,utils,dataTableSearchService) {
+app.controller('carShopListController',['$rootScope','$scope','$state','$timeout','$modal','$ocLazyLoad','$compile','utils','dataTableSearchService','sessionStorageService', function($rootScope, $scope, $state, $timeout,$modal,$ocLazyLoad,$compile,utils,dataTableSearchService,sessionStorageService) {
 		
-	$timeout(function(){
-		initTable();
-	},30);
+	$scope.$evalAsync(initTable);
 	
-	$scope.search = {};
+	$scope.clearRowIds();
+	
+	var isF5 = true ;
+	$scope.carShopListDataTableProperties = null;
+	$scope.needCacheArray = ["carShopListDataTableProperties"];
+	sessionStorageService.clearNoCacheItem($scope.needCacheArray);
+	$scope.carShopListDataTableProperties  = sessionStorageService.getItemObj("carShopListDataTableProperties");
+	
+	$scope.setCarShopListDataTableProperties = function(obj){
+		$scope.carShopListDataTableProperties = obj;
+		sessionStorageService.setItem("carShopListDataTableProperties",obj);
+	}
 	
 		var carShopList , dTable;
 		function initTable(){
 			carShopList =  $("#store_List");
 			dTable = carShopList.on('preXhr.dt', function ( e, settings, data ){
 //				data.busTypeCode = $scope.busTypeTree.selectedTypeCode ;
-				data.shopName = $scope.search.shopName ;
-				data.hello = $scope.search.shopType;
+				if(isF5){
+					isF5 = false ;
+					var oldData = sessionStorageService.getItemObj("carShopListDataTableProperties"); 
+					if(oldData){
+						angular.copy(oldData,data);
+//						data = oldData ;
+						$scope.search.shopName = data.shopName ;
+						$scope.search.shopType = data.shopType ;
+					}
+				}else{
+					data.shopName = $scope.search.shopName ;
+					data.shopType = $scope.search.shopType;
+					$scope.setCarShopListDataTableProperties(data);
+				}
+			
+				//缓存数据
 			}).DataTable({
 				"sAjaxSource":"base/carShopAction!listCarShopWithMannager.action",
 		    	"bServerSide":true,
 		    	"sAjaxDataProp":"data",
 		    	 "dom": '<"top">rt<"bottom"p><"clear">',
+		    	 "sServerMethod": "POST",
 				"aoColumns": [{
 			        "orderable": false,
 			        "render": function(param){
@@ -99,7 +123,7 @@ app.controller('carShopListController',['$rootScope','$scope','$state','$timeout
 			          }
 			        },
 			        "fnCreatedRow": function(nRow, aData, iDataIndex){
-			            $(nRow).attr('data-id', aData['ID']);
+			            $(nRow).attr('data-id', aData['id']);
 			            $(nRow).find("button").click(function(e){
 			            	showModal(nRow,aData);
 			            });
@@ -107,6 +131,7 @@ app.controller('carShopListController',['$rootScope','$scope','$state','$timeout
 			            $(nRow).find("a").click(function(e){
 			            	showModal(nRow,aData);
 			            });
+			            
 			            
 			        },
 			       "drawCallback": function( settings ) {
@@ -136,6 +161,10 @@ app.controller('carShopListController',['$rootScope','$scope','$state','$timeout
 			              initClickEvent();
 			            },
 			            "initComplete":function(settings,json){
+			            	if( $scope.carShopListDataTableProperties){
+			            		var pageIndex = $scope.carShopListDataTableProperties.iDisplayStart/$scope.carShopListDataTableProperties.iDisplayLength;
+					              dTable.page(pageIndex).draw(false);
+			            	}
 			            	initSearchDiv(settings,json);
 			            }
 			       });
@@ -152,7 +181,7 @@ app.controller('carShopListController',['$rootScope','$scope','$state','$timeout
        	     controller:"addManager",
        	     resolve: {
        	    	 carShopId: function () {
-           	           return  aData['ID'];
+           	           return  aData['id'];
            	         },
            	         orgId:function(){
            	        	 return  aData['orgID'];
@@ -178,18 +207,22 @@ app.controller('carShopListController',['$rootScope','$scope','$state','$timeout
                   {
                	   formDataName:'search.shopType',
                	   label:'店家类型',
-               	   options:[{
+               	   options:[{label:'全部'},{
+               		//0=加盟店、1=合作店、3=直营店、4=中心店（区域旗舰店）
 				               		   value:0,
-				               		   label:"hello"
+				               		   label:"加盟店"
 				               	   	},{
 			                		   value:1,
-			                   		   label:"hello1"
+			                   		   label:"合作店"
 			                   	   	},{
-			                    		   value:2,
-			                       		   label:"hello2"
+			                    		   value:3,
+			                       		   label:"直营店"
+			                       	 },{
+			                    		   value:4,
+			                       		   label:"中心店（区域旗舰店）"
 			                       	 }
                    	]
-                  },{formDataName:'search.hello',placeholder:'sfsdfsfsd'}
+                  }
 			],$scope,settings,dTable);
 		}
 		
@@ -198,7 +231,7 @@ app.controller('carShopListController',['$rootScope','$scope','$state','$timeout
 		// 表格行事件
 		
 		function initClickEvent(){
-			dTable.$('tr').dblclick(function(e, settings) {
+			dTable.$('tr').off().dblclick(function(e, settings) {
 			      $scope.seeDetails($(this).data('id'));
 			    }).click(function(e) {
 			    	if(e.target.nodeName=="BUTTON"||e.target.nodeName=="button"||e.target.nodeName=="A"||e.target.nodeName=="a"){
@@ -208,7 +241,7 @@ app.controller('carShopListController',['$rootScope','$scope','$state','$timeout
 			      var target = event.target || event.srcElement;
 
 			      evt.preventDefault();
-			      //evt.stopPropagation();
+			      evt.stopPropagation();
 			      
 			      var ipt = $(this).find('.i-checks input');
 			      clicked(ipt.off(), $(this));
@@ -232,7 +265,6 @@ app.controller('carShopListController',['$rootScope','$scope','$state','$timeout
 	    
 	
 	//var ids = [], obj;
-	  $rootScope.ids = [], $rootScope.obj;
 
 	  function clicked(target, that){
 	    var classname = 'rowSelected', id;
@@ -241,23 +273,22 @@ app.controller('carShopListController',['$rootScope','$scope','$state','$timeout
 	      var evt = e || window.event;
 	      //evt.preventDefault();
 	      evt.stopPropagation();
-
 	      if(!that){
 	        that = $(this).parents('tr');
 	      }
-
 //	      $rootScope.details = $rootScope.obj = app.utils.getDataByKey(data, 'id', that.data('id'));
 	      id = that.data('id');
 
 	      if(!$(this)[0].checked){
-	        var idx = $rootScope.ids.indexOf(id);
-	        if(idx !== -1 ) $rootScope.ids.splice(idx, 1);
+	        var idx = $scope.rowIds.indexOf(id);
+	        if(idx !== -1 ) $scope.rowIds.splice(idx, 1);
 	        //that.removeClass(classname);
 	      }else{
-	        $rootScope.ids.push(id);
+	        $scope.rowIds.push(id);
 	        //that.addClass(classname);
 	      }
 	      $scope.setBtnStatus();
+	      console.info($scope.rowIds);
 	    });
 	  }
 		

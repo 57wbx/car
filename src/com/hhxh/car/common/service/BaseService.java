@@ -226,5 +226,8 @@ public class BaseService {
 			}
 		}
 	}
+	public <T> List<T> gets(Class<T> clazz,Object o){
+		return this.dao.gets(clazz, o);
+	}
 	
 }

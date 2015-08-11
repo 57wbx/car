@@ -73,10 +73,8 @@ app.controller('shopItemListController',['$scope','$state','$timeout','$http','s
 	}
 	
 	
-	//延迟加载 客户端不会报错，具体原因还不清楚
-	$timeout(function(){
-		initDataTable();
-	},30);
+	$scope.$evalAsync(initDataTable);
+	
 	var busItemTable ;
 	function initDataTable(){
 		

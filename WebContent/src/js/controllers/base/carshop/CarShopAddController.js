@@ -125,7 +125,7 @@ app.controller('carShopAddController', ['$scope', '$state', 'uiLoad','JQ_CONFIG'
       
       app.utils.getData("base/carShopAction!saveCarShop.action", $scope.formData, function(dt) {
     	  
-        $state.go('app.carshop.list');
+        $state.go($scope.state.list);
       });
 //      $scope.uploader.uploadAll();
     };

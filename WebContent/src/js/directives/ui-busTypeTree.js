@@ -62,10 +62,32 @@ app.directive("busTypeTree",['$http','utils','modelDataCacheService',function($h
 							
 							modelDataCacheService.BusTypeTreeDataService().then(function(dt){
 							 	data = dt;
+							 	/*
+							 	 * 添加全选的记录
+							 	 */
+							 	data.push({
+							 		busTypeCode:"",
+							 		busTypeName:"所有类型",
+							 		parentId:"",
+							 		simpleName:"所有类型",
+							 	});
 							    initData();
 							    scope.loading = false;
 							    scope.loading_sub = false;
 							});
+							
+							/**
+							 * 0: Object
+busTypeCode: "BP"
+busTypeName: "钣金油漆"
+isLeaf: 2
+isShow: 1
+memo: "一级目录"
+parentId: ""
+simpleName: "钣喷"
+sortCode: "06"
+useState: 1
+							 */
 							
 //							  initTree();
 
@@ -89,7 +111,7 @@ app.directive("busTypeTree",['$http','utils','modelDataCacheService',function($h
 							      return nodes['busTypeCode' + dt['busTypeCode']];
 							    }
 							    node['label'] = dt.simpleName || '没有名字';
-							    node['data'] = dt.busTypeCode || '没有数据';
+							    node['data'] = dt.busTypeCode || '';
 							    node['children'] = node['children'] || [];
 							    node['parent'] = dt.parentId;
 							    

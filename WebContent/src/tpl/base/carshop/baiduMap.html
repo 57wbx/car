@@ -23,13 +23,13 @@ var map = new BMap.Map("container");
 map.enableScrollWheelZoom();
 var point = null ;
 if(lng==null||lat==null||lat.value==null||lng.value==null||lat.value==""||lng.value==""){
-	point = new BMap.Point(116.404, 39.915); 
+	point = new BMap.Point(114.05, 22.55); 
 }else{
 	point = new BMap.Point(lng.value,lat.value);
 	var initMark = new BMap.Marker(point);        // 创建标注    
 	map.addOverlay(initMark); 
 }
-map.centerAndZoom(point, 24);  
+map.centerAndZoom(point, 13);  
 
 //获取坐标地址
 map.addEventListener("click", function(e){    

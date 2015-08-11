@@ -32,14 +32,18 @@ app.factory("dataTableSearchService",['$compile',function($compile){
 	var initSearch = function(serachValue,scope,settings,dataTable){
 		if(!scope){console.error("scope不能为空！");return;};
 		if(!serachValue&&serachValue.length>0){console.error("查询数组对象不能为空");return;};
-		var formStr = "<form novalidate ng-init='hello=123'>";
+		var formStr = "<form novalidate style='margin-right:10px;' class='text-right'>";
 		for(var i=0;i < serachValue.length;i++){
 			if(!serachValue[i].formDataName){console.error("配置对象没有指定的formDataName属性");return;};
 			var element ;
 			if(serachValue[i].options&&serachValue[i].options.length>0){//代表是select的选择框
 				element = "<label class='control-label'>"+serachValue[i].label+":</label><select ng-model='"+serachValue[i].formDataName+"' class='form-control' >";
 				for(var j=0;j<serachValue[i].options.length;j++){
-					element = element + "<option value='"+serachValue[i].options[j].value+"'>"+serachValue[i].options[j].label+"</option>" ;
+					var value = -1;
+					if(serachValue[i].options[j].value===0||serachValue[i].options[j].value){
+						value = serachValue[i].options[j].value ;
+					}
+					element = element + "<option value='"+value+"'>"+serachValue[i].options[j].label+"</option>" ;
 				}
 				element = element + "</select>";
 			}else{//普通的input

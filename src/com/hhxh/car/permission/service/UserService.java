@@ -49,7 +49,6 @@ public class UserService extends BaseService {
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
-					
 				}
 			}
 		}

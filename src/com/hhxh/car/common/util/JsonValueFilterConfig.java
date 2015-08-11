@@ -72,4 +72,9 @@ public class JsonValueFilterConfig {
 	 */
 	public static final String[] ADVERTISEMENT_ONLY_ADVERTISEMENT = new String[]{"user"};
 	
+	/**
+	 * carshop  网店需要过滤的数据
+	 */
+	public static final String[] CARSHOP_ONLY_CARSHOP = new String[]{"org","user"};
+	public static final String[] CARSHOP_HAS_ORG = new String[]{"user", "createUser", "lastUpdateUser", "parent" };
 }
