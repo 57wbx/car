@@ -11,7 +11,8 @@ app.controller("shopItemAddController",['$scope','$state','$http','checkUniqueSe
 	$scope.setCanEdit(false);
 	$scope.clearRowIds();
 	
-	sessionStorageService.clearNoCacheItem();
+	$scope.needCacheArray = ["shopItemDataTableProperties"];
+	sessionStorageService.clearNoCacheItem($scope.needCacheArray);
 	
 	/**
 	 * 服务编码是否已经存在的标识符

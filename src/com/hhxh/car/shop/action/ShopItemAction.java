@@ -11,6 +11,11 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
+
 import net.sf.json.JSONArray;
 import net.sf.json.JsonConfig;
 import net.sf.json.util.CycleDetectionStrategy;
@@ -46,6 +51,8 @@ public class ShopItemAction extends BaseAction implements ModelDriven<ShopItem>
 
 	private String[] ids;
 
+	private String orderName;
+
 	@Resource
 	private ShopItemService shopItemService;
 
@@ -56,23 +63,33 @@ public class ShopItemAction extends BaseAction implements ModelDriven<ShopItem>
 	{
 		try
 		{
-
-			Map<String, Object> paramMap = new HashMap<String, Object>();
-			paramMap.put("carShop", this.getLoginUser().getCarShop());// 只能查本单位的所有数据
-
-			List<ShopItem> shopItems = null;
-			int recordsTotal;
-
+			List<Criterion> params = new ArrayList<Criterion>();
+			
+			params.add(Restrictions.eq("carShop", this.getLoginUser().getCarShop()));
+			
 			if (isNotEmpty(this.getBusTypeCode()))
 			{
-				paramMap.put("busTypeCode", this.getBusTypeCode() + '%');
-				shopItems = this.baseService.gets("From ShopItem b where b.itemCode like :busTypeCode and b.carShop=:carShop", paramMap, this.getIDisplayStart(), this.getIDisplayLength());
-				recordsTotal = this.baseService.getSize("From ShopItem b where b.itemCode like :busTypeCode and b.carShop=:carShop", paramMap);
+				params.add(Restrictions.like("itemCode", this.getBusTypeCode(), MatchMode.ANYWHERE));
+			}
+			if (isNotEmpty(this.shopItem.getItemName()))
+			{
+				params.add(Restrictions.like("itemName", this.shopItem.getItemName(), MatchMode.ANYWHERE));
+			}
+			if(isNotEmpty(this.shopItem.getIsActivity())){
+				params.add(Restrictions.eq("isActivity", this.shopItem.getIsActivity()));
+			}
+
+			Order order = null;
+			if (isNotEmpty(orderName))
+			{
+				order = Order.asc(orderName);
 			} else
 			{
-				shopItems = this.baseService.gets("From ShopItem b where  b.carShop=:carShop", paramMap, this.getIDisplayStart(), this.getIDisplayLength());
-				recordsTotal = this.baseService.getSize("From ShopItem b where  b.carShop=:carShop", paramMap);
+				order = Order.desc("updateTime");
 			}
+			List<ShopItem> shopItems = this.baseService.gets(ShopItem.class, params, this.getIDisplayStart(), this.getIDisplayLength(), order);
+			int recordsTotal = this.baseService.getSize(ShopItem.class, params);
+
 			jsonObject.accumulate("data", shopItems, this.getJsonConfig(JsonValueFilterConfig.SHOPITEM_HAS_SHOPITEMIMG));
 			jsonObject.put("recordsTotal", recordsTotal);
 			jsonObject.put("recordsFiltered", recordsTotal);
@@ -91,8 +108,8 @@ public class ShopItemAction extends BaseAction implements ModelDriven<ShopItem>
 	{
 		/**
 		 * busAtomDataStr = [{\
-		 * "atomCode\":\"123\",\"atomName\":\"123\",\"autoParts\":123,\"eunitPrice\":\"\
-		 * " ,\"memo\":\"\",\"partName\":\"前刹车片\" ,\
+		 * "atomCode\":\"123\",\"atomName\":\"123\",\"autoParts\":123,\"eunitPrice\":\"
+		 * \ " ,\"memo\":\"\",\"partName\":\"前刹车片\" ,\
 		 * "brandName\":\"迈氏\",\"spec\":\"GB5763-200\",\"model\":\"广州本田飞度1.3L
 		 * 五档手动 两厢\",\"isActivity\":0}, {\
 		 * "atomCode\":\"123\",\"atomName\":\"123\",\"autoParts\":123,\"eunitPrice\":\"\",\"memo\":\"\",\"partName\":\"前刹车片\",\"brandName\":\"迈氏\",\"spec\":\"GB5763-2008\",\"model\":\"广州本田飞度1.3L 五档手动 两厢\""
@@ -477,4 +494,15 @@ public class ShopItemAction extends BaseAction implements ModelDriven<ShopItem>
 	{
 		this.ids = ids;
 	}
+
+	public String getOrderName()
+	{
+		return orderName;
+	}
+
+	public void setOrderName(String orderName)
+	{
+		this.orderName = orderName;
+	}
+
 }

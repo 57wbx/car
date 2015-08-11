@@ -1,8 +1,20 @@
 'use strict';
 
-app.controller('shopItemListController',['$scope','$state','$timeout','$http','sessionStorageService',function($scope,$state,$timeout,$http,sessionStorageService){
+app.controller('shopItemListController',['$scope','$state','$timeout','$http','sessionStorageService','dataTableSearchService',function($scope,$state,$timeout,$http,sessionStorageService,dataTableSearchService){
 	
-	sessionStorageService.clearNoCacheItem();
+	$scope.search = {};
+	
+	var isF5 = true ;
+	$scope.shopItemDataTableProperties = null;
+	$scope.needCacheArray = ["shopItemDataTableProperties"];
+	sessionStorageService.clearNoCacheItem($scope.needCacheArray);
+	$scope.shopItemDataTableProperties  = sessionStorageService.getItemObj("shopItemDataTableProperties");
+	
+	$scope.setShopItemDataTableProperties = function(obj){
+		$scope.shopItemDataTableProperties = obj;
+		sessionStorageService.setItem("shopItemDataTableProperties",obj);
+	}
+	
 	//单击表格中的一行应该调用这个方法
 	function clickTr(e,inp){
 	      var evt = e || window.event;
@@ -79,7 +91,25 @@ app.controller('shopItemListController',['$scope','$state','$timeout','$http','s
 	function initDataTable(){
 		
 	busItemTable = $("#busItemTable").on('preXhr.dt', function ( e, settings, data ){
-		data.busTypeCode = $scope.busTypeTree.selectedTypeCode ;
+		if(isF5){
+			isF5 = false ;
+			var oldData = sessionStorageService.getItemObj("shopItemDataTableProperties"); 
+			if(oldData){
+				angular.copy(oldData,data);
+//				data = oldData ;
+//				$scope.search.itemCode = data.itemCode ;
+				$scope.search.itemName = data.itemName ;
+				$scope.search.isActivity = data.isActivity ;
+				$scope.busTypeTree.selectedTypeCode = data.busTypeCode ;
+			}
+		}else{
+//			data.itemCode = $scope.search.itemCode ;
+			data.itemName = $scope.search.itemName;
+			data.isActivity = $scope.search.isActivity;
+			data.busTypeCode = $scope.busTypeTree.selectedTypeCode ;
+			$scope.setShopItemDataTableProperties(data);
+		}
+		
 	}).DataTable({
 		"sAjaxSource":"shop/shopItemAction!listShopItem.action",
     	"bServerSide":true,
@@ -183,7 +213,7 @@ app.controller('shopItemListController',['$scope','$state','$timeout','$http','s
         	  getBusAtoms("");//清空服务子项的内容
         	  $(this).parents(".dataTables_scroll").find("thead .i-checks input").prop("checked",false);
         	  //设置标题全选按钮事件
-        	  $(this).parents(".dataTables_scroll").find("thead .i-checks input").click(function(){
+        	  $(this).parents(".dataTables_scroll").find("thead .i-checks input").off().click(function(){
         		  var inputs = $(setting.nScrollBody).find("tbody input");
         		  if($(setting.nScrollHead).find(".i-checks input").prop("checked")){
         			  inputs.prop("checked",true);
@@ -211,9 +241,37 @@ app.controller('shopItemListController',['$scope','$state','$timeout','$http','s
 //        	            $(this).find("td").css("background-color","#b0bed9");
 //        	        }
 //        	    } );
+          },
+          "initComplete":function(settings,json){
+          	if( $scope.shopItemDataTableProperties){
+          		var pageIndex = $scope.shopItemDataTableProperties.iDisplayStart/$scope.shopItemDataTableProperties.iDisplayLength;
+          		busItemTable.page(pageIndex).draw(false);
+          	}
+          	initSearchDiv(settings,json);
           }
 	});
 	}//结束初始化方法
+	
+	//初始化搜索框
+	var initSearchDiv = function(settings,json){
+		dataTableSearchService.initSearch([
+			  {formDataName:'search.itemName',placeholder:'服务名称'},
+              {
+           	   formDataName:'search.isActivity',
+           	   label:'是否参加聚惠',
+           	   options:[{label:'全部'},{
+           		//0=加盟店、1=合作店、3=直营店、4=中心店（区域旗舰店）
+			               		   value:0,
+			               		   label:"不参加"
+			               	   	},{
+		                		   value:1,
+		                   		   label:"参加"
+		                   			   }
+               	]
+              }
+		],$scope,settings,busItemTable);
+	}
+	
 	
 	
 	/**

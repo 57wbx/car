@@ -65,12 +65,6 @@ app.directive("busTypeTree",['$http','utils','modelDataCacheService',function($h
 							 	/*
 							 	 * 添加全选的记录
 							 	 */
-							 	data.push({
-							 		busTypeCode:"",
-							 		busTypeName:"所有类型",
-							 		parentId:"",
-							 		simpleName:"所有类型",
-							 	});
 							    initData();
 							    scope.loading = false;
 							    scope.loading_sub = false;

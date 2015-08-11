@@ -41,6 +41,12 @@ app.factory("modelDataCacheService",['$http','$q',function($http,$q){
 							busTypeTreeDataNowTimes = 0;
 						}
 						console.info("从网上获取数据");
+						busTypeTreeData.push({
+					 		busTypeCode:"",
+					 		busTypeName:"所有类型",
+					 		parentId:"",
+					 		simpleName:"所有类型",
+					 	});
 						deferred.resolve(busTypeTreeData);
 					});
 				}else{
