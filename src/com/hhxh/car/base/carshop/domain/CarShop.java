@@ -19,6 +19,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.GenericGenerator;
 
 import com.hhxh.car.base.member.domain.Member;
+import com.hhxh.car.opr.order.domain.Order;
 import com.hhxh.car.org.domain.AdminOrgUnit;
 import com.hhxh.car.permission.domain.User;
 import com.hhxh.car.shop.domain.ShopItem;
@@ -252,6 +253,9 @@ public class CarShop implements Serializable
 	
 	@OneToMany(mappedBy="carShop",fetch=FetchType.LAZY)
 	private Set<Member> merbers = new HashSet<Member>(); ;
+	
+	@OneToMany(mappedBy="carShop",fetch=FetchType.LAZY)
+	private Set<Order> orders = new HashSet<Order>();
 
 	@Column
 	private String branks;
@@ -689,5 +693,16 @@ public class CarShop implements Serializable
 	{
 		this.merbers = merbers;
 	}
+
+	public Set<Order> getOrders()
+	{
+		return orders;
+	}
+
+	public void setOrders(Set<Order> orders)
+	{
+		this.orders = orders;
+	}
+	
 	
 }
