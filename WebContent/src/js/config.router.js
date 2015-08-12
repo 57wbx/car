@@ -859,7 +859,68 @@ angular.module('app').run(
 										                }
 										              ]
 										            }
-											      }).state('app.updateversion', {
+											      }).state('app.worker', {
+											            url: '/worker',
+											            templateUrl: 'src/tpl/base/worker/worker.html',
+											            resolve: {
+											              deps: ['$ocLazyLoad', 'uiLoad',
+											                function($ocLazyLoad, uiLoad) {
+											                  return $ocLazyLoad.load('angularBootstrapNavTree').then(function() {
+											                    return $ocLazyLoad.load('src/js/controllers/base/worker/WorkerController.js');
+											                  });
+											                }
+											              ]
+											            }
+												      }).state('app.worker.add', {
+												            url: '/add',
+												            templateUrl: 'src/tpl/base/worker/worker_add.html',
+												            resolve: {
+												              deps: ['$ocLazyLoad', 'uiLoad',
+												                function($ocLazyLoad, uiLoad) {
+												                  return $ocLazyLoad.load('angularBootstrapNavTree').then(function() {
+												                    return $ocLazyLoad.load('src/js/controllers/base/worker/WorkerAddController.js');
+												                  });
+												                }
+												              ]
+												            }
+													      }).state('app.worker.list', {
+													            url: '/list',
+													            templateUrl: 'src/tpl/base/worker/worker_list.html',
+													            resolve: {
+													              deps: ['$ocLazyLoad', 'uiLoad',
+													                function($ocLazyLoad, uiLoad) {
+													                  return $ocLazyLoad.load('angularBootstrapNavTree').then(function() {
+													                    return $ocLazyLoad.load('src/js/controllers/base/worker/WorkerListController.js');
+													                  });
+													                }
+													              ]
+													            }
+														      }).state('app.worker.edit', {
+														            url: '/edit',
+														            templateUrl: 'src/tpl/base/worker/worker_edit.html',
+														            resolve: {
+														              deps: ['$ocLazyLoad', 'uiLoad',
+														                function($ocLazyLoad, uiLoad) {
+														                  return $ocLazyLoad.load('angularBootstrapNavTree').then(function() {
+														                    return $ocLazyLoad.load('src/js/controllers/base/worker/WorkerEditController.js');
+														                  });
+														                }
+														              ]
+														            }
+															      }).state('app.worker.details', {
+															            url: '/details',
+															            templateUrl: 'src/tpl/base/worker/worker_details.html',
+															            resolve: {
+															              deps: ['$ocLazyLoad', 'uiLoad',
+															                function($ocLazyLoad, uiLoad) {
+															                  return $ocLazyLoad.load('angularBootstrapNavTree').then(function() {
+															                    return $ocLazyLoad.load('src/js/controllers/base/worker/WorkerDetailsController.js');
+															                  });
+															                }
+															              ]
+															            }
+																      })
+								.state('app.updateversion', {
 							            url: '/updateversion',
 							            templateUrl: 'src/tpl/tig/updateversion/updateversion.html',
 							            resolve: {

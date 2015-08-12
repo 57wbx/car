@@ -18,6 +18,7 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import com.hhxh.car.base.member.domain.Member;
 import com.hhxh.car.org.domain.AdminOrgUnit;
 import com.hhxh.car.permission.domain.User;
 import com.hhxh.car.shop.domain.ShopItem;
@@ -248,6 +249,9 @@ public class CarShop implements Serializable
 
 	@OneToOne(mappedBy = "carShop", fetch = FetchType.LAZY)
 	private User user;
+	
+	@OneToMany(mappedBy="carShop",fetch=FetchType.LAZY)
+	private Set<Member> merbers = new HashSet<Member>(); ;
 
 	@Column
 	private String branks;
@@ -676,4 +680,14 @@ public class CarShop implements Serializable
 		this.photoUrl = photoUrl;
 	}
 
+	public Set<Member> getMerbers()
+	{
+		return merbers;
+	}
+
+	public void setMerbers(Set<Member> merbers)
+	{
+		this.merbers = merbers;
+	}
+	
 }

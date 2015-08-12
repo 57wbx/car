@@ -22,6 +22,7 @@
 			<action name="baseProvinceAction" class="com.hhxh.car.base.district.action.BaseProvinceAction"></action>
 			<action name="baseCityAction" class="com.hhxh.car.base.district.action.BaseCityAction"></action>
 			<action name="baseAreaAction" class="com.hhxh.car.base.district.action.BaseAreaAction"></action>
+			<action name="memberAction" class="com.hhxh.car.base.member.action.MemberAction"></action>
 	</package>
 
 </struts>
