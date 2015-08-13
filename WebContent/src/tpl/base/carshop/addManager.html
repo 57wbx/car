@@ -1,48 +1,65 @@
-    <div class="modal-content" >
-      <div class="modal-header">
-        <button type="button" class="close"  ng-click="cancel()" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" >新增网店管理员信息</h4>
-      </div>
-      <div class="modal-body">
-      	<div class="container-fluid">
-	        <form name="addManagerForm" ng-model="formData" class="form-horizontal form-validation"> 
-	        
-		          <div class="form-group">
-		           		<label class="col-sm-2 control-label">用户名<i class="fa fa-asterisk text-danger"></i></label>
-			            <div class="col-sm-4">
-			            	<input type="text" class="form-control"  ng-model="formData.name" required>
-			            </div>
-			            
-			            <label class="col-sm-2 control-label">角色<i class="fa fa-asterisk text-danger"></i></label>
-			            <div class="col-sm-4">
-			            	<select class="form-control" ng-model="formData.roleId" ng-change="checkNull()" required>
-								<option ng-repeat="o in roleList" value="{{o.id}}">{{o.name}}</option>
-							</select>
-			            </div>
-	        		</div>
-	        		
-	        		<div class="form-group">
-	        			
-	        			<label class="col-sm-2 control-label">登陆账号<i class="fa fa-asterisk text-danger"></i></label>
-			            <div class="col-sm-4">
-			            	<div class="input-group">
-					          		<input type="text" id="number" name="number" class="form-control"  ng-model="formData.number" required />
-					          		<div class="input-group-addon" ng-show="!isUnique" style="background:red;"><span ng-bind="notUniqueMessage"></span></div>
-					          </div>
-			            </div>
-			            
-			             <label class="col-sm-2 control-label">密码<i class="fa fa-asterisk text-danger"></i></label>
-			            <div class="col-sm-4">
-			            	<input type="password" class="form-control"  ng-model="formData.password" required>
-			            </div>
-	        		</div>
-	        </form>
-	        </div>
-      </div>
-      <div class="modal-footer ">
-	      	<div class="text-center">
-		        <button type="button" class="btn btn-success"  ng-click="ok()" ng-disabled="addManagerForm.$invalid || !isUnique">确定</button>
-		        <button type="button" class="btn btn-primary" ng-click="cancel()">取消</button>
-	      </div>
-      	</div>
-    </div>
+
+<div class="modal-content">
+	<div class="modal-header">
+		<button type="button" class="close" ng-click="cancel()"
+			aria-label="Close">
+			<span aria-hidden="true">&times;</span>
+		</button>
+		<h4 class="modal-title">新增网店管理员信息</h4>
+	</div>
+	<div class="modal-body">
+		<div class="container-fluid">
+			<form name="addManagerForm" ng-model="formData"
+				class="form-horizontal form-validation">
+
+				<div class="form-group">
+					<label class="col-sm-2 control-label">用户名<i
+						class="fa fa-asterisk text-danger"></i></label>
+					<div class="col-sm-4">
+						<input type="text" class="form-control" ng-model="formData.name"
+							required>
+					</div>
+
+					<label class="col-sm-2 control-label">角色<i
+						class="fa fa-asterisk text-danger"></i></label>
+					<div class="col-sm-4">
+						<select class="form-control" ng-model="formData.roleId"
+							ng-change="checkNull()" required>
+							<option ng-repeat="o in roleList" value="{{o.id}}">{{o.name}}</option>
+						</select>
+					</div>
+				</div>
+
+				<div class="form-group">
+
+					<label class="col-sm-2 control-label">登陆账号<i
+						class="fa fa-asterisk text-danger"></i></label>
+					<div class="col-sm-4">
+						<div class="input-group">
+							<input type="text" id="number" name="number" class="form-control"
+								ng-model="formData.number" required />
+							<div class="input-group-addon" ng-show="!isUnique"
+								style="background: red;">
+								<span ng-bind="notUniqueMessage"></span>
+							</div>
+						</div>
+					</div>
+
+					<label class="col-sm-2 control-label">密码<i
+						class="fa fa-asterisk text-danger"></i></label>
+					<div class="col-sm-4">
+						<input type="password" class="form-control"
+							ng-model="formData.password" required>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+	<div class="modal-footer ">
+		<div class="text-center">
+			<button type="button" class="btn btn-success" ng-click="ok()"
+				ng-disabled="addManagerForm.$invalid || !isUnique">确定</button>
+			<button type="button" class="btn btn-primary" ng-click="cancel()">取消</button>
+		</div>
+	</div>
+</div>

@@ -28,7 +28,7 @@ import com.hhxh.car.tig.domain.TigUsers;
 public class Order implements java.io.Serializable
 {
 	@Id
-	@Column(name="opr_order")
+	@Column(name="orderCode")
 	private String id;
 	@Column
 	private String orderName;
@@ -77,7 +77,7 @@ public class Order implements java.io.Serializable
 	@JoinColumn(name="workerID")
 	private Member worker ;
 	
-	@OneToMany(fetch=FetchType.LAZY)
+	@OneToMany(fetch=FetchType.LAZY,mappedBy="order")
 	private Set<OrderTrack> orderTracks = new HashSet<OrderTrack>();
 	
 	public Order()

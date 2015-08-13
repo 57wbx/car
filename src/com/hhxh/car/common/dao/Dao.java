@@ -1,14 +1,18 @@
 package com.hhxh.car.common.dao;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
 import org.hibernate.Criteria;
+import org.hibernate.FetchMode;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
@@ -419,5 +423,107 @@ public class Dao
 	{
 		String uuid = (String) this.getSession().createSQLQuery("select uuid() from dual").list().get(0);
 		return uuid;
+	}
+
+	/**
+	 * 更具条件查询数据
+	 * 
+	 * @param clazz
+	 * @param params
+	 * @param criteriaMap
+	 *            子查询的条件，相当于关联对象中的条件
+	 * @param iDisplayStart
+	 * @param iDisplayLength
+	 * @param o
+	 * @return
+	 */
+	public <T> List<T> gets(Class<T> clazz, List<Criterion> params, Map<String, List<Criterion>> criteriaMap, int iDisplayStart, int iDisplayLength, org.hibernate.criterion.Order o)
+	{
+		Criteria mainCriteria = getSession().createCriteria(clazz);
+		/*
+		 * 添加主表的查询条件
+		 */
+		if (params != null && params.size() > 0)
+		{
+			for (Criterion c : params)
+			{
+				mainCriteria.add(c);
+			}
+		}
+		/*
+		 * 添加 子表的查询条件
+		 */
+		if (criteriaMap != null && criteriaMap.size() > 0)
+		{
+			Set<String> keys = criteriaMap.keySet();
+			for (String k : keys)
+			{
+				List<Criterion> childsCriterions = criteriaMap.get(k);
+				if (childsCriterions != null && childsCriterions.size() > 0)
+				{
+					mainCriteria.setFetchMode(k, FetchMode.JOIN);
+					Criteria childCriteria = mainCriteria.createCriteria(k);
+					for (Criterion child : childsCriterions)
+					{
+						childCriteria.add(child);
+					}
+				}
+			}
+		}
+
+		if (o != null)
+		{
+			mainCriteria.addOrder(o);
+		}
+
+		if (iDisplayStart >= 0 && iDisplayLength > 0)
+		{
+			mainCriteria.setFirstResult(iDisplayStart).setFetchSize(iDisplayLength);
+		}
+
+		List<T> resultList = mainCriteria.list();
+		/**
+		 * 去重
+		 */
+		Set<T> resultSet = new HashSet<T>(resultList);
+
+		return new ArrayList<T>(resultSet);
+	}
+
+	public int getSize(Class clazz, List<Criterion> params, Map<String, List<Criterion>> criteriaMap)
+	{
+		Criteria mainCriteria = getSession().createCriteria(clazz).setProjection(Projections.rowCount());
+		/*
+		 * 添加主表的查询条件
+		 */
+		if (params != null && params.size() > 0)
+		{
+			for (Criterion c : params)
+			{
+				mainCriteria.add(c);
+			}
+		}
+		/*
+		 * 添加 子表的查询条件
+		 */
+		if (criteriaMap != null && criteriaMap.size() > 0)
+		{
+			Set<String> keys = criteriaMap.keySet();
+			for (String k : keys)
+			{
+				List<Criterion> childsCriterions = criteriaMap.get(k);
+				if (childsCriterions != null && childsCriterions.size() > 0)
+				{
+					mainCriteria.setFetchMode(k, FetchMode.JOIN);
+					Criteria childCriteria = mainCriteria.createCriteria(k);
+					for (Criterion child : childsCriterions)
+					{
+						childCriteria.add(child);
+					}
+				}
+			}
+		}
+		Long result = (Long) mainCriteria.uniqueResult();
+		return Integer.parseInt(Long.toString(result));
 	}
 }

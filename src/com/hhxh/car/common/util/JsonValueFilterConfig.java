@@ -12,6 +12,13 @@ package com.hhxh.car.common.util;
  */
 public class JsonValueFilterConfig {
 	private JsonValueFilterConfig(){};//私有化构造方法
+	
+	/**
+	 * hibernate懒加载需要过滤的数据
+	 */
+	public static final String HIBERNATE_LAZY_PROPERTISE_HANDLER = "handler";
+	public static final String HIBERNATE_LAZY_PROPERTISE_LAZYINITIALIZER = "hibernateLazyInitializer";
+	
 	/**
 	 *  baseArea 的需要在json中排除的数据  ，提供一个只有baseArea的对象
 	 */
@@ -82,4 +89,15 @@ public class JsonValueFilterConfig {
 	 * Member 会员或者师傅 需要过滤的信息
 	 */
 	public static final String[] MEMBER_ONLY_MEMBER = new String[]{"carShop","orders"};
+	
+	/**
+	 * Order 订单需要过滤的信息
+	 */
+	public static final String[] ORDER_HAS_TIGUSERS_HAS_WORKER = new String[]{"carShop","orders","order","orderTracks",HIBERNATE_LAZY_PROPERTISE_HANDLER,HIBERNATE_LAZY_PROPERTISE_LAZYINITIALIZER};
+	
+	/**
+	 * OrderTrack 订单跟踪状态需要过滤的信息
+	 */
+	public static final String[] ORDERTRACK_ONLY_ORDERTRACK = new String[]{"order"};
+	
 }

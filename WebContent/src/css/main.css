@@ -634,3 +634,12 @@ tr.removed {
   text-decoration: line-through;
 }
 /*结束图片显示*/
+
+
+/* dataTables列内容居中 */
+.table>tbody>tr>td{
+        text-align:center;
+}
+.table>thead:first-child>tr:first-child>th{
+        text-align:center;
+}

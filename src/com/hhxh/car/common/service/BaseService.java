@@ -229,5 +229,15 @@ public class BaseService {
 	public <T> List<T> gets(Class<T> clazz,Object o){
 		return this.dao.gets(clazz, o);
 	}
+	public <T> List<T> gets(Class<T> clazz, List<Criterion> params, Map<String, List<Criterion>> criteriaMap, int iDisplayStart,
+			int iDisplayLength, org.hibernate.criterion.Order o)
+	{
+		
+		return this.dao.gets(clazz,params,criteriaMap,iDisplayStart,iDisplayLength,o);
+	}
+	public int getSize(Class clazz, List<Criterion> params, Map<String, List<Criterion>> criteriaMap)
+	{
+		return this.dao.getSize(clazz,params,criteriaMap);
+	}
 	
 }

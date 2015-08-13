@@ -37,24 +37,43 @@ public class TigUsers  implements java.io.Serializable {
 	@Column
 	private String mySign;
 	
+	@Column
      private String personId;
+	@Column
      private String headUrl;
-     private Date accCreateTime;
-     private Date lastLogin;
-     private Date lastLogout;
-     private Integer onlineStatus;
-     private Integer failedLogins;
+	@Column
+     private Date acc_create_time;
+	@Column
+     private Date last_login;
+	@Column
+     private Date last_logout;
+	@Column
+     private Integer online_status;
+	@Column
+     private Integer failed_logins;
+	@Column
      private Integer isSystemUser;
+	@Column
      private Integer userType;
+     @Column
      private Integer isForbidden;
-     private String mobile;
+     @Column
+     private String FMobile;
+     @Column
      private Integer isInvite;
+     @Column
      private Integer isActivate;
+     @Column
      private BigDecimal mapX;
+     @Column
      private BigDecimal mapY;
+     @Column
      private Long perfection;
+     @Column
      private Long credibility;
+     @Column
      private Date inviteDate;
+     @Column
      private String inviteCode;
 
     public TigUsers() {
@@ -67,79 +86,6 @@ public class TigUsers  implements java.io.Serializable {
     
     public void setPersonId(String personId) {
         this.personId = personId;
-    }
-    public Date getAccCreateTime() {
-        return this.accCreateTime;
-    }
-    
-    public void setAccCreateTime(Date accCreateTime) {
-        this.accCreateTime = accCreateTime;
-    }
-    public Date getLastLogin() {
-        return this.lastLogin;
-    }
-    
-    public void setLastLogin(Date lastLogin) {
-        this.lastLogin = lastLogin;
-    }
-    public Date getLastLogout() {
-        return this.lastLogout;
-    }
-    
-    public void setLastLogout(Date lastLogout) {
-        this.lastLogout = lastLogout;
-    }
-    public Integer getOnlineStatus() {
-        return this.onlineStatus;
-    }
-    
-    public void setOnlineStatus(Integer onlineStatus) {
-        this.onlineStatus = onlineStatus;
-    }
-    public Integer getFailedLogins() {
-        return this.failedLogins;
-    }
-    
-    public void setFailedLogins(Integer failedLogins) {
-        this.failedLogins = failedLogins;
-    }
-    public String getMySign() {
-        return this.mySign;
-    }
-    
-    public void setMySign(String mySign) {
-        this.mySign = mySign;
-    }
-    public Integer getIsSystemUser() {
-        return this.isSystemUser;
-    }
-    
-    public void setIsSystemUser(Integer isSystemUser) {
-        this.isSystemUser = isSystemUser;
-    }
-    public Integer getUserType() {
-        return this.userType;
-    }
-    
-    public void setUserType(Integer userType) {
-        this.userType = userType;
-    }
-    public Integer getIsForbidden() {
-        return this.isForbidden;
-    }
-    
-    public void setIsForbidden(Integer isForbidden) {
-        this.isForbidden = isForbidden;
-    }
-    public String getMobile() {
-        return this.mobile;
-    }
-    
-    public void setMobile(String mobile) {
-        this.mobile = mobile;
-    }
-    public Integer getIsInvite() {
-        return this.isInvite;
     }
     
     public void setIsInvite(Integer isInvite) {
@@ -205,6 +151,144 @@ public class TigUsers  implements java.io.Serializable {
 	public void setId(String id)
 	{
 		this.id = id;
+	}
+
+
+	public String getMySign()
+	{
+		return mySign;
+	}
+
+
+	public void setMySign(String mySign)
+	{
+		this.mySign = mySign;
+	}
+
+
+	public String getHeadUrl()
+	{
+		return headUrl;
+	}
+
+
+	public void setHeadUrl(String headUrl)
+	{
+		this.headUrl = headUrl;
+	}
+
+
+	public Date getAcc_create_time()
+	{
+		return acc_create_time;
+	}
+
+
+	public void setAcc_create_time(Date acc_create_time)
+	{
+		this.acc_create_time = acc_create_time;
+	}
+
+
+	public Date getLast_login()
+	{
+		return last_login;
+	}
+
+
+	public void setLast_login(Date last_login)
+	{
+		this.last_login = last_login;
+	}
+
+
+	public Date getLast_logout()
+	{
+		return last_logout;
+	}
+
+
+	public void setLast_logout(Date last_logout)
+	{
+		this.last_logout = last_logout;
+	}
+
+
+	public Integer getOnline_status()
+	{
+		return online_status;
+	}
+
+
+	public void setOnline_status(Integer online_status)
+	{
+		this.online_status = online_status;
+	}
+
+
+	public Integer getFailed_logins()
+	{
+		return failed_logins;
+	}
+
+
+	public void setFailed_logins(Integer failed_logins)
+	{
+		this.failed_logins = failed_logins;
+	}
+
+
+	public Integer getIsSystemUser()
+	{
+		return isSystemUser;
+	}
+
+
+	public void setIsSystemUser(Integer isSystemUser)
+	{
+		this.isSystemUser = isSystemUser;
+	}
+
+
+	public Integer getUserType()
+	{
+		return userType;
+	}
+
+
+	public void setUserType(Integer userType)
+	{
+		this.userType = userType;
+	}
+
+
+	public Integer getIsForbidden()
+	{
+		return isForbidden;
+	}
+
+
+	public void setIsForbidden(Integer isForbidden)
+	{
+		this.isForbidden = isForbidden;
+	}
+
+
+	public String getFMobile()
+	{
+		return FMobile;
+	}
+
+
+	public void setFMobile(String fMobile)
+	{
+		FMobile = fMobile;
+	}
+
+
+	public Integer getIsInvite()
+	{
+		return isInvite;
 	}
 
 

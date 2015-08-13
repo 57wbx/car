@@ -919,7 +919,32 @@ angular.module('app').run(
 															                }
 															              ]
 															            }
-																      })
+																      }).state('app.order', {
+																            url: '/order',
+																            templateUrl: 'src/tpl/opr/order/order.html',
+																            resolve: {
+																              deps: ['$ocLazyLoad', 'uiLoad',
+																                function($ocLazyLoad, uiLoad) {
+																                  return $ocLazyLoad.load('angularBootstrapNavTree').then(function() {
+																                    return $ocLazyLoad.load('src/js/controllers/opr/order/OrderController.js');
+																                  });
+																                }
+																              ]
+																            }
+																	      }).state('app.order.list', {
+																	            url: '/list',
+																	            templateUrl: 'src/tpl/opr/order/order_list.html',
+																	            resolve: {
+																	              deps: ['$ocLazyLoad', 'uiLoad',
+																	                function($ocLazyLoad, uiLoad) {
+																	                  return $ocLazyLoad.load('angularBootstrapNavTree').then(function() {
+																	                    $ocLazyLoad.load('src/js/controllers/opr/order/ChooseWorkerController.js');
+																	                    return $ocLazyLoad.load('src/js/controllers/opr/order/OrderListController.js');
+																	                  });
+																	                }
+																	              ]
+																	            }
+																		      })
 								.state('app.updateversion', {
 							            url: '/updateversion',
 							            templateUrl: 'src/tpl/tig/updateversion/updateversion.html',
