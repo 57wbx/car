@@ -980,7 +980,31 @@ angular.module('app').run(
 																				                }
 																				              ]
 																				            }
-																					      })
+																					      }).state('app.carowner.edit', {
+																					            url: '/edit',
+																					            templateUrl: 'src/tpl/opr/carowner/carowner_edit.html',
+																					            resolve: {
+																					              deps: ['$ocLazyLoad', 'uiLoad',
+																					                function($ocLazyLoad, uiLoad) {
+																					                  return $ocLazyLoad.load('angularBootstrapNavTree').then(function() {
+																					                    return $ocLazyLoad.load('src/js/controllers/opr/carowner/CarownerEditController.js');
+																					                  });
+																					                }
+																					              ]
+																					            }
+																						      }).state('app.carowner.details', {
+																						            url: '/details',
+																						            templateUrl: 'src/tpl/opr/carowner/carowner_details.html',
+																						            resolve: {
+																						              deps: ['$ocLazyLoad', 'uiLoad',
+																						                function($ocLazyLoad, uiLoad) {
+																						                  return $ocLazyLoad.load('angularBootstrapNavTree').then(function() {
+																						                    return $ocLazyLoad.load('src/js/controllers/opr/carowner/CarownerDetailsController.js');
+																						                  });
+																						                }
+																						              ]
+																						            }
+																							      })
 								.state('app.updateversion', {
 							            url: '/updateversion',
 							            templateUrl: 'src/tpl/tig/updateversion/updateversion.html',

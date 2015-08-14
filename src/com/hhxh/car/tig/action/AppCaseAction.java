@@ -28,8 +28,8 @@ public class AppCaseAction extends BaseAction implements ModelDriven<AppCase>
 
 	private String orderName;
 
-	private String[] ids ;
-	
+	private String[] ids;
+
 	/**
 	 * 查询出所有的appcase
 	 */
@@ -38,31 +38,37 @@ public class AppCaseAction extends BaseAction implements ModelDriven<AppCase>
 		try
 		{
 			List<Criterion> params = new ArrayList<Criterion>();
-			if(isNotEmpty(this.appCase.getAppName())){
+			if (isNotEmpty(this.appCase.getAppName()))
+			{
 				params.add(Restrictions.like("appName", this.appCase.getAppName(), MatchMode.ANYWHERE));
 			}
-			if(isNotEmpty(this.appCase.getVersionName())){
-				params.add(Restrictions.like("versionName", this.appCase.getVersionName(),MatchMode.ANYWHERE));
+			if (isNotEmpty(this.appCase.getVersionName()))
+			{
+				params.add(Restrictions.like("versionName", this.appCase.getVersionName(), MatchMode.ANYWHERE));
 			}
-			if(isNotEmpty(this.appCase.getIsUse())){
+			if (isNotEmpty(this.appCase.getIsUse()))
+			{
 				params.add(Restrictions.eq("isUse", this.appCase.getIsUse()));
 			}
-			if(isNotEmpty(this.appCase.getAppLevel())){
-				params.add(Restrictions.eq("appLevel",this.appCase.getAppLevel()));
+			if (isNotEmpty(this.appCase.getAppLevel()))
+			{
+				params.add(Restrictions.eq("appLevel", this.appCase.getAppLevel()));
 			}
-			//添加约束条件结束
-			Order order = null ;
-			if(isNotEmpty(orderName)){
+			// 添加约束条件结束
+			Order order = null;
+			if (isNotEmpty(orderName))
+			{
 				order = Order.asc(orderName);
-			}else{
+			} else
+			{
 				order = Order.asc("sortCode");
 			}
-			
-			List<AppCase> appCases = this.baseService.gets(AppCase.class, params, this.getIDisplayStart(), this.getIDisplayLength(),order);
+
+			List<AppCase> appCases = this.baseService.gets(AppCase.class, params, this.getIDisplayStart(), this.getIDisplayLength(), order);
 			int recordsTotal = this.baseService.getSize(AppCase.class, params);
-			jsonObject.accumulate("data", appCases,this.getJsonConfig(JsonValueFilterConfig.APPCASE_HAS_USER));
-			jsonObject.put("recordsTotal",recordsTotal);
-			jsonObject.put("recordsFiltered",recordsTotal);
+			jsonObject.accumulate("data", appCases, this.getJsonConfig(JsonValueFilterConfig.APPCASE_HAS_USER));
+			jsonObject.put("recordsTotal", recordsTotal);
+			jsonObject.put("recordsFiltered", recordsTotal);
 			this.putJson();
 		} catch (Exception e)
 		{
@@ -70,83 +76,109 @@ public class AppCaseAction extends BaseAction implements ModelDriven<AppCase>
 			this.putJson(false, this.getMessageFromConfig("appCase_error"));
 		}
 	}
-	
+
 	/**
 	 * 保存一条应用记录
+	 * 
 	 * @return
 	 */
-	public void addAppCase(){
-		try{
+	public void addAppCase()
+	{
+		try
+		{
 			this.appCase.setUser(this.getLoginUser());
 			this.baseService.saveObject(this.appCase);
 			this.putJson();
-		}catch(Exception e){
+		} catch (Exception e)
+		{
 			log.error("保存应用信息失败", e);
 			this.putJson(false, this.getMessageFromConfig("appCase_error"));
 		}
 	}
-	
+
 	/**
 	 * 查询一个应用的详细信息
+	 * 
 	 * @return
 	 */
-	public void detailsAppCase(){
-		try{
-			if(isNotEmpty(this.appCase.getId())){
-				appCase = this.baseService.get(AppCase.class,this.appCase.getId());
-				if(appCase!=null){
-					jsonObject.accumulate("details", appCase,this.getJsonConfig(JsonValueFilterConfig.APPCASE_ONLY_APPCASE));
+	public void detailsAppCase()
+	{
+		try
+		{
+			if (isNotEmpty(this.appCase.getId()))
+			{
+				appCase = this.baseService.get(AppCase.class, this.appCase.getId());
+				if (appCase != null)
+				{
+					jsonObject.accumulate("details", appCase, this.getJsonConfig(JsonValueFilterConfig.APPCASE_ONLY_APPCASE));
 					this.putJson();
-				}else{
+				} else
+				{
 					this.putJson(false, this.getMessageFromConfig("appCase_errorId"));
 				}
-			}else{
+			} else
+			{
 				this.putJson(false, this.getMessageFromConfig("appCase_needId"));
 			}
-		}catch(Exception e){
+		} catch (Exception e)
+		{
 			log.error("查询应用详细信息失败", e);
 			this.putJson(false, this.getMessageFromConfig("appCase_error"));
 		}
 	}
-	
+
 	/**
 	 * 修改一条记录
+	 * 
 	 * @return
 	 */
-	public void updateAppCase(){
-		try{
-			if(isNotEmpty(this.appCase.getId())){
-				AppCase needUpdateObject = this.baseService.get(AppCase.class,this.appCase.getId());
-				if(needUpdateObject!=null){
+	public void updateAppCase()
+	{
+		try
+		{
+			if (isNotEmpty(this.appCase.getId()))
+			{
+				AppCase needUpdateObject = this.baseService.get(AppCase.class, this.appCase.getId());
+				if (needUpdateObject != null)
+				{
 					CopyObjectUtil.copyValueToObject(appCase, needUpdateObject, AppCaseState.INGORE_UPDATE_PROPERTISE);
 					this.baseService.update(needUpdateObject);
 					this.putJson();
-				}else{
+				} else
+				{
 					this.putJson(false, this.getMessageFromConfig("appCase_errorId"));
 				}
-			}else{
+			} else
+			{
 				this.putJson(false, this.getMessageFromConfig("appCase_needId"));
 			}
-		}catch(Exception e){
+		} catch (Exception e)
+		{
 			log.error("修改应用信息失败", e);
 			this.putJson(false, this.getMessageFromConfig("appCase_error"));
 		}
 	}
-	
+
 	/**
 	 * 删除指定的应用信息
+	 * 
 	 * @return
 	 */
-	public void deleteAppCaseByIds(){
-		try{
-			if(ids!=null&&ids.length>0){
+	public void deleteAppCaseByIds()
+	{
+		try
+		{
+			if (ids != null && ids.length > 0)
+			{
 				this.baseService.deleteByIds(AppCase.class, ids);
 				this.putJson();
-			}else{
+			} else
+			{
 				this.putJson(false, this.getMessageFromConfig("delete_needIds"));
 			}
-		}catch(Exception e){
-			log.error("删除应用信息出错",e);
+		} catch (Exception e)
+		{
+			log.error("删除应用信息出错", e);
 			this.putJson(false, this.getMessageFromConfig("appCase_error"));
 		}
 	}
