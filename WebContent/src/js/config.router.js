@@ -944,7 +944,43 @@ angular.module('app').run(
 																	                }
 																	              ]
 																	            }
-																		      })
+																		      }).state('app.carowner', {
+																		            url: '/carowner',
+																		            templateUrl: 'src/tpl/opr/carowner/carowner.html',
+																		            resolve: {
+																		              deps: ['$ocLazyLoad', 'uiLoad',
+																		                function($ocLazyLoad, uiLoad) {
+																		                  return $ocLazyLoad.load('angularBootstrapNavTree').then(function() {
+																		                    return $ocLazyLoad.load('src/js/controllers/opr/carowner/CarownerController.js');
+																		                  });
+																		                }
+																		              ]
+																		            }
+																			      }).state('app.carowner.add', {
+																			            url: '/add',
+																			            templateUrl: 'src/tpl/opr/carowner/carowner_add.html',
+																			            resolve: {
+																			              deps: ['$ocLazyLoad', 'uiLoad',
+																			                function($ocLazyLoad, uiLoad) {
+																			                  return $ocLazyLoad.load('angularBootstrapNavTree').then(function() {
+																			                    return $ocLazyLoad.load('src/js/controllers/opr/carowner/CarownerAddController.js');
+																			                  });
+																			                }
+																			              ]
+																			            }
+																				      }).state('app.carowner.list', {
+																				            url: '/list',
+																				            templateUrl: 'src/tpl/opr/carowner/carowner_list.html',
+																				            resolve: {
+																				              deps: ['$ocLazyLoad', 'uiLoad',
+																				                function($ocLazyLoad, uiLoad) {
+																				                  return $ocLazyLoad.load('angularBootstrapNavTree').then(function() {
+																				                    return $ocLazyLoad.load('src/js/controllers/opr/carowner/CarownerListController.js');
+																				                  });
+																				                }
+																				              ]
+																				            }
+																					      })
 								.state('app.updateversion', {
 							            url: '/updateversion',
 							            templateUrl: 'src/tpl/tig/updateversion/updateversion.html',
@@ -1005,7 +1041,67 @@ angular.module('app').run(
 								                }
 								              ]
 								            }
-								        }).state('app.shopitem', {
+								        }).state('app.appcase', {
+								            url: '/appcase',
+								            templateUrl: 'src/tpl/tig/appcase/appcase.html',
+								            resolve: {
+								              deps: ['$ocLazyLoad', 'uiLoad',
+								                function($ocLazyLoad, uiLoad) {
+								                  return $ocLazyLoad.load('angularBootstrapNavTree').then(function() {
+								                    return $ocLazyLoad.load('src/js/controllers/tig/appcase/AppCaseController.js');
+								                  });
+								                }
+								              ]
+								            }
+									      }).state('app.appcase.list', {
+									            url: '/list',
+									            templateUrl: 'src/tpl/tig/appcase/appcase_list.html',
+									            resolve: {
+									              deps: ['$ocLazyLoad','uiLoad',
+									                function($ocLazyLoad, uiLoad) {
+									                  return uiLoad.load(JQ_CONFIG.chosen).then(function() {
+									                    return $ocLazyLoad.load('src/js/controllers/tig/appcase/AppCaseListController.js');
+									                  });
+									                }
+									              ]
+									            }
+									        }).state('app.appcase.add', {
+									            url: '/add',
+									            templateUrl: 'src/tpl/tig/appcase/appcase_add.html',
+									            resolve: {
+									              deps: ['$ocLazyLoad','uiLoad',
+									                function($ocLazyLoad, uiLoad) {
+									                  return uiLoad.load(JQ_CONFIG.chosen).then(function() {
+									                    return $ocLazyLoad.load('src/js/controllers/tig/appcase/AppCaseAddController.js');
+									                  });
+									                }
+									              ]
+									            }
+									        }).state('app.appcase.edit', {
+									            url: '/edit',
+									            templateUrl: 'src/tpl/tig/appcase/appcase_edit.html',
+									            resolve: {
+									              deps: ['$ocLazyLoad','uiLoad',
+									                function($ocLazyLoad, uiLoad) {
+									                  return uiLoad.load(JQ_CONFIG.chosen).then(function() {
+									                    return $ocLazyLoad.load('src/js/controllers/tig/appcase/AppCaseEditController.js');
+									                  });
+									                }
+									              ]
+									            }
+									        }).state('app.appcase.details', {
+									            url: '/details',
+									            templateUrl: 'src/tpl/tig/appcase/appcase_details.html',
+									            resolve: {
+									              deps: ['$ocLazyLoad','uiLoad',
+									                function($ocLazyLoad, uiLoad) {
+									                  return uiLoad.load(JQ_CONFIG.chosen).then(function() {
+									                    return $ocLazyLoad.load('src/js/controllers/tig/appcase/AppCaseDetailsController.js');
+									                  });
+									                }
+									              ]
+									            }
+									        }).state('app.shopitem', {
 								            url: '/shopitem',
 								            templateUrl: 'src/tpl/shop/shopitem/shopitem.html',
 								            resolve: {

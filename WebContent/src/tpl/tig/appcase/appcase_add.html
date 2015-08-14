@@ -1,0 +1,108 @@
+<div class="hbox hbox-auto-xs hbox-auto-sm" ng-controller="appCaseAddController">
+  <div class="panel-heading font-bold text-center">
+    添加应用信息
+  </div>
+  <div class="panel-body">
+    <form name="form" class="form-horizontal form-validation " method="get" ng-model="formData" novalidate>
+		
+		<div class="form-group">
+			<label class="col-sm-1 control-label">应用名称<i class="fa fa-asterisk text-danger"></i></label>
+			<div class="col-sm-3">
+				<input class="form-control" type="text" required ng-model="formData.appName" />
+			</div>
+			<label class="col-sm-1 control-label">推荐等级<i class="fa fa-asterisk text-danger"></i></label>
+			<div class="col-sm-3">
+				<select ng-model="formData.appLevel" class="form-control" required>
+<!-- 				1=1星、2=2星、3=3星、4=4星、5=5星（默认0） -->
+					<option value="1">1星</option>
+					<option value="2">2星</option>
+					<option value="3">3星</option>
+					<option value="4">4星</option>
+					<option value="5">5星</option>
+				</select>
+			</div>
+			<label class="col-sm-1 control-label">排序号<i class="fa fa-asterisk text-danger"></i></label>
+			<div class="col-sm-3">
+				<input class="form-control" type="text"  ng-model="formData.sortCode" required />
+			</div>
+		</div>  
+		
+		<div class="form-group">
+			<label class="col-sm-1 control-label">内部版本号<i class="fa fa-asterisk text-danger"></i></label>
+			<div class="col-sm-3">
+				<input class="form-control" type="number" required ng-model="formData.versionCode"  />
+			</div>
+			<label class="col-sm-1 control-label">外部版本号<i class="fa fa-asterisk text-danger"></i></label>
+			<div class="col-sm-3">
+				<input class="form-control" type="text"  ng-model="formData.versionName"  required/>
+			</div>
+			<label class="col-sm-1 control-label">上架时间</label>
+			<div class="col-sm-3">
+				<input id="uploadTime" class="form-control" type="text"  ng-model="formData.uploadTime" />
+			</div>
+		</div> 
+		
+		<div class="form-group">
+			<label class="col-sm-1 control-label">使用状态<i class="fa fa-asterisk text-danger"></i></label>
+			<div class="col-sm-3">
+				<select ng-model="formData.isUse" class="form-control" required>
+<!-- 				0=启用（默认）、1=停用） -->
+					<option value="0">启用</option>
+					<option value="1">停用</option>
+				</select>
+			</div>
+			<label class="col-sm-1 control-label">下载金额<i class="fa fa-asterisk text-danger"></i></label>
+			<div class="col-sm-3">
+				<input class="form-control" type="number"  ng-model="formData.appAmount"  required min="0" />
+			</div>
+			<label class="col-sm-1 control-label">下载次数</label>
+			<div class="col-sm-3">
+				<input class="form-control" type="number"  ng-model="formData.downNum" min="0"   />
+			</div>
+		</div> 
+		
+		 <div class="form-group">
+		 	<label class="col-sm-1 control-label">安装包下载地址<i class="fa fa-asterisk text-danger"></i></label>
+		 	<div class="col-sm-11">
+			 	<input type="url" ng-model="formData.downLoadUrl" class="form-control" required />
+		 	</div>
+		 </div>
+		 
+		 <div class="form-group">
+		 	<label class="col-sm-1 control-label">logo地址<i class="fa fa-asterisk text-danger"></i></label>
+		 	<div class="col-sm-11">
+			 	<input type="url" ng-model="formData.logoUrl" class="form-control" required />
+		 	</div>
+		 </div>
+		 
+		 <div class="form-group">
+		 	<label class="col-sm-1 control-label">app描述<i class="fa fa-asterisk text-danger"></i></label>
+		 	<div class="col-sm-11">
+			 	<textarea ng-model="formData.appDes" class="form-control" rows="1" required></textarea>
+		 	</div>
+		 </div>
+		 
+		 <div class="form-group">
+		 	<label class="col-sm-1 control-label">更新内容</label>
+		 	<div class="col-sm-11">
+			 	<textarea ng-model="formData.updateInfo" class="form-control" rows="1"></textarea>
+		 	</div>
+		 </div>
+		 
+    </form>
+    
+      <div class="line line-dashed b-b line-lg pull-in"></div>
+      <div class="form-group" id="busItemSumbit" >
+        <div class="col-sm-offset-4 col-sm-2 col-xs-6">
+          <button type="button" id="add" class="w100 btn btn-success" ng-click="submit()" ng-disabled='form.$invalid  '>确定</button>
+        </div>
+        <div class="col-sm-2 col-xs-6">
+          <a ng-click="cancel()" class="w100 btn btn-default">取消</a>
+        </div>
+      </div>
+  
+   
+  </div>
+    <div class="form-group">&nbsp;</div>
+   
+</div>

@@ -100,4 +100,10 @@ public class JsonValueFilterConfig {
 	 */
 	public static final String[] ORDERTRACK_ONLY_ORDERTRACK = new String[]{"order"};
 	
+	/**
+	 * AppCase 需要过滤的信息   相当于只有用户信息
+	 */
+	public static final String[] APPCASE_HAS_USER = new String[]{"adminOrgUnit","createUser","lastModifyUser","person","role","rootOrgUnit","carShop",HIBERNATE_LAZY_PROPERTISE_HANDLER,HIBERNATE_LAZY_PROPERTISE_LAZYINITIALIZER};
+	public static final String[] APPCASE_ONLY_APPCASE = new String[]{"user",HIBERNATE_LAZY_PROPERTISE_HANDLER,HIBERNATE_LAZY_PROPERTISE_LAZYINITIALIZER};
+	
 }

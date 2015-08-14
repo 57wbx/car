@@ -86,4 +86,102 @@ app.factory("orderStateService",[function(){
 		getDealType:getDealType
 	};
 	//结束
-}]);
+}]).factory("memberStateService",[function(){
+	
+	var getUseType = function(param){
+		switch(param){
+		case 0 : return "车主";break ;
+		case 1 : return "技工";break ;
+		case 2 : return "两者都是"; break ;
+		default : return"";break;
+		}
+	};
+	//0=初始（保存）、1=待审核、2=审核通过、3=退回
+	var getAuditState = function(param){
+		switch(param){
+		case 0: return "初始"; break;
+		case 1: return "待审核"; break;
+		case 2: return "审核通过"; break;
+		case 3: return "退回"; break;
+		default : return "";break ;
+		}
+	};
+	//1=正常、2=停用、3=注销（黑名单）
+	var getUseState = function(param){
+		switch(param){
+		case 1: return "正常";break ;
+		case 2: return "停用";break ;
+		case 3: return "注销（黑名单）";break ;
+		default : return""; break ;
+		}
+	};
+	//0=一般用户、1=普通会员、2=VIP会员、3=白金VI、4=钻石VIP
+	var getVIPLevel = function(param){
+		switch(param){
+		case 0 : return "一般用户" ; break ;
+		case 1 : return "普通会员" ; break ;
+		case 2 : return "VIP会员" ; break ;
+		case 3 : return "白金会员" ; break ;
+		case 4 : return "钻石VIP" ; break ;
+		default : return "" ; break ;
+		}
+	};
+	//0=男,1=女,2=保密
+	var getGender = function(param){
+		switch(param){
+		case 0: return "男"; break ;
+		case 1: return "女"; break ;
+		case 2: return "保密"; break ;
+		default : return "";break ;
+		}
+	};
+	//0保密，1=未婚，2=已婚，3=再婚，4=离婚，5=丧偶，6其他
+	var getMerriageState = function(param){
+		switch(param){
+		case 0:return "保密"; break ;
+		case 1:return "未婚"; break ;
+		case 2:return "已婚"; break ;
+		case 3:return "再婚"; break ;
+		case 4:return "离婚"; break ;
+		case 5:return "丧偶"; break ;
+		case 6:return "其他"; break ;
+		default :return ""; break ;
+		}
+	}
+	
+	return {
+		getUseType:getUseType,
+		getAuditState:getAuditState,
+		getUseState:getUseState,
+		getVIPLevel:getVIPLevel,
+		getGender:getGender,
+		getMerriageState:getMerriageState
+	};
+	//结束
+}]).factory("appCaseStateService",function(){
+	return {
+		getAppLevel:getAppLevel,
+		getIsUse:getIsUse
+	};
+	
+//		1=1星、2=2星、3=3星、4=4星、5=5星（默认0）
+	function getAppLevel(param){
+		switch(param){
+		case 1: return "1星" ;break ;
+		case 2: return "2星" ;break ;
+		case 3: return "3星" ;break ;
+		case 4: return "4星" ;break ;
+		case 5: return "5星" ;break ;
+		default : return ""; break ;
+		}
+	}
+	//0=启用（默认）、1=停用
+	function getIsUse(param){
+		switch(param){
+		case 0: return "启用"; break ;
+		case 1: return "停用"; break ;
+		default: return ""; break ;
+		}
+	}
+	
+});

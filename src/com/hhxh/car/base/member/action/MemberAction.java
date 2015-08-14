@@ -206,6 +206,69 @@ public class MemberAction extends BaseAction implements ModelDriven<Member>
 	}
 
 	/**
+	 * 添加会员信息
+	 * 
+	 */
+	public void addCarowner()
+	{
+		//TODO  后期需要将初始化状态，现在所有的状态操作都在一张表上面
+		try{
+			this.member.setUpdateTime(new Date());
+			this.member.setRegisterDate(new Date());
+			this.member.setUserType(USERTYPE_CAROWNER);
+			this.baseService.saveObject(member);
+			this.putJson();
+		}catch(Exception e){
+			log.error("添加会员信息出错！", e);
+			this.putJson(false, this.getMessageFromConfig("member_error"));
+		}
+	}
+
+	/**
+	 * 获取所有的会员信息
+	 */
+	public void listCarowner()
+	{
+		try{
+			List<Criterion> params = new ArrayList<Criterion>();
+			params.add(Restrictions.in("userType", new Object[] { USERTYPE_CAROWNER, USERTYPE_BOTH }));
+			if (isNotEmpty(this.member.getCell()))
+			{
+				params.add(Restrictions.like("cell", this.member.getCell(), MatchMode.ANYWHERE));
+			}
+			if (isNotEmpty(this.member.getName()))
+			{
+				params.add(Restrictions.like("name", this.member.getName(), MatchMode.ANYWHERE));
+			}
+			if (isNotEmpty(this.member.getGender()))
+			{
+				params.add(Restrictions.eq("gender", this.member.getGender()));
+			}
+			// 在上面添加查询条件
+			Order order = null;
+			if (isNotEmpty(orderName))
+			{
+				order = Order.asc(orderName);
+			} else
+			{
+				order = Order.desc("updateTime");
+			}
+			
+			List<Member> carowners = this.baseService.gets(Member.class, params, this.getIDisplayStart(),this.getIDisplayLength(),order);
+			int recordsTotal = this.baseService.getSize(Member.class, params);
+			jsonObject.put("recordsFiltered", recordsTotal);
+			jsonObject.put("recordsTotal", recordsTotal);
+			jsonObject.accumulate("data", carowners,this.getJsonConfig(JsonValueFilterConfig.MEMBER_ONLY_MEMBER));
+			this.putJson();
+			
+		}catch(Exception e){
+			log.error("查询所有的会员信息出错", e);
+			this.putJson(false, this.getMessageFromConfig("member_error"));
+		}
+	}
+	
+
+	/**
 	 * 判断一个member对象是否是师傅对象
 	 * 
 	 * @param m

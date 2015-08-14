@@ -1,4 +1,4 @@
-app.controller("workerAddController",['$scope','$state','$http','checkUniqueService','FileUploader','previewService','hintService',function($scope,$state,$http,checkUniqueService,FileUploader,previewService,hintService){
+app.controller("workerAddController",['$scope','$state','$http','checkUniqueService','FileUploader','previewService','hintService','sessionStorageService',function($scope,$state,$http,checkUniqueService,FileUploader,previewService,hintService,sessionStorageService){
 	
 	
 	$scope.formData = {};
@@ -6,6 +6,9 @@ app.controller("workerAddController",['$scope','$state','$http','checkUniqueServ
 	//初始化选中的数据
 	$scope.setCanEdit(false);
 	$scope.clearRowIds();
+	
+	$scope.needCacheArray = ["memberDataTableProperties"];
+	sessionStorageService.clearNoCacheItem($scope.needCacheArray);
 	
 	
 	var uploader = $scope.uploader = new FileUploader({

@@ -12,3 +12,7 @@ src/com/zw/test/hibernate/hibernate.cfg.xml
 src/com/zw/test/TestUtil.java
 src/com/zw/test/TestUtil.java
 src/com/zw/test/hibernate/hibernate.cfg.xml
+src/com/zw/test/domain/hibernate.cfg.xml
+*.xml
+src/com/zw/test/domain/hibernate.reveng.xml
+src/com/zw/test/hibernate/TeseDao.java
