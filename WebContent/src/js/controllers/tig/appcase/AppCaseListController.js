@@ -45,7 +45,7 @@ app.controller('appCaseListController',['$rootScope','$scope','$state','$timeout
 				"sAjaxSource":"tig/appCaseAction!listAppCase.action",
 		    	"bServerSide":true,
 		    	"sAjaxDataProp":"data",
-		    	 "dom": '<"top">rt<"bottom"p><"clear">',
+		    	 "dom": '<"top">rt<"bottom"ip><"clear">',
 		    	 "sServerMethod": "POST",
 		    	 "scrollX":true,
 		    	 "ordering":false,

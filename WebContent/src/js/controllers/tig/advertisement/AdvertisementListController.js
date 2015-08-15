@@ -98,6 +98,7 @@ app.controller('advertisementListController',['$scope','$state','$timeout','$htt
 		"sAjaxSource":"tig/advertisementAction!listAdvertisement.action",
     	"bServerSide":true,
     	"sAjaxDataProp":"data",
+    	"dom": '<"top">rt<"bottom"ip><"clear">',
     	"pageLength":10,
     	"oLanguage": {
             "sLengthMenu": "每页 _MENU_ 条",

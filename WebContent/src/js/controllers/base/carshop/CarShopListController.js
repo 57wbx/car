@@ -40,7 +40,7 @@ app.controller('carShopListController',['$rootScope','$scope','$state','$timeout
 				"sAjaxSource":"base/carShopAction!listCarShopWithMannager.action",
 		    	"bServerSide":true,
 		    	"sAjaxDataProp":"data",
-		    	 "dom": '<"top">rt<"bottom"p><"clear">',
+		    	 "dom": '<"top">rt<"bottom"ip><"clear">',
 		    	 "sServerMethod": "POST",
 				"aoColumns": [{
 			        "orderable": false,
