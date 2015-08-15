@@ -643,3 +643,27 @@ tr.removed {
 .table>thead:first-child>tr:first-child>th{
         text-align:center;
 }
+/*datatables详细信息，显示每页的数目*/
+div.dataTables_info {
+  padding-top: 8px;
+  white-space: nowrap;
+  display: inline; /*自己添加的*/
+  float: left;/*自己添加的*/
+}
+/*datatables分页样式*/
+div.dataTables_paginate {
+  margin: 0;
+  white-space: nowrap;
+  text-align: right;
+  float: right;/*自己添加的*/
+  display: inline;/*自己添加的*/
+}
+
+ textarea .ng-dirty.ng-invalid,
+ select .ng-dirty.ng-invalid,
+ input.ng-dirty.ng-invalid {
+    border-color: #e9322d;
+    -webkit-box-shadow: 0 0 6px #f8b9b7;
+    -moz-box-shadow: 0 0 6px #f8b9b7;
+    box-shadow: 0 0 6px #f8b9b7;
+}

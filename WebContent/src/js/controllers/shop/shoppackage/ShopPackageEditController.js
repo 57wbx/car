@@ -1,4 +1,4 @@
-app.controller("shopPackageEditController",['$scope','$state','$http','sessionStorageService',function($scope,$state,$http,sessionStorageService){
+app.controller("shopPackageEditController",['$scope','$state','$http','sessionStorageService','uploadOneImgService',function($scope,$state,$http,sessionStorageService,uploadOneImgService){
 	
 	$scope.needCacheArray = ["shopPackageDataTableProperties","shopPackageIdForEdit"];
 	sessionStorageService.clearNoCacheItem($scope.needCacheArray);
@@ -65,10 +65,9 @@ app.controller("shopPackageEditController",['$scope','$state','$http','sessionSt
 	}
 	
 
-	
-	
-	
-	
+	/**
+	 * 初始化上传图片控件
+	 */
 	//初始化时间控件
 	$('#starTime').focus(
 	    		function(){
@@ -318,9 +317,10 @@ app.controller("shopPackageEditController",['$scope','$state','$http','sessionSt
 		$scope.formData.workHours = ($scope.formData.workHours || 0 )+ workHours;
 		$scope.formData.autoPartsPrice = ($scope.formData.autoPartsPrice || 0) + autoPartsPrice;
 //		$("#clickId").trigger("click");
-		if(!$scope.$$phase){
-			$scope.$digest();
-		}
+//		if(!$scope.$$phase){
+//			$scope.$digest();
+//		}
+		$scope.$evalAsync();
 	}
 	/**
 	 * 删除一行服
@@ -499,7 +499,14 @@ app.controller("shopPackageEditController",['$scope','$state','$http','sessionSt
 			}
 		}).then(function(resp){
 			if(resp.data.code == 1){//返回成功
+				
+				//初始化服务列表数据
+				for(var i=0;i<resp.data.details.shopItems.length;i++){
+					showBusItemAndCacheBusItemId(resp.data.details.shopItems[i]);
+				}
+				
 				$scope.formData = resp.data.details;
+				$scope.formData.photoUrlName = resp.data.details.photoUrl?"请点击&nbsp;<a style='color: blue; text-decoration: underline;'  onClick='$(\"#photoUrl\").click();'>预览！</a>":undefined;
 				//时间控件的初始化
 				$('#starTime').val($scope.formData.starTime);
 				$('#endTime').val($scope.formData.endTime);
@@ -510,10 +517,7 @@ app.controller("shopPackageEditController",['$scope','$state','$http','sessionSt
 				//套餐编号的初始化
 				$scope.formData.packageCode = 
 					$scope.formData.packageCode.split($scope.formData.busTypeCode)[1];
-				//初始化服务列表数据
-				for(var i=0;i<resp.data.details.shopItems.length;i++){
-					showBusItemAndCacheBusItemId(resp.data.details.shopItems[i]);
-				}
+			
 				//初始化业务类型树的数据
 				$scope.formData.busTypeName = resp.data.busTypeName;
 				

@@ -116,7 +116,7 @@ app.controller('shopPackageListController',['$scope','$state','$timeout','$http'
 	    	"bServerSide":true,
 	    	"sAjaxDataProp":"data",
 	    	"pageLength":5,
-	    	"dom": '<"top">rt<"bottom"p><"clear">',
+	    	"dom": '<"top">rt<"bottom"ip><"clear">',
 	    	"oLanguage": {
 	            "sLengthMenu": "每页 _MENU_ 条",
 	            "sZeroRecords": "没有找到符合条件的数据",

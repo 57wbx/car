@@ -339,6 +339,12 @@ app.controller("shopPackageDetailsController",['$scope','$state','$http','sessio
 			}
 		}).then(function(resp){
 			if(resp.data.code == 1){//返回成功
+				
+				//初始化服务列表数据
+				for(var i=0;i<resp.data.details.shopItems.length;i++){
+					showBusItemAndCacheBusItemId(resp.data.details.shopItems[i]);
+				}
+				
 				$scope.formData = resp.data.details;
 				//时间控件的初始化
 				$('#starTime').val($scope.formData.starTime);
@@ -350,10 +356,7 @@ app.controller("shopPackageDetailsController",['$scope','$state','$http','sessio
 				//套餐编号的初始化
 				$scope.formData.packageCode = 
 					$scope.formData.packageCode.split($scope.formData.busTypeCode)[1];
-				//初始化服务列表数据
-				for(var i=0;i<resp.data.details.shopItems.length;i++){
-					showBusItemAndCacheBusItemId(resp.data.details.shopItems[i]);
-				}
+				
 				//初始化业务类型树的数据
 				$scope.formData.busTypeName = resp.data.busTypeName;
 				

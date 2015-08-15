@@ -1,0 +1,97 @@
+/**
+ * 上传图片的service，只能上传单张图片，上传图片之后返回一个地址。
+ * 公共的上传图片路劲 common/fileUploadAction!uploadOnePictrue.action
+ * @author zw
+ */
+app.factory("uploadOneImgService",['FileUploader','previewService',function(FileUploader,previewService){
+	function initUploadModule(scope){
+		var uploader = scope.uploader = new FileUploader({
+	        url: 'common/fileUploadAction!uploadOnePictrue.action',
+	        alias:"files",
+	        autoUpload:false,
+	        removeAfterUpload:true
+	    });
+	    /**
+		  * 过滤器
+		  */
+	    uploader.filters.push({
+	         name: 'imageFilter',
+	         fn: function(item /*{File|FileLikeObject}*/, options) {
+	       	  var isImage = false;
+	       	  isImage = item.type.indexOf("image")>=0;
+	       	  if(!isImage){
+	       		  console.info(item);
+	       		  alert("请选择图片文件!");
+	       	  }else{
+	       		  //清除之前的有的，每个单一文件只能有一个
+	       		 if(uploader.queue&&uploader.queue.length>0){
+	          	   for(var i=0;i<uploader.queue.length;i++){
+	          		   if(options.name==uploader.queue[i].name){
+	          			   uploader.removeFromQueue(i);
+	          		   }
+	          	   }
+	             }
+	       	  }
+	          return isImage;
+	         }
+	     });
+	    /**
+	     * 预览图片功能
+	     */
+	    scope.previewImg = function(name){
+	    	 previewService.preview(scope.formData[name]);
+	    }
+	    /**
+	     * 删除一张图片，删除图片只能删除图片formdata中的记录，目前后台不做任何操作
+	     */
+	    scope.deleteImg = function(name){
+	    	scope.formData[name] = undefined;
+	    	scope.formData[name+"Name"] = undefined;
+	    }
+	    /**
+	     * 上传一张图片，根据图片的name来上传指定的图片
+	     */
+	    scope.uploadImg = function(alias){
+	    	if(uploader.queue&&uploader.queue.length>0){
+	    		for(var i=0;i<uploader.queue.length;i++){
+	    			if(uploader.queue[i].name==alias){
+	    				//禁用上传按钮
+	    				buttonClick(uploader.queue[i].name);
+	    				//上传
+	    				uploader.uploadItem(i);
+	    				return ;
+	    			}
+	    		}
+	    	}else{
+	    		alert("请选择图片文件!");
+	    	}
+	    }
+	    /**
+	     * 当成功上传一个文件的时候调用
+	     */
+	    uploader.onSuccessItem = function(fileItem, response, status, headers) {
+	    	if(response.code){//成功上传
+	    		var name = fileItem.name;
+	    		scope.formData[name] = response.url;
+	    		scope.formData[name+"Name"] = response.name;
+	    		console.info(scope.formData);
+	    	}else{
+	    		alert(response.message);
+	    	}
+	    };
+	    
+	    /**
+	     * 当上传按钮被点击的时候，将该按钮变为disblead，并改变其中的html
+	     */
+	    var buttonClick = function(name){
+	    	var buttonName = "#"+name+"Button";
+	    	$(buttonName).attr("disabled","disabled");
+	    	$(buttonName).html("上传中...");
+	    }
+	}
+
+	return {
+		initUploadModule:initUploadModule
+	}
+	
+}]);

@@ -80,6 +80,7 @@ app.controller("busPackageAddController",['$scope','$state','$http',function($sc
     		}
 	);
 	
+	
 	/**
 	 * 初始化服务的datatables列表
 	 */

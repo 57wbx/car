@@ -44,7 +44,7 @@ app.controller('carownerListController',['$rootScope','$scope','$state','$timeou
 				"sAjaxSource":"base/memberAction!listCarowner.action",
 		    	"bServerSide":true,
 		    	"sAjaxDataProp":"data",
-		    	 "dom": '<"top">rt<"bottom"p><"clear">',
+		    	 "dom": '<"top">rt<"bottom"ip><"clear">',
 		    	 "ordering":false,
 		    	 "scrollX":true,
 		    	 "sServerMethod": "POST",

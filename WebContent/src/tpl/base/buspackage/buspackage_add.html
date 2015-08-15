@@ -1,3 +1,8 @@
+<style type="text/css">
+	.ng-invalid-pattern{
+	border-color: red;
+	}
+</style>
 <div class="hbox hbox-auto-xs hbox-auto-sm" ng-controller="busPackageAddController">
   <div class="panel-heading font-bold text-center">
     添加套餐信息
@@ -24,8 +29,9 @@
         <div class="col-sm-3">
         	<div class="input-group">
         		<div class="input-group-addon"><span ng-bind="formData.busTypeCode"></span></div>
-	         	<input type="text" name="packageCode" id="packageCode" placeholder="+套餐编号" id="packageCode" class="form-control" ng-model="formData.packageCode" 
-	         	 required ng-disabled="!formData.busTypeCode" ng-pattern="/^[0-9a-zA-z\.]{1,40}$/">
+	         	<input pattern-style type="text" name="packageCode" id="packageCode" placeholder="+套餐编号" id="packageCode"
+	         	 class="form-control" ng-model="formData.packageCode"  
+	         	 required ng-disabled="!formData.busTypeCode"  ng-pattern="/^[0-9a-zA-z\.]{1,40}$/">
 	          	<div class="input-group-addon" ng-show="!isUnique" style="background:red;"><span ng-bind="notUniqueMessage"></span></div>
         	</div>
         </div>
@@ -115,6 +121,28 @@
 						class="form-control" value="" ng-model="formData.endTimeStr"/>
       	 </div>
       </div>
+      
+      <div class="form-group"  >
+			       <label class="col-sm-1 control-label">显示图片</label>
+			       <div ng-if="formData.photoUrl">
+				       <div class="col-sm-7">
+				 	       <span ng-bind="formData.photoUrlName" class="form-control"></span>
+				       </div>
+				       <div class="col-sm-2">
+				 	        <button class="btn btn-success" role="button" ng-click="previewImg('photoUrl')">预览</button>
+				 	        <button class="btn btn-danger" role="button" ng-click="deleteImg('photoUrl')">删除</button>
+				       </div>
+			       </div>
+			      <div ng-if="!formData.photoUrl">
+				       <div class="col-sm-7">
+				 	       <input type="file" uploader="uploader"  nv-file-select="" class="form-control " accept="image/*"  options="{name:'photoUrl'}"  />
+				       </div>
+				       <div class="col-sm-2">
+				 	        <button class="btn btn-success" role="button" ng-click="uploadImg('photoUrl')"  id="photoUrlButton" >上传</button>
+				       </div>
+			       </div>
+       		</div> 
+      
    
       <div class="form-group">
         <label class="col-sm-1 control-label">描述</label>

@@ -14,7 +14,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
+
+
 
 import com.hhxh.car.base.carshop.domain.CarShop;
 import com.hhxh.car.base.member.domain.Member;
@@ -78,6 +81,7 @@ public class Order implements java.io.Serializable
 	private Member worker ;
 	
 	@OneToMany(fetch=FetchType.LAZY,mappedBy="order")
+	@OrderBy("operTime DESC")
 	private Set<OrderTrack> orderTracks = new HashSet<OrderTrack>();
 	
 	public Order()

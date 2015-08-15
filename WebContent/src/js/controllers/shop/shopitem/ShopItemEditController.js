@@ -83,7 +83,7 @@ app.controller("shopItemEditController",['$scope','$state','$http','checkUniqueS
 	/**
 	 * 初始化文件上传控件
 	 */
-	 var uploader = $scope.uploader = new FileUploader({
+	 var uploaderForAtom = $scope.uploaderForAtom = new FileUploader({
 	        url: 'common/fileUploadAction!uploadOnePictrue.action',
 	        alias:"files",
 	        autoUpload:true,
@@ -93,7 +93,7 @@ app.controller("shopItemEditController",['$scope','$state','$http','checkUniqueS
 	 /**
 	  * 过滤器
 	  */
-	  uploader.filters.push({
+	 uploaderForAtom.filters.push({
           name: 'imageFilter',
           fn: function(item /*{File|FileLikeObject}*/, options) {
         	  var isImage = false;
@@ -107,13 +107,13 @@ app.controller("shopItemEditController",['$scope','$state','$http','checkUniqueS
 	  /**
 	   * 上传开始之前
 	   */
-	  uploader.onBeforeUploadItem = function(item) {
+	 uploaderForAtom.onBeforeUploadItem = function(item) {
 		  $scope.uploading = true ;
       };
 	  /**
 		  * 返回值
 		  */
-		 uploader.onSuccessItem = function(fileItem, response, status, headers) {
+      uploaderForAtom.onSuccessItem = function(fileItem, response, status, headers) {
 			 $scope.uploading = false ;
 	         if(response.code==1){
 	        	 hintService.hint({title: "成功", content: "上传成功！" });
@@ -133,6 +133,7 @@ app.controller("shopItemEditController",['$scope','$state','$http','checkUniqueS
 		 * 渲染服务详细信息
 		 */
 		$scope.formData = data.details ;
+		$scope.formData.photoUrlName = data.details.photoUrl?"请点击&nbsp;<a style='color: blue; text-decoration: underline;'  onClick='$(\"#photoUrl\").click();'>预览！</a>":undefined;
 		$scope.formData.chooseAutoPartName='选择';
 		$scope.formData.chooseAutoPartButton=false;
 		//时间控件需要进行dom操作渲染

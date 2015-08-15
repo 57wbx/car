@@ -13,12 +13,13 @@
     <link rel='stylesheet' href='bower_components/bootstrap-daterangepicker/daterangepicker-bs3.css' type='text/css' />
     <link rel="stylesheet" href="src/css/font.css" type="text/css" />
     <link rel="stylesheet" href="src/css/app.css" type="text/css" />
-    <link rel="stylesheet" href="src/css/main.css" type="text/css" />
     <!-- add by zw 作用ztree树的行高 -->
     <link rel="stylesheet" href="src/css/ztree.css" type="text/css" />
     <!-- <link rel="stylesheet" href="bower_components/zTree-zTree_v3-master/css/demo.css" type="text/css"> -->
     <link rel="stylesheet" href="bower_components/zTree-zTree_v3-master/css/zTreeStyle/zTreeStyle.css" type="text/css">
     <link rel="stylesheet" href="bower_components/plugins/integration/bootstrap/3/dataTables.bootstrap.css" type="text/css">
+    
+    <link rel="stylesheet" href="src/css/main.css" type="text/css" />
   </head>
   <body ng-controller="AppCtrl">
     <div class="app" id="app" ng-class="{'app-header-fixed':app.settings.headerFixed, 'app-aside-fixed':app.settings.asideFixed, 'app-aside-folded':app.settings.asideFolded, 'app-aside-dock':app.settings.asideDock, 'container':app.settings.container}" ui-view></div>
@@ -80,6 +81,9 @@
     <script src="src/js/directives/ui-busTypeZtree.js"></script>
     <script src="src/js/directives/ui-busTypeTree.js"></script>
     <script src="src/js/directives/ui-orgZtree.js"></script>
+    <script src="src/js/directives/ui-patternStyle.js"></script>
+    <script src="src/js/directives/ui-uploadOneImg.js"></script>
+    
     <script src="src/js/services/CheckUniqueService.js"></script>
     <script src="src/js/services/ModelDataCacheService.js"></script>
     <script src="src/js/services/LoginedUserService.js"></script>
@@ -89,6 +93,7 @@
     <script src="src/js/services/HintService.js"></script>
     <script src="src/js/services/DataTableSearchService.js"></script>
     <script src="src/js/services/AllStateService.js"></script>
+    <script src="src/js/services/UploadOneImgService.js"></script>
     <script src="src/js/filters/TrustHtmlFilter.js"></script>
     
     <script src="src/js/controllers/bootstrap.js"></script>

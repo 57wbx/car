@@ -81,7 +81,7 @@ app.controller("shopItemAddController",['$scope','$state','$http','checkUniqueSe
 	/**
 	 * 初始化文件上传控件
 	 */
-	 var uploader = $scope.uploader = new FileUploader({
+	 var uploaderForAtom = $scope.uploaderForAtom = new FileUploader({
 	        url: 'common/fileUploadAction!uploadOnePictrue.action',
 	        alias:"files",
 	        autoUpload:true,
@@ -91,7 +91,7 @@ app.controller("shopItemAddController",['$scope','$state','$http','checkUniqueSe
 	 /**
 	  * 过滤器
 	  */
-	  uploader.filters.push({
+	 uploaderForAtom.filters.push({
           name: 'imageFilter',
           fn: function(item /*{File|FileLikeObject}*/, options) {
         	  var isImage = false;
@@ -105,13 +105,13 @@ app.controller("shopItemAddController",['$scope','$state','$http','checkUniqueSe
 	  /**
 	   * 上传开始之前
 	   */
-	  uploader.onBeforeUploadItem = function(item) {
+	 uploaderForAtom.onBeforeUploadItem = function(item) {
 		  $scope.uploading = true ;
       };
 	  /**
 		  * 返回值
 		  */
-		 uploader.onSuccessItem = function(fileItem, response, status, headers) {
+      uploaderForAtom.onSuccessItem = function(fileItem, response, status, headers) {
 			 $scope.uploading = false ;
 	         if(response.code==1){
 	        	 hintService.hint({title: "成功", content: "上传成功！" });

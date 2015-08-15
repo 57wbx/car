@@ -1,4 +1,4 @@
-app.controller("shopPackageAddController",['$scope','$state','$http','sessionStorageService',function($scope,$state,$http,sessionStorageService){
+app.controller("shopPackageAddController",['$scope','$state','$http','sessionStorageService','uploadOneImgService','hintService',function($scope,$state,$http,sessionStorageService,uploadOneImgService,hintService){
 	/*
 	 * 初始化 隐藏树 
 	 */
@@ -41,6 +41,7 @@ app.controller("shopPackageAddController",['$scope','$state','$http','sessionSto
 			$scope.checkIsUnique($scope.formData.fid,$(e.target).val());
 		}
 	});
+	
 	
 	/**
 	 * 初始化树点击的方法,注销其他的点击树的方法
@@ -369,10 +370,11 @@ app.controller("shopPackageAddController",['$scope','$state','$http','sessionSto
 		}).then(function(resp){
 			var code = resp.data.code ;
 			if(code == 1){//代表保存成功
+				hintService.hint({title: "成功", content: "保存成功！" });
 				$state.go($scope.state.list );
 				$scope.treeAPI.showBusTypeTree();
 			}else{//代表保存失败
-				alert("保存失败");
+				alert(resp.data.message);
 			}
 		},function(resp){
 			alert("保存出错");
