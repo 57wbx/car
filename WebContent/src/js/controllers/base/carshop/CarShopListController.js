@@ -72,31 +72,12 @@ app.controller('carShopListController',['$rootScope','$scope','$state','$timeout
 			    	  "mDataProp": "useState",
 			    	  "render":function(param){
 			    		  return carShopStateService.getUseStateWithStyle(param);
-			    		  			   
 			    	  }
 			      },{
 			        "mDataProp": "address"
 			      },{
 			        "mDataProp": "VIPLevel",
 			        "render":function(param){
-			        	//0=0星、1=1星、2=2星、3=3星、4=4星、5=5星
-//			        	switch(param){
-//			        	
-//			        		case 0 : return "0星";
-//			        		break;
-//			        		case 1 : return "1星";
-//			        		break;
-//			        		case 2 : return "2星";
-//			        		break;
-//			        		case 3 : return "3星";
-//			        		break;
-//			        		case 4 : return "4星";
-//			        		break;
-//			        		case 5 : return "5星";
-//			        		break;
-//			        		default:
-//				        		return "";break;
-//			        	}
 			        	return carShopStateService.getVIPLevel(param);
 			        }
 			      },{

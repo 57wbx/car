@@ -57,15 +57,19 @@ public class CarShopService extends BaseService
 	 * 
 	 * @throws Exception
 	 */
-	public void updateUseStateByIds(Integer useState,String[] ids,User dealUser) throws Exception{
-		for(String id : ids){
+	public void updateUseStateByIds(Integer useState, String[] ids, User dealUser) throws Exception
+	{
+		for (String id : ids)
+		{
 			CarShop carShop = this.dao.get(CarShop.class, id);
-			if(carShop.getUseState()==useState){
+			if (carShop.getUseState() == useState)
+			{
 				continue;
-			}else if(useState==CarShopState.USESTATE_BLACKLIST){
+			} else if (useState == CarShopState.USESTATE_BLACKLIST)
+			{
 				carShop.setUseState(CarShopState.USESTATE_BLACKLIST);
 				this.dao.updateObject(carShop);
-				
+
 				ShopBlackList shopBlackList = new ShopBlackList();
 				shopBlackList.setBlackTime(new Date());
 				shopBlackList.setCarShop(carShop);
@@ -73,16 +77,17 @@ public class CarShopService extends BaseService
 				shopBlackList.setShopCode(carShop.getShopCode());
 				shopBlackList.setShopName(carShop.getShopName());
 				shopBlackList.setUpdateTime(new Date());
-				
+
 				this.dao.saveObject(shopBlackList);
-				
-			}else{
-				//不是修改成黑名单的操作
+
+			} else
+			{
+				// 不是修改成黑名单的操作
 				carShop.setUseState(useState);
 				this.dao.updateObject(carShop);
-				
+
 				String hql = "Delete from ShopBlackList c where c.carShop.id in (:ids)";
-				Map<String,Object> param = new HashMap<String,Object>();
+				Map<String, Object> param = new HashMap<String, Object>();
 				param.put("ids", ids);
 				this.dao.executeHqlUpdate(hql, param);
 			}

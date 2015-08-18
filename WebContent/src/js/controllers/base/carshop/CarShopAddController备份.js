@@ -1,6 +1,6 @@
 'use strict';
-app.controller('carShopAddController', ['$scope', '$state','$modal', 'uiLoad','JQ_CONFIG','FileUploader','previewService',
-  function($scope, $state,$modal, uiLoad, JQ_CONFIG,FileUploader,previewService) {
+app.controller('carShopAddController', ['$scope', '$state', 'uiLoad','JQ_CONFIG','FileUploader','previewService',
+  function($scope, $state, uiLoad, JQ_CONFIG,FileUploader,previewService) {
     uiLoad.load(JQ_CONFIG.dataTable);
     $scope.formData = {};
     $scope.viewData = {};
@@ -156,7 +156,7 @@ app.controller('carShopAddController', ['$scope', '$state','$modal', 'uiLoad','J
       $scope.formData['unitLayerType.id'] = $(this).val();
     });
 
-   function initTable(data) {
+    function initTable(data) {
       var dTable = $('#orgAddList').dataTable({
         "data": data,
         "sAjaxDataProp": "dataList",
@@ -221,36 +221,15 @@ app.controller('carShopAddController', ['$scope', '$state','$modal', 'uiLoad','J
 	);
     
   	$scope.openMapButton = function(){
-  		showModal();
+  		if($scope.isOpen){
+  			$scope.isOpen = false ;
+  			$scope.mapMessage = "打开地图";
+  		}else{
+  			$scope.isOpen = true ;
+  			$scope.mapMessage = "关闭地图";
+  		}
   	}
  
-  	
-  	/**
-	 * 弹窗事件
-	 */
-	var showModal = function(){
-		var modalInstance = $modal.open({
-   	     templateUrl: 'src/tpl/base/carshop/map_model_add.html',
-   	     size: 'lg',
-   	     backdrop:true,
-   	     controller:"mapModelForAddController",
-   	     resolve: {
-	    	 mapX:function(){
-	    		 return null;
-	    	 },
-	    	 mapY:function(){
-	    		 return null;
-	    	 }
-	     }
-   	   });
-		/**
-		 * 弹窗关闭事件
-		 */
-		modalInstance.result.then(function (obj) {
-			$scope.formData.mapX = obj.lng ;
-			$scope.formData.mapY = obj.lat ;
-    	});
-	}
     
 				
   

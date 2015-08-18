@@ -9,7 +9,6 @@ app.factory("commonGetStateUtilService",[function(){
 		/**key为需要装换的值，列如：1，Value对象为保存可能出现的状态 列如：{1：“hello”,2:"helloworld"}
 		 * 当value不存在时返回空，当value中没有这个属性值时也返回空*/
 		get:function(key,ValueObj){
-			console.info(key);
 			if(!key){
 				return " ";
 			}

@@ -173,7 +173,7 @@ public class CarShopAction extends BaseAction implements ModelDriven<CarShop>
 			this.putJson();
 		} catch (Exception e)
 		{
-			log.error("保存网店信息失败",e);
+			log.error("保存网店信息失败", e);
 			this.putJson(false, this.getMessageFromConfig("carShop_error"));
 		}
 	}
@@ -191,10 +191,11 @@ public class CarShopAction extends BaseAction implements ModelDriven<CarShop>
 				this.putJson();
 			} catch (ErrorMessageException e)
 			{
-				log.error("删除网店信息失败，有相关数据",e);
+				log.error("删除网店信息失败，有相关数据", e);
 				this.putJson(false, e.getMessage());
-			} catch(Exception e ){
-				log.error("删除网店信息失败",e);
+			} catch (Exception e)
+			{
+				log.error("删除网店信息失败", e);
 				this.putJson(false, this.getMessageFromConfig("carShop_error"));
 			}
 		}
@@ -375,19 +376,24 @@ public class CarShopAction extends BaseAction implements ModelDriven<CarShop>
 		this.jsonObject.put("id", carShop.getId());
 		this.putJson();
 	}
-	
+
 	/**
 	 * 修改一组记录的状态
 	 */
-	public void updateUseStateByIds(){
-		try{
-			if(ids!=null&&ids.length>0&&isNotEmpty(this.carShop.getUseState())&&CarShopState.checkUseStateIsValid(this.carShop.getUseState())){
-				this.carShopService.updateUseStateByIds(this.carShop.getUseState(), ids,this.getLoginUser());
+	public void updateUseStateByIds()
+	{
+		try
+		{
+			if (ids != null && ids.length > 0 && isNotEmpty(this.carShop.getUseState()) && CarShopState.checkUseStateIsValid(this.carShop.getUseState()))
+			{
+				this.carShopService.updateUseStateByIds(this.carShop.getUseState(), ids, this.getLoginUser());
 				this.putJson();
-			}else{
+			} else
+			{
 				this.putJson(false, this.getMessageFromConfig("carShop_error"));
 			}
-		}catch(Exception e){
+		} catch (Exception e)
+		{
 			log.error("修改商铺状态失败", e);
 			this.putJson(false, this.getMessageFromConfig("carShop_error"));
 		}

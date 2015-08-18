@@ -19,7 +19,7 @@ import com.hhxh.car.permission.domain.User;
  * 商店黑名单信息表
  */
 @Entity
-@Table(name="opr_shop_blacklist")
+@Table(name = "opr_shop_blacklist")
 public class ShopBlackList implements java.io.Serializable
 {
 
@@ -38,14 +38,14 @@ public class ShopBlackList implements java.io.Serializable
 	private Date updateTime;
 	@Column
 	private String memo;
-	
-	@OneToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="shopID")
-	private CarShop carShop ;
-	
-	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="creatorID")
-	private User createUser ;
+
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "shopID")
+	private CarShop carShop;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "creatorID")
+	private User createUser;
 
 	public ShopBlackList()
 	{
@@ -55,7 +55,6 @@ public class ShopBlackList implements java.io.Serializable
 	{
 		this.id = id;
 	}
-
 
 	public String getId()
 	{
@@ -107,7 +106,6 @@ public class ShopBlackList implements java.io.Serializable
 		this.reason = reason;
 	}
 
-
 	public Date getUpdateTime()
 	{
 		return this.updateTime;
@@ -147,6 +145,5 @@ public class ShopBlackList implements java.io.Serializable
 	{
 		this.createUser = createUser;
 	}
-
 
 }

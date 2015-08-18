@@ -17,8 +17,8 @@ body{height:100%;margin:0px;padding:0px}
 <body>  
 <div id="container"></div> 
 <script type="text/javascript"> 
-var lat = parent.document.getElementById("model_mapX");
-var lng = parent.document.getElementById("model_mapY");
+var lat = parent.document.getElementById("mapX");
+var lng = parent.document.getElementById("mapY");
 var map = new BMap.Map("container"); 
 map.enableScrollWheelZoom();
 var point = null ;
@@ -35,7 +35,6 @@ map.centerAndZoom(point, 13);
 map.addEventListener("click", function(e){    
 	lat.value = e.point.lat;
 	lng.value = e.point.lng;
-	parent.document.getElementById("mapHiddenButton").click();
 	map.clearOverlays();//清除地图上面所有的点
 	var marker = new BMap.Marker(e.point);        // 创建标注    
 	map.addOverlay(marker);     

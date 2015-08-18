@@ -1,6 +1,6 @@
 'use strict';
-app.controller('carShopEditController', ['$rootScope','$scope', '$http', '$state',  'uiLoad', 'JQ_CONFIG','FileUploader','previewService','sessionStorageService',
-  function($rootScope,$scope, $http, $state, uiLoad, JQ_CONFIG,FileUploader,previewService,sessionStorageService) {
+app.controller('carShopEditController', ['$rootScope','$scope', '$http', '$state','$modal',  'uiLoad', 'JQ_CONFIG','FileUploader','previewService','sessionStorageService',
+  function($rootScope,$scope, $http, $state, $modal,uiLoad, JQ_CONFIG,FileUploader,previewService,sessionStorageService) {
 	
 	$scope.needCacheArray = ["carShopListDataTableProperties","carShopIdForEdit"];
 	sessionStorageService.clearNoCacheItem($scope.needCacheArray);
@@ -187,14 +187,37 @@ app.controller('carShopEditController', ['$rootScope','$scope', '$http', '$state
     
     
     $scope.openMapButton = function(){
-  		if($scope.isOpen){
-  			$scope.isOpen = false ;
-  			$scope.mapMessage = "打开地图";
-  		}else{
-  			$scope.isOpen = true ;
-  			$scope.mapMessage = "关闭地图";
-  		}
+    	showModal();
   	}
+    
+    /**
+	 * 弹窗事件
+	 */
+	var showModal = function(){
+		var modalInstance = $modal.open({
+   	     templateUrl: 'src/tpl/base/carshop/map_model_add.html',
+   	     size: 'lg',
+   	     backdrop:true,
+   	     controller:"mapModelForAddController",
+   	     resolve: {
+	    	 mapX:function(){
+	    		 return $scope.formData.mapX;
+	    	 },
+	    	 mapY:function(){
+	    		 return $scope.formData.mapY ;
+	    	 }
+	     }
+   	   });
+		/**
+		 * 弹窗关闭事件
+		 */
+		modalInstance.result.then(function (obj) {
+			console.info(obj);
+			$scope.formData.mapX = obj.lng ;
+			$scope.formData.mapY = obj.lat ;
+    	});
+	}
+    
     
     $scope.checkNull = function(){
     	if($.trim($("#number").val())!=""&&$.trim($("#name").val())!=""&&$.trim($("#superName").val())!=""){

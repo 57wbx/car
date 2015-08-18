@@ -502,6 +502,7 @@ angular.module('app').run(
 		              deps: ['$ocLazyLoad','uiLoad',
 		                function($ocLazyLoad, uiLoad) {
 		                  return uiLoad.load(JQ_CONFIG.chosen).then(function() {
+		                   $ocLazyLoad.load('src/js/controllers/base/carshop/MapModelForAddController.js');
 		                    return $ocLazyLoad.load('src/js/controllers/base/carshop/CarShopAddController.js');
 		                  });
 		                }
@@ -526,6 +527,7 @@ angular.module('app').run(
 		              deps: ['$ocLazyLoad','uiLoad',
 		                function($ocLazyLoad, uiLoad) {
 		                  return uiLoad.load(JQ_CONFIG.chosen).then(function() {
+		                	  $ocLazyLoad.load('src/js/controllers/base/carshop/MapModelForAddController.js');
 		                    return $ocLazyLoad.load('src/js/controllers/base/carshop/CarShopEditController.js');
 		                  });
 		                }
