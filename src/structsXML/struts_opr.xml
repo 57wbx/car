@@ -5,7 +5,8 @@
 
 <struts>
 	<package name="opr" namespace="/opr" extends="default">
-		<action name="orderAction" class="com.hhxh.car.opr.order.action.OrderAction"/>
+		<action name="orderAction" class="com.hhxh.car.opr.action.OrderAction"/>
+		<action name="complainAction" class="com.hhxh.car.opr.action.ComplainAction"/>
 	</package>
 
 </struts>

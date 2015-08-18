@@ -944,7 +944,33 @@ angular.module('app').run(
 																	                }
 																	              ]
 																	            }
-																		      }).state('app.carowner', {
+																		      }).state('app.complain', {
+																		            url: '/complain',
+																		            abstract:true,
+																		            templateUrl: 'src/tpl/opr/complain/complain.html',
+																		            resolve: {
+																		              deps: ['$ocLazyLoad', 'uiLoad',
+																		                function($ocLazyLoad, uiLoad) {
+																		                  return $ocLazyLoad.load('angularBootstrapNavTree').then(function() {
+																		                    return $ocLazyLoad.load('src/js/controllers/opr/complain/ComplainController.js');
+																		                  });
+																		                }
+																		              ]
+																		            }
+																			      }).state('app.complain.list', {
+																			            url: '/list',
+																			            templateUrl: 'src/tpl/opr/complain/complain_list.html',
+																			            resolve: {
+																			              deps: ['$ocLazyLoad', 'uiLoad',
+																			                function($ocLazyLoad, uiLoad) {
+																			                  return $ocLazyLoad.load('angularBootstrapNavTree').then(function() {
+																			                	$ocLazyLoad.load('src/js/controllers/opr/complain/DealComplainController.js');
+																			                    return $ocLazyLoad.load('src/js/controllers/opr/complain/ComplainListController.js');
+																			                  });
+																			                }
+																			              ]
+																			            }
+																				      }).state('app.carowner', {
 																		            url: '/carowner',
 																		            templateUrl: 'src/tpl/opr/carowner/carowner.html',
 																		            resolve: {

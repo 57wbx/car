@@ -11592,7 +11592,7 @@
 		 *      } );
 		 *    } );
 		 */
-		"sScrollX": "",
+		"sScrollX": true,
 	
 	
 		/**

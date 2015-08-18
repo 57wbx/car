@@ -131,8 +131,6 @@ app.controller('carShopListController',['$rootScope','$scope','$state','$timeout
 			            $(nRow).find("a").click(function(e){
 			            	showModal(nRow,aData);
 			            });
-			            
-			            
 			        },
 			       "drawCallback": function( settings ) {
 			              var input = carShopList.find('thead .i-checks input');

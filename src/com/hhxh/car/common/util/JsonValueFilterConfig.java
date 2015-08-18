@@ -82,18 +82,22 @@ public class JsonValueFilterConfig {
 	/**
 	 * carshop  网店需要过滤的数据
 	 */
-	public static final String[] CARSHOP_ONLY_CARSHOP = new String[]{"org","user","merbers","orders"};
-	public static final String[] CARSHOP_HAS_ORG = new String[]{"user", "createUser", "lastUpdateUser", "parent","merbers","orders"};
+	public static final String[] CARSHOP_ONLY_CARSHOP = new String[]{"org","user","merbers","orders","shopBlackList"};
+	public static final String[] CARSHOP_HAS_ORG = new String[]{"user", "createUser", "lastUpdateUser", "parent","merbers","orders","shopBlackList"};
+	//门店黑名单
+	public static final String[] SHOPBLACKLIST_ONLY_BLACKLIST = new String[]{"carShop","createUser"}; 
 	
 	/**
 	 * Member 会员或者师傅 需要过滤的信息
 	 */
-	public static final String[] MEMBER_ONLY_MEMBER = new String[]{"carShop","orders"};
+	public static final String[] MEMBER_ONLY_MEMBER = new String[]{"carShop","orders","workerBlackList"};
+	//师傅 黑名单
+	public static final String[] WORKERBLACKLIST_ONLY_WORKERBLACKLIST = new String[]{"worker","createUser"};
 	
 	/**
 	 * Order 订单需要过滤的信息
 	 */
-	public static final String[] ORDER_HAS_TIGUSERS_HAS_WORKER = new String[]{"carShop","orders","order","orderTracks",HIBERNATE_LAZY_PROPERTISE_HANDLER,HIBERNATE_LAZY_PROPERTISE_LAZYINITIALIZER};
+	public static final String[] ORDER_HAS_TIGUSERS_HAS_WORKER = new String[]{"carShop","orders","order","orderTracks","workerBlackList",HIBERNATE_LAZY_PROPERTISE_HANDLER,HIBERNATE_LAZY_PROPERTISE_LAZYINITIALIZER};
 	
 	/**
 	 * OrderTrack 订单跟踪状态需要过滤的信息
@@ -103,7 +107,13 @@ public class JsonValueFilterConfig {
 	/**
 	 * AppCase 需要过滤的信息   相当于只有用户信息
 	 */
-	public static final String[] APPCASE_HAS_USER = new String[]{"adminOrgUnit","createUser","lastModifyUser","person","role","rootOrgUnit","carShop",HIBERNATE_LAZY_PROPERTISE_HANDLER,HIBERNATE_LAZY_PROPERTISE_LAZYINITIALIZER};
+	public static final String[] APPCASE_HAS_USER = new String[]{"adminOrgUnit","createUser","lastModifyUser","person","role","rootOrgUnit","carShop","password",HIBERNATE_LAZY_PROPERTISE_HANDLER,HIBERNATE_LAZY_PROPERTISE_LAZYINITIALIZER};
 	public static final String[] APPCASE_ONLY_APPCASE = new String[]{"user",HIBERNATE_LAZY_PROPERTISE_HANDLER,HIBERNATE_LAZY_PROPERTISE_LAZYINITIALIZER};
+	
+	/**
+	 * Complain 投诉表需要过滤的数据
+	 */
+	public static final String[] COMPLAINS_HAS_COMPLAINUSER_HAS_DEALUSER = new String[]{"createUser","lastModifyUser","person","role","rootOrgUnit","carShop","password","orders","user_pw",HIBERNATE_LAZY_PROPERTISE_HANDLER,HIBERNATE_LAZY_PROPERTISE_LAZYINITIALIZER};
+	public static final String[] COMPLAIN_ONLY_COMPLAIN = new String[]{"dealUser","complainUser"};
 	
 }

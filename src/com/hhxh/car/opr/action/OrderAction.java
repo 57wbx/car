@@ -1,4 +1,4 @@
-package com.hhxh.car.opr.order.action;
+package com.hhxh.car.opr.action;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,8 +14,8 @@ import org.hibernate.criterion.Restrictions;
 import com.hhxh.car.base.member.domain.Member;
 import com.hhxh.car.common.action.BaseAction;
 import com.hhxh.car.common.util.JsonValueFilterConfig;
-import com.hhxh.car.opr.order.domain.Order;
-import com.hhxh.car.opr.order.domain.OrderTrack;
+import com.hhxh.car.opr.domain.Order;
+import com.hhxh.car.opr.domain.OrderTrack;
 import com.opensymphony.xwork2.ModelDriven;
 
 /**

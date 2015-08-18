@@ -309,7 +309,7 @@ app.controller('orderListController',['$scope','$state','$timeout','$http','$mod
     	"sAjaxDataProp":"data",
     	"oLanguage": {
             "sLengthMenu": "每页 _MENU_ 条",
-            "sZeroRecords": "该服务没有服务子项信息",
+            "sZeroRecords": "该订单还没有订单跟踪信息",
             "sProcessing": "&lt;img src=’./loading.gif’ /&gt;",
             "sInfo": "当前第 _START_ - _END_ 条，共 _TOTAL_ 条",
             "sInfoEmpty": "没有记录",

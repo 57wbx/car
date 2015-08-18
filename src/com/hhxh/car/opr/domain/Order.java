@@ -1,4 +1,4 @@
-package com.hhxh.car.opr.order.domain;
+package com.hhxh.car.opr.domain;
 
 // Generated 2015-8-12 11:36:29 by Hibernate Tools 3.4.0.CR1
 
@@ -16,6 +16,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
+
+
 
 
 

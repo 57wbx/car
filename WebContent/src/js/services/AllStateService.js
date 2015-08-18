@@ -184,4 +184,37 @@ app.factory("orderStateService",[function(){
 		}
 	}
 	
-});
+}).factory("complainStateService",[function(){
+	return {
+		getObjType:getObjType,
+		getDealState:getDealState,
+		getDealStateWithStyle:getDealStateWithStyle
+	};
+	function getObjType(param){
+		switch(param){
+		//1=门店、2=技工、3=（服务）、4=套餐，5=其他
+		case 1: return "门店" ; break ;
+		case 2: return "技工" ; break ;
+		case 3: return "服务" ; break ;
+		case 4: return "套餐" ; break ;
+		case 5: return "其他" ; break ;
+		default :return ""; break ;
+		}
+	}
+	function getDealState(param){
+		switch(param){
+		//0=未处理；1=已处理
+		case 0 : return "未处理" ;break ;
+		case 1 : return "已处理" ;break ;
+		default : return "未处理"; break ;
+		}
+	}
+	function getDealStateWithStyle(param){
+		switch(param){
+		//0=未处理；1=已处理
+		case 0 : return "<span style='color:red ;'>未处理</span>" ;break ;
+		case 1 : return "已处理" ;break ;
+		default : return "<span style='color:red ;'>未处理</span>"; break ;
+		}
+	}
+}]);

@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.TreeSet;
 
 import javax.annotation.Resource;
 
@@ -485,9 +486,10 @@ public class Dao
 		/**
 		 * 去重
 		 */
-		Set<T> resultSet = new HashSet<T>(resultList);
+//		Set<T> resultSet = new TreeSet<T>(resultList);
 
-		return new ArrayList<T>(resultSet);
+//		return new ArrayList<T>(resultSet);
+		return resultList;
 	}
 
 	public int getSize(Class clazz, List<Criterion> params, Map<String, List<Criterion>> criteriaMap)
