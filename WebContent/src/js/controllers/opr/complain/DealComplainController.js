@@ -1,5 +1,7 @@
 app.controller("dealComplainController",['$scope','$modalInstance','$timeout','$http','dataTableSearchService','hintService','id',function($scope,$modalInstance,$timeout,$http,dataTableSearchService,hintService,id){
 	
+	$scope.hasIsBlackList = false;
+	
 	$timeout(initData,20);
 	
 	/**
@@ -7,7 +9,7 @@ app.controller("dealComplainController",['$scope','$modalInstance','$timeout','$
 	 */
 	function initData(){
 		$http({
-			url:"opr/complainAction!detailsDealComplainDetails.action",
+			url:"opr/complainAction!detailsDealComplainDetailsWithIsBlackList.action",
 			method:"post",
 			data:{
 				id:id
@@ -15,6 +17,14 @@ app.controller("dealComplainController",['$scope','$modalInstance','$timeout','$
 		}).then(function(resp){
 			if(resp.data.code){
 				$scope.formData = resp.data.details ;
+				//1=门店、2=技工
+				
+				console.info("objType",$scope.formData.objType);
+				if($scope.formData.objType==1 || $scope.formData.objType==2){
+					$scope.hasIsBlackList = true ;
+				}else{
+					$scope.hasIsBlackList = false ;
+				}
 			}else{
 				alert(resp.data.message);
 				$scope.cancel();

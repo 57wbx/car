@@ -93,7 +93,7 @@ public class Member implements java.io.Serializable
 	@OneToMany(mappedBy="worker",fetch=FetchType.LAZY)
 	private Set<Order> orders = new HashSet<Order>();
 	
-	@OneToOne(fetch=FetchType.LAZY,mappedBy="")
+	@OneToOne(fetch=FetchType.LAZY,mappedBy="worker")
 	private WorkerBlackList workerBlackList ;
 
 	public Member()
@@ -410,6 +410,16 @@ public class Member implements java.io.Serializable
 	public void setOrders(Set<Order> orders)
 	{
 		this.orders = orders;
+	}
+
+	public WorkerBlackList getWorkerBlackList()
+	{
+		return workerBlackList;
+	}
+
+	public void setWorkerBlackList(WorkerBlackList workerBlackList)
+	{
+		this.workerBlackList = workerBlackList;
 	}
 	
 }

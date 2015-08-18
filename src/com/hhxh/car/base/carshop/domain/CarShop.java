@@ -707,6 +707,15 @@ public class CarShop implements Serializable
 	{
 		this.orders = orders;
 	}
-	
+
+	public ShopBlackList getShopBlackList()
+	{
+		return shopBlackList;
+	}
+
+	public void setShopBlackList(ShopBlackList shopBlackList)
+	{
+		this.shopBlackList = shopBlackList;
+	}
 	
 }

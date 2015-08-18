@@ -6,15 +6,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
+
 import org.apache.poi.ss.formula.ptg.MemErrPtg;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
+import com.hhxh.car.base.carshop.domain.CarShop;
 import com.hhxh.car.common.action.BaseAction;
+import com.hhxh.car.common.util.ErrorMessageException;
 import com.hhxh.car.common.util.JsonValueFilterConfig;
 import com.hhxh.car.opr.domain.Complain;
+import com.hhxh.car.opr.service.ComplainService;
 import com.opensymphony.xwork2.ModelDriven;
 
 /**
@@ -35,11 +40,19 @@ public class ComplainAction extends BaseAction implements ModelDriven<Complain>
 	 * tigUser 投诉的人员
 	 */
 	private String userName;
+	
+	/**
+	 * 是否是黑名单用户 1：是  0 不是
+	 */
+	private Integer isBlackList ;
 
 	/**
 	 * 处理投诉记录的人的姓名
 	 */
 	private String dealName;
+	
+	@Resource
+	private ComplainService complainService ;
 
 	public void listComplain()
 	{
@@ -122,27 +135,17 @@ public class ComplainAction extends BaseAction implements ModelDriven<Complain>
 		{
 			if (isNotEmpty(this.complain.getId()))
 			{
-				Complain needUpdateComplain = this.baseService.get(Complain.class, this.complain.getId());
-				if (needUpdateComplain != null)
-				{
-					needUpdateComplain.setDealState(ComplainState.DEALSTATE_DONE);
-					needUpdateComplain.setDealSuggestion(this.complain.getDealSuggestion());
-					needUpdateComplain.setDealResult(this.complain.getDealResult());
-					needUpdateComplain.setMemo(this.complain.getMemo());
-					needUpdateComplain.setDealTime(new Date());
-					needUpdateComplain.setUpdateTime(new Date());
-					needUpdateComplain.setDealUser(this.getLoginUser());
-					this.baseService.update(needUpdateComplain);
-					this.putJson();
-				} else
-				{
-					this.putJson(false, this.getMessageFromConfig("complain_errorId"));
-				}
+				this.complainService.addOrUpdateDealComplainWithIsBlackList(complain, isBlackList, this.getLoginUser());
+				this.putJson();
 			} else
 			{
 				this.putJson(false, this.getMessageFromConfig("complain_needId"));
 			}
-		} catch (Exception e)
+		}catch(ErrorMessageException e){
+			log.error("处理投诉信息失败", e);
+			this.putJson(false, e.getMessage());
+		} 
+		catch (Exception e)
 		{
 			log.error("处理投诉信息失败", e);
 			this.putJson(false, this.getMessageFromConfig("complain_error"));
@@ -175,9 +178,9 @@ public class ComplainAction extends BaseAction implements ModelDriven<Complain>
 	public void detailsDealComplainDetailsWithIsBlackList(){
 		try{
 			if(isNotEmpty(this.complain.getId())){
-				complain = this.baseService.get(Complain.class,this.complain.getId());
-				if(complain!=null){
-					jsonObject.accumulate("details", complain,this.getJsonConfig(JsonValueFilterConfig.COMPLAIN_ONLY_COMPLAIN));
+				Map<String,Object> returnValue = this.complainService.detailsComplainIsBlackList(this.complain);
+				if(returnValue!=null){
+					this.jsonObject.put("details", returnValue );
 					this.putJson();
 				}else{
 					this.putJson(false, this.getMessageFromConfig("complain_errorId"));
@@ -227,4 +230,15 @@ public class ComplainAction extends BaseAction implements ModelDriven<Complain>
 	{
 		this.dealName = dealName;
 	}
+
+	public Integer getIsBlackList()
+	{
+		return isBlackList;
+	}
+
+	public void setIsBlackList(Integer isBlackList)
+	{
+		this.isBlackList = isBlackList;
+	}
+	
 }

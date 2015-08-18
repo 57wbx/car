@@ -11,4 +11,11 @@ public class ErrorMessageException extends Exception{
 	public ErrorMessageException(String message){
 		super(message);
 	}
+	public ErrorMessageException(){
+	}
+	
+	public ErrorMessageException(String message,Throwable e){
+		super(message,e);
+	}
+	
 }

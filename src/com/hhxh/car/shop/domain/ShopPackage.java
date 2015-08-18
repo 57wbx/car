@@ -81,6 +81,7 @@ public class ShopPackage implements java.io.Serializable {
 	
 	@OneToMany(mappedBy="shopPackage")
 	private Set<ShopPackageImg> shopPackageImgs = new HashSet<ShopPackageImg>();
+	
 
 	public ShopPackage() {
 	}
