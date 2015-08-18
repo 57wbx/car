@@ -4,7 +4,7 @@
 		<div class="row">
 			<!-- <div class="col-md-4 col-xs-0"></div> -->
 			<div class="col-md-3 col-xs-12">
-				<h2 class="leave-title text-left txt-center">网店管理</h2>
+				<h2 class="leave-title text-left txt-center">商铺管理</h2>
 			</div>
 			
 			<div class="col-md-9 col-xs-12"
@@ -19,6 +19,18 @@
 						ng-disabled="single">
 						<i class="fa fa-fw fa-pencil"></i> <span class="hid">修改</span>
 					</button>
+					
+					<div class="btn-group dropdown" dropdown>
+					          <button class="btn btn-default" dropdown-toggle ng-disabled="mutiple"><i class="fa fa-fw icon-lock"></i>状态<span class="caret"></span></button>
+						          <ul class="dropdown-menu">
+						          		<!-- 1=正常、2=停用、3=注销（黑名单） -->
+							            <li><a href ng-click="setUseState(1);">正常</a></li>
+							            <li><a href ng-click="setUseState(2);">停用</a></li>
+							            <li><a href ng-click="setUseState(3);">注销</a></li>
+							            <li><a href ng-click="setUseState(4);">黑名单</a></li>
+						          </ul>
+					</div>
+			
 					<button type="button" class="btn btn-danger" ng-click="removeIt()"
 						ng-disabled="mutiple">
 						<i class="fa fa-fw fa-minus"></i> <span class="hid">删除</span>
@@ -27,8 +39,9 @@
 						ng-click="seeDetails()" ng-disabled="single">
 						<i class="fa fa-fw fa-eye"></i> <span class="hid">查看</span>
 					</button>
-
+					
 				</div>
+				
 			</div>
 		</div>
 		<div class="row">

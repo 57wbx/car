@@ -118,7 +118,7 @@ public class ComplainService extends BaseService
 						shopBlackList.setUpdateTime(new Date());
 						this.dao.saveObject(shopBlackList);
 						
-						carShop.setUseState(CarShopState.USESTATE_CANCEL);
+						carShop.setUseState(CarShopState.USESTATE_BLACKLIST);
 						this.dao.updateObject(carShop);
 					}
 				} else if (ComplainState.OBJTYPE_WORKER == needUpdateComplain.getObjType())
@@ -135,13 +135,38 @@ public class ComplainService extends BaseService
 						workerBlackList.setWorker(worker);
 						this.dao.saveObject(workerBlackList);
 						
-						worker.setUseState(MemberState.USESTATE_CANCEL);
+						worker.setUseState(MemberState.USESTATE_BLACKLIST);
 						this.dao.updateObject(worker);
 					}
 				}
 			} else if (CommonConstant.BLACKLIST_NO == isBlackList)
 			{
-				return;
+				if (ComplainState.OBJTYPE_CARSHOP == needUpdateComplain.getObjType())
+				{
+					CarShop carShop = this.dao.get(CarShop.class, needUpdateComplain.getObjId());
+					if (carShop != null)
+					{
+						ShopBlackList shopBlackList = carShop.getShopBlackList();
+						if(shopBlackList!=null){
+							this.dao.deleteObject(shopBlackList);
+						}
+						
+						carShop.setUseState(CarShopState.USESTATE_OK);
+						this.dao.updateObject(carShop);
+					}
+				} else if (ComplainState.OBJTYPE_WORKER == needUpdateComplain.getObjType())
+				{
+					Member worker = this.dao.get(Member.class, needUpdateComplain.getObjId());
+					if (worker != null)
+					{
+						WorkerBlackList workerBlackList = worker.getWorkerBlackList();
+						if(workerBlackList!=null){
+							this.dao.deleteObject(workerBlackList);
+						}
+						worker.setUseState(MemberState.USESTATE_OK);
+						this.dao.updateObject(worker);
+					}
+				}
 			}
 		} catch (Exception e)
 		{

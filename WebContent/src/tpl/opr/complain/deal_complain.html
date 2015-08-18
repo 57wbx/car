@@ -25,9 +25,11 @@
       			</div>
       			<div class="form-group" ng-if="hasIsBlackList">
       				<div class="col-sm-offset-2 col-sm-10">
-      					  <label class="checkbox" style="margin-left:20px">
-					      	<input type="checkbox" ng-model="formData.isBlackList" ng-true-value=1 ng-false-value=0 > 拉入黑名单
-					   </label>
+	      				<div class="checkbox">
+				                  <label class="i-checks">
+				                    <input type="checkbox" ng-model="formData.isBlackList" ng-true-value=1 ng-false-value=0 ><i></i>拉入黑名单
+				                  </label>
+				        </div>
       				</div>
       			</div>
       		</form>

@@ -3,11 +3,34 @@
 * 表服务的命名规则为：表名+StateService  例如：orderStateService
 */
 
+
+app.factory("commonGetStateUtilService",[function(){
+	return {
+		/**key为需要装换的值，列如：1，Value对象为保存可能出现的状态 列如：{1：“hello”,2:"helloworld"}
+		 * 当value不存在时返回空，当value中没有这个属性值时也返回空*/
+		get:function(key,ValueObj){
+			console.info(key);
+			if(!key){
+				return " ";
+			}
+			if(ValueObj){
+				var value = ValueObj[key];
+				if(value){
+					return value ;
+				}else{
+					return " ";
+				}
+			}else{
+				return " ";
+			}
+		}
+	}
+}]).
 /**
  * 该服务提供了所有订单表中，有关的状态信息。
  * 
  */
-app.factory("orderStateService",[function(){
+factory("orderStateService",[function(){
 	/**
 	 * 服务的详细实现 
 	 */
@@ -217,4 +240,45 @@ app.factory("orderStateService",[function(){
 		default : return "<span style='color:red ;'>未处理</span>"; break ;
 		}
 	}
+}]).factory("carShopStateService",['commonGetStateUtilService',function(commonGetStateUtilService){
+	//useState 1=正常、2=停用、3=注销（黑名单）
+	function getUseState(param){
+		switch(param){
+		case 1 : return "正常"; break ;
+		case 2 : return "停用"; break ;
+		case 3 : return "注销"; break ;
+		case 4 : return "黑名单"; break ;
+		default : return ""; break ;
+		}
+	};
+	function getUseStateWithStyle(param){
+		switch(param){
+		case 1 : return "正常"; break ;
+		case 2 : return "停用"; break ;
+		case 3 : return "注销"; break ;
+		case 4 : return "<span style='color:red;'>黑名单<span>"; break ;
+		default : return ""; break ;
+		}
+	};
+	//0=加盟店、1=合作店、3=直营店、4=中心店（区域旗舰店）
+	function getShopType(param){
+		var shopType = {
+				0:"加盟店",1:"合作店",3:"直营店",4:"中心店(区域旗舰店)",
+		};
+		return commonGetStateUtilService.get(param,shopType);
+	};
+
+	function getVIPLevel(param){
+		//0=0星、1=1星、2=2星、3=3星、4=4星、5=5星
+		var VIPLevlel={
+				0:"0星",1:"1星",2:"2星",3:"3星",4:"4星",5:"5星"
+		};
+		return commonGetStateUtilService.get(param,VIPLevlel);
+	};
+	
+	return {
+		getUseState:getUseState,
+		getUseStateWithStyle:getUseStateWithStyle,
+		getVIPLevel:getVIPLevel
+	};
 }]);

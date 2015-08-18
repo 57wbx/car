@@ -528,4 +528,10 @@ public class Dao
 		Long result = (Long) mainCriteria.uniqueResult();
 		return Integer.parseInt(Long.toString(result));
 	}
+	
+	public Integer executeHqlUpdate(String hql,Map<String,Object> param){
+		Query query = getSession().createQuery(hql).setProperties(param);
+		return query.executeUpdate();
+	}
+	
 }

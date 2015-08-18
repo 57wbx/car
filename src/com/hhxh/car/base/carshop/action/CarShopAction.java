@@ -375,6 +375,23 @@ public class CarShopAction extends BaseAction implements ModelDriven<CarShop>
 		this.jsonObject.put("id", carShop.getId());
 		this.putJson();
 	}
+	
+	/**
+	 * 修改一组记录的状态
+	 */
+	public void updateUseStateByIds(){
+		try{
+			if(ids!=null&&ids.length>0&&isNotEmpty(this.carShop.getUseState())&&CarShopState.checkUseStateIsValid(this.carShop.getUseState())){
+				this.carShopService.updateUseStateByIds(this.carShop.getUseState(), ids,this.getLoginUser());
+				this.putJson();
+			}else{
+				this.putJson(false, this.getMessageFromConfig("carShop_error"));
+			}
+		}catch(Exception e){
+			log.error("修改商铺状态失败", e);
+			this.putJson(false, this.getMessageFromConfig("carShop_error"));
+		}
+	}
 
 	/**
 	 * 实现Modeldrive 所需要实现的方法

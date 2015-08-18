@@ -150,6 +150,16 @@ public class BaseService {
 	public void executeSqlUpdate(String sql, Map<String, Object> paramMap) {
 		dao.executeSqlUpdate(sql, paramMap);
 	}
+	
+	/**
+	 * 执行
+	 * @param hql
+	 * @param param
+	 * @return
+	 */
+	public Integer executeHqlUpdate(String hql,Map<String,Object> param){
+		return dao.executeHqlUpdate(hql, param);
+	}
 
 	/**
 	 * 更新实体状态为

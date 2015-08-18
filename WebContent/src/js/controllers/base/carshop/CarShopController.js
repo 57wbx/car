@@ -1,6 +1,6 @@
 'use strict';
 
-app.controller('carShopController', ['$rootScope','$scope','$state','$timeout','$location','$http','sessionStorageService','hintService',function($rootScope, $scope, $state, $timeout,$location,$http,sessionStorageService,hintService) {
+app.controller('carShopController', ['$rootScope','$scope','$state','$timeout','$location','$http','sessionStorageService','hintService','warnService','carShopStateService',function($rootScope, $scope, $state, $timeout,$location,$http,sessionStorageService,hintService,warnService,carShopStateService) {
   var url = app.url.org.api.list; // 后台API路径
   var data = null;
   
@@ -155,4 +155,30 @@ app.controller('carShopController', ['$rootScope','$scope','$state','$timeout','
       $scope.mutiple = param.mutiple
     }
   }
+  
+  /**
+   * 改变状态的操作
+   */
+  $scope.setUseState = function(param){
+	  //1=正常、2=停用、3=注销（黑名单）
+	 var useState = carShopStateService.getUseState(param);
+	  warnService.warn(null,"您确定要将该记录的状态变换为："+useState+" 吗？",function(){
+		  return $http({
+			  url:"base/carShopAction!updateUseStateByIds.action",
+		  	  method:"post",
+		  	  data:{
+		  		  ids :$scope.rowIds,
+		  		  useState : param 
+		  	  }
+		  });
+	  },function(resp){
+		  if(resp.data.code){
+			  hintService.hint({title: "成功", content: "状态更改成功！" });
+			  $state.reload($scope.state.list);
+		  }else{
+			  alert(resp.data.message);
+		  }
+	  });
+  }
+  
 }]);
