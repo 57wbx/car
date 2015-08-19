@@ -12,6 +12,7 @@ import java.util.TreeSet;
 
 import javax.annotation.Resource;
 
+import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
 import org.hibernate.Query;
@@ -29,6 +30,8 @@ import org.springframework.stereotype.Repository;
 public class Dao
 {
 
+	private static Logger log = Logger.getLogger(Dao.class);
+	
 	@Resource
 	private SessionFactory sessionFactory;
 
@@ -528,10 +531,48 @@ public class Dao
 		Long result = (Long) mainCriteria.uniqueResult();
 		return Integer.parseInt(Long.toString(result));
 	}
-	
+	/**
+	 * 执行hql语句
+	 * @param hql
+	 * @param param
+	 * @return
+	 */
 	public Integer executeHqlUpdate(String hql,Map<String,Object> param){
 		Query query = getSession().createQuery(hql).setProperties(param);
 		return query.executeUpdate();
 	}
+	/**
+	 * 获取一个对象，具有取消懒加载的功能
+	 */
+	public <T> T  get(Class<T> clazz,List<Criterion> params,String[] needFetchName){
+		Session session = getSession();
+		Criteria criteria = session.createCriteria(clazz);
+		if (params != null)
+		{
+			for (Criterion param : params)
+			{
+				criteria.add(param);
+			}
+		}
+		if(needFetchName!=null&&needFetchName.length>0){
+			for(String name:needFetchName){
+				criteria.setFetchMode(name, FetchMode.JOIN);
+			}
+		}
+//		criteria.setMaxResults(1);
+
+		List<T> list = criteria.list();
+		log.debug("结果的条数为----"+list.size());
+		Set<T> set = new HashSet<T>(list);
+		log.debug("转变为set中的记录条数"+set.size());
+		if (list.size() > 0)
+		{
+			return list.get(0);
+		} else
+		{
+			return null;
+		}
+	}
+	
 	
 }

@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 import org.springframework.stereotype.Repository;
@@ -34,6 +35,7 @@ public class BaseProvince implements java.io.Serializable {
 	private String memo;
 	
 	@OneToMany(fetch=FetchType.LAZY,mappedBy="baseProvince")
+	@OrderBy("sortCode asc")
 	private Set<BaseCity> baseCitys = new HashSet<BaseCity>();
 	
 

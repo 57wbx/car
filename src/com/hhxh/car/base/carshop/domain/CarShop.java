@@ -126,6 +126,12 @@ public class CarShop implements Serializable
 	 */
 	@Column(name = "area", length = 10)
 	private String area;
+	
+	/**
+	 * 区
+	 */
+	@Column(name = "smallArea", length = 10)
+	private String smallArea;
 
 	/**
 	 * 详细地址
@@ -716,6 +722,16 @@ public class CarShop implements Serializable
 	public void setShopBlackList(ShopBlackList shopBlackList)
 	{
 		this.shopBlackList = shopBlackList;
+	}
+
+	public String getSmallArea()
+	{
+		return smallArea;
+	}
+
+	public void setSmallArea(String smallArea)
+	{
+		this.smallArea = smallArea;
 	}
 	
 }

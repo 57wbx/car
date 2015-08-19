@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 import org.springframework.stereotype.Repository;
@@ -46,6 +47,7 @@ public class BaseCity implements java.io.Serializable {
 	private BaseProvince baseProvince ;
 	
 	@OneToMany(fetch=FetchType.LAZY,mappedBy="baseCity")
+	@OrderBy("sortCode asc")
 	private Set<BaseArea> baseAreas = new HashSet<BaseArea>();
 	
 

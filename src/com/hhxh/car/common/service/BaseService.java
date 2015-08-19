@@ -250,4 +250,11 @@ public class BaseService {
 		return this.dao.getSize(clazz,params,criteriaMap);
 	}
 	
+	/**
+	 * 获取一个对象，具有取消懒加载的功能
+	 */
+	public <T> T  get(Class<T> clazz,List<Criterion> params,String[] needFetchName){
+		return this.dao.get(clazz, params, needFetchName);
+	}
+	
 }

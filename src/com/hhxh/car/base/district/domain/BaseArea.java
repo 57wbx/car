@@ -11,6 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 
@@ -42,6 +43,7 @@ public class BaseArea implements java.io.Serializable {
 	 */
 	@OneToMany(fetch=FetchType.LAZY,mappedBy="baseAreaParent")
 //	@JoinColumns(value={@JoinColumn(name="parentID",referencedColumnName="areaId")})
+	@OrderBy("sortCode asc")
 	private Set<BaseArea> baseAreas = new HashSet<BaseArea>();
 	
 	@ManyToOne(fetch=FetchType.LAZY)

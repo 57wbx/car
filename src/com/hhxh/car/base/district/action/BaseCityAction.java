@@ -1,8 +1,13 @@
 package com.hhxh.car.base.district.action;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.annotation.Resource;
+
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Restrictions;
 
 import com.hhxh.car.base.district.domain.BaseArea;
 import com.hhxh.car.base.district.domain.BaseCity;
@@ -10,6 +15,7 @@ import com.hhxh.car.base.district.domain.BaseProvince;
 import com.hhxh.car.base.district.service.BaseCityService;
 import com.hhxh.car.common.action.BaseAction;
 import com.hhxh.car.common.util.ErrorMessageException;
+import com.hhxh.car.common.util.JsonValueFilterConfig;
 import com.opensymphony.xwork2.ModelDriven;
 
 public class BaseCityAction extends BaseAction implements ModelDriven<BaseCity>{
@@ -82,6 +88,30 @@ public class BaseCityAction extends BaseAction implements ModelDriven<BaseCity>{
 			}
 		}
 		this.putJson();
+	}
+	
+	/**
+	 * 根据城市的编号查询出所有的地区信息
+	 */
+	public void listAreaByCityCode(){
+		try{
+			if(isNotEmpty(this.baseCity.getCellCode())){
+				List<Criterion> params = new ArrayList<Criterion>();
+				params.add(Restrictions.eq("cellCode", this.baseCity.getCellCode()));
+				baseCity = this.baseService.get(BaseCity.class,params,new String[]{"baseAreas"});
+				if(baseCity!=null){
+					jsonObject.accumulate("data", baseCity.getBaseAreas(),this.getJsonConfig(JsonValueFilterConfig.BASEAREA_ONLY_BASEAREA));
+					this.putJson();
+				}else{
+					this.putJson(false, this.getMessageFromConfig("district_errorId"));
+				}
+			}else{
+				this.putJson(false, this.getMessageFromConfig("district_needId"));
+			}
+		}catch(Exception e){
+			log.error("根据城市编码查询地区信息失败", e);
+			this.putJson(false, this.getMessageFromConfig("district_error"));
+		}
 	}
 	
 	/**

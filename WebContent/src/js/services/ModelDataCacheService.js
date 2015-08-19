@@ -22,6 +22,13 @@ app.factory("modelDataCacheService",['$http','$q',function($http,$q){
 	var orgNoDeptZtreeData = null;//该数据主要是为了业务ztree提供的缓存数据
 	var orgNoDeptZtreeDataFlushTimes = 5;
 	var orgNoDeptZtreeDataNowTimes = 0;
+	/**
+	 * 全局变量@4
+	 */
+	var provinceData = null;//该数据主要是为了业务ztree提供的缓存数据
+	var provinceDataFlushTimes = 5;
+	var provinceDataNowTimes = 0;
+	
 	serviceInstance = {
 			/**
 			 * 使用全局变量 @1
@@ -108,8 +115,101 @@ app.factory("modelDataCacheService",['$http','$q',function($http,$q){
 					deferred.resolve(orgNoDeptZtreeData);
 				}
 				return deferred.promise;
-			}
+			},
 			//以上是方法定义
+			/**
+			 * 从服务端获取省份的所有数据
+			 */
+			provinceDataService:function(needFlush){
+				var deferred = $q.defer();
+				if(needFlush || !provinceData || (provinceDataNowTimes > provinceDataFlushTimes)){
+					//需要从网上刷新最新的数据
+					$http({
+						url:"base/baseProvinceAction!listBaseProvinceNoCitys.action",
+						method : "get"
+					}).then(function(resp){
+						if(resp.data.code==1){
+							provinceData = resp.data.data ;
+							provinceDataNowTimes = 0;
+						}
+						console.info("从网上获取数据@4");
+						deferred.resolve(provinceData);
+					});
+				}else{
+					provinceDataNowTimes ++;
+					console.info("缓存数据中读取数据@4");
+					deferred.resolve(provinceData);
+				}
+				return deferred.promise;
+			},
+	/**
+	 * 根据省份的编码查询所有的城市
+	 */
+			cityDataService:function(code){
+				var deferred = $q.defer();
+				if(code){
+					//需要从网上刷新最新的数据
+					$http({
+						url:"base/baseProvinceAction!listCityByProvinceCode.action",
+						method : "post",
+						data:{
+							code:code
+						}
+					}).then(function(resp){
+						if(resp.data.code==1){
+							cityData = resp.data.data ;
+						}
+						deferred.resolve(cityData);
+					});
+				}
+				return deferred.promise;
+			},
+	/**
+	 * 根据城市的编码查询所有的区域
+	 */
+			areaDataService:function(code){
+				var deferred = $q.defer();
+				if(code){
+					//需要从网上刷新最新的数据
+					$http({
+						url:"base/baseCityAction!listAreaByCityCode.action",
+						method : "post",
+						data:{
+							cellCode:code
+						}
+					}).then(function(resp){
+						if(resp.data.code==1){
+							var areaData = resp.data.data ;
+						}
+						deferred.resolve(areaData);
+					});
+				}
+				return deferred.promise;
+			},
+			/**
+			 * 根据城市的编码查询所有的区域
+			 */
+			smallAreaDataService:function(code){
+				var deferred = $q.defer();
+				if(code){
+					//需要从网上刷新最新的数据
+					$http({
+						url:"base/baseAreaAction!listSmallAreaByAreaCode.action",
+						method : "post",
+						data:{
+							cellCode:code
+						}
+					}).then(function(resp){
+						if(resp.data.code==1){
+							var areaData = resp.data.data ;
+						}
+						deferred.resolve(areaData);
+					});
+				}
+				return deferred.promise;
+			}
+			
+	//对象定义结束
 	};
 	return serviceInstance;
 }]);
