@@ -113,6 +113,10 @@ public class CarShopAction extends BaseAction implements ModelDriven<CarShop>
 		{
 			params.add(Restrictions.eq("shopType", carShop.getShopType()));
 		}
+		if (isNotEmpty(carShop.getUseState()))
+		{
+			params.add(Restrictions.eq("useState", carShop.getUseState()));
+		}
 
 		Order order = null;
 		if (isNotEmpty(orderName))

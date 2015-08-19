@@ -28,10 +28,12 @@ app.controller('carShopListController',['$rootScope','$scope','$state','$timeout
 //						data = oldData ;
 						$scope.search.shopName = data.shopName ;
 						$scope.search.shopType = data.shopType ;
+						$scope.search.useState = data.useState ;
 					}
 				}else{
 					data.shopName = $scope.search.shopName ;
 					data.shopType = $scope.search.shopType;
+					data.useState = $scope.search.useState;
 					$scope.setCarShopListDataTableProperties(data);
 				}
 			
@@ -208,7 +210,25 @@ app.controller('carShopListController',['$rootScope','$scope','$state','$timeout
 			                       		   label:"中心店（区域旗舰店）"
 			                       	 }
                    	]
-                  }
+                  },{
+                  	   formDataName:'search.useState',
+                   	   label:'状态',
+                   	   options:[{label:'全部'},{
+                   		//1=正常、2=停用、3=注销（黑名单）
+    				               		   value:1,
+    				               		   label:"正常"
+    				               	   	},{
+    			                		   value:2,
+    			                   		   label:"停用"
+    			                   	   	},{
+    			                    		   value:3,
+    			                       		   label:"注销"
+    			                       	 }, {
+  			                    		   value:4,
+  			                       		   label:"黑名单"
+  			                       	 }
+                       	]
+                      }
 			],$scope,settings,dTable);
 		}
 		
