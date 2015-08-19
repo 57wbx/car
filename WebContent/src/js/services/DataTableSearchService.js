@@ -11,8 +11,9 @@
 														                   }
 	scope：为需要绑定的$scope
 	settings：为datatables中的参数
-	dataTable： 为dTable = carShopList.DataTable()返回的的一个对象													                   
- * 
+	dataTable： 为dTable = carShopList.DataTable()返回的的一个对象		
+*
+*@authot zw	
  */
 app.factory("dataTableSearchService",['$compile',function($compile){
 //	var serachValue = [
@@ -32,7 +33,7 @@ app.factory("dataTableSearchService",['$compile',function($compile){
 	var initSearch = function(serachValue,scope,settings,dataTable){
 		if(!scope){console.error("scope不能为空！");return;};
 		if(!serachValue&&serachValue.length>0){console.error("查询数组对象不能为空");return;};
-		var formStr = "<form novalidate style='margin-right:10px;' class='text-right'>";
+		var formStr = "<form novalidate style='margin-right:10px;' class='navbar-form navbar-right form-inline text-right' role='search'>";
 		for(var i=0;i < serachValue.length;i++){
 			if(!serachValue[i].formDataName){console.error("配置对象没有指定的formDataName属性");return;};
 			var element ;
