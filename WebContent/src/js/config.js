@@ -1,7 +1,8 @@
 // config
 var app = angular.module('app').config(
-  ['$controllerProvider', '$compileProvider', '$filterProvider', '$provide', '$stateProvider',
-    function($controllerProvider, $compileProvider, $filterProvider, $provide, $stateProvider) {
+  ['$controllerProvider', '$compileProvider', '$filterProvider', '$provide', '$stateProvider','$httpProvider',
+    function($controllerProvider, $compileProvider, $filterProvider, $provide, $stateProvider,$httpProvider) {
+	 
       // lazy controller, directive and service
       app.controller = $controllerProvider.register;
       app.directive = $compileProvider.directive;
@@ -187,10 +188,48 @@ var app = angular.module('app').config(
     };
     return authorityInterceptor;
   }
-]).config(
+]).factory("loginInterceptor",['$templateCache',function($templateCache){
+	var interceptor = {
+			'request':function(config){
+				if(app.state && app.state.toState && config.url == app.state.toState.templateUrl){
+					config.headers.uiclass = app.state.toState.name ;
+				}
+				return config ;
+			},
+			'response':function(response){
+				console.info("response   + :",response);
+				console.info("response ",app.state.toState);
+				if(response.data.code==401){
+					//没有登陆
+//					 $templateCache.remove(app.state.toState.templateUrl);//清除所有的缓存
+					app.state.go('access.signin');
+				}else if(response.data.code==404){
+					//没有权限
+//					 $templateCache.remove(app.state.toState.templateUrl);//清除所有的缓存
+					app.state.go('app.home');
+				}
+				return response;
+			},
+			'responseError':function(config){
+				console.info("没有登陆或者没有权限",config);
+				if(config.data.code==401){
+					//没有登陆
+//					 $templateCache.remove(app.state.toState.templateUrl);//清除所有的缓存
+					app.state.go('access.signin');
+				}else if(config.data.code==404){
+					//没有权限
+//					 $templateCache.remove(app.state.toState.templateUrl);//清除所有的缓存
+					app.state.go('app.home');
+				}
+				return config;
+			}
+	};
+	return interceptor ;
+}]).config(
   ['$httpProvider',
     function($httpProvider) {
       $httpProvider.interceptors.push('authorityInterceptor');
+      $httpProvider.interceptors.push('loginInterceptor');
 //      $httpProvider.defaults.withCredentials = true;
       $httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
       $httpProvider.defaults.transformRequest = [

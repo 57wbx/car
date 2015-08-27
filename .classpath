@@ -62,7 +62,7 @@
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/slf4j-nop-1.5.8.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/spring.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/struts2-core-2.1.8.1.jar"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/struts2-json-plugin-2.1.8.1.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/struts2-json-plugin-2.1.8.1.jar" sourcepath="C:/Users/zw/Desktop/struts2-json-plugin-2.1.8.1.src.zip"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/struts2-spring-plugin-2.1.8.1.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/thumbnailator-0.4.2.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/ueditor-1.1.1.jar"/>

@@ -121,4 +121,9 @@ public class JsonValueFilterConfig {
 	public static final String[] COMPLAINS_HAS_COMPLAINUSER_HAS_DEALUSER = new String[]{"createUser","lastModifyUser","person","role","rootOrgUnit","carShop","password","orders","user_pw",HIBERNATE_LAZY_PROPERTISE_HANDLER,HIBERNATE_LAZY_PROPERTISE_LAZYINITIALIZER};
 	public static final String[] COMPLAIN_ONLY_COMPLAIN = new String[]{"dealUser","complainUser"};
 	
+	
+	/**
+	 * menu 菜单表需要处理的数据
+	 */
+	public static final String[] MENU_ONLY_MENU = new String[]{"parent",HIBERNATE_LAZY_PROPERTISE_HANDLER,HIBERNATE_LAZY_PROPERTISE_LAZYINITIALIZER};
 }

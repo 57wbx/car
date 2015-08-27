@@ -207,6 +207,23 @@ app.factory("modelDataCacheService",['$http','$q',function($http,$q){
 					});
 				}
 				return deferred.promise;
+			},
+			/**
+			 * 从服务端获取所有菜单的
+			 */
+			menuDataService:function(){
+				var deferred = $q.defer();
+					//需要从网上刷新最新的数据
+					$http({
+						url:"sys/sys/menuAction!listMenu.action",
+						method : "post"
+					}).then(function(resp){
+						if(resp.data.code==1){
+							var menuData = resp.data.data ;
+						}
+						deferred.resolve(menuData);
+					});
+				return deferred.promise;
 			}
 			
 	//对象定义结束

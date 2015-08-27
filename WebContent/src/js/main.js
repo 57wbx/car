@@ -1,15 +1,16 @@
 'use strict';
 /* Controllers */
-angular.module('app').controller('AppCtrl', ['$scope', '$translate', '$localStorage', '$window', '$http', '$state','$cookieStore','$location','loginedUserService',
-  function($scope, $translate, $localStorage, $window, $http, $state,$cookieStore,$location,loginedUserService) {
+angular.module('app').controller('AppCtrl', ['$scope', '$translate', '$localStorage', '$window', '$http', '$state','$cookieStore','$location','$templateCache','loginedUserService',
+  function($scope, $translate, $localStorage, $window, $http, $state,$cookieStore,$location,$templateCache,loginedUserService) {
     // add 'ie' classes to html
     var isIE = !! navigator.userAgent.match(/MSIE/i);
     isIE && angular.element($window.document.body).addClass('ie');
     isSmartDevice($window) && angular.element($window.document.body).addClass('smart');
     app.state = $state;
+    
     // config
     $scope.app = {
-      name: '微讯平台',
+      name: '优加养车',
       version: '1.0.0',
       // for chart colors
       color: {
@@ -115,6 +116,9 @@ angular.module('app').controller('AppCtrl', ['$scope', '$translate', '$localStor
             success: function(dt){ 
             	for(var i=0; i<dt.rows.length; i++){
             		var obj = dt.rows[i];
+            		if(!obj.child||obj.child.length<=0){
+            			continue ;
+            		}
             		var menu = new Object();//parentmen
             		menu.icon = "fa "+obj.imageClass+" "+obj.bgClass;
             		menu.name = obj.name;
@@ -144,6 +148,7 @@ angular.module('app').controller('AppCtrl', ['$scope', '$translate', '$localStor
             if (response.data.code == 1) {
                $cookieStore.remove('username');
                loginedUserService.logout();
+               $templateCache.removeAll();//清除所有的缓存
                $state.go('access.signin');
             } else {
             	 console.log("Logout: " + response.data.msg);
@@ -151,6 +156,14 @@ angular.module('app').controller('AppCtrl', ['$scope', '$translate', '$localStor
           }, function(x) {
           });
     };
+    
+    /**
+     * 重新生成菜单列表
+     */
+    $scope.$on("refreshMenu",function(){
+    	uiInit();
+    	 initLeftMenu();
+    });
 
     // 公用函数工具
     app.utils = {};
@@ -234,6 +247,11 @@ angular.module('app').controller('AppCtrl', ['$scope', '$translate', '$localStor
 			layer.remove();
 		},3000);
     };
+    
+    $scope.$on("firstOn",function(){
+    	alert("hello");
+    });
+    
     function isSmartDevice($window) {
       // Adapted from http://www.detectmobilebrowsers.com
       var ua = $window['navigator']['userAgent'] || $window['navigator']['vendor'] || $window['opera'];

@@ -30,10 +30,10 @@ app.controller('carShopEditController', ['$rootScope','$scope', '$http', '$state
       $scope.formData.orgName = dt.org.name;
       $scope.formData.org = undefined;
       
-      $scope.formData.IDCARDURLName = dt.IDCARDURL?"请点击&nbsp;<a href='#' style='color: blue; text-decoration: underline;'  onClick='$(\"#IDCARDURL\").click();'>预览！</a>":undefined;
-      $scope.formData.bankCardUrlName = dt.bankCardUrl ?"请点击&nbsp;<a href='#' style='color: blue; text-decoration: underline;'  onClick='$(\"#bankCardUrl\").click();'>预览！</a>":undefined;
-      $scope.formData.busCardUrlName = dt.busCardUrl?"请点击&nbsp;<a href='#' style='color: blue; text-decoration: underline;'  onClick='$(\"#busCardUrl\").click();'>预览！</a>":undefined;
-      $scope.formData.photoUrlName = dt.photoUrl?"请点击&nbsp;<a href='#' style='color: blue; text-decoration: underline;'  onClick='$(\"#photoUrl\").click();'>预览！</a>":undefined;
+      $scope.formData.IDCARDURLName = dt.IDCARDURL?"请点击&nbsp;<a style='color: blue; text-decoration: underline;'  onClick='$(\"#IDCARDURL\").click();'>预览！</a>":undefined;
+      $scope.formData.bankCardUrlName = dt.bankCardUrl ?"请点击&nbsp;<a  style='color: blue; text-decoration: underline;'  onClick='$(\"#bankCardUrl\").click();'>预览！</a>":undefined;
+      $scope.formData.busCardUrlName = dt.busCardUrl?"请点击&nbsp;<a  style='color: blue; text-decoration: underline;'  onClick='$(\"#busCardUrl\").click();'>预览！</a>":undefined;
+      $scope.formData.photoUrlName = dt.photoUrl?"请点击&nbsp;<a  style='color: blue; text-decoration: underline;'  onClick='$(\"#photoUrl\").click();'>预览！</a>":undefined;
       
       
       initFormData(dt);//配置其他需要手动加工的数据

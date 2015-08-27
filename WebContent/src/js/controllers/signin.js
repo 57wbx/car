@@ -3,6 +3,7 @@
 // 登录控制器
 app.controller('SigninFormController', ['$scope', '$http', '$state', '$cookieStore',
   function($scope, $http, $state, $cookieStore) {
+	
     $scope.user = {};
     $scope.authError = null;
     $scope.login = function() {
@@ -17,6 +18,8 @@ app.controller('SigninFormController', ['$scope', '$http', '$state', '$cookieSto
           exp.setTime(exp.getTime() + 30 * 1000);
           $cookieStore.put('username', escape($scope.user.name) + ';expires=' + exp.toGMTString());
           $cookieStore.put('user',JSON.stringify($scope.user));
+          //重新生成菜单数据
+          $scope.$emit("refreshMenu");
           $state.go('app.home');
         } else {
           $scope.authError = '用户名或密码错误';

@@ -1,0 +1,44 @@
+<div class="leave hbox hbox-auto-xs hbox-auto-sm"
+	ng-controller="menuController">
+	<div class="frame-panel">
+		<div class="row">
+			<!-- <div class="col-md-4 col-xs-0"></div> -->
+			<div class="col-md-3 col-xs-12">
+				<h2 class="leave-title text-left txt-center">菜单管理</h2>
+			</div>
+			<div class="col-md-9 col-xs-12"
+				ng-init="single=true;only=false;mutiple=true;locked=true">
+				<div class="panel-heading pull-right btn-group">
+					<button type="button" class="btn btn-success" ng-click="addRow()"
+						ng-disabled="only">
+						<i class="fa fa-fw fa-plus"></i> <span class="hid">添加一级菜单</span>
+					</button>
+					<button type="button" class="btn btn-info" ng-click="addRow()"
+						ng-disabled="only">
+						<i class="fa fa-fw fa-plus"></i> <span class="hid">添加二级菜单</span>
+					</button>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-2 " id="modelBusTypeTree">
+				<div menu-tree>
+							<abn-tree tree-data="tree_data" tree-control="org_tree"
+										on-select="tree_handler(branch)" expand-level="2"
+										initial-selection="" icon-leaf="icon-users"
+										icon-expand="fa fa-plus" icon-collapse="fa fa-minus">
+							</abn-tree>
+				</div>
+			</div>
+			<div class="col-md-10" id="modelContent">
+				<div class="panel panel-default">
+					<div class="panel-body">
+						<div class="wrapper-md">
+							<div class="" ui-view></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

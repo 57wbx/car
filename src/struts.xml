@@ -6,21 +6,24 @@
 <struts>
 	<constant name="struts.i18n.encoding" value="UTF-8"></constant>
 	<constant name="struts.multipart.maxSize" value="52428800"/><!-- 50m -->
-    <package name="default" namespace="/" extends="json-default">
-		<!-- 用户登陆拦截
-        <interceptors> 
-            <interceptor name="sas" class="com.hhxh.sas.common.intercept.CheckSessionIntercept"></interceptor> 
-        	<interceptor-stack name="mainStack">
-				<interceptor-ref name="sas">
-					<param name="excludeMethods"></param>
-				</interceptor-ref> 
-				<interceptor-ref name="defaultStack"></interceptor-ref> 
-			</interceptor-stack>
-        </interceptors> 
-		<default-interceptor-ref name="mainStack" />  
-        -->
-       
-    </package>
+	<constant name="struts.action.extension" value="action,do," />
+	 <package name="default" namespace="/" extends="json-default">
+		        <interceptors> 
+		            <interceptor name="authInterceptor" class="com.hhxh.car.common.interceptor.AuthInterceptor"></interceptor> 
+		        	<interceptor-stack name="mainStack">
+						<interceptor-ref name="defaultStack"></interceptor-ref> 
+						<interceptor-ref name="json"></interceptor-ref> 
+						<interceptor-ref name="authInterceptor"></interceptor-ref> 
+					</interceptor-stack>
+		        </interceptors> 
+			<default-interceptor-ref name="mainStack" />  
+			<global-results>
+				<result name="json" type="json">
+					<param name="root">dataMap</param>
+				</result>
+			</global-results>
+	  </package>
+
         
     <include file="structsXML/struts_*.xml"/>
 </struts>

@@ -48,8 +48,6 @@ public class RolePerm implements Serializable {
 	@Column(length=100,name="FUiClassPath")
 	private String uiClassPath;
 	
-	
-	
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="menuID")
 	private MainMenuItem menuItem;

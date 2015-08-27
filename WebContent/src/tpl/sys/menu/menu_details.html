@@ -1,0 +1,69 @@
+<div class="hbox hbox-auto-xs hbox-auto-sm" ng-controller="menuDetailsController">
+  <div class="panel-heading font-bold text-center">
+    菜单详情
+  </div>
+  <div class="panel-body">
+    <form class="form-horizontal" method="get" novalidate>
+	      <div class="form-group">
+	      			<label class="col-sm-1 control-label">编号<i class="fa fa-asterisk text-danger"></i></label>
+	      		  	<div class="col-sm-3">
+			          <input type="text"  class="form-control" ng-model="formData.longNumber" required>
+			        </div>
+			       <label class="col-sm-1 control-label">名称<i class="fa fa-asterisk text-danger"></i></label>
+			        <div class="col-sm-3">
+			          <input type="text" class="form-control" ng-model="formData.name"  required>
+			        </div>
+			        <label class="col-sm-1 control-label">级别<i class="fa fa-asterisk text-danger"></i></label>
+			        <div class="col-sm-3">
+			          	<select class="form-control" ng-model="formData.level" disabled>
+			          		<option value="0">一级菜单</option>
+			          		<option value="1">二级菜单</option>
+			          	</select>
+			        </div>
+	      </div>
+	       <div class="form-group">
+		      		<label class="col-sm-1 control-label">是否显示<i class="fa fa-asterisk text-danger"></i></label>
+		      		  <div class="col-sm-3">
+				          <select class="form-control" ng-model="formData.isShow">
+				          		<option value="0">是</option>
+				          		<option value="1">否</option>
+				          </select>
+			        </div>
+			       <label class="col-sm-1 control-label">是否叶子节点</label>
+			        <div class="col-sm-3">
+			            <select class="form-control" ng-model="formData.isLeaf">
+				          		<option value="0">是</option>
+				          		<option value="1">否</option>
+				          </select>
+			        </div>
+			        <label class="col-sm-1 control-label">图标路径</label>
+			        <div class="col-sm-3">
+			          	<select class="form-control" ng-options="c.class as c.name for c in imgArray" ng-model="formData.imagePath"></select>
+			        </div>
+	      </div>
+	      <div class="form-group">
+	      		<label class="col-sm-1 control-label">默认显示地址<i class="fa fa-asterisk text-danger"></i></label>
+	      		  	<div class="col-sm-3">
+			          	<input type="text"  class="form-control" ng-model="formData.uiClassName" required>
+			        </div>
+			       <label class="col-sm-1 control-label">显示颜色</label>
+			        <div class="col-sm-3">
+			          	<select class="form-control" ng-options="c.class as c.name for c in colorArray" ng-model="formData.uiClassParam"></select>
+			        </div>
+	      </div>
+	      <div class="form-group">
+	      		<label class="col-sm-1 control-label">备注</label>
+	      		  <div class="col-sm-11">
+	      		  	<textarea class="form-control" ng-model="formData.description"></textarea>
+			  </div>
+	      </div>
+      
+      <div class="line line-dashed b-b line-lg pull-in"></div>
+      <div class="form-group">
+        <div class="col-sm-offset-5 col-sm-2 ">
+        	<button class="btn btn-success">确定</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

@@ -30,8 +30,8 @@ app.controller('workerDetailsController', ['$rootScope','$scope', '$http', '$sta
     }).then(function(dt) {
     	if(dt.data.code){
     		$scope.formData = dt.data.details ;
-    		$scope.formData.MCARDURLName = dt.data.details.MCARDURL?"请点击&nbsp;<a href='#' style='color: blue; text-decoration: underline;'  onClick='$(\"#MCARDURL\").click();'>预览！</a>":undefined;
-	        $scope.formData.IDCARDURLName = dt.data.details.IDCARDURL?"请点击&nbsp;<a href='#' style='color: blue; text-decoration: underline;'  onClick='$(\"#IDCARDURL\").click();'>预览！</a>":undefined;
+    		$scope.formData.MCARDURLName = dt.data.details.MCARDURL?"请点击&nbsp;<a  style='color: blue; text-decoration: underline;'  onClick='$(\"#MCARDURL\").click();'>预览！</a>":undefined;
+	        $scope.formData.IDCARDURLName = dt.data.details.IDCARDURL?"请点击&nbsp;<a  style='color: blue; text-decoration: underline;'  onClick='$(\"#IDCARDURL\").click();'>预览！</a>":undefined;
 	        $scope.formData.birthdayStr = dt.data.details.birthday.substring(0,10) ;//2015-08-12    十位
 	        $scope.formData.birthdat = dt.data.details.birthday.substring(0,10);
     	}else{

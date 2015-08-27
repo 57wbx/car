@@ -1,6 +1,6 @@
 /**
  * 该服务主要是提供token使用 ，确保表单提交的正确性，保证不重复提交表单
- * 
+ * @author zw
  */
 app.factory("tokenService",['$http',function($http){
 	/**
@@ -33,7 +33,7 @@ app.factory("tokenService",['$http',function($http){
 	 * 从服务端flush最新的token
 	 *  服务内部使用不对外开放
 	 */
-	var flushToken = function(){
+	function flushToken(){
 		$http({
 			url:"token/tokenAction!flushToken.action",
 			method:"get"
@@ -44,6 +44,11 @@ app.factory("tokenService",['$http',function($http){
 				token = null;
 			}
 		});
+	}
+	
+	return {
+		getNewToken:getNewToken,
+		getToken:getToken
 	}
 	
 }]);

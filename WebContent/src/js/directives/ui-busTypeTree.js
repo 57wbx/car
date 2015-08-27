@@ -203,8 +203,6 @@ useState: 1
 									$("#modelContent").removeClass("col-md-10");
 									$("#modelContent").addClass("col-md-12");
 								}
-//							  
-						   
 			              }
 				   };
 				        // 连接函数 

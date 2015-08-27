@@ -18,6 +18,7 @@ import org.apache.struts2.ServletActionContext;
 import com.hhxh.car.base.busitem.domain.BusItem;
 import com.hhxh.car.base.carshop.domain.CarShop;
 import com.hhxh.car.common.action.AbstractAction;
+import com.hhxh.car.common.util.CommonConstant;
 import com.hhxh.car.common.util.DesCrypto;
 import com.hhxh.car.org.domain.AdminOrgUnit;
 import com.hhxh.car.org.domain.Person;
@@ -412,7 +413,7 @@ public class UserAction extends AbstractAction {
 		if(nuser!=null){
 			json.put("code", "1");
 			json.put("msg", "success");
-			setSessionValue("LOGIN_USER", nuser);
+			setSessionValue(CommonConstant.LOGIN_USER, nuser);
 		}else{
 			json.put("code", "2");
 			json.put("msg", "fail");

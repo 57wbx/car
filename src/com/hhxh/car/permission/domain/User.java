@@ -142,7 +142,7 @@ public class User implements Serializable,Comparable<Object> {
     private Person person;
     
     //角色
-    @ManyToOne
+    @ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name="roleid")
     private Role role;
     

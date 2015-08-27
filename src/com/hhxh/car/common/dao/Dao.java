@@ -374,6 +374,7 @@ public class Dao
 
 	public List querySql(String sql, Map<String, Object> paramMap, Integer start, Integer size)
 	{
+		log.info("查询的语句为：" + sql);
 		Session session = getSession();
 		SQLQuery sqlQuery = session.createSQLQuery(sql);
 		if (paramMap != null)

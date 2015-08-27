@@ -48,8 +48,17 @@ public class PermItem implements Serializable {
 	@Column(length=80,name = "FName")
 	private String name;
 	
+	@Column
+	private Integer fType ;
 	
+	@Column
+	private String uiClass ;
 	
+	@Column
+	private String action ;
+	
+	@Column
+	private Integer useState ;
 
 	public String getId() {
 		return id;
@@ -84,5 +93,44 @@ public class PermItem implements Serializable {
 		this.mainMenuItem = mainMenuItem;
 	}
 
+	public Integer getfType()
+	{
+		return fType;
+	}
+
+	public void setfType(Integer fType)
+	{
+		this.fType = fType;
+	}
+
+	public String getUiClass()
+	{
+		return uiClass;
+	}
+
+	public void setUiClass(String uiClass)
+	{
+		this.uiClass = uiClass;
+	}
+
+	public String getAction()
+	{
+		return action;
+	}
+
+	public void setAction(String action)
+	{
+		this.action = action;
+	}
+
+	public Integer getUseState()
+	{
+		return useState;
+	}
+
+	public void setUseState(Integer useState)
+	{
+		this.useState = useState;
+	}
 
 }

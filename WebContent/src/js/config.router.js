@@ -1,14 +1,27 @@
 'use strict';
 
 angular.module('app').run(
-  ['$rootScope', '$state', '$stateParams',
-    function($rootScope, $state, $stateParams) {
+  ['$rootScope', '$state', '$stateParams','tokenService',
+    function($rootScope, $state, $stateParams,tokenService) {
       $rootScope.$state = $state;
       $rootScope.$stateParams = $stateParams;
+      
+	  $rootScope.$on('$stateChangeSuccess',
+			  function(event, toState, toParams, fromState, fromParams){
+//		  		tokenService.getNewToken();
+	  });
+	  $rootScope.$on('$stateChangeStart',
+			  function(event, toState, toParams, fromState, fromParams){
+//			      event.preventDefault();
+		  	console.info("changeStart",toState);
+		  	$rootScope.$state.toState = toState;
+			  })
+	
     }
   ]).config(
-  ['$stateProvider', '$urlRouterProvider', 'JQ_CONFIG',
-    function($stateProvider, $urlRouterProvider, JQ_CONFIG) {
+  ['$stateProvider', '$urlRouterProvider','$httpProvider', 'JQ_CONFIG',
+    function($stateProvider, $urlRouterProvider,$httpProvider, JQ_CONFIG) {
+	  
       //$urlRouterProvider.when('/app/home');
       $urlRouterProvider.otherwise('/app/home');
       $stateProvider.state('app', {
@@ -1359,7 +1372,31 @@ angular.module('app').run(
 													                }
 													              ]
 													            }
-														      })
+														      }).state('app.menu', {
+														            url: '/menu',
+														            templateUrl: 'src/tpl/sys/menu/menu.html',
+														            resolve: {
+														              deps: ['$ocLazyLoad', 'uiLoad',
+														                function($ocLazyLoad, uiLoad) {
+														                  return $ocLazyLoad.load('angularBootstrapNavTree').then(function() {
+														                    return $ocLazyLoad.load('src/js/controllers/sys/menu/MenuController.js');
+														                  });
+														                }
+														              ]
+														            }
+															      }).state('app.menu.details', {
+															            url: '/details',
+															            templateUrl: 'src/tpl/sys/menu/menu_details.html',
+															            resolve: {
+															              deps: ['$ocLazyLoad', 'uiLoad',
+															                function($ocLazyLoad, uiLoad) {
+															                  return $ocLazyLoad.load('angularBootstrapNavTree').then(function() {
+															                    return $ocLazyLoad.load('src/js/controllers/sys/menu/MenuDetailsController.js');
+															                  });
+															                }
+															              ]
+															            }
+																      })
       // form
       .state('app.form', {
         url: '/form',

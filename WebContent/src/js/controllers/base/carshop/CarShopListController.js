@@ -38,6 +38,10 @@ app.controller('carShopListController',['$rootScope','$scope','$state','$timeout
 				}
 			
 				//缓存数据
+			}).on('xhr.dt', function ( e, settings, json, xhr ) {
+				if(json.code==401){
+					app.state.go('access.signin');
+				}
 			}).DataTable({
 				"sAjaxSource":"base/carShopAction!listCarShopWithMannager.action",
 		    	"bServerSide":true,
@@ -88,7 +92,7 @@ app.controller('carShopListController',['$rootScope','$scope','$state','$timeout
 			    	"mDataProp":"username",
 			    	"render":function(param){
 			    		if(param){
-			    			return "<a name='operation' href='#' style='text-decoration:underline;color:blue;'>"+param+"</a>";
+			    			return "<a name='operation'  style='text-decoration:underline;color:blue;'>"+param+"</a>";
 			    		}else{
 			    			return "<button name='operation'  type='button' class='btn btn-default'>新增</button>";
 			    		}
