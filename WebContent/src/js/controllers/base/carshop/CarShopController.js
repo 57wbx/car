@@ -86,7 +86,7 @@ app.controller('carShopController', ['$rootScope','$scope','$state','$timeout','
     	  }).then(function(resp){
     		  mask.remove();
     		  container.addClass('none');
-    		  if(resp.data.code){
+    		  if(resp.data.code==1){
     			  hintService.hint({title: "成功", content: "删除成功！" });
     			  $state.reload($scope.state.list);
     		  }else{
@@ -172,7 +172,7 @@ app.controller('carShopController', ['$rootScope','$scope','$state','$timeout','
 		  	  }
 		  });
 	  },function(resp){
-		  if(resp.data.code){
+		  if(resp.data.code==1){
 			  hintService.hint({title: "成功", content: "状态更改成功！" });
 			  $state.reload($scope.state.list);
 		  }else{

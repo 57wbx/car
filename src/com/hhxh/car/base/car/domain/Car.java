@@ -17,11 +17,11 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name="base_car")
-public class Car implements java.io.Serializable
+public class Car 
 {
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	private int id;
+	private Integer id;
 	@Column(name="FIRST_LETTER")
 	private String firstLetter;
 	@Column(name="MAKE_NAME")
@@ -46,8 +46,6 @@ public class Car implements java.io.Serializable
 	private String transmission;
 	@Column
 	private Date updateTime;
-	@Column
-	private String photoUrl;
 
 	public Car()
 	{
@@ -58,31 +56,12 @@ public class Car implements java.io.Serializable
 		this.id = id;
 	}
 
-	public Car(int id, String firstLetter, String makeName, String modelSeries, String modelName, String typeSeries, String typeName, String country, String technology, String vehicleClass,
-			String engineCapacity, String transmission, Date updateTime, String photoUrl)
+	public Integer getId()
 	{
-		this.id = id;
-		this.firstLetter = firstLetter;
-		this.makeName = makeName;
-		this.modelSeries = modelSeries;
-		this.modelName = modelName;
-		this.typeSeries = typeSeries;
-		this.typeName = typeName;
-		this.country = country;
-		this.technology = technology;
-		this.vehicleClass = vehicleClass;
-		this.engineCapacity = engineCapacity;
-		this.transmission = transmission;
-		this.updateTime = updateTime;
-		this.photoUrl = photoUrl;
+		return id;
 	}
 
-	public int getId()
-	{
-		return this.id;
-	}
-
-	public void setId(int id)
+	public void setId(Integer id)
 	{
 		this.id = id;
 	}
@@ -207,14 +186,12 @@ public class Car implements java.io.Serializable
 		this.updateTime = updateTime;
 	}
 
-	public String getPhotoUrl()
+	@Override
+	public String toString()
 	{
-		return this.photoUrl;
+		return "Car [id=" + id + ", firstLetter=" + firstLetter + ", makeName=" + makeName + ", modelSeries=" + modelSeries + ", modelName=" + modelName + ", typeSeries=" + typeSeries + ", typeName="
+				+ typeName + ", country=" + country + ", technology=" + technology + ", vehicleClass=" + vehicleClass + ", engineCapacity=" + engineCapacity + ", transmission=" + transmission
+				+ ", updateTime=" + updateTime + "]";
 	}
-
-	public void setPhotoUrl(String photoUrl)
-	{
-		this.photoUrl = photoUrl;
-	}
-
+	
 }

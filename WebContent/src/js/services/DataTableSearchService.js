@@ -1,5 +1,6 @@
 /**
  * 为datatable插件添加查询参数的的服务，
+ * 2015 9.1 新增表格点击事件
  * 参数：serachValue,scope,settings,dataTable
  * serachValue 为需要查询的参数是一个数组对象，其中input查询的对象为{formDataName：你自己定义的名称，在查询的时候用到。,placeholder:'显示内容'}
  * 									select 也是一个对象 {
@@ -30,6 +31,9 @@ app.factory("dataTableSearchService",['$compile',function($compile){
 //	                	   placeholder:'显示内容听我'
 //	                   }
 //	                   ];
+	/**
+	 * 初始化datatable搜索的组件
+	 */
 	var initSearch = function(serachValue,scope,settings,dataTable){
 		if(!scope){console.error("scope不能为空！");return;};
 		if(!serachValue&&serachValue.length>0){console.error("查询数组对象不能为空");return;};
@@ -66,8 +70,116 @@ app.factory("dataTableSearchService",['$compile',function($compile){
 		angular.element(settings.nTableWrapper.firstChild).html(form);
 		
 //		console.info(formStr);
-	}
+	};
+	/**
+	 * 初始化datatable组件默认的点击事件。点击行将选择其id保存到容器中
+	 * @param table 为使用Datatable函数返回的对象
+	 * @param ids 是用来保存所选中的id的容器 一般选择$scope.rowIds ;
+	 * @param showBtnFn 是显示按钮状态的函数，ids的数量变化时，按钮也要跟着变化。一般选择 $scope.setBtnStatus
+	 * @param seeDetailsFn 查看数据相信信息的方法  一般选择：$scope.seeDetails
+	 */
+	var initClick = function(table,ids,showBtnFn,seeDetailsFn){
+		// 表格行事件
+			this.table = table ;
+			this.ids = ids ;//初始化用来储存id的容器，默认为空
+			ids.splice(0,ids.length);
+			if(showBtnFn){
+				showBtnFn();
+			}
+			var headInput = $(table.tables().header()).find("input"); ;//列表头部input
+			var bodyInputs = $(table.tables().body()).find("input") ;//内容体input
+			/**
+			 * 控制头部的input的显示
+			 */
+			var checkedHeadInput = function(){
+				var isAllChecked = true ;
+				for(var i=0;i<bodyInputs.length;i++){
+					if(!$(bodyInputs[i]).prop("checked")){
+						isAllChecked = false ;
+					}
+				}
+				if(isAllChecked){
+					headInput.prop("checked",true);
+				}else{
+					headInput.prop("checked",false);
+				}
+			}
+			/**
+			 * 添加一个input的的id到ids对象中
+			 */
+			var addInputId = function(input){
+				if(ids){
+					ids.push(input.parents("tr").data("id"));
+				}
+				console.info(ids);
+			}
+			/**
+			 * 删除一个input中指定的id
+			 */
+			var deleteInputId = function(input){
+				if(ids){
+					var id = input.parents("tr").data("id") ;
+					var idx = ids.indexOf(id);
+			        if(idx !== -1 ) ids.splice(idx, 1);
+				}
+				console.info(ids);
+			}
+			//当点击表格体的input的时候
+			var clickBodyInput = function(input,id){
+				if(input.prop("checked")){
+					deleteInputId(input);
+					input.prop("checked",false);
+					headInput.prop("checked",false);
+				}else{
+					addInputId(input);
+					input.prop("checked",true);
+					checkedHeadInput();
+				}
+				if(showBtnFn){
+					showBtnFn();
+				}
+			}
+			//单点击表头的input的时候
+			var clickHeadInput = function(){
+				if(headInput.prop("checked")){//为true说明要将所有的子项选上
+					bodyInputs.prop("checked",true);
+					ids.splice(0,ids.length);
+					for(var i=0;i<bodyInputs.length;i++){
+						addInputId($(bodyInputs[i]));
+					}
+				}else{
+					ids.splice(0,ids.length);
+					bodyInputs.prop("checked",false);
+				}
+				if(showBtnFn){
+					showBtnFn();
+				}
+			}
+			var initClickEvent = function(){
+					//初始化头部选择框的点击事件
+					headInput.off().click(function(){
+						clickHeadInput();
+					});
+					//初始化表体行的点击事件  没有初始化input的事件，只是初始化 表格行的事件，表格行可以代表input的事件
+					table.$('tr').off().dblclick(function(e, settings) {
+							if(seeDetailsFn){
+								seeDetailsFn($(this).data('id'))
+							}
+				    }).click(function(e) {
+				    	//阻止冒泡 阻止向下或者向上传递事件
+				    	var evt = e || window.event;
+					    evt.preventDefault();
+					    evt.stopPropagation();
+					    //触发点击事件
+				    	clickBodyInput($(this).find("input"),$(this).data('id'));
+				    });
+			}
+			//赋予点击事件
+			initClickEvent();
+	};
+	//结束初始化表单点击事件
 	return {
-		initSearch:initSearch
+		initSearch:initSearch,
+		initClick:initClick//新增点击事件
 	};
 }]);

@@ -8,6 +8,7 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import com.hhxh.car.common.action.AbstractAction;
+import com.hhxh.car.common.annotation.AuthCheck;
 import com.hhxh.car.permission.domain.User;
 import com.hhxh.car.permission.service.RolePermService;
 

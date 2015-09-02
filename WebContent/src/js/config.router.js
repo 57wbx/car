@@ -1391,12 +1391,135 @@ angular.module('app').run(
 															              deps: ['$ocLazyLoad', 'uiLoad',
 															                function($ocLazyLoad, uiLoad) {
 															                  return $ocLazyLoad.load('angularBootstrapNavTree').then(function() {
+															                    $ocLazyLoad.load('src/js/controllers/sys/menu/AddActionController.js');
 															                    return $ocLazyLoad.load('src/js/controllers/sys/menu/MenuDetailsController.js');
 															                  });
 															                }
 															              ]
 															            }
-																      })
+																      }).state('app.car', {
+																            url: '/car',
+																            templateUrl: 'src/tpl/base/car/car.html',
+																            abstract:true,
+																            resolve: {
+																              deps: ['$ocLazyLoad', 'uiLoad',
+																                function($ocLazyLoad, uiLoad) {
+																                  return $ocLazyLoad.load('angularBootstrapNavTree').then(function() {
+																                    return $ocLazyLoad.load('src/js/controllers/base/car/CarController.js');
+																                  });
+																                }
+																              ]
+																            }
+																	      }).state('app.car.list', {
+																	            url: '/list',
+																	            templateUrl: 'src/tpl/base/car/car_list.html',
+																	            resolve: {
+																	              deps: ['$ocLazyLoad', 'uiLoad',
+																	                function($ocLazyLoad, uiLoad) {
+																	                  return $ocLazyLoad.load('angularBootstrapNavTree').then(function() {
+																	                    return $ocLazyLoad.load('src/js/controllers/base/car/CarListController.js');
+																	                  });
+																	                }
+																	              ]
+																	            }
+																		      }).state('app.car.add', {
+																		            url: '/add',
+																		            templateUrl: 'src/tpl/base/car/car_add.html',
+																		            resolve: {
+																		              deps: ['$ocLazyLoad', 'uiLoad',
+																		                function($ocLazyLoad, uiLoad) {
+																		                  return $ocLazyLoad.load('angularBootstrapNavTree').then(function() {
+																		                    return $ocLazyLoad.load('src/js/controllers/base/car/CarAddController.js');
+																		                  });
+																		                }
+																		              ]
+																		            }
+																			      }).state('app.car.edit', {
+																			            url: '/edit',
+																			            templateUrl: 'src/tpl/base/car/car_edit.html',
+																			            resolve: {
+																			              deps: ['$ocLazyLoad', 'uiLoad',
+																			                function($ocLazyLoad, uiLoad) {
+																			                  return $ocLazyLoad.load('angularBootstrapNavTree').then(function() {
+																			                    return $ocLazyLoad.load('src/js/controllers/base/car/CarEditController.js');
+																			                  });
+																			                }
+																			              ]
+																			            }
+																				      }).state('app.car.details', {
+																				            url: '/details',
+																				            templateUrl: 'src/tpl/base/car/car_details.html',
+																				            resolve: {
+																				              deps: ['$ocLazyLoad', 'uiLoad',
+																				                function($ocLazyLoad, uiLoad) {
+																				                  return $ocLazyLoad.load('angularBootstrapNavTree').then(function() {
+																				                    return $ocLazyLoad.load('src/js/controllers/base/car/CarDetailsController.js');
+																				                  });
+																				                }
+																				              ]
+																				            }
+																					      }).state('app.carname', {
+																					            url: '/carname',
+																					            templateUrl: 'src/tpl/base/carname/carname.html',
+																					            abstract:true,
+																					            resolve: {
+																					              deps: ['$ocLazyLoad', 'uiLoad',
+																					                function($ocLazyLoad, uiLoad) {
+																					                  return $ocLazyLoad.load('angularBootstrapNavTree').then(function() {
+																					                    return $ocLazyLoad.load('src/js/controllers/base/carname/CarNameController.js');
+																					                  });
+																					                }
+																					              ]
+																					            }
+																						      }).state('app.carname.list', {
+																						            url: '/list',
+																						            templateUrl: 'src/tpl/base/carname/carname_list.html',
+																						            resolve: {
+																						              deps: ['$ocLazyLoad', 'uiLoad',
+																						                function($ocLazyLoad, uiLoad) {
+																						                  return $ocLazyLoad.load('angularBootstrapNavTree').then(function() {
+																						                    return $ocLazyLoad.load('src/js/controllers/base/carname/CarNameListController.js');
+																						                  });
+																						                }
+																						              ]
+																						            }
+																							      }).state('app.carname.add', {
+																							            url: '/add',
+																							            templateUrl: 'src/tpl/base/carname/carname_add.html',
+																							            resolve: {
+																							              deps: ['$ocLazyLoad', 'uiLoad',
+																							                function($ocLazyLoad, uiLoad) {
+																							                  return $ocLazyLoad.load('angularBootstrapNavTree').then(function() {
+																							                    return $ocLazyLoad.load('src/js/controllers/base/carname/CarNameAddController.js');
+																							                  });
+																							                }
+																							              ]
+																							            }
+																								      }).state('app.carname.edit', {
+																								            url: '/edit',
+																								            templateUrl: 'src/tpl/base/carname/carname_edit.html',
+																								            resolve: {
+																								              deps: ['$ocLazyLoad', 'uiLoad',
+																								                function($ocLazyLoad, uiLoad) {
+																								                  return $ocLazyLoad.load('angularBootstrapNavTree').then(function() {
+																								                    return $ocLazyLoad.load('src/js/controllers/base/carname/CarNameEditController.js');
+																								                  });
+																								                }
+																								              ]
+																								            }
+																									      }).state('app.carname.details', {
+																									            url: '/details',
+																									            templateUrl: 'src/tpl/base/carname/carname_details.html',
+																									            resolve: {
+																									              deps: ['$ocLazyLoad', 'uiLoad',
+																									                function($ocLazyLoad, uiLoad) {
+																									                  return $ocLazyLoad.load('angularBootstrapNavTree').then(function() {
+																									                    return $ocLazyLoad.load('src/js/controllers/base/carname/CarNameDetailsController.js');
+																									                  });
+																									                }
+																									              ]
+																									            }
+																										      })
       // form
       .state('app.form', {
         url: '/form',

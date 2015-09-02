@@ -1,0 +1,84 @@
+<div class="hbox hbox-auto-xs hbox-auto-sm" ng-controller="carEditController">
+  <div class="panel-heading font-bold text-center">
+    修改车型
+  </div>
+  
+  	<div class="panel-body">
+    	<form name="form" class="form-horizontal form-validation" method="post" ng-model="formData" enctype="multipart/form-data" novalidate>
+	      <div class="form-group">
+		        <label class="col-sm-1 control-label">品牌首字母<i class="fa fa-asterisk text-danger"></i></label>
+		        <div class="col-sm-3">
+		        	<input type="text" class="form-control" ng-model="formData.firstLetter" required />
+		        </div>
+	        
+		        <label class="col-sm-1  control-label">品牌名称<i class="fa fa-asterisk text-danger"></i></label>
+		        <div class="col-sm-3 ">
+		          <input  type="text"  class="form-control" ng-model="formData.makeName" required>
+		      	 </div>
+		      	 
+		      	 <label class="col-sm-1  control-label">厂商<i class="fa fa-asterisk text-danger"></i></label>
+		        <div class="col-sm-3 ">
+		          <input  type="text"  class="form-control" ng-model="formData.modelSeries" required>
+		      	 </div>
+	      </div>
+	      
+	        <div class="form-group">
+		        <label class="col-sm-1 control-label">车系</label>
+		        <div class="col-sm-3">
+		        	<input type="text" class="form-control" ng-model="formData.modelName" />
+		        </div>
+	        
+		        <label class="col-sm-1  control-label">年款</label>
+		        <div class="col-sm-3 ">
+		          <input  type="text"  class="form-control" ng-model="formData.typeSeries">
+		      	 </div>
+		      	 
+		      	 <label class="col-sm-1  control-label">型号<i class="fa fa-asterisk text-danger"></i></label>
+		        <div class="col-sm-3 ">
+		          <input  type="text"  class="form-control" ng-model="formData.typeName" required>
+		      	 </div>
+	      </div>
+	      
+	        <div class="form-group">
+		        <label class="col-sm-1 control-label">出产国</label>
+		        <div class="col-sm-3">
+		        	<input type="text" class="form-control" ng-model="formData.country" />
+		        </div>
+	        
+		        <label class="col-sm-1  control-label">性质</label>
+		        <div class="col-sm-3 ">
+		          <input  type="text"  class="form-control" ng-model="formData.technology">
+		      	 </div>
+		      	 
+		      	 <label class="col-sm-1  control-label">外形</label>
+		        <div class="col-sm-3 ">
+		          <input  type="text"  class="form-control" ng-model="formData.vehicleClass">
+		      	 </div>
+	      </div>
+	      
+	        <div class="form-group">
+		        <label class="col-sm-1 control-label">发电机容量</label>
+		        <div class="col-sm-3">
+		        	<input type="text" class="form-control" ng-model="formData.engineCapacity" />
+		        </div>
+	        
+		        <label class="col-sm-1  control-label">动力类型</label>
+		        <div class="col-sm-3 ">
+		          <input  type="text"  class="form-control" ng-model="formData.transmission">
+		      	 </div>
+	      </div>
+      
+      <div class="line line-dashed b-b line-lg pull-in"></div>
+      
+      <div class="form-group">
+        <div class="col-sm-offset-4 col-sm-2 col-xs-6">
+          <div doing button-value="保存" doing-value="保存中..." is-doing="isDoing" doing-method="submit();" form-valid="form.$valid"></div>
+        </div>
+        <div class="col-sm-2 col-xs-6">
+          <a ng-click="cancel()" class="w100 btn btn-default">取消</a>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+

@@ -52,4 +52,13 @@ public class CommonConstant
 	 * 不是黑名单对象
 	 */
 	public static final Integer BLACKLIST_NO = 0;
+	
+	/**
+	 * 是否存在:存在，用于搜索条件
+	 */
+	public static final String IS_NULL = "isNull";
+	/**
+	 * 是否存在：不存在 用于搜索条件
+	 */
+	public static final String IS_NOT_NULL = "isNotNull";
 }

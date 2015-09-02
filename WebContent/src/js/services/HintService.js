@@ -1,4 +1,4 @@
-app.service("hintService", ["$http", "$document", "$compile", "$rootScope", function ($http, $document, $compile, $rootScope) {
+app.service("hintService", ["$http", "$document", "$compile", "$rootScope","$q", function ($http, $document, $compile, $rootScope,$q) {
 	var container;
 	if (!document.getElementById("hintContainer")) {
 		container = angular.element("<div class='sn-hint-container'>");
@@ -11,6 +11,7 @@ app.service("hintService", ["$http", "$document", "$compile", "$rootScope", func
     return {
         hint: function (param, url) {
             $http.get(url || "src/tpl/commonTemp/hint.html").then(function (result) {
+            	var deferred = $q.defer();
                 var hint = angular.element(result.data);
 
                 hint.css("display", "block");
@@ -29,8 +30,11 @@ app.service("hintService", ["$http", "$document", "$compile", "$rootScope", func
 
                     setTimeout(function () {
                         hint.remove();
+                        deferred.resolve();
                     }, 500);
                 }, 2000);
+                
+                return deferred.promise;
             });
         }
     };

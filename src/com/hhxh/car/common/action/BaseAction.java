@@ -87,6 +87,7 @@ public class BaseAction extends ActionSupport
 
 	protected SimpleDateFormat ymdhm = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 	protected SimpleDateFormat ymd = new SimpleDateFormat("yyyy-MM-dd");
+	
 
 	/**
 	 * 假如需要传输的数据不复杂，所有的数据都通过该json对象进行传输
@@ -441,5 +442,6 @@ public class BaseAction extends ActionSupport
 		}
 		return getMessageFromConfig("common_deflaut_message");
 	}
+
 
 }

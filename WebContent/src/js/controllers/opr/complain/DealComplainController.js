@@ -15,7 +15,7 @@ app.controller("dealComplainController",['$scope','$modalInstance','$timeout','$
 				id:id
 			}
 		}).then(function(resp){
-			if(resp.data.code){
+			if(resp.data.code==1){
 				$scope.formData = resp.data.details ;
 				//1=门店、2=技工
 				
@@ -44,7 +44,7 @@ app.controller("dealComplainController",['$scope','$modalInstance','$timeout','$
 			method:"post",
 			data:$scope.formData
 		}).then(function(resp){
-			if(resp.data.code){
+			if(resp.data.code==1){
 				//成功
 				hintService.hint({title: "成功", content: "处理成功！" });
 				$modalInstance.close();

@@ -34,7 +34,7 @@ public class CopyObjectUtil {
 		Field[] fileds = carrayObject.getClass().getDeclaredFields();
 		//所有的属性
 		List<Field> filedsArray = Arrays.asList(fileds);
-		
+		//TODO 需要排除属性中的seriseUID属性
 		//排除需要过滤的数据
 		for(Field f:filedsArray)
 		{

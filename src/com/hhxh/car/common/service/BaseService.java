@@ -1,5 +1,6 @@
 package com.hhxh.car.common.service;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -10,6 +11,7 @@ import org.hibernate.criterion.Example;
 import org.hibernate.criterion.Order;
 import org.springframework.stereotype.Service;
 
+import com.hhxh.car.base.car.domain.Car;
 import com.hhxh.car.common.dao.Dao;
 
 @Service
@@ -97,6 +99,10 @@ public class BaseService {
 	}
 
 	public <T> void delete(Class<T> clazz, String id) {
+		dao.deleteObject(clazz, id);
+	}
+	
+	public <T> void delete(Class<T> clazz, Serializable id) {
 		dao.deleteObject(clazz, id);
 	}
 
@@ -220,6 +226,10 @@ public class BaseService {
 		return dao.querySqlToMap(sql, start, length);
 	}
 	
+	public List<Map> querySqlToMap(String sql,Map<String,Object> paramMap,int start,int length){
+		return dao.querySqlToMap(sql,paramMap, start, length);
+	}
+	
 	public String getUUID(){
 		return this.dao.getUUID();
 	}
@@ -229,7 +239,7 @@ public class BaseService {
 	 * 删除一个数组的数据对象 不考虑是否有相关联的数据
 	 * by zw
 	 */
-	public void deleteByIds(Class clazz,String[] ids)throws Exception{
+	public void deleteByIds(Class clazz,Serializable[] ids)throws Exception{
 		if(ids!=null&&ids.length>0){
 			for(int i=0;i<ids.length;i++){
 				this.delete(clazz, ids[i]);
@@ -255,6 +265,14 @@ public class BaseService {
 	 */
 	public <T> T  get(Class<T> clazz,List<Criterion> params,String[] needFetchName){
 		return this.dao.get(clazz, params, needFetchName);
+	}
+	public <T> List<T> gets(Class<T> class1, List<Criterion> params, Map<String, List<Criterion>> criteriaMap, int iDisplayStart, int iDisplayLength, List<Order> orders)
+	{
+		return this.dao.gets(class1, params,criteriaMap,iDisplayStart,iDisplayLength,orders);
+	}
+	
+	public <T> T get(Class<T> clazz,Serializable id){
+		return this.dao.get(clazz, id);
 	}
 	
 }

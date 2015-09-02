@@ -244,8 +244,8 @@ app.controller('orderListController',['$scope','$state','$timeout','$http','$mod
 //        	    } );
           },
           "initComplete":function(settings,json){
-          	if( $scope.shopItemDataTableProperties){
-          		var pageIndex = $scope.shopItemDataTableProperties.iDisplayStart/$scope.shopItemDataTableProperties.iDisplayLength;
+          	if( $scope.orderDataTableProperties){
+          		var pageIndex = $scope.orderDataTableProperties.iDisplayStart/$scope.orderDataTableProperties.iDisplayLength;
           		busItemTable.page(pageIndex).draw(false);
           	}
           	initSearchDiv(settings,json);

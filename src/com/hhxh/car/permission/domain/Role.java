@@ -2,6 +2,8 @@ package com.hhxh.car.permission.domain;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,6 +11,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -82,6 +86,10 @@ public class Role implements Serializable {
     @JoinColumn(name="orgID")
 	private AdminOrgUnit adminOrgUnit;
 
+	@ManyToMany(fetch=FetchType.LAZY)
+	@JoinTable(name="sys_role_menu",joinColumns={@JoinColumn(name="roleID")},inverseJoinColumns={@JoinColumn(name="permitemID")})
+	private Set<PermItem> permItems = new HashSet<PermItem>();
+	
 	public Role(String roleId) {
 		this.id = roleId;
 	}
@@ -166,7 +174,20 @@ public class Role implements Serializable {
 	public void setAdminOrgUnit(AdminOrgUnit adminOrgUnit) {
 		this.adminOrgUnit = adminOrgUnit;
 	}
+	public Set<PermItem> getRolePerms()
+	{
+		return permItems;
+	}
+	public void setRolePerms(Set<PermItem> rolePerms)
+	{
+		this.permItems = rolePerms;
+	}
+	@Override
+	public String toString()
+	{
+		return "Role [id=" + id + ", name=" + name + ", number=" + number + ", description=" + description + ", simpleName=" + simpleName + "]";
+	}
 	
-
-
+	
+	
 }

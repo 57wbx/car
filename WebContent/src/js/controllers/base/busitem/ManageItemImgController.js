@@ -39,7 +39,7 @@ app.controller('manageItemImgController',['$rootScope','$scope','$state','$timeo
 			fid:itemId
 		}
 	}).then(function(resp){
-		if(resp.data.code){
+		if(resp.data.code==1){
 			$scope.busItemName = resp.data.details.itemName ;
 		}
 	});

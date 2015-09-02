@@ -11,17 +11,17 @@
 		        <interceptors> 
 		            <interceptor name="authInterceptor" class="com.hhxh.car.common.interceptor.AuthInterceptor"></interceptor> 
 		        	<interceptor-stack name="mainStack">
-						<interceptor-ref name="defaultStack"></interceptor-ref> 
-						<interceptor-ref name="json"></interceptor-ref> 
+<!-- 						<interceptor-ref name="json"></interceptor-ref>  -->
 						<interceptor-ref name="authInterceptor"></interceptor-ref> 
+						<interceptor-ref name="defaultStack"></interceptor-ref> 
 					</interceptor-stack>
 		        </interceptors> 
 			<default-interceptor-ref name="mainStack" />  
-			<global-results>
-				<result name="json" type="json">
-					<param name="root">dataMap</param>
-				</result>
-			</global-results>
+<!-- 			<global-results> -->
+<!-- 				<result name="json" type="json"> -->
+<!-- 					<param name="root">dataMap</param> -->
+<!-- 				</result> -->
+<!-- 			</global-results> -->
 	  </package>
 
         

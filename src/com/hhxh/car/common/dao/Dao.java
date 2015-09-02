@@ -1,5 +1,6 @@
 package com.hhxh.car.common.dao;
 
+import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -229,8 +230,20 @@ public class Dao
 		Session session = getSession();
 		return (T) session.get(clazz, id);
 	}
+	
+	public <T> T get(Class<T> clazz,Serializable id){
+		Session session = getSession();
+		return (T) session.get(clazz, id);
+	}
 
 	public <T> void deleteObject(Class<T> clazz, String id)
+	{
+		Session session = getSession();
+		T t = (T) session.get(clazz, id);
+		session.delete(t);
+	}
+	
+	public <T> void deleteObject(Class<T> clazz, Serializable id)
 	{
 		Session session = getSession();
 		T t = (T) session.get(clazz, id);
@@ -483,7 +496,7 @@ public class Dao
 
 		if (iDisplayStart >= 0 && iDisplayLength > 0)
 		{
-			mainCriteria.setFirstResult(iDisplayStart).setFetchSize(iDisplayLength);
+			mainCriteria.setFirstResult(iDisplayStart).setMaxResults(iDisplayLength);
 		}
 
 		List<T> resultList = mainCriteria.list();
@@ -532,6 +545,64 @@ public class Dao
 		Long result = (Long) mainCriteria.uniqueResult();
 		return Integer.parseInt(Long.toString(result));
 	}
+	
+	/**
+	 * 查询方法
+	 */
+	public <T> List<T> gets(Class<T> class1, List<Criterion> params, Map<String, List<Criterion>> criteriaMap, int iDisplayStart, int iDisplayLength, List<Order> orders)
+	{
+		Criteria mainCriteria = getSession().createCriteria(class1);
+		/*
+		 * 添加主表的查询条件
+		 */
+		if (params != null && params.size() > 0)
+		{
+			for (Criterion c : params)
+			{
+				mainCriteria.add(c);
+			}
+		}
+		/*
+		 * 添加 子表的查询条件
+		 */
+		if (criteriaMap != null && criteriaMap.size() > 0)
+		{
+			Set<String> keys = criteriaMap.keySet();
+			for (String k : keys)
+			{
+				List<Criterion> childsCriterions = criteriaMap.get(k);
+				if (childsCriterions != null && childsCriterions.size() > 0)
+				{
+					mainCriteria.setFetchMode(k, FetchMode.JOIN);
+					Criteria childCriteria = mainCriteria.createCriteria(k);
+					for (Criterion child : childsCriterions)
+					{
+						childCriteria.add(child);
+					}
+				}
+			}
+		}
+
+		if(orders!=null&&orders.size()>0){
+			for(Order o:orders){
+				mainCriteria.addOrder(o);
+			}
+		}
+		
+		if (iDisplayStart >= 0 && iDisplayLength > 0)
+		{
+			mainCriteria.setFirstResult(iDisplayStart).setMaxResults(iDisplayLength);
+		}
+
+		List<T> resultList = mainCriteria.list();
+		/**
+		 * 去重
+		 */
+//		Set<T> resultSet = new TreeSet<T>(resultList);
+
+//		return new ArrayList<T>(resultSet);
+		return resultList;
+	}
 	/**
 	 * 执行hql语句
 	 * @param hql
@@ -573,6 +644,22 @@ public class Dao
 		{
 			return null;
 		}
+	}
+
+	public List<Map> querySqlToMap(String sql, Map<String, Object> paramMap, int start, int length)
+	{
+		Session session = getSession();
+		Query q = session.createSQLQuery(sql).setProperties(paramMap).setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+		List<Map> list = null;
+		if (start == 0 && length == 0)
+		{
+			list = q.list();
+
+		} else
+		{
+			list = q.setFirstResult(start).setMaxResults(length).list();
+		}
+		return list;
 	}
 	
 	

@@ -111,7 +111,7 @@ app.controller("chooseWorkerController",['$scope','$modalInstance','$timeout','$
 					workerId:aData.id
 				}
 			}).then(function(resp){
-				if(resp.data.code){
+				if(resp.data.code==1){
 					//成功
 					hintService.hint({title: "成功", content: "分配成功！" });
 					$modalInstance.close(aData);

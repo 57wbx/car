@@ -42,7 +42,7 @@ app.controller('manageShopItemImgController',['$rootScope','$scope','$state','$t
 			fid:itemId
 		}
 	}).then(function(resp){
-		if(resp.data.code){
+		if(resp.data.code==1){
 			$scope.shopItemName = resp.data.details.itemName ;
 		}
 	});

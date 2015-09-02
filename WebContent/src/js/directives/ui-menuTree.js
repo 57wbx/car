@@ -44,6 +44,7 @@ app.directive("menuTree",['$http','utils','modelDataCacheService',function($http
 								    }
 								    node['label'] = dt.name || '没有名字';
 								    node['data'] = dt.id || '';
+								    node['level'] = dt.level ;
 								    node['children'] = node['children'] || [];
 								    node['parent'] = dt.parentId;
 								    
@@ -109,6 +110,8 @@ app.directive("menuTree",['$http','utils','modelDataCacheService',function($http
 							  var tree_handler = function(branch) {
 									  var id = branch.data ;
 									  scope.menuTree.selectedMenuId = id ;
+									  scope.menuTree.selectedLevel = branch.level ;
+									  console.info("选择菜单的等级: "+scope.menuTree.selectedLevel);
 									  console.info("选择的菜单id："+scope.menuTree.selectedMenuId);
 									  if(scope.treeAPI.clickTreeListReload){
 										  scope.treeAPI.clickTreeListReload(id);

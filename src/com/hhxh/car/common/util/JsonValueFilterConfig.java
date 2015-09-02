@@ -125,5 +125,17 @@ public class JsonValueFilterConfig {
 	/**
 	 * menu 菜单表需要处理的数据
 	 */
-	public static final String[] MENU_ONLY_MENU = new String[]{"parent",HIBERNATE_LAZY_PROPERTISE_HANDLER,HIBERNATE_LAZY_PROPERTISE_LAZYINITIALIZER};
+	public static final String[] MENU_ONLY_MENU = new String[]{"parent","permItems",HIBERNATE_LAZY_PROPERTISE_HANDLER,HIBERNATE_LAZY_PROPERTISE_LAZYINITIALIZER};
+	
+	public static final String[] PERMITEM_ONLY_PERMITEM = new String[]{"mainMenuItem","roles",HIBERNATE_LAZY_PROPERTISE_HANDLER,HIBERNATE_LAZY_PROPERTISE_LAZYINITIALIZER};
+	
+	/**
+	 * car 车型需要处理的过滤数据
+	 */
+	public static final String[] CAR_ONLY_CAR = new String[]{HIBERNATE_LAZY_PROPERTISE_HANDLER,HIBERNATE_LAZY_PROPERTISE_LAZYINITIALIZER};
+	/**
+	 * carName 车品牌需要过滤的数据
+	 */
+	public static final String[] CARNAME_ONLY_CARNAME = new String[]{HIBERNATE_LAZY_PROPERTISE_HANDLER,HIBERNATE_LAZY_PROPERTISE_LAZYINITIALIZER};
+	
 }

@@ -40,7 +40,7 @@ app.controller('manageShopPackageImgController',['$rootScope','$scope','$state',
 			fid:itemId
 		}
 	}).then(function(resp){
-		if(resp.data.code){
+		if(resp.data.code==1){
 			$scope.packageName = resp.data.details.packageName ;
 		}
 	});

@@ -1,11 +1,15 @@
 package com.hhxh.car.permission.domain;
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -27,8 +31,6 @@ import org.hibernate.annotations.GenericGenerator;
 @Table(name = "sys_menu_permitem")
 public class PermItem implements Serializable {
 	
-	private static final long serialVersionUID = 1L;
-
 	@Id
 	@GenericGenerator(name = "sasGenerator", strategy = "assigned")
 	@GeneratedValue(generator = "sasGenerator")
@@ -40,7 +42,7 @@ public class PermItem implements Serializable {
 	private String number;
 	
 	//菜单
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="FPARENTID")
 	private MainMenuItem mainMenuItem;
 	
@@ -59,6 +61,21 @@ public class PermItem implements Serializable {
 	
 	@Column
 	private Integer useState ;
+	
+	@ManyToMany(mappedBy="permItems",fetch=FetchType.LAZY)
+	private Set<Role> roles = new HashSet<Role>();
+
+	
+	
+	public PermItem()
+	{
+	}
+
+	public PermItem(String id)
+	{
+		super();
+		this.id = id;
+	}
 
 	public String getId() {
 		return id;
@@ -132,5 +149,24 @@ public class PermItem implements Serializable {
 	{
 		this.useState = useState;
 	}
+
+	public Set<Role> getRoles()
+	{
+		return roles;
+	}
+
+	public void setRoles(Set<Role> roles)
+	{
+		this.roles = roles;
+	}
+
+	@Override
+	public String toString()
+	{
+		return "PermItem [id=" + id + ", number=" + number + ", mainMenuItem=, name=" + name + ", fType=" + fType + ", uiClass=" + uiClass + ", action=" + action + ", useState="
+				+ useState + "]";
+	}
+	
+	
 
 }

@@ -37,7 +37,7 @@ app.controller("citysController",['$scope','$modal','$http',function($scope,$mod
 				 ids : $scope.rowIds
 			  }
 		  }).then(function(resp){
-			  if(resp.data.code){
+			  if(resp.data.code==1){
 				  table.ajax.reload();
 			  }else{
 				  alert(resp.data.message);

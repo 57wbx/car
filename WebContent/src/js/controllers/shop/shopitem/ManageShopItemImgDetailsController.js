@@ -15,7 +15,7 @@ app.controller("manageShopItemImgDetailsController",['$scope','$modalInstance','
 	
 	$scope.ok = function(){
 		submit().then(function(resp){
-			if(resp.data.code){//成功的操作
+			if(resp.data.code==1){//成功的操作
 				 $modalInstance.close($scope.formData);
 			}else{
 				alert(resp.data.message);

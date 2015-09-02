@@ -3,7 +3,7 @@
     菜单详情
   </div>
   <div class="panel-body">
-    <form class="form-horizontal" method="get" novalidate>
+    <form class="form-horizontal" method="get" novalidate name="form">
 	      <div class="form-group">
 	      			<label class="col-sm-1 control-label">编号<i class="fa fa-asterisk text-danger"></i></label>
 	      		  	<div class="col-sm-3">
@@ -42,13 +42,13 @@
 			        </div>
 	      </div>
 	      <div class="form-group">
-	      		<label class="col-sm-1 control-label">默认显示地址<i class="fa fa-asterisk text-danger"></i></label>
-	      		  	<div class="col-sm-3">
-			          	<input type="text"  class="form-control" ng-model="formData.uiClassName" required>
-			        </div>
 			       <label class="col-sm-1 control-label">显示颜色</label>
 			        <div class="col-sm-3">
 			          	<select class="form-control" ng-options="c.class as c.name for c in colorArray" ng-model="formData.uiClassParam"></select>
+			        </div>
+			        <label class="col-sm-1 control-label" ng-if="showChildMenu">默认显示地址<i class="fa fa-asterisk text-danger"></i></label>
+	      		  	<div class="col-sm-3" ng-if="showChildMenu">
+			          	<input type="text"  class="form-control" ng-model="formData.uiClassName" required>
 			        </div>
 	      </div>
 	      <div class="form-group">
@@ -57,11 +57,35 @@
 	      		  	<textarea class="form-control" ng-model="formData.description"></textarea>
 			  </div>
 	      </div>
+        <div class="form-group" ng-if="showChildMenu" style="margin-bottom:0px;">
+        	<div class="col-sm-offset-10 col-sm-2">
+        		<button class="btn btn-success" ng-click="addMenuAction();">新增菜单操作</button>
+        	</div>
+        </div>
+        <div class="form-group" ng-if="showChildMenu">
+	      		<label class="col-sm-1 control-label">菜单操作<i class="fa fa-asterisk text-danger"></i></label>
+	      		  <div class="col-sm-11">
+	      		  	   <table class="table table-striped" id="permItemTable">
+				        	<thead>
+				        		<tr>
+				        			<th>编号</th>
+				        			<th>名称</th>
+				        			<th>操作类型</th>
+				        			<th>资源路径</th>
+				        			<th>访问路径</th>
+				        			<th>使用状态</th>
+				        			<th>操作</th>
+				        		</tr>
+				        	</thead>
+        			    </table>
+			  </div>
+	      </div>
+     
       
       <div class="line line-dashed b-b line-lg pull-in"></div>
       <div class="form-group">
         <div class="col-sm-offset-5 col-sm-2 ">
-        	<button class="btn btn-success">确定</button>
+        	<div doing button-value="保存" doing-value="保存中..." is-doing="isDoing" doing-method="submit();" form-valid="form.$valid"></div>
         </div>
       </div>
     </form>

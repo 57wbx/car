@@ -2,6 +2,7 @@ package com.hhxh.car.common.filter;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,11 +15,15 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.struts2.ServletActionContext;
+import org.apache.struts2.dispatcher.mapper.ActionMapping;
 import org.springframework.web.context.ContextLoader;
 
 import com.hhxh.car.common.service.BaseService;
 import com.hhxh.car.common.util.CommonConstant;
 import com.hhxh.car.permission.domain.User;
+import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.ActionInvocation;
 
 import jxl.common.Logger;
 
@@ -41,42 +46,34 @@ public class AuthFilter implements Filter
 	{
 	}
 
+	/**
+	 * 这里权限检查主要是检查静态资源的权限
+	 * 根据请求的请求头 uiClass 来判断一个页面资源是否能够被加载
+	 * 注意，action级别的权限是在拦截中做到的
+	 */
 	@Override
 	public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws IOException, ServletException
 	{
+		log.info("进入静态资源权限拦截器");
+		
 		HttpServletRequest request = (HttpServletRequest) req;
 		HttpServletResponse response = (HttpServletResponse) resp;
-
-		log.info("进入权限拦截器");
+		
 		if (baseService == null)
 		{
 			this.baseService = (BaseService) ContextLoader.getCurrentWebApplicationContext().getBean("baseService");
 		}
-		/**
-		 * 是否登陆检查
-		 */
+		
 		String requestPath = request.getRequestURI();
-		boolean isLogined = true;
-		if (isStaticResources(requestPath))
-		{
-			// 请求非静态资源时不进行登陆检查
-			isLogined = false;
-		}
 		User user = (User) request.getSession().getAttribute(CommonConstant.LOGIN_USER);
-		if (isLogined && user == null && isNeedCheckAction(requestPath))
-		{
-			log.info("用户没有登陆");
-			this.putJson(response, "{\"code\":" + CommonConstant.NOT_LOGIN_CODE + "}");
-			return ;
-		}
-
+		
 		/**
 		 * 权限检查
 		 */
 		String uiClass = request.getHeader("uiClass");
 		boolean needAuthUiClass = true;// 默认所有路径都是需要权限检查
 		log.info("用户访问的ui-router路径为：" + uiClass);
-		log.info("访问的路径为：" + request.getRequestURI());
+		log.info("访问的路径为：" + requestPath);
 		for (String ui : CommonConstant.DONT_AUTH_UICLASS)
 		{
 			if (ui.equalsIgnoreCase(uiClass))
@@ -86,14 +83,14 @@ public class AuthFilter implements Filter
 				break;
 			}
 		}
-		if (uiClass != null && !"".equals(uiClass) && needAuthUiClass && (isHtmlResources(requestPath) || isNeedCheckAction(requestPath)))
+		if (uiClass != null && !"".equals(uiClass) && needAuthUiClass && isHtmlResources(requestPath) )
 		{
 			// 需要权限检查的路径
 			Map<String, Object> paramMap = new HashMap<String, Object>();
 			paramMap.put("uiClass", uiClass);
 			if (user == null)
 			{
-				log.info("用户没有登陆1");
+				log.info("用户没有登陆");
 				// 用户没有登陆
 				putJson(response, "{\"code\":" + CommonConstant.NOT_LOGIN_CODE + "}");
 				return;
@@ -101,9 +98,9 @@ public class AuthFilter implements Filter
 			paramMap.put("roleId", user.getRole().getId());
 			log.info("roleId  : "+ user.getRole().getId());
 			log.info("uiClass : "+uiClass);
-			int size = baseService.querySql("SELECT * FROM sys_menu a " 
-								+ "LEFT JOIN sys_role_menu b ON a.menuID = b.menuID " 
-								+ "WHERE a.uiClassName = :uiClass" + " AND b.roleID = :roleId", paramMap).size();
+			int size = baseService.querySql("SELECT * FROM sys_menu_permitem a " 
+								+ "LEFT JOIN sys_role_menu b ON a.fid = b.permitemID " 
+								+ "WHERE a.useState=0 AND a.uiClass = :uiClass" + " AND b.roleID = :roleId", paramMap).size();
 
 			if (size <= 0)
 			{

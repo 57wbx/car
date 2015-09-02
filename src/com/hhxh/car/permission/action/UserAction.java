@@ -115,6 +115,7 @@ public class UserAction extends AbstractAction {
 	{
 		obj.setName(name);
 		obj.setDescription(description);
+		obj.setIsAdministrator(0);
 		if(isNotEmpty(orgId))
 		{
 			AdminOrgUnit org = baseService.get(AdminOrgUnit.class, orgId);

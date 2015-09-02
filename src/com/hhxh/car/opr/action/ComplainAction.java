@@ -16,6 +16,7 @@ import org.hibernate.criterion.Restrictions;
 
 import com.hhxh.car.base.carshop.domain.CarShop;
 import com.hhxh.car.common.action.BaseAction;
+import com.hhxh.car.common.annotation.AuthCheck;
 import com.hhxh.car.common.util.ErrorMessageException;
 import com.hhxh.car.common.util.JsonValueFilterConfig;
 import com.hhxh.car.opr.domain.Complain;
@@ -129,6 +130,7 @@ public class ComplainAction extends BaseAction implements ModelDriven<Complain>
 	/**
 	 * 新增或者修改 处理信息
 	 */
+	@AuthCheck(isCheckLoginOnly=false)
 	public void addOrUpdateDealComplain()
 	{
 		try

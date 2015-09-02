@@ -146,7 +146,7 @@ app.controller('workerEditController', ['$rootScope','$scope', '$http', '$state'
     		method:"post",
     		data:$scope.formData
     	}).then(function(resp){
-    		if(resp.data.code){
+    		if(resp.data.code==1){
     			hintService.hint({title: "成功", content: "修改成功！" });
     			$state.go($scope.state.list);
     		}else{

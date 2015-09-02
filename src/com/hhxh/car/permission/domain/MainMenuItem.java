@@ -2,6 +2,8 @@ package com.hhxh.car.permission.domain;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,6 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -30,8 +33,6 @@ import org.hibernate.annotations.GenericGenerator;
 @Table(name = "sys_menu")
 public class MainMenuItem implements Serializable {
 	
-	private static final long serialVersionUID = 1L;
-
 	@Id
 	@GenericGenerator(name = "sasGenerator", strategy = "assigned")
 	@GeneratedValue(generator = "sasGenerator")
@@ -83,7 +84,8 @@ public class MainMenuItem implements Serializable {
 	/**
 	 * 编号
 	 */
-	
+	@Column
+	private Integer isShow ;
 	
 	/**
 	 * 描述
@@ -98,8 +100,19 @@ public class MainMenuItem implements Serializable {
 	@JoinColumn(name="parentID")
 	private MainMenuItem parent;
 	
+	@OneToMany(fetch=FetchType.LAZY,mappedBy="mainMenuItem")
+	private Set<PermItem> permItems = new HashSet<PermItem>();
 	
-	
+	public MainMenuItem()
+	{
+	}
+
+	public MainMenuItem(String id)
+	{
+		super();
+		this.id = id;
+	}
+
 	public String getId() {
 		return id;
 	}
@@ -176,15 +189,28 @@ public class MainMenuItem implements Serializable {
 		this.parent = parent;
 	}
 
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
-
 	public void setLongNumber(String longNumber) {
 		this.longNumber = longNumber;
 	}
 
+	public Set<PermItem> getPermItems()
+	{
+		return permItems;
+	}
 
-	
-	
+	public void setPermItems(Set<PermItem> permItems)
+	{
+		this.permItems = permItems;
+	}
+
+	public Integer getIsShow()
+	{
+		return isShow;
+	}
+
+	public void setIsShow(Integer isShow)
+	{
+		this.isShow = isShow;
+	}
+
 }
