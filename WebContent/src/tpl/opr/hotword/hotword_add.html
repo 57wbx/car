@@ -1,0 +1,38 @@
+<div class="hbox hbox-auto-xs hbox-auto-sm" ng-controller="hotWordAddController">
+  <div class="panel-heading font-bold text-center">
+    添加热门词汇
+  </div>
+  
+  	<div class="panel-body">
+    	<form name="form" class="form-horizontal form-validation" method="post" ng-model="formData" enctype="multipart/form-data" novalidate>
+	      <div class="form-group">
+		        <label class="col-sm-1 control-label">名称<i class="fa fa-asterisk text-danger"></i></label>
+		        <div class="col-sm-3">
+		        	<input type="text" class="form-control" ng-model="formData.name" required />
+		        </div>
+	        
+		        <label class="col-sm-1  control-label">类型<i class="fa fa-asterisk text-danger"></i></label>
+		        <div class="col-sm-3 ">
+		          	<select class="form-control" ng-options="o.value as o.name for o in constant.objType" ng-model="formData.objType"></select>
+		      	 </div>
+		      	 
+		      	 <label class="col-sm-1  control-label">状态<i class="fa fa-asterisk text-danger"></i></label>
+		        <div class="col-sm-3 ">
+		        	<select class="form-control" ng-options="u.value as u.name for u in constant.useState" ng-model="formData.useState"></select>
+		      	 </div>
+	      </div>
+	      
+      <div class="line line-dashed b-b line-lg pull-in"></div>
+      
+      <div class="form-group">
+        <div class="col-sm-offset-4 col-sm-2 col-xs-6">
+          <div doing button-value="保存" doing-value="保存中..." is-doing="isDoing" doing-method="submit();" form-valid="form.$valid"></div>
+        </div>
+        <div class="col-sm-2 col-xs-6">
+          <a ng-click="cancel()" class="w100 btn btn-default">取消</a>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+

@@ -7,6 +7,7 @@
 	<package name="opr" namespace="/opr" extends="default">
 		<action name="orderAction" class="com.hhxh.car.opr.action.OrderAction"/>
 		<action name="complainAction" class="com.hhxh.car.opr.action.ComplainAction"/>
+		<action name="hotWordAction" class="com.hhxh.car.opr.action.HotWordAction"/>
 	</package>
 
 </struts>

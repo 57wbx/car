@@ -2,3 +2,4 @@
 Order  --  订单
 carOwner - 会员 -- base包下Member 中
 Complain -- 投诉表
+hotWord -- 热门词汇表

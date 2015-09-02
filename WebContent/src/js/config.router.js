@@ -1519,7 +1519,69 @@ angular.module('app').run(
 																									                }
 																									              ]
 																									            }
-																										      })
+																										      }).state('app.hotword', {
+																										            url: '/hotword',
+																										            templateUrl: 'src/tpl/opr/hotword/hotword.html',
+																										            abstract:true,
+																										            resolve: {
+																										              deps: ['$ocLazyLoad', 'uiLoad',
+																										                function($ocLazyLoad, uiLoad) {
+																										                  return $ocLazyLoad.load('angularBootstrapNavTree').then(function() {
+																										                    return $ocLazyLoad.load('src/js/controllers/opr/hotword/HotWordController.js');
+																										                  });
+																										                }
+																										              ]
+																										            }
+																											      }).state('app.hotword.list', {
+																											            url: '/list',
+																											            templateUrl: 'src/tpl/opr/hotword/hotword_list.html',
+																											            resolve: {
+																											              deps: ['$ocLazyLoad', 'uiLoad',
+																											                function($ocLazyLoad, uiLoad) {
+																											                  return $ocLazyLoad.load('angularBootstrapNavTree').then(function() {
+																											                    return $ocLazyLoad.load('src/js/controllers/opr/hotword/HotWordListController.js');
+																											                  });
+																											                }
+																											              ]
+																											            }
+																												      }).state('app.hotword.add', {
+																												            url: '/add',
+																												            templateUrl: 'src/tpl/opr/hotword/hotword_add.html',
+																												            resolve: {
+																												              deps: ['$ocLazyLoad', 'uiLoad',
+																												                function($ocLazyLoad, uiLoad) {
+																												                  return $ocLazyLoad.load('angularBootstrapNavTree').then(function() {
+																												                    return $ocLazyLoad.load('src/js/controllers/opr/hotword/HotWordAddController.js');
+																												                  });
+																												                }
+																												              ]
+																												            }
+																													      }).state('app.hotword.edit', {
+																													            url: '/edit',
+																													            templateUrl: 'src/tpl/opr/hotword/hotword_edit.html',
+																													            resolve: {
+																													              deps: ['$ocLazyLoad', 'uiLoad',
+																													                function($ocLazyLoad, uiLoad) {
+																													                  return $ocLazyLoad.load('angularBootstrapNavTree').then(function() {
+																													                    return $ocLazyLoad.load('src/js/controllers/opr/hotword/HotWordEditController.js');
+																													                  });
+																													                }
+																													              ]
+																													            }
+																														      }).state('app.hotword.details', {
+																														            url: '/details',
+																														            templateUrl: 'src/tpl/opr/hotword/hotword_details.html',
+																														            resolve: {
+																														              deps: ['$ocLazyLoad', 'uiLoad',
+																														                function($ocLazyLoad, uiLoad) {
+																														                  return $ocLazyLoad.load('angularBootstrapNavTree').then(function() {
+																														                    return $ocLazyLoad.load('src/js/controllers/opr/hotword/HotWordDetailsController.js');
+																														                  });
+																														                }
+																														              ]
+																														            }
+																															      })
+	      // form
       // form
       .state('app.form', {
         url: '/form',

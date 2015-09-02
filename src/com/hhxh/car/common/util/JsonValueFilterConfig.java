@@ -138,4 +138,9 @@ public class JsonValueFilterConfig {
 	 */
 	public static final String[] CARNAME_ONLY_CARNAME = new String[]{HIBERNATE_LAZY_PROPERTISE_HANDLER,HIBERNATE_LAZY_PROPERTISE_LAZYINITIALIZER};
 	
+	/**
+	 * hotword 热门词汇需要过滤的数据
+	 */
+	public static final String[] HOTWORD_ONLY_HOTWORD = new String[]{HIBERNATE_LAZY_PROPERTISE_HANDLER,HIBERNATE_LAZY_PROPERTISE_LAZYINITIALIZER};
+	
 }

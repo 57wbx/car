@@ -280,4 +280,25 @@ factory("orderStateService",[function(){
 		getUseStateWithStyle:getUseStateWithStyle,
 		getVIPLevel:getVIPLevel
 	};
+}]).factory("hotWordStateService",['commonGetStateUtilService',function(commonGetStateUtilService){
+	function getUseState(param){
+		//1=正常、2=停用、3=注销（以后无此业务）
+		var useState = {
+				1:"正常",2:"停用",3:"注销"
+		};
+		return commonGetStateUtilService.get(param,useState);
+	}
+	function getObjType(param){
+		//1=门店、2=技工、3=（服务项）、4=套餐，5=其他
+		var objType = {
+				1:"门店",2:"技工",3:"服务",4:"套餐",5:"其他"
+		};
+		return commonGetStateUtilService.get(param,objType);
+	}
+	
+	return {
+		getUseState:getUseState,
+		getObjType:getObjType
+	};
+	
 }]);
