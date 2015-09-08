@@ -22,9 +22,14 @@ import com.hhxh.car.base.busitem.domain.BusItem;
 import com.hhxh.car.base.busitem.service.BusItemService;
 import com.hhxh.car.base.buspackage.domain.BusPackage;
 import com.hhxh.car.common.action.BaseAction;
+import com.hhxh.car.common.annotation.AuthCheck;
 import com.hhxh.car.common.util.JsonDateValueProcessor;
 import com.hhxh.car.common.util.JsonValueFilterConfig;
 import com.hhxh.car.common.util.TypeTranslate;
+import com.hhxh.car.push.Push;
+import com.hhxh.car.tig.domain.PushMessage;
+import com.hhxh.car.tig.domain.PushMessageState;
+import com.hhxh.car.tig.service.PushMessageService;
 import com.opensymphony.xwork2.ModelDriven;
 
 public class BusItemAction extends BaseAction implements ModelDriven<BusItem>
@@ -34,13 +39,22 @@ public class BusItemAction extends BaseAction implements ModelDriven<BusItem>
 
 	@Resource
 	private BusItemService busItemService;
-
+	
+	/**
+	 * 推送的接口
+	 */
+	@Resource
+	private Push push ;
+	
+	@Resource
+	private PushMessageService pushMessageService ;
+	
 	// 用字符串接受从前台传上来的时间参数，在这里进行处理
 	private String starTimeStr;
 	private String endTimeStr;
 
 	private String busTypeCode;
-
+	
 	/**
 	 * 用来接受服务子项数据列表
 	 */
@@ -59,6 +73,7 @@ public class BusItemAction extends BaseAction implements ModelDriven<BusItem>
 	/**
 	 * 查询所有的记录
 	 */
+	@AuthCheck
 	public void listBusItem()
 	{
 		try
@@ -92,6 +107,7 @@ public class BusItemAction extends BaseAction implements ModelDriven<BusItem>
 	/**
 	 * 添加一条记录
 	 */
+	@AuthCheck
 	public void addBusItem()
 	{
 		/**
@@ -175,6 +191,7 @@ public class BusItemAction extends BaseAction implements ModelDriven<BusItem>
 	/**
 	 * 用来做修改的方法,
 	 */
+	@AuthCheck
 	public void saveBusItem()
 	{
 
@@ -248,6 +265,7 @@ public class BusItemAction extends BaseAction implements ModelDriven<BusItem>
 	/**
 	 * 删除一系列的数据
 	 */
+	@AuthCheck(isCheckLoginOnly=false)
 	public void deleteBusItemByIds()
 	{
 		this.busItemService.deleteBusItemByIds(ids);
@@ -257,6 +275,7 @@ public class BusItemAction extends BaseAction implements ModelDriven<BusItem>
 	/**
 	 * 查看一个指定id的详细信息，包括子集信息
 	 */
+	@AuthCheck
 	public void detailsBusItem()
 	{
 		try
@@ -293,6 +312,7 @@ public class BusItemAction extends BaseAction implements ModelDriven<BusItem>
 	 * 根据业务编码来进行查询数据，业务编码和服务项在数据库和数据表中并没有显示的体现关系，
 	 * 但是在业务设计中，服务项的编码是继承业务编码的，所以可以更具业务编码来进行分类
 	 */
+	@AuthCheck
 	public void listBusItemByTypeCode()
 	{
 
@@ -339,6 +359,7 @@ public class BusItemAction extends BaseAction implements ModelDriven<BusItem>
 	 * 
 	 * @return
 	 */
+	@AuthCheck
 	public void checkItemCodeIsUnique()
 	{
 		Map<String, Object> paramMap = new HashMap<String, Object>();
@@ -375,6 +396,7 @@ public class BusItemAction extends BaseAction implements ModelDriven<BusItem>
 	/**
 	 * 根据一个服务项来查询所有的图片
 	 */
+	@AuthCheck
 	public void listItemImgByBusItem()
 	{
 		try
@@ -400,6 +422,45 @@ public class BusItemAction extends BaseAction implements ModelDriven<BusItem>
 		{
 			log.error("查询服务项出错", e);
 			this.putJson(false, "查询出错");
+		}
+	}
+	
+	/**
+	 * 推送一条服务项，其中推送的title为服务项的名称。推送的内容为服务项的服务详情
+	 */
+	@AuthCheck(isCheckLoginOnly=false)
+	public void pushBusItem(){
+		try{
+			if(isNotEmpty(this.busItem.getFid())){
+				this.busItem = this.baseService.get(BusItem.class,this.busItem.getFid());
+				if(busItem!=null){
+					PushMessage pushMessage = new PushMessage();
+					
+					pushMessage.setFcontent(busItem.getItemDes());
+					pushMessage.setFtitle(busItem.getItemName());
+					
+					pushMessage.setCreateUser(this.getLoginUser());
+					pushMessage.setFcreateDate(new Date());
+					pushMessage.setFmessageType(PushMessageState.FMESSAGETYPE_BUSITEM);
+					pushMessage.setFdeviceType(PushMessageState.DEVICETYPE_ALL);
+					pushMessage.setFpermid(busItem.getFid());
+					
+					Map<String,String> customValue = new HashMap<String,String>();
+					customValue.put("messageType", PushMessageState.FMESSAGETYPE_BUSITEM.toString());
+					customValue.put("id", busItem.getFid());
+					
+					String pushResult = push.pushAllNotify(pushMessage.getFtitle(), busItem.getItemDes(),customValue);
+					
+					log.debug("推送平台服务返回的数据："+pushResult);
+					pushMessageService.addNotifyPushMessage(pushResult, pushMessage);
+					this.putJson();
+				}
+			}else{
+				this.putJson(false, this.getMessageFromConfig("busItem_needId"));
+			}
+		}catch(Exception e){
+			log.error("推送平台服务失败",e);
+			this.putJson(false, this.getMessageFromConfig("push_error"));
 		}
 	}
 

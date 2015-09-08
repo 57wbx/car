@@ -1,10 +1,12 @@
 package com.hhxh.car.common.util;
 
 import java.lang.reflect.Field;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -80,7 +82,13 @@ public class ConvertObjectMapUtil
 			}
 			if (propertyObj instanceof String || propertyObj instanceof Integer || propertyObj instanceof Double || propertyObj instanceof Float || propertyObj instanceof Boolean || propertyObj instanceof Character || propertyObj instanceof Byte || propertyObj instanceof Long || propertyObj instanceof Date)
 			{
-				map.put(f.getName(), propertyObj);
+				if(propertyObj instanceof Date){
+					String format ="yyyy-MM-dd HH:mm:ss";
+				   SimpleDateFormat sdf = new SimpleDateFormat(format,Locale.CHINA);  
+		           map.put(f.getName(), sdf.format(propertyObj));
+				}else{
+					map.put(f.getName(), propertyObj);
+				}
 			} else
 			{
 				map.put(f.getName(), convertObjectToMap(propertyObj, filterNames));

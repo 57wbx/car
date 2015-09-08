@@ -1,6 +1,6 @@
 'use strict';
 
-app.controller('busPackageController', ['$rootScope','$scope','$state','$timeout','$http',function($rootScope, $scope, $state, $timeout,$http) {
+app.controller('busPackageController', ['$rootScope','$scope','$state','$timeout','$http','warnService','hintService',function($rootScope, $scope, $state, $timeout,$http,warnService,hintService) {
 //  var url = app.url.org.api.list; // 后台API路径
 	
 	var url = "base/busTypeAction!listBusType.action";
@@ -98,53 +98,71 @@ app.controller('busPackageController', ['$rootScope','$scope','$state','$timeout
 		}
 		$state.go($scope.state.edit);
 	}
+	
+	/**
+	 * 推送方法的按钮
+	 */
+	$scope.pushRow = function(){
+		if($scope.editId){
+//			$scope.clearRowIds();
+//			$scope.rowIds.push($scope.editId);
+		}
+		warnService.warn("操作提示","您确定要推送这一条套餐信息吗？该操作是不可更改的！",function(){return push($scope.editId)},function(resp){
+			  if(resp.data.code===1){
+				  hintService.hint({title: "成功", content: "推送成功！" });
+			  }else{
+				  alert(resp.data.message);
+			  }
+		  });
+	}
+	
+	/**
+	 * 推送的http
+	 */
+	function push(id){
+		return $http({
+			url:"base/busPackageAction!pushBusPackage.action",
+			method:"post",
+			data:{
+				fid:id
+			}
+		});
+	}
+	
+	/**
+	 * 删除的method
+	 */
+	function deleteMethod(ids){
+		if(ids.length>0){
+			return $http({
+				url:'base/busPackageAction!deleteBusPackageByIds.action',
+				method:'post',
+				data:{
+					ids:ids
+				}
+			});
+		}else{
+			alert("请选择需要删除的数据");
+		}
+	}
 	/**
 	 * 删除方法的按钮
 	 */
 	$scope.deleteRow = function(){
-		 mask.insertBefore(container);
-		 container.removeClass('none');
-		 doIt = function(){
-			 if($scope.rowIds.length>0){
-					$http({
-						url:'base/busPackageAction!deleteBusPackageByIds.action',
-						method:'get',
-						params:{
-							ids:$scope.rowIds
-						}
-					}).then(function(resp){
-						if(resp.data.code==1){//代表成功
-							$state.reload();
-						}else{
-							alert("删除失败");
-						}
-					});
-				}
-		 }
+		if(!$scope.rowIds||$scope.rowIds.length<=0){
+			alert("请选择需要删除的数据");
+			return ;
+		}
+		warnService.warn("操作提示","您确定要删除这些套餐信息吗？",function(){return deleteMethod($scope.rowIds)},function(resp){
+			  if(resp.data.code===1){
+				  hintService.hint({title: "成功", content: "删除成功！" });
+				  $state.reload();
+			  }else{
+				  alert(resp.data.message);
+			  }
+		  });
 	}
 	
   $scope.click = function(){};
 
-  var mask = $('<div class="mask"></div>');
-  var container = $('#dialog-container');
-  var message_body = $("#dialog_containner_message_body");
-  var old_message_body = message_body.html();
-  var dialog = $('#dialog');
-  var hButton = $('#clickId');
-  var doIt = function(){};
-
- 
-
-  // 执行操作
-  $rootScope.do = function(){
-    doIt();
-  };
-
-  // 模态框退出
-  $rootScope.cancel = function(){
-    mask.remove();
-    container.addClass('none');
-    message_body.html(old_message_body);
-  };  
- 
 }]);

@@ -80,18 +80,20 @@ app.factory("dataTableSearchService",['$compile',function($compile){
 	 */
 	var initClick = function(table,ids,showBtnFn,seeDetailsFn){
 		// 表格行事件
-			this.table = table ;
-			this.ids = ids ;//初始化用来储存id的容器，默认为空
+			var table = table ;
+			var ids = ids ;//初始化用来储存id的容器，默认为空
 			ids.splice(0,ids.length);
 			if(showBtnFn){
 				showBtnFn();
 			}
 			var headInput = $(table.tables().header()).find("input"); ;//列表头部input
 			var bodyInputs = $(table.tables().body()).find("input") ;//内容体input
+			//将表头的input的变为没有选中状态
+			checkedHeadInput();
 			/**
 			 * 控制头部的input的显示
 			 */
-			var checkedHeadInput = function(){
+			function checkedHeadInput(){
 				var isAllChecked = true ;
 				for(var i=0;i<bodyInputs.length;i++){
 					if(!$(bodyInputs[i]).prop("checked")){
@@ -107,7 +109,7 @@ app.factory("dataTableSearchService",['$compile',function($compile){
 			/**
 			 * 添加一个input的的id到ids对象中
 			 */
-			var addInputId = function(input){
+			function addInputId(input){
 				if(ids){
 					ids.push(input.parents("tr").data("id"));
 				}
@@ -116,7 +118,7 @@ app.factory("dataTableSearchService",['$compile',function($compile){
 			/**
 			 * 删除一个input中指定的id
 			 */
-			var deleteInputId = function(input){
+			function deleteInputId(input){
 				if(ids){
 					var id = input.parents("tr").data("id") ;
 					var idx = ids.indexOf(id);
@@ -125,7 +127,7 @@ app.factory("dataTableSearchService",['$compile',function($compile){
 				console.info(ids);
 			}
 			//当点击表格体的input的时候
-			var clickBodyInput = function(input,id){
+			function clickBodyInput(input,id){
 				if(input.prop("checked")){
 					deleteInputId(input);
 					input.prop("checked",false);
@@ -140,7 +142,7 @@ app.factory("dataTableSearchService",['$compile',function($compile){
 				}
 			}
 			//单点击表头的input的时候
-			var clickHeadInput = function(){
+			function clickHeadInput(){
 				if(headInput.prop("checked")){//为true说明要将所有的子项选上
 					bodyInputs.prop("checked",true);
 					ids.splice(0,ids.length);
@@ -155,7 +157,10 @@ app.factory("dataTableSearchService",['$compile',function($compile){
 					showBtnFn();
 				}
 			}
-			var initClickEvent = function(){
+			/**
+			 * 初始化点击事件
+			 */
+		   function initClickEvent(){
 					//初始化头部选择框的点击事件
 					headInput.off().click(function(){
 						clickHeadInput();
@@ -170,6 +175,10 @@ app.factory("dataTableSearchService",['$compile',function($compile){
 				    	var evt = e || window.event;
 					    evt.preventDefault();
 					    evt.stopPropagation();
+					    //当点击的事件为button 或者 a 元素触发的时候，将不再运行下面的方法
+					    if(e.target.nodeName=="BUTTON"||e.target.nodeName=="button"||e.target.nodeName=="A"||e.target.nodeName=="a"){
+				    		return ;
+				    	}
 					    //触发点击事件
 				    	clickBodyInput($(this).find("input"),$(this).data('id'));
 				    });

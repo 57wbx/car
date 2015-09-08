@@ -1,0 +1,48 @@
+<div class="leave hbox hbox-auto-xs hbox-auto-sm"
+	ng-controller="pushController">
+	<div class="frame-panel">
+		<div class="row">
+			<!-- <div class="col-md-4 col-xs-0"></div> -->
+			<div class="col-md-3 col-xs-12">
+				<h2 class="leave-title text-left txt-center">推送信息管理</h2>
+			</div>
+			
+			<div class="col-md-9 col-xs-12"
+				ng-init="single=true;only=false;mutiple=true;locked=true">
+				<div class="panel-heading pull-right btn-group">
+					<button type="button"  class="btn btn-success" ng-click="addUnit()"  ng-if="btns.ADD"
+						ng-disabled="only">
+						<i class="fa fa-fw fa-plus"></i> <span class="hid">添加</span>
+					</button>
+					<button type="button" class="btn btn-primary" ng-click="editIt()" ng-if="btns.UPDATE"
+						ng-disabled="single">
+						<i class="fa fa-fw fa-pencil"></i> <span class="hid">修改</span>
+					</button>
+			
+					<button type="button" class="btn btn-danger" ng-click="removeIt()" ng-if="btns.DELETE"
+						ng-disabled="mutiple">
+						<i class="fa fa-fw fa-minus"></i> <span class="hid">删除</span>
+					</button>
+					<button type="button" class="btn btn-default"  ng-if="btns.DETAILS"
+						ng-click="seeDetails()" ng-disabled="single">
+						<i class="fa fa-fw fa-eye"></i> <span class="hid">查看</span>
+					</button>
+					
+				</div>
+				
+			</div>
+		</div>
+		<div class="row">
+			
+			<div class="col-md-12">
+				<div class="panel panel-default">
+					<div class="panel-body">
+						<div class="wrapper-md">
+							<div class="" ui-view></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

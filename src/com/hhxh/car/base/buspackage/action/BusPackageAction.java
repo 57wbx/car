@@ -21,6 +21,10 @@ import com.hhxh.car.base.bustype.domain.BusType;
 import com.hhxh.car.common.action.BaseAction;
 import com.hhxh.car.common.util.JsonDateValueProcessor;
 import com.hhxh.car.common.util.JsonValueFilterConfig;
+import com.hhxh.car.push.Push;
+import com.hhxh.car.tig.domain.PushMessage;
+import com.hhxh.car.tig.domain.PushMessageState;
+import com.hhxh.car.tig.service.PushMessageService;
 import com.opensymphony.xwork2.ModelDriven;
 
 public class BusPackageAction extends BaseAction implements ModelDriven<BusPackage>{
@@ -41,6 +45,15 @@ public class BusPackageAction extends BaseAction implements ModelDriven<BusPacka
 	
 	@Resource
 	private BusPackageService busPackageService ;
+	
+	/**
+	 * 推送的接口
+	 */
+	@Resource
+	private Push push ;
+	
+	@Resource
+	private PushMessageService pushMessageService ;
 	
 	/**
 	 * 获取套餐信息
@@ -266,6 +279,44 @@ public class BusPackageAction extends BaseAction implements ModelDriven<BusPacka
 			this.putJson(jsonObject.toString());
 		} catch (IOException e) {
 			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * 推送一条套餐项，其中推送的title为套餐项的名称。推送的内容为服务项的套餐详情
+	 */
+	public void pushBusPackage(){
+		try{
+			if(isNotEmpty(this.busPackage.getFid())){
+				this.busPackage = this.baseService.get(BusPackage.class,this.busPackage.getFid());
+				if(busPackage!=null){
+					PushMessage pushMessage = new PushMessage();
+					
+					pushMessage.setFcontent(busPackage.getPackageDes());
+					pushMessage.setFtitle(busPackage.getPackageName());
+					
+					pushMessage.setCreateUser(this.getLoginUser());
+					pushMessage.setFcreateDate(new Date());
+					pushMessage.setFmessageType(PushMessageState.FMESSAGETYPE_BUSPACKAGE);
+					pushMessage.setFdeviceType(PushMessageState.DEVICETYPE_ALL);
+					pushMessage.setFpermid(busPackage.getFid());
+					
+					Map<String,String> customValue = new HashMap<String,String>();
+					customValue.put("messageType", PushMessageState.FMESSAGETYPE_BUSPACKAGE.toString());
+					customValue.put("id", busPackage.getFid());
+					
+					String pushResult = push.pushAllNotify(pushMessage.getFtitle(), busPackage.getPackageDes(),customValue);
+					
+					log.debug("推送平台套餐返回的数据："+pushResult);
+					pushMessageService.addNotifyPushMessage(pushResult, pushMessage);
+					this.putJson();
+				}
+			}else{
+				this.putJson(false, this.getMessageFromConfig("busItem_needId"));
+			}
+		}catch(Exception e){
+			log.error("推送平台服务失败",e);
+			this.putJson(false, this.getMessageFromConfig("push_error"));
 		}
 	}
 	

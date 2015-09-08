@@ -301,4 +301,25 @@ factory("orderStateService",[function(){
 		getObjType:getObjType
 	};
 	
+}]).factory("pushStateService",['commonGetStateUtilService',function(commonGetStateUtilService){
+	function getFmessageType(param){
+		//1：普通消息2：平台套餐消息3：平台服务消息4：商家套餐消息5：商家服务消息
+		var fmessageType = {
+				1:"普通消息",2:"平台套餐消息",3:"平台服务消息",4:"商家套餐消息",5:"商家服务消息"
+		};
+		return commonGetStateUtilService.get(param,fmessageType);
+	}
+	function getFdeviceType(param){
+		//Android:3Ios:4全部：9
+
+		var fdeviceType = {
+				3:"安卓",4:"IOS",9:"全部"
+		};
+		return commonGetStateUtilService.get(param,fdeviceType);
+	}
+	
+	return {
+		getFmessageType:getFmessageType,
+		getFdeviceType:getFdeviceType
+	};
 }]);

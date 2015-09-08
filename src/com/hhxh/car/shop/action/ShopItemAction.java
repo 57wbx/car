@@ -25,14 +25,19 @@ import com.hhxh.car.base.busatom.domain.BusAtom;
 import com.hhxh.car.base.busitem.domain.BusItem;
 import com.hhxh.car.base.carshop.domain.CarShop;
 import com.hhxh.car.common.action.BaseAction;
+import com.hhxh.car.common.annotation.AuthCheck;
 import com.hhxh.car.common.util.ConfigResourcesGetter;
 import com.hhxh.car.common.util.JsonDateValueProcessor;
 import com.hhxh.car.common.util.JsonValueFilterConfig;
 import com.hhxh.car.common.util.TypeTranslate;
+import com.hhxh.car.push.Push;
 import com.hhxh.car.shop.domain.ShopAtom;
 import com.hhxh.car.shop.domain.ShopItem;
 import com.hhxh.car.shop.domain.ShopItemImg;
 import com.hhxh.car.shop.service.ShopItemService;
+import com.hhxh.car.tig.domain.PushMessage;
+import com.hhxh.car.tig.domain.PushMessageState;
+import com.hhxh.car.tig.service.PushMessageService;
 import com.opensymphony.xwork2.ModelDriven;
 
 public class ShopItemAction extends BaseAction implements ModelDriven<ShopItem>
@@ -55,10 +60,20 @@ public class ShopItemAction extends BaseAction implements ModelDriven<ShopItem>
 
 	@Resource
 	private ShopItemService shopItemService;
+	
+	/**
+	 * 推送的接口
+	 */
+	@Resource
+	private Push push ;
+	
+	@Resource
+	private PushMessageService pushMessageService ;
 
 	/**
 	 * 获取所有的商家服务项
 	 */
+	@AuthCheck
 	public void listShopItem()
 	{
 		try
@@ -104,6 +119,7 @@ public class ShopItemAction extends BaseAction implements ModelDriven<ShopItem>
 	/**
 	 * 添加一個服务项,和服务子项一起保存，其中服务子项是以字符串的形式上传上来的
 	 */
+	@AuthCheck
 	public void addShopItem()
 	{
 		/**
@@ -182,6 +198,7 @@ public class ShopItemAction extends BaseAction implements ModelDriven<ShopItem>
 	/**
 	 * 检查编码是否存在
 	 */
+	@AuthCheck
 	public void checkShopItemCodeUnique()
 	{
 		Map<String, Object> paramMap = new HashMap<String, Object>();
@@ -221,6 +238,7 @@ public class ShopItemAction extends BaseAction implements ModelDriven<ShopItem>
 	/**
 	 * 用来做修改的方法,
 	 */
+	@AuthCheck
 	public void saveShopItem()
 	{
 		JSONArray shopAtoms = null;
@@ -295,6 +313,7 @@ public class ShopItemAction extends BaseAction implements ModelDriven<ShopItem>
 	/**
 	 * 获取一个指定id的详细数据
 	 */
+	@AuthCheck
 	public void detailsShopItem()
 	{
 		try
@@ -339,6 +358,7 @@ public class ShopItemAction extends BaseAction implements ModelDriven<ShopItem>
 	/**
 	 * 删除一组数据的方法
 	 */
+	@AuthCheck(isCheckLoginOnly=false)
 	public void deleteShopItemByIds()
 	{
 		this.shopItemService.deleteShopItemByIds(ids);
@@ -354,6 +374,7 @@ public class ShopItemAction extends BaseAction implements ModelDriven<ShopItem>
 	/**
 	 * 查看一个指定id的详细信息，包括子集信息
 	 */
+	@AuthCheck
 	public void detailsShoptem()
 	{
 		if (shopItem.getFid() == null || "".equals(shopItem.getFid()))
@@ -401,6 +422,7 @@ public class ShopItemAction extends BaseAction implements ModelDriven<ShopItem>
 	/**
 	 * 获取一个商家服务下面的所有图片信息
 	 */
+	@AuthCheck
 	public void listShopItemImgByShopItem()
 	{
 		try
@@ -425,6 +447,45 @@ public class ShopItemAction extends BaseAction implements ModelDriven<ShopItem>
 		{
 			log.error("获取商家服务图片信息列表失败", e);
 			this.putJson(false, this.getMessageFromConfig("listImg_error"));
+		}
+	}
+	
+	/**
+	 * 推送一条服务项，其中推送的title为服务项的名称。推送的内容为服务项的服务详情
+	 */
+	@AuthCheck(isCheckLoginOnly=false)
+	public void pushShopItem(){
+		try{
+			if(isNotEmpty(this.shopItem.getFid())){
+				this.shopItem = this.baseService.get(ShopItem.class,this.shopItem.getFid());
+				if(shopItem!=null){
+					PushMessage pushMessage = new PushMessage();
+					
+					pushMessage.setFcontent(shopItem.getItemDes());
+					pushMessage.setFtitle(shopItem.getItemName());
+					
+					pushMessage.setCreateUser(this.getLoginUser());
+					pushMessage.setFcreateDate(new Date());
+					pushMessage.setFmessageType(PushMessageState.FMESSAGETYPE_SHOPITEM);
+					pushMessage.setFdeviceType(PushMessageState.DEVICETYPE_ALL);
+					pushMessage.setFpermid(shopItem.getFid());
+					
+					Map<String,String> customValue = new HashMap<String,String>();
+					customValue.put("messageType", PushMessageState.FMESSAGETYPE_SHOPITEM.toString());
+					customValue.put("id", shopItem.getFid());
+					
+					String pushResult = push.pushAllNotify(pushMessage.getFtitle(), shopItem.getItemDes(),customValue);
+					
+					log.debug("推送商家服务返回的数据："+pushResult);
+					pushMessageService.addNotifyPushMessage(pushResult, pushMessage);
+					this.putJson();
+				}
+			}else{
+				this.putJson(false, this.getMessageFromConfig("needShopItemId"));
+			}
+		}catch(Exception e){
+			log.error("推送平台服务失败",e);
+			this.putJson(false, this.getMessageFromConfig("push_error"));
 		}
 	}
 

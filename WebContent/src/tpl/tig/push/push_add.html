@@ -1,0 +1,95 @@
+<div class="hbox hbox-auto-xs hbox-auto-sm" ng-controller="pushAddController">
+  <div class="panel-heading font-bold text-center">
+    新增推送消息
+  </div>
+  <div class="panel-body">
+    <form name="form" class="form-horizontal form-validation " method="get" ng-model="formData" novalidate>
+    		<div class="form-group">
+			<label class="col-sm-2 control-label">接收设备<i class="fa fa-asterisk text-danger"></i></label>
+					<div class="col-sm-2">
+						<div class="checkbox">
+					    		<label>
+					      			<input type="radio" name="fdeviceType" value="9" ng-model="formData.fdeviceType" > 全部设备
+					    		</label>
+					    	 </div>
+					    </div>
+					   <div class="col-sm-2">
+						<div class="checkbox">
+					    		<label>
+					      			<input type="radio" name="fdeviceType" value="3" ng-model="formData.fdeviceType">安卓设备
+					    		</label>
+					    	 </div>
+					    </div>
+					    <div class="col-sm-2">
+						<div class="checkbox">
+					    		<label>
+					      			<input type="radio" name="fdeviceType" value="4" ng-model="formData.fdeviceType"> IOS设备
+					    		</label>
+					    	 </div>
+					    </div>
+		</div>  
+    
+		
+		<div class="form-group" ng-if="!(formData.fdeviceType==4)">
+			<label class="col-sm-2 control-label">标题<i class="fa fa-asterisk text-danger"></i></label>
+			<div class="col-sm-10">
+				<input class="form-control" type="text" required ng-model="formData.ftitle" />
+			</div>
+		</div>  
+		<div class="form-group">
+			<label class="col-sm-2 control-label">消息内容<i class="fa fa-asterisk text-danger"></i></label>
+			<div class="col-sm-10">
+				<textarea class="form-control" ng-model="formData.fcontent" required></textarea>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-2 control-label">发送时间:</label>
+			<div class="col-sm-10">
+				<div class="col-sm-2">
+						<div class="checkbox">
+					    		<label>
+					      			<input type="radio" name="sendNow" value="0" ng-model="formData.sendNow" > 立即发送
+					    		</label>
+					    	 </div>
+				</div>
+				<div class="col-sm-8">
+						<div class="row">
+							<div class="col-sm-4">
+								<div class="checkbox">
+							    		<label>
+							      			<input type="radio" name="sendNow" value="1" ng-model="formData.sendNow" > 定时发送
+							    		</label>
+							    	 </div>
+							</div>
+							<div class="col-sm-8">
+								<input id="sendTimeStr" type="text" class="form-control" ng-model="formData.sendTimeStr" ng-disabled="(!formData.sendNow||formData.sendNow==0)">
+							</div>
+						</div>
+				</div>
+			</div>
+		</div>    
+		
+		<div class="form-group">
+			<label class="col-sm-2 control-label">消息保存时间:</label>
+			<div class="col-sm-10">
+				保存 <input type="number" value="0" max="6" min="0" ng-model="formData.expiresDay"> 天 <input type="number"  value="5" max="23" min="0" ng-model="formData.expiresHour"> 小时，终端上线后可收到服务器临时缓存的消息(最长保存7天)
+			</div>
+		</div>
+		
+    </form>
+    
+      <div class="line line-dashed b-b line-lg pull-in"></div>
+      <div class="form-group" id="busItemSumbit" >
+        <div class="col-sm-offset-4 col-sm-2 col-xs-6">
+         	 <div doing button-value="保存" doing-value="保存中..." is-doing="isDoing" doing-method="submit();" form-valid="form.$valid"></div>
+        </div>
+        <div class="col-sm-2 col-xs-6">
+          <a ng-click="cancel()" class="w100 btn btn-default">取消</a>
+        </div>
+      </div>
+  
+   
+  </div>
+    <div class="form-group">&nbsp;</div>
+   
+</div>

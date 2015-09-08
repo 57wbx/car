@@ -70,21 +70,6 @@ app.controller('carNameListController',['$rootScope','$scope','$state','$timeout
 			    	 "mDataProp":"updateTime"
 			     }
 			      ],
-			      "oLanguage": {
-			          "sLengthMenu": "每页 _MENU_ 条",
-			          "sZeroRecords": "没有找到符合条件的数据",
-			          "sProcessing": "&lt;img src=’./loading.gif’ /&gt;",
-			          "sInfo": "当前第 _START_ - _END_ 条，共 _TOTAL_ 条",
-			          "sInfoEmpty": "没有记录",
-			          "sInfoFiltered": "(从 _MAX_ 条记录中过滤)",
-			          "sSearch": "店面名称",
-			          "oPaginate": {
-			            "sFirst": "<<",
-			            "sPrevious": "<",
-			            "sNext": ">",
-			            "sLast": ">>"
-			          }
-			        },
 			        "fnCreatedRow": function(nRow, aData, iDataIndex){
 			            $(nRow).attr('data-id', aData['id']);
 			            $(nRow).find("a").click(function(e){
@@ -130,10 +115,6 @@ app.controller('carNameListController',['$rootScope','$scope','$state','$timeout
 	    }
 		
 		function showImg(e,aData){
-			//阻止冒泡 阻止向下或者向上传递事件
-	    	var evt = e || window.event;
-		    evt.preventDefault();
-		    evt.stopPropagation();
 		    previewImg(aData.photoUrl);
 		}
 		

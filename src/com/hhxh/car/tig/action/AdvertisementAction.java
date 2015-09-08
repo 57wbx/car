@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.hhxh.car.common.action.BaseAction;
+import com.hhxh.car.common.annotation.AuthCheck;
 import com.hhxh.car.common.util.CopyObjectUtil;
 import com.hhxh.car.common.util.JsonValueFilterConfig;
 import com.hhxh.car.tig.domain.Advertisement;
@@ -24,6 +25,7 @@ public class AdvertisementAction extends BaseAction implements ModelDriven<Adver
 	/**
 	 * 列出所有的广告信息
 	 */
+	@AuthCheck
 	public void listAdvertisement()
 	{
 		try
@@ -46,6 +48,7 @@ public class AdvertisementAction extends BaseAction implements ModelDriven<Adver
 	/**
 	 * 添加广告信息
 	 */
+	@AuthCheck
 	public void addAdvertisement()
 	{
 		try
@@ -65,6 +68,7 @@ public class AdvertisementAction extends BaseAction implements ModelDriven<Adver
 	/**
 	 * 返回一个广告的详细信息
 	 */
+	@AuthCheck
 	public void detailsAdvertisement()
 	{
 		try
@@ -97,6 +101,7 @@ public class AdvertisementAction extends BaseAction implements ModelDriven<Adver
 	/**
 	 * 修改一个advertisement
 	 */
+	@AuthCheck
 	public void saveAdvertisement()
 	{
 		try
@@ -131,6 +136,7 @@ public class AdvertisementAction extends BaseAction implements ModelDriven<Adver
 	/**
 	 * 删除指定的ids的数据
 	 */
+	@AuthCheck(isCheckLoginOnly=false)
 	public void deleteAdvertisementByIds()
 	{
 		try

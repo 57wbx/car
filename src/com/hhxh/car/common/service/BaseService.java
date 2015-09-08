@@ -6,6 +6,8 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import jxl.common.Logger;
+
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Example;
 import org.hibernate.criterion.Order;
@@ -16,6 +18,8 @@ import com.hhxh.car.common.dao.Dao;
 
 @Service
 public class BaseService {
+	
+	protected Logger log = Logger.getLogger(this.getClass());
 
 	@Resource
 	protected Dao dao;

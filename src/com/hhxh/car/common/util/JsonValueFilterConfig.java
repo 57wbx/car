@@ -143,4 +143,8 @@ public class JsonValueFilterConfig {
 	 */
 	public static final String[] HOTWORD_ONLY_HOTWORD = new String[]{HIBERNATE_LAZY_PROPERTISE_HANDLER,HIBERNATE_LAZY_PROPERTISE_LAZYINITIALIZER};
 	
+	/**
+	 * pushMessage 推送消息需要过滤掉的数据
+	 */
+	public static final String[] PUSHMESSAGE_ONLY_PUSHMESSAGE = new String[]{"pushMessageParts","createUser",HIBERNATE_LAZY_PROPERTISE_HANDLER,HIBERNATE_LAZY_PROPERTISE_LAZYINITIALIZER};
 }

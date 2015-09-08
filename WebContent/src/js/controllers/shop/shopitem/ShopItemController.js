@@ -1,6 +1,13 @@
 'use strict';
 
-app.controller('shopItemController',['$rootScope','$scope','$state','$timeout','$http','sessionStorageService','previewService',function($rootScope,$scope,$state,$timeout,$http,sessionStorageService,previewService){
+/**
+ * 该模块用的权限有 新增：ADD	、修改：UPDATE、删除：DELETE、详细信息：DETAILS、图片管理：MANAGEIMG、推送：PUSH
+ * $scope.btn = {"ADD":true,"UPDATE":true,"DELETE":true,"DETAILS":true,"MANAGEIMG":true,"PUSH":true}
+ */
+app.controller('shopItemController',['$rootScope','$scope','$state','$timeout','$http','sessionStorageService','previewService','warnService','hintService','roleBtnService',function($rootScope,$scope,$state,$timeout,$http,sessionStorageService,previewService,warnService,hintService,roleBtnService){
+	
+	var roleBtnUiClass = "app.shopitem.";//用于后台查找按钮权限
+	roleBtnService.getRoleBtnService(roleBtnUiClass,$scope);
 	
 	$scope.rowIds = [];//用来保存所选列表的id
 	
@@ -119,48 +126,92 @@ app.controller('shopItemController',['$rootScope','$scope','$state','$timeout','
 		$scope.treeAPI.hiddenBusTypeTree();
 	}
 	
+//	/**
+//	 * 删除方法的按钮
+//	 */
+//	$scope.deleteRow = function(){
+//		 mask.insertBefore(container);
+//		 container.removeClass('none');
+//		 doIt = function(){
+//			 if($scope.rowIds.length>0){
+//					$http({
+//						url:'shop/shopItemAction!deleteShopItemByIds.action',
+//						method:'get',
+//						params:{
+//							ids:$scope.rowIds
+//						}
+//					}).then(function(resp){
+//						if(resp.data.code==1){//代表成功
+//							$state.reload();
+//						}else{
+//							alert("删除失败");
+//						}
+//					});
+//				}
+//		 }
+//	}
 	/**
-	 * 页面弹出框对象
+	 * 推送方法的按钮
 	 */
-	var mask = $('<div class="mask"></div>');
-	var container = $('#dialog-container');	
-	var doIt = function(){};
-	 // 执行操作
-	  $rootScope.do = function(){
-	    doIt();
-	  };
-
-	  // 模态框退出
-	  $rootScope.cancel = function(){
-	    mask.remove();
-	    container.addClass('none');
-	  };  
+	$scope.pushRow = function(){
+		if($scope.editId){
+//			$scope.clearRowIds();
+//			$scope.rowIds.push($scope.editId);
+		}
+		warnService.warn("操作提示","您确定要推送这一条服务信息吗？该操作是不可更改的！",function(){return push($scope.editId)},function(resp){
+			  if(resp.data.code===1){
+				  hintService.hint({title: "成功", content: "推送成功！" });
+			  }else{
+				  alert(resp.data.message);
+			  }
+		  });
+	}
+	
+	
+	/**
+	 * 推送的http
+	 */
+	function push(id){
+		return $http({
+			url:"shop/shopItemAction!pushShopItem.action",
+			method:"post",
+			data:{
+				fid:id
+			}
+		});
+	}
+	
+	function deleteMethod(ids){
+		if(ids.length>0){
+			return $http({
+				url:'shop/shopItemAction!deleteShopItemByIds.action',
+				method:'post',
+				data:{
+					ids:ids
+				}
+			});
+		}else{
+			alert("请选择需要删除的数据");
+		}
+	}
+	
 	/**
 	 * 删除方法的按钮
 	 */
 	$scope.deleteRow = function(){
-		 mask.insertBefore(container);
-		 container.removeClass('none');
-		 doIt = function(){
-			 if($scope.rowIds.length>0){
-					$http({
-						url:'shop/shopItemAction!deleteShopItemByIds.action',
-						method:'get',
-						params:{
-							ids:$scope.rowIds
-						}
-					}).then(function(resp){
-						if(resp.data.code==1){//代表成功
-							$state.reload();
-						}else{
-							alert("删除失败");
-						}
-					});
-				}
-		 }
+		if(!$scope.rowIds||$scope.rowIds.length<=0){
+			alert("请选择需要删除的数据");
+			return ;
+		}
+		warnService.warn("操作提示","您确定要删除这些服务信息吗？",function(){return deleteMethod($scope.rowIds)},function(resp){
+			  if(resp.data.code===1){
+				  hintService.hint({title: "成功", content: "删除成功！" });
+				  $state.reload();
+			  }else{
+				  alert(resp.data.message);
+			  }
+		  });
 	}
-	
-	
 	 /**
      * 显示原始图片的方法
      */

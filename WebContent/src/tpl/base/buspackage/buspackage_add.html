@@ -1,8 +1,3 @@
-<style type="text/css">
-	.ng-invalid-pattern{
-	border-color: red;
-	}
-</style>
 <div class="hbox hbox-auto-xs hbox-auto-sm" ng-controller="busPackageAddController">
   <div class="panel-heading font-bold text-center">
     添加套餐信息
@@ -122,26 +117,26 @@
       	 </div>
       </div>
       
-      <div class="form-group"  >
-			       <label class="col-sm-1 control-label">显示图片</label>
-			       <div ng-if="formData.photoUrl">
-				       <div class="col-sm-7">
-				 	       <span ng-bind="formData.photoUrlName" class="form-control"></span>
-				       </div>
-				       <div class="col-sm-2">
-				 	        <button class="btn btn-success" role="button" ng-click="previewImg('photoUrl')">预览</button>
-				 	        <button class="btn btn-danger" role="button" ng-click="deleteImg('photoUrl')">删除</button>
-				       </div>
-			       </div>
-			      <div ng-if="!formData.photoUrl">
-				       <div class="col-sm-7">
-				 	       <input type="file" uploader="uploader"  nv-file-select="" class="form-control " accept="image/*"  options="{name:'photoUrl'}"  />
-				       </div>
-				       <div class="col-sm-2">
-				 	        <button class="btn btn-success" role="button" ng-click="uploadImg('photoUrl')"  id="photoUrlButton" >上传</button>
-				       </div>
-			       </div>
-       		</div> 
+<!--       <div class="form-group"  > -->
+<!-- 			       <label class="col-sm-1 control-label">显示图片</label> -->
+<!-- 			       <div ng-if="formData.photoUrl"> -->
+<!-- 				       <div class="col-sm-7"> -->
+<!-- 				 	       <span ng-bind="formData.photoUrlName" class="form-control"></span> -->
+<!-- 				       </div> -->
+<!-- 				       <div class="col-sm-2"> -->
+<!-- 				 	        <button class="btn btn-success" role="button" ng-click="previewImg('photoUrl')">预览</button> -->
+<!-- 				 	        <button class="btn btn-danger" role="button" ng-click="deleteImg('photoUrl')">删除</button> -->
+<!-- 				       </div> -->
+<!-- 			       </div> -->
+<!-- 			      <div ng-if="!formData.photoUrl"> -->
+<!-- 				       <div class="col-sm-7"> -->
+<!-- 				 	       <input type="file" uploader="uploader"  nv-file-select="" class="form-control " accept="image/*"  options="{name:'photoUrl'}"  /> -->
+<!-- 				       </div> -->
+<!-- 				       <div class="col-sm-2"> -->
+<!-- 				 	        <button class="btn btn-success" role="button" ng-click="uploadImg('photoUrl')"  id="photoUrlButton" >上传</button> -->
+<!-- 				       </div> -->
+<!-- 			       </div> -->
+<!--        		</div>  -->
       
    
       <div class="form-group">

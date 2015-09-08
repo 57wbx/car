@@ -1580,7 +1580,37 @@ angular.module('app').run(
 																														                }
 																														              ]
 																														            }
-																															      })
+																															      }).state('app.push', {
+																															            url: '/push',
+																															            templateUrl: 'src/tpl/tig/push/push.html',
+																															            resolve: {
+																															              deps: ['$ocLazyLoad', 'uiLoad',
+																															                function($ocLazyLoad, uiLoad) {
+																															                    return $ocLazyLoad.load('src/js/controllers/tig/push/PushController.js');
+																															                }
+																															              ]
+																															            }
+																																      }).state('app.push.add', {
+																																            url: '/add',
+																																            templateUrl: 'src/tpl/tig/push/push_add.html',
+																																            resolve: {
+																																              deps: ['$ocLazyLoad', 'uiLoad',
+																																                function($ocLazyLoad, uiLoad) {
+																																                    return $ocLazyLoad.load('src/js/controllers/tig/push/PushAddController.js');
+																																                }
+																																              ]
+																																            }
+																																	      }).state('app.push.list', {
+																																	            url: '/list',
+																																	            templateUrl: 'src/tpl/tig/push/push_list.html',
+																																	            resolve: {
+																																	              deps: ['$ocLazyLoad', 'uiLoad',
+																																	                function($ocLazyLoad, uiLoad) {
+																																	                    return $ocLazyLoad.load('src/js/controllers/tig/push/PushListController.js');
+																																	                }
+																																	              ]
+																																	            }
+																																		      })
 	      // form
       // form
       .state('app.form', {

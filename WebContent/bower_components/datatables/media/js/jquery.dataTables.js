@@ -11018,7 +11018,7 @@
 				 *    } );
 				 */
 				//"sNext": "Next",
-				"sNext": "下一页",
+				"sNext": ">",
 	
 	
 				/**
@@ -11042,7 +11042,7 @@
 				 *    } );
 				 */
 				//"sPrevious": "Previous"
-				"sPrevious": "上一页"
+				"sPrevious": "<"
 			},
 	
 			/**
@@ -11120,8 +11120,8 @@
 			 *      } );
 			 *    } );
 			 */
-			"sInfoEmpty": "Showing 0 to 0 of 0 entries",
-			//"sInfoEmpty": "当前为第 0 条",
+//			"sInfoEmpty": "Showing 0 to 0 of 0 entries",
+			"sInfoEmpty": "没有数据！",
 	
 	
 			/**

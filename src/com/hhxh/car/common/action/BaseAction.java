@@ -86,6 +86,7 @@ public class BaseAction extends ActionSupport
 	protected String menuNum;// 菜单id
 
 	protected SimpleDateFormat ymdhm = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+	protected SimpleDateFormat ymdhms = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	protected SimpleDateFormat ymd = new SimpleDateFormat("yyyy-MM-dd");
 	
 

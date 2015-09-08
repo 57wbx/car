@@ -18,11 +18,16 @@ import org.hibernate.criterion.Restrictions;
 
 import com.hhxh.car.base.bustype.domain.BusType;
 import com.hhxh.car.common.action.BaseAction;
+import com.hhxh.car.common.annotation.AuthCheck;
 import com.hhxh.car.common.util.JsonValueFilterConfig;
+import com.hhxh.car.push.Push;
 import com.hhxh.car.shop.domain.ShopItem;
 import com.hhxh.car.shop.domain.ShopPackage;
 import com.hhxh.car.shop.domain.ShopPackageImg;
 import com.hhxh.car.shop.service.ShopPackageService;
+import com.hhxh.car.tig.domain.PushMessage;
+import com.hhxh.car.tig.domain.PushMessageState;
+import com.hhxh.car.tig.service.PushMessageService;
 import com.opensymphony.xwork2.ModelDriven;
 
 public class ShopPackageAction extends BaseAction implements ModelDriven<ShopPackage>
@@ -46,10 +51,20 @@ public class ShopPackageAction extends BaseAction implements ModelDriven<ShopPac
 
 	@Resource
 	private ShopPackageService shopPackageService;
+	
+	/**
+	 * 推送的接口
+	 */
+	@Resource
+	private Push push ;
+	
+	@Resource
+	private PushMessageService pushMessageService ;
 
 	/**
 	 * 获取套餐信息
 	 */
+	@AuthCheck
 	public void listShopPackage()
 	{
 		try
@@ -101,6 +116,7 @@ public class ShopPackageAction extends BaseAction implements ModelDriven<ShopPac
 	 * 
 	 * @return
 	 */
+	@AuthCheck
 	public void getShopItemsByShopPackage()
 	{
 		try
@@ -132,6 +148,7 @@ public class ShopPackageAction extends BaseAction implements ModelDriven<ShopPac
 	/**
 	 * 新增一条套餐对象
 	 */
+	@AuthCheck
 	public void addShopPackage()
 	{
 		try
@@ -186,6 +203,7 @@ public class ShopPackageAction extends BaseAction implements ModelDriven<ShopPac
 	/**
 	 * 查询一条记录的详细信息
 	 */
+	@AuthCheck
 	public void detailsShopPackage()
 	{
 		try
@@ -223,6 +241,7 @@ public class ShopPackageAction extends BaseAction implements ModelDriven<ShopPac
 	/**
 	 * 修改一个套餐
 	 */
+	@AuthCheck
 	public void saveShopPackage()
 	{
 		shopPackage.setCarShop(this.getLoginUser().getCarShop());
@@ -275,6 +294,7 @@ public class ShopPackageAction extends BaseAction implements ModelDriven<ShopPac
 	/**
 	 * 删除记录
 	 */
+	@AuthCheck(isCheckLoginOnly=false)
 	public void deleteShopPackageByIds()
 	{
 		if (ids != null && ids.length > 0)
@@ -294,6 +314,7 @@ public class ShopPackageAction extends BaseAction implements ModelDriven<ShopPac
 	/**
 	 * 检查一个套餐编码是否唯一
 	 */
+	@AuthCheck
 	public void checkShopPackageCodeIsUnique()
 	{
 		Map<String, Object> paramMap = new HashMap<String, Object>();
@@ -331,6 +352,7 @@ public class ShopPackageAction extends BaseAction implements ModelDriven<ShopPac
 	/**
 	 * 获取一个套餐下面的所有图片
 	 */
+	@AuthCheck
 	public void listShopPackageImgByShopPackage()
 	{
 		try
@@ -355,6 +377,45 @@ public class ShopPackageAction extends BaseAction implements ModelDriven<ShopPac
 		{
 			log.error("获取商家套餐图片信息列表失败", e);
 			this.putJson(false, this.getMessageFromConfig("busPackageError"));
+		}
+	}
+	
+	/**
+	 * 推送一条商家套餐项，其中推送的title为服务项的名称。推送的内容为服务项的服务详情
+	 */
+	@AuthCheck(isCheckLoginOnly=false)
+	public void pushShopPackage(){
+		try{
+			if(isNotEmpty(this.shopPackage.getFid())){
+				this.shopPackage = this.baseService.get(ShopPackage.class,this.shopPackage.getFid());
+				if(shopPackage!=null){
+					PushMessage pushMessage = new PushMessage();
+					
+					pushMessage.setFcontent(shopPackage.getPackageDes());
+					pushMessage.setFtitle(shopPackage.getPackageName());
+					
+					pushMessage.setCreateUser(this.getLoginUser());
+					pushMessage.setFcreateDate(new Date());
+					pushMessage.setFmessageType(PushMessageState.FMESSAGETYPE_SHOPPACKAGE);
+					pushMessage.setFdeviceType(PushMessageState.DEVICETYPE_ALL);
+					pushMessage.setFpermid(shopPackage.getFid());
+					
+					Map<String,String> customValue = new HashMap<String,String>();
+					customValue.put("messageType", PushMessageState.FMESSAGETYPE_SHOPPACKAGE.toString());
+					customValue.put("id", shopPackage.getFid());
+					
+					String pushResult = push.pushAllNotify(pushMessage.getFtitle(), shopPackage.getPackageDes(),customValue);
+					
+					log.debug("推送商家套餐返回的数据："+pushResult);
+					pushMessageService.addNotifyPushMessage(pushResult, pushMessage);
+					this.putJson();
+				}
+			}else{
+				this.putJson(false, this.getMessageFromConfig("needBusPackageId"));
+			}
+		}catch(Exception e){
+			log.error("推送平台套餐失败",e);
+			this.putJson(false, this.getMessageFromConfig("push_error"));
 		}
 	}
 

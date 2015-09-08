@@ -8,6 +8,7 @@
 		<action name="updateVersionAction" class="com.hhxh.car.tig.action.UpdateVersionAction"/>
 		<action name="advertisementAction" class="com.hhxh.car.tig.action.AdvertisementAction"/>
 		<action name="appCaseAction" class="com.hhxh.car.tig.action.AppCaseAction"/>
+		<action name="pushMessageAction" class="com.hhxh.car.tig.action.PushMessageAction"/>
 	</package>
 
 </struts>
