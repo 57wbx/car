@@ -11,6 +11,11 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
+
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
@@ -21,6 +26,7 @@ import com.hhxh.car.base.busatom.domain.BusAtom;
 import com.hhxh.car.base.busitem.domain.BusItem;
 import com.hhxh.car.base.busitem.service.BusItemService;
 import com.hhxh.car.base.buspackage.domain.BusPackage;
+import com.hhxh.car.base.car.domain.Car;
 import com.hhxh.car.common.action.BaseAction;
 import com.hhxh.car.common.annotation.AuthCheck;
 import com.hhxh.car.common.util.JsonDateValueProcessor;
@@ -69,6 +75,11 @@ public class BusItemAction extends BaseAction implements ModelDriven<BusItem>
 	 * 需要进行删除的服务id数组
 	 */
 	private String[] ids;
+	
+	/**
+	 * 排序所使用到的参数
+	 */
+	private String orderName ;
 
 	/**
 	 * 查询所有的记录
@@ -78,30 +89,50 @@ public class BusItemAction extends BaseAction implements ModelDriven<BusItem>
 	{
 		try
 		{
-			List<BusItem> busItems = null;
-			int recordsTotal;
+			List<Criterion> params = new ArrayList<Criterion>();
+			// 用来缓存子查询
+			Map<String, List<Criterion>> criteriaMap = new HashMap<String, List<Criterion>>();
+			
 			if (isNotEmpty(this.getBusTypeCode()))
 			{
-				Map<String, Object> paramMap = new HashMap<String, Object>();
-				paramMap.put("busTypeCode", this.getBusTypeCode() + '%');
-				busItems = this.baseService.gets("From BusItem b where b.itemCode like :busTypeCode", paramMap, this.getIDisplayStart(), this.getIDisplayLength());
-				recordsTotal = this.baseService.getSize("From BusItem b where b.itemCode like '" + this.getBusTypeCode() + "%'");
-			} else
-			{
-				busItems = this.baseService.gets(BusItem.class, this.getIDisplayStart(), this.getIDisplayLength());
-				recordsTotal = this.baseService.getSize(BusItem.class);
+				params.add(Restrictions.like("itemCode", this.getBusTypeCode(), MatchMode.ANYWHERE));
 			}
+			if (isNotEmpty(this.busItem.getItemCode()))
+			{
+				params.add(Restrictions.like("itemCode", this.busItem.getItemCode(), MatchMode.ANYWHERE));
+			}
+			if (isNotEmpty(this.busItem.getItemName()))
+			{
+				params.add(Restrictions.like("itemName", this.busItem.getItemName(), MatchMode.ANYWHERE));
+			}
+			if(isNotEmpty(this.busItem.getIsActivity())){
+				params.add(Restrictions.eq("isActivity", this.busItem.getIsActivity()));
+			}
+			if(isNotEmpty(this.busItem.getItemDes())){
+				params.add(Restrictions.like("itemDes", this.busItem.getItemDes(),MatchMode.ANYWHERE));
+			}
+
+			// 排序的规则
+			List<Order> orders = new ArrayList<Order>();
+			if (isNotEmpty(orderName))
+			{
+				orders.add(Order.asc(orderName));
+			}
+			orders.add(Order.desc("updateTime"));
+			
+			List<BusItem> busItems = this.baseService.gets(BusItem.class, params, criteriaMap, this.getIDisplayStart(), this.getIDisplayLength(), orders);
+			int recordsTotal = this.baseService.getSize(BusItem.class, params, criteriaMap);
 
 			jsonObject.accumulate("data", busItems, this.getJsonConfig(JsonValueFilterConfig.BASEITEM_HAS_BASEITEMIMG));
 			jsonObject.put("recordsTotal", recordsTotal);
 			jsonObject.put("recordsFiltered", recordsTotal);
+			
 			this.putJson();
 		} catch (Exception e)
 		{
-			log.error("查询平台所有服务失败",e);
+			log.error("获取服务", e);
 			this.putJson(false, this.getMessageFromConfig("busItemError"));
 		}
-
 	}
 
 	/**
@@ -444,6 +475,8 @@ public class BusItemAction extends BaseAction implements ModelDriven<BusItem>
 					pushMessage.setFmessageType(PushMessageState.FMESSAGETYPE_BUSITEM);
 					pushMessage.setFdeviceType(PushMessageState.DEVICETYPE_ALL);
 					pushMessage.setFpermid(busItem.getFid());
+					pushMessage.setFuseState(PushMessageState.FUSESTATE_OK);
+					pushMessage.setFsendType(PushMessageState.FSENDTYPE_ALL);
 					
 					Map<String,String> customValue = new HashMap<String,String>();
 					customValue.put("messageType", PushMessageState.FMESSAGETYPE_BUSITEM.toString());
@@ -531,4 +564,14 @@ public class BusItemAction extends BaseAction implements ModelDriven<BusItem>
 		this.busTypeCode = busTypeCode;
 	}
 
+	public String getOrderName()
+	{
+		return orderName;
+	}
+
+	public void setOrderName(String orderName)
+	{
+		this.orderName = orderName;
+	}
+	
 }

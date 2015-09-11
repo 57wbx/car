@@ -1,0 +1,32 @@
+<div class="hbox hbox-auto-xs hbox-auto-sm" ng-controller="userDetailsMySelfController">
+	<div class="panel-heading font-bold text-center">
+	  我的信息<button class="btn btn-info btn-sm" ng-click="updatePassWord();" style="float: right;">修改密码</button>
+	</div>
+   <div class="panel-body">
+     <form class="form-horizontal" method="get">
+       <div class="form-group">
+	         <label class="col-sm-offset-3 col-sm-1 control-label">账号：</label>
+	         <p class="col-sm-2 form-text" ng-bind="details.number"></p>
+	         <label class="col-sm-1 control-label">名称：</label>
+	         <p class="col-sm-2 form-text" ng-bind="details.name"></p>
+       </div>
+       
+       <div class="form-group">
+	         <label class="col-sm-offset-3 col-sm-1 control-label">权限：</label>
+	         <p class="col-sm-2 form-text" ng-bind="details.roleName"></p>
+       </div>
+       
+       <div class="form-group">
+       		<label class="col-sm-offset-3 col-sm-1 control-label">备注：</label>
+         	<p class="col-sm-5 form-text" ng-bind="details.description"></p>
+       </div>
+       
+       <div class="line line-dashed b-b line-lg pull-in"></div>
+       <div class="form-group">
+         <div class="col-sm-offset-5 col-sm-2">
+           <a ng-click="cancel()" class="btn btn-info">&nbsp;&nbsp;返回&nbsp;&nbsp;</a>
+         </div>
+       </div>
+     </form>
+  </div>
+</div>

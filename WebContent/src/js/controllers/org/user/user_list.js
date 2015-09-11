@@ -57,17 +57,20 @@ app.controller('UserList', function($rootScope, $scope, $state, utils) {
 		dTable.fnDestroy();
     }
     orgList = $('#userList');
-    dTable = orgList.dataTable({
+    dTable = orgList.on('preXhr.dt', function ( e, settings, data ){
+    	 data.FLongNumber = $scope.FLongNumber ;
+    }).dataTable({
     	"ordering":false,
         "bServerSide": true,
-         "ajax": {
-          "url": app.url.user.api.list,
-          "async": false,
-          "type": 'POST',
-          "data": {
-            "FLongNumber": $scope.FLongNumber
-          }
-        },
+        "sAjaxSource":app.url.user.api.list,
+//         "ajax": {
+//          "url": app.url.user.api.list,
+//          "async": false,
+//          "type": 'POST',
+//          "data": {
+//            "FLongNumber": $scope.FLongNumber
+//          }
+//        },
       "sAjaxDataProp": "rows",
       "oLanguage": {
         "sLengthMenu": "每页 _MENU_ 条",

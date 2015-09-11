@@ -1,10 +1,9 @@
 'use strict';
 
 /**
- * 该模块用的权限有 新增：ADD	、修改：UPDATE、删除：DELETE、详细信息：DETAILS
- * $scope.btn = {"ADD":true,"UPDATE":true,"DELETE":true,"DETAILS":true}
+ * 该模块用的权限有 新增：ADD	、修改状态：STATE、详细信息：DETAILS
  */
-app.controller('pushController', ['$rootScope','$scope','$state','$timeout','$location','$http','sessionStorageService','hintService','warnService','roleBtnService','previewService',function($rootScope, $scope, $state, $timeout,$location,$http,sessionStorageService,hintService,warnService,roleBtnService,previewService) {
+app.controller('pushController', ['$rootScope','$scope','$state','$timeout','$location','$http','sessionStorageService','hintService','warnService','roleBtnService','previewService','pushStateService',function($rootScope, $scope, $state, $timeout,$location,$http,sessionStorageService,hintService,warnService,roleBtnService,previewService,pushStateService) {
 	
 	var roleBtnUiClass = "app.push.";//用于后台查找按钮权限
 	roleBtnService.getRoleBtnService(roleBtnUiClass,$scope);
@@ -143,20 +142,29 @@ app.controller('pushController', ['$rootScope','$scope','$state','$timeout','$lo
     }
   }
   
-  
-	 /**
-   * 显示原始图片的方法
+  /**
+   * 改变状态的操作
    */
-  $scope.API = {};
-  $scope.API.showImg = function(item){
- 	 previewService.preview(item);
-  }
-  $scope.API.deleteImg = function(urlObject){
-  	urlObject.photoUrl = undefined;
-  }
-  
-  $scope.cancel = function(){
-	  $state.go($scope.state.list);
+  $scope.setUseState = function(param){
+	  //1=正常、2=停用
+	 var useState = pushStateService.getFuseState(param);
+	  warnService.warn(null,"您确定要将该记录的状态变换为："+useState+" 吗？",function(){
+		  return $http({
+			  url:"tig/pushMessageAction!updateFuseStateByIds.action",
+		  	  method:"post",
+		  	  data:{
+		  		  ids :$scope.rowIds,
+		  		  fuseState : param 
+		  	  }
+		  });
+	  },function(resp){
+		  if(resp.data.code==1){
+			  hintService.hint({title: "成功", content: "状态更改成功！" });
+			  $state.reload($scope.state.list);
+		  }else{
+			  alert(resp.data.message);
+		  }
+	  });
   }
   
 }]);

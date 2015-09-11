@@ -1,10 +1,17 @@
-app.controller("busItemEditController",['$scope','$state','$http','checkUniqueService',function($scope,$state,$http,checkUniqueService){
+app.controller("busItemEditController",['$scope','$state','$http','checkUniqueService','sessionStorageService',function($scope,$state,$http,checkUniqueService,sessionStorageService){
 	
 //	$scope.formData.fitemID  新增开始的时候需要从服务器中下载下来，以便于子项的操作
 	$scope.treeAPI.hiddenBusTypeTree();
 	
-	console.info("------------需要修改的id为："+$scope.rowIds[0]);
-	if(!$scope.rowIds[0]||$scope.rowIds[0]==""){
+	$scope.needCacheArray = ["busItemDataTableProperties","busItemIdForEdit"];
+	sessionStorageService.clearNoCacheItem($scope.needCacheArray);
+	if($scope.rowIds&&$scope.rowIds[0]){
+		sessionStorageService.setItem("busItemIdForEdit",$scope.rowIds[0]);
+	}else{
+		$scope.rowIds[0]  = sessionStorageService.getItemStr("busItemIdForEdit");
+	}
+	
+	if(!$scope.rowIds||$scope.rowIds[0]==""){
 		$state.go($scope.state.list);//返回到列表界面
 	}
 	
@@ -87,6 +94,7 @@ app.controller("busItemEditController",['$scope','$state','$http','checkUniqueSe
 		 * 渲染服务详细信息
 		 */
 		$scope.formData = data.details ;
+		$scope.formData.photoUrlName = data.details.photoUrl?"请点击&nbsp;<a style='color: blue; text-decoration: underline;'  onClick='$(\"#photoUrl\").click();'>预览！</a>":undefined;
 		$scope.formData.chooseAutoPartName='选择';
 		$scope.formData.chooseAutoPartButton=false;
 		//时间控件需要进行dom操作渲染
@@ -565,5 +573,7 @@ app.controller("busItemEditController",['$scope','$state','$http','checkUniqueSe
 		$("#busItemSumbit").removeClass("none");
 	}
 	
-	
+	//初始化选中的数据
+	$scope.setCanEdit(false);
+	$scope.clearRowIds();
 }]);

@@ -47,6 +47,7 @@ public class BusPackageImg implements java.io.Serializable
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="packageID")
 	private BusPackage busPackage ;
+	
 	public BusPackageImg()
 	{
 	}

@@ -19,6 +19,7 @@ function hideView(){
 	$(".second-panel").css("display","none");
 }
 </script>
+<div>
 <ul class="nav">
 	<li ng-repeat="A in app.ui.items" class="hidden-folded padder m-t m-b-sm text-muted text-xs">
     	<span ng-bind="A.type"></span>
@@ -94,11 +95,13 @@ function hideView(){
 <!--   </li> -->
 </ul>
 
-<div ng-repeat="A in app.ui.childItems" id="{{A.id}}" class="second-panel detailView">
+<div ng-repeat="A in app.ui.childItems" id="{{A.id}}" class="second-panel detailView" ng-class="{secondPanelAsideFoladedExpand:!app.settings.asideFolded,secondPanelAsideFoladedClosed:app.settings.asideFolded}">
 	<h5 class="detailView">{{A.name}}</h5>
 	<ul id="second-menulist-45" class="second-menu clearfix detailView">
 		<li class="detailView" ng-repeat="B in A.items">
 			<a class="second-menu-item detailView" title="{{B.name}}" ui-sref="{{B.url}}" style="color:black;" onclick="hideView()" href="#/{{B.href}}" >{{B.name}}</a>
 		</li>
 	</ul>  
+</div>
+
 </div>

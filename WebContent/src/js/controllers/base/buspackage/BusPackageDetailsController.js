@@ -1,8 +1,19 @@
-app.controller("busPackageDetailsController",['$scope','$state','$http',function($scope,$state,$http){
+app.controller("busPackageDetailsController",['$scope','$state','$http','sessionStorageService',function($scope,$state,$http,sessionStorageService){
 	
-	if(!$scope.editId){
-		$state.go($scope.state.list);
+	$scope.needCacheArray = ["busPackageDataTableProperties","busPackageIdForDetails"];
+	sessionStorageService.clearNoCacheItem($scope.needCacheArray);
+	if($scope.rowIds[0]){
+		sessionStorageService.setItem("busPackageIdForDetails",$scope.rowIds[0]);
+	}else{
+		$scope.rowIds[0]  = sessionStorageService.getItemStr("busPackageIdForDetails");
 	}
+	if(!$scope.rowIds[0]||$scope.rowIds[0]==""){
+		$state.go($scope.state.list);//返回到列表界面
+	}
+	
+//	if(!$scope.editId){
+//		$state.go($scope.state.list);
+//	}
 	/*
 	 * 初始化 隐藏树 
 	 */
@@ -24,11 +35,6 @@ app.controller("busPackageDetailsController",['$scope','$state','$http',function
 			busItemTableForChoose.ajax.reload();
 		}
 	}
-	
-	
-	//初始化选中的数据
-	$scope.setCanEdit(false);
-	$scope.clearRowIds();
 	
 	//初始化时间控件
 	$('#starTime').focus(
@@ -119,10 +125,6 @@ app.controller("busPackageDetailsController",['$scope','$state','$http',function
         	  });
           }
 	});
-	
-	
-	
-	
 	
 	/**
 	 * 将选择的服务信息保存在缓存中，并在服务列表中显示 缓存,并将显示标签也删除
@@ -324,9 +326,9 @@ app.controller("busPackageDetailsController",['$scope','$state','$http',function
 		 */
 		$http({
 			url:"base/busPackageAction!detailsBusPackage.action",
-			method:"get",
-			params:{
-				fid:$scope.editId
+			method:"post",
+			data:{
+				fid:$scope.rowIds[0]
 			}
 		}).then(function(resp){
 			if(resp.data.code == 1){//返回成功
@@ -356,6 +358,9 @@ app.controller("busPackageDetailsController",['$scope','$state','$http',function
 				$state.go($scope.state.list);
 			}
 		});
-	
+		
+		//初始化选中的数据
+		$scope.setCanEdit(false);
+		$scope.clearRowIds();
 	
 }]);

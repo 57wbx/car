@@ -1,10 +1,17 @@
 'use strict';
 
-app.controller('busPackageController', ['$rootScope','$scope','$state','$timeout','$http','warnService','hintService',function($rootScope, $scope, $state, $timeout,$http,warnService,hintService) {
+app.controller('busPackageController', ['$rootScope','$scope','$state','$timeout','$http','warnService','hintService','sessionStorageService',function($rootScope, $scope, $state, $timeout,$http,warnService,hintService,sessionStorageService) {
 //  var url = app.url.org.api.list; // 后台API路径
 	
 	var url = "base/busTypeAction!listBusType.action";
 	var data = null;
+	
+	/**
+	 * 在session中不能清除的内容，应该包含子缓存对象
+	 */
+	$scope.session = {};
+	$scope.session.cacheArray = ["busPackageDataTableProperties","busPackageIdForImg","busPackageIdForEdit","busPackageIdForDetails"];
+	sessionStorageService.clearNoCacheItem($scope.session.cacheArray);
 
 	$scope.rowIds = [];//用来保存所选列表的id
 	
@@ -15,7 +22,8 @@ app.controller('busPackageController', ['$rootScope','$scope','$state','$timeout
 			list:"app.buspackage.list",
 			add:"app.buspackage.add",
 			edit:"app.buspackage.edit",
-			details:"app.buspackage.details"
+			details:"app.buspackage.details",
+			manageimg:"app.buspackage.manageimg"
 	}
 	
 	/**
@@ -88,6 +96,17 @@ app.controller('busPackageController', ['$rootScope','$scope','$state','$timeout
 		$state.go($scope.state.details);
 	}
 	
+	/**
+	 * 管理图片的方法
+	 */
+	$scope.manageImg = function(){
+		if($scope.editId){
+			$scope.clearRowIds();
+			$scope.rowIds.push($scope.editId);
+		}
+		$state.go($scope.state.manageimg);
+		$scope.treeAPI.hiddenBusTypeTree();
+	}
 	/**
 	 * 修改方法的按钮
 	 */
@@ -163,6 +182,4 @@ app.controller('busPackageController', ['$rootScope','$scope','$state','$timeout
 		  });
 	}
 	
-  $scope.click = function(){};
-
 }]);

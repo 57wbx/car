@@ -7,7 +7,7 @@ app.controller("pushAddController",['$scope','$state','$http','hintService','ses
 	$scope.formData.expiresDay = 0;//默认消息保存0天
 	$scope.formData.expiresHour= 5;//默认消息保存5个小时
 	var flushTime = new Date();
-	//2007-08-15 15:09
+	//2007-08-15 15:09:00
 	$scope.formData.sendTimeStr = flushTime.getFullYear()+"-"+(flushTime.getMonth()+1)+"-"+flushTime.getDate()+" "+flushTime.getHours()+":"+(flushTime.getMinutes()+2)+":"+flushTime.getSeconds();//默认消息保存5个小时
 	
     $('#sendTimeStr').focus(
@@ -17,9 +17,9 @@ app.controller("pushAddController",['$scope','$state','$http','hintService','ses
 						timePicker : true,
 						format : 'YYYY-MM-DD HH:mm:ss'
 					};
-	    		$('#sendTimeStr').daterangepicker(optionSet).on('apply.daterangepicker', function(ev){
-//	    			$scope.formData.registerDate=$('#sendTime').val();
-	    		});
+	    			$('#sendTimeStr').daterangepicker(optionSet).on('apply.daterangepicker', function(ev){
+		    			$scope.formData.sendTimeStr=$('#sendTimeStr').val();
+		    		});
     		}
 	);
 	
@@ -52,4 +52,10 @@ app.controller("pushAddController",['$scope','$state','$http','hintService','ses
 	$scope.cancel = function(){
 		$state.go($scope.state.list);
 	}
+	
+	
+	//验证规则
+	$scope.message = {
+	}
+	
 }]);

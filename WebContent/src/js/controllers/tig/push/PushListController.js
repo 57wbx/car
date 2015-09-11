@@ -84,6 +84,11 @@ app.controller('pushListController',['$rootScope','$scope','$state','$timeout','
 			    		 return pushStateService.getFdeviceType(param);
 			    	 }
 			     },{
+			    	 "mDataProp":"fuseState",
+			    	 "render":function(param){
+			    		 return pushStateService.getFuseState(param);
+			    	 }
+			     },{
 			    	 "mDataProp":"userName"
 			     },{
 			    	 "mDataProp":"fcreateDate"

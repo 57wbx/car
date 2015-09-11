@@ -1,5 +1,8 @@
 package com.hhxh.car.tig.service;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import net.sf.json.JSONObject;
 import nl.justobjects.pushlet.util.Log;
 
@@ -82,4 +85,14 @@ public class PushMessageService extends BaseService
 		}
 	}
 	
+	/**
+	 * 改变推送消息的状态
+	 */
+	public void updatePushMessageUseState(String[] ids,Integer fuseState){
+		String hql = "update PushMessage p set p.fuseState=:fuseState where p.id in :ids";
+		Map<String,Object> param = new HashMap<String,Object>();
+		param.put("ids", ids);
+		param.put("fuseState", fuseState);
+		this.dao.executeHqlUpdate(hql, param);
+	}
 }

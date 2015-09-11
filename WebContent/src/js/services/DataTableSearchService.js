@@ -42,7 +42,7 @@ app.factory("dataTableSearchService",['$compile',function($compile){
 			if(!serachValue[i].formDataName){console.error("配置对象没有指定的formDataName属性");return;};
 			var element ;
 			if(serachValue[i].options&&serachValue[i].options.length>0){//代表是select的选择框
-				element = "<label class='control-label'>"+serachValue[i].label+":</label><select ng-model='"+serachValue[i].formDataName+"' class='form-control' >";
+				element = "<label class='control-label'>"+serachValue[i].label+":</label><select ng-model='"+serachValue[i].formDataName+"' class='form-control input-sm' >";
 				for(var j=0;j<serachValue[i].options.length;j++){
 					var value = -1;
 					if(serachValue[i].options[j].value===0||serachValue[i].options[j].value){
@@ -52,7 +52,7 @@ app.factory("dataTableSearchService",['$compile',function($compile){
 				}
 				element = element + "</select>";
 			}else{//普通的input
-				element = "<input type='text' class='form-control' placeholder='"+serachValue[i].placeholder+"' ng-model='"+serachValue[i].formDataName+"' />" ;
+				element = "<input type='text' class='form-control input-sm' placeholder='"+serachValue[i].placeholder+"' ng-model='"+serachValue[i].formDataName+"' />" ;
 			}
 			formStr = formStr + element ;
 		}

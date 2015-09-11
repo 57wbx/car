@@ -238,6 +238,8 @@ public class BaiduPushImp implements Push
 		//aps
 		JSONObject aps = new JSONObject();
 		aps.put("alert", body);
+		aps.put("sound", "default");
+		aps.put("badge", 1);
 		if(title!=null&&!"".equals(title)){//拼装标题和内容，因为ios没有标题
 			aps.put("alert", "["+title+"]"+body);
 		}

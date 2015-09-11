@@ -12,12 +12,14 @@ import javax.servlet.http.HttpSession;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import nl.justobjects.pushlet.util.Log;
 
 import org.apache.struts2.ServletActionContext;
 
 import com.hhxh.car.base.busitem.domain.BusItem;
 import com.hhxh.car.base.carshop.domain.CarShop;
 import com.hhxh.car.common.action.AbstractAction;
+import com.hhxh.car.common.action.BaseAction;
 import com.hhxh.car.common.util.CommonConstant;
 import com.hhxh.car.common.util.DesCrypto;
 import com.hhxh.car.org.domain.AdminOrgUnit;
@@ -38,7 +40,7 @@ import com.hhxh.car.permission.service.UserService;
  * @author：蒋大伟
  *
  */
-public class UserAction extends AbstractAction {
+public class UserAction extends BaseAction {
 
 	private static final long serialVersionUID = 1L;
 	private String id;
@@ -55,6 +57,8 @@ public class UserAction extends AbstractAction {
 	private String[] ids;
 	private String FLongNumber;
 	private String carShopId ;
+	
+	private String oldPassWord ;
 	
 	@Resource
 	private UserService userService;
@@ -242,14 +246,14 @@ public class UserAction extends AbstractAction {
 		{
 			sql.append("AND t2.orgCode like '").append(FLongNumber).append("%'").append(RT);
 		}
-		if(isNotEmpty(search))
-		{
-			sql.append("AND (t1.username LIKE '%").append(search).append("%'").append(RT);
-			sql.append("or t1.usercode LIKE '%").append(search).append("%')").append(RT);
-		}
+//		if(isNotEmpty(search))
+//		{
+//			sql.append("AND (t1.username LIKE '%").append(search).append("%'").append(RT);
+//			sql.append("or t1.usercode LIKE '%").append(search).append("%')").append(RT);
+//		}
 		sql.append("order by t1.CreateTime desc ").append(RT);
 		int total = baseService.querySql(sql.toString()).size();
-		List<Object[]> list = baseService.querySql(sql.toString(),start,pageSize);
+		List<Object[]> list = baseService.querySql(sql.toString(),this.getIDisplayStart(),this.getIDisplayLength());
 		JSONArray items = new JSONArray();
 		for (Object[] obj : list) 
 		{
@@ -414,6 +418,13 @@ public class UserAction extends AbstractAction {
 		if(nuser!=null){
 			json.put("code", "1");
 			json.put("msg", "success");
+			json.put("userName",nuser.getName());
+			json.put("id", nuser.getId());
+			if(nuser.getCarShop()!=null){
+				json.put("carShopName", nuser.getCarShop().getSimpleName());
+			}else{
+				json.put("carShopName", "平台");
+			}
 			setSessionValue(CommonConstant.LOGIN_USER, nuser);
 		}else{
 			json.put("code", "2");
@@ -436,6 +447,36 @@ public class UserAction extends AbstractAction {
 		json.put("code", "1");
 		json.put("msg", "success");
 		putJson(json.toString());
+	}
+	
+	/**
+	 * 修改用户密码
+	 * @return
+	 */
+	public void updateUserPassWord(){
+		try{
+			User user = this.getLoginUser();
+			JSONObject json = new JSONObject();
+			if(!isNotEmpty(oldPassWord)||!isNotEmpty(password)){
+				this.putJson(false, this.getMessageFromConfig("user_updatePassWord_same"));
+				return ;
+			}
+			if(user!=null&&user.getPassword().equals(oldPassWord)){
+				User needUpdateUser = this.baseService.get(User.class,user.getId());
+				needUpdateUser.setPassword(DesCrypto.encrypt(null, password));
+				this.baseService.save(needUpdateUser);
+				
+				needUpdateUser.setPassword(password);
+				setSessionValue(CommonConstant.LOGIN_USER, needUpdateUser);
+				
+				this.putJson();
+			}else{
+				this.putJson(false, this.getMessageFromConfig("user_updatePassWord_oldError"));
+			}
+		}catch(Exception e){
+			log.error("修改用户密码失败",e);
+			this.putJson(false,this.getMessageFromConfig("user_error"));
+		}
 	}
 
 	public String getNumber() {
@@ -553,6 +594,15 @@ public class UserAction extends AbstractAction {
 	public void setCarShopId(String carShopId) {
 		this.carShopId = carShopId;
 	}
-	
+
+	public String getOldPassWord()
+	{
+		return oldPassWord;
+	}
+
+	public void setOldPassWord(String oldPassWord)
+	{
+		this.oldPassWord = oldPassWord;
+	}
 	
 }

@@ -65,49 +65,64 @@ app.controller('carShopController', ['$rootScope','$scope','$state','$timeout','
 //    }
   };   
 
-  var mask = $('<div class="mask"></div>');
-  var container = $('#dialog-container');
-  var dialog = $('#dialog');
-  var hButton = $('#clickId');
-  var doIt = function(){};
-
-  // 删除请假记录（工具栏按钮）
-  $scope.removeIt = function(){
-    mask.insertBefore(container);
-    container.removeClass('none');
-    doIt = function(){
-      if($scope.rowIds.length !== 0){
-    	  $http({
-    		  url:"base/carShopAction!deleteCarShop.action",
-    		  method:"post",
-    		  data:{
-    			  ids:$scope.rowIds
-    		  }
-    	  }).then(function(resp){
-    		  mask.remove();
-    		  container.addClass('none');
-    		  if(resp.data.code==1){
-    			  hintService.hint({title: "成功", content: "删除成功！" });
-    			  $state.reload($scope.state.list);
-    		  }else{
-    			  alert(resp.data.message);
-    		  }
-    	  });
-      }
-    };
-  };
-
-  // 执行操作
-  $rootScope.do = function(){
-    doIt();
-  };
-
-  // 模态框退出
-  $rootScope.cancel = function(){
-    mask.remove();
-    container.addClass('none');
-  };  
-
+  /**
+	 * 推送方法的按钮
+	 */
+	$scope.pushRow = function(){
+		warnService.warn("操作提示","您确定要推送这一条商铺信息吗？该操作是不可更改的！",function(){return push($scope.rowIds[0])},function(resp){
+			  if(resp.data.code===1){
+				  hintService.hint({title: "成功", content: "推送成功！" });
+			  }else{
+				  alert(resp.data.message);
+			  }
+		  });
+	}
+	
+	/**
+	 * 推送的http
+	 */
+	function push(id){
+		return $http({
+			url:"base/carShopAction!pushCarShop.action",
+			method:"post",
+			data:{
+				id:id
+			}
+		});
+	}
+	
+	function deleteMethod(ids){
+		if(ids.length>0){
+			return $http({
+				url:'base/carShopAction!deleteCarShop.action',
+				method:'post',
+				data:{
+					ids:ids
+				}
+			});
+		}else{
+			alert("请选择需要删除的数据");
+		}
+	}
+	
+	/**
+	 * 删除方法的按钮
+	 */
+	$scope.deleteRow = function(){
+		if(!$scope.rowIds||$scope.rowIds.length<=0){
+			alert("请选择需要删除的数据");
+			return ;
+		}
+		warnService.warn("操作提示","您确定要删除这些商铺信息吗？",function(){return deleteMethod($scope.rowIds)},function(resp){
+			  if(resp.data.code===1){
+				  hintService.hint({title: "成功", content: "删除成功！" });
+				  $state.reload();
+			  }else{
+				  alert(resp.data.message);
+			  }
+		  });
+	}
+	  
   // 不操作返回
   $scope.return = function(){
     $scope.rowIds = [];
@@ -179,6 +194,36 @@ app.controller('carShopController', ['$rootScope','$scope','$state','$timeout','
 			  alert(resp.data.message);
 		  }
 	  });
+  }
+  
+  /**
+   *  表单输入 错误提示
+   */
+  $scope.message = {
+		  IDCARDNO:{
+			  pattern:"请输入有效的身份证号"
+		  },
+		  shopCode:{
+			  pattern:"只能由数字和字母组成"
+		  },
+		  busCard:{
+			  pattern:"只能由数字和字母组成"
+		  },
+		  legalCELL:{
+			  pattern:"请输入正确的手机号码"
+		  },
+		  telephone:{
+			  pattern:"请输入正确的电话号码"
+		  },
+		  qq:{
+			  pattern:"请输入正确的数字qq号吗"
+		  },
+		  bankCardNo:{
+			  pattern:"必须为16或19位的正确银行卡号"
+		  },
+		  employeeNum:{
+			  pattern:"员工数必须为整数"
+		  }
   }
   
 }]);

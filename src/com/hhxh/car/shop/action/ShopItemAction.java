@@ -469,6 +469,8 @@ public class ShopItemAction extends BaseAction implements ModelDriven<ShopItem>
 					pushMessage.setFmessageType(PushMessageState.FMESSAGETYPE_SHOPITEM);
 					pushMessage.setFdeviceType(PushMessageState.DEVICETYPE_ALL);
 					pushMessage.setFpermid(shopItem.getFid());
+					pushMessage.setFuseState(PushMessageState.FUSESTATE_OK);
+					pushMessage.setFsendType(PushMessageState.FSENDTYPE_ALL);
 					
 					Map<String,String> customValue = new HashMap<String,String>();
 					customValue.put("messageType", PushMessageState.FMESSAGETYPE_SHOPITEM.toString());

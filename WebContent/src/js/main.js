@@ -1,7 +1,7 @@
 'use strict';
 /* Controllers */
-angular.module('app').controller('AppCtrl', ['$scope', '$translate', '$localStorage', '$window', '$http', '$state','$cookieStore','$location','$templateCache','loginedUserService',
-  function($scope, $translate, $localStorage, $window, $http, $state,$cookieStore,$location,$templateCache,loginedUserService) {
+angular.module('app').controller('AppCtrl', ['$scope', '$translate', '$localStorage', '$window', '$http', '$state','$cookieStore','$location','$templateCache','$cacheFactory','loginedUserService',
+  function($scope, $translate, $localStorage, $window, $http, $state,$cookieStore,$location,$templateCache,$cacheFactory,loginedUserService) {
     // add 'ie' classes to html
     var isIE = !! navigator.userAgent.match(/MSIE/i);
     isIE && angular.element($window.document.body).addClass('ie');
@@ -148,7 +148,12 @@ angular.module('app').controller('AppCtrl', ['$scope', '$translate', '$localStor
             if (response.data.code == 1) {
                $cookieStore.remove('username');
                loginedUserService.logout();
+               //缓存弹出框模板
+               var windHtml = $templateCache.get("template/modal/window.html");
+               var backdrop = $templateCache.get("template/modal/backdrop.html");
                $templateCache.removeAll();//清除所有的缓存
+               $templateCache.put("template/modal/window.html",windHtml);
+               $templateCache.put("template/modal/backdrop.html",backdrop);
                $state.go('access.signin');
             } else {
             	 console.log("Logout: " + response.data.msg);
@@ -163,8 +168,21 @@ angular.module('app').controller('AppCtrl', ['$scope', '$translate', '$localStor
     $scope.$on("refreshMenu",function(){
     	uiInit();
     	 initLeftMenu();
+    	 //获取用户姓名
+    	 getUserName();
     });
-
+   
+    /**
+     * 获取账户姓名
+     */
+    function getUserName(){
+    	 //获取当前登陆用户
+    	if(loginedUserService.getUser()){
+    		$scope.userName = loginedUserService.getUser().userName;
+    		$scope.carShopName = loginedUserService.getUser().carShopName;
+    	}
+    }
+    getUserName();
     // 公用函数工具
     app.utils = {};
     app.utils.getData = function(u, d, m, h) {

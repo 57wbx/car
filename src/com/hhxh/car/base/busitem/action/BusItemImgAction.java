@@ -7,6 +7,7 @@ import net.sf.json.JSONObject;
 import com.hhxh.car.base.busitem.domain.BusItem;
 import com.hhxh.car.base.busitem.domain.BusItemImg;
 import com.hhxh.car.common.action.BaseAction;
+import com.hhxh.car.common.annotation.AuthCheck;
 import com.hhxh.car.common.util.FileUploadUtil;
 import com.hhxh.car.common.util.UrlUtils;
 import com.opensymphony.xwork2.ModelDriven;
@@ -28,6 +29,7 @@ public class BusItemImgAction extends BaseAction implements ModelDriven<BusItemI
 	/**
 	 * 根据服务项id保存一个图片信息
 	 */
+	@AuthCheck
 	public void addBusItemImg()
 	{
 		try
@@ -93,6 +95,7 @@ public class BusItemImgAction extends BaseAction implements ModelDriven<BusItemI
 	/**
 	 * 保存或者修改服务图片信息
 	 */
+	@AuthCheck
 	public void saveOrUpdateBusItemImgDetails()
 	{
 		try
@@ -122,8 +125,29 @@ public class BusItemImgAction extends BaseAction implements ModelDriven<BusItemI
 		}
 	}
 	
-
-
+	/**
+	 * 删除指定的图片
+	 */
+	@AuthCheck
+	public void deleteItemImgById(){
+		try{
+			if(isNotEmpty(this.busItemImg.getId())){
+				this.busItemImg = this.baseService.get(BusItemImg.class,this.busItemImg.getId());
+				if(this.busItemImg!=null){
+					//删除指定的数据
+					this.baseService.delete(this.busItemImg);
+					this.putJson();
+				}else{
+					this.putJson(false, this.getMessageFromConfig("busItemImgErrorId"));
+				}
+			}else{
+				this.putJson(false, this.getMessageFromConfig("busItemImgNeedId"));
+			}
+		}catch(Exception e){
+			log.error("删除平台服务图片出错",e);
+			this.putJson(false, this.getMessageFromConfig("busItemImgError"));
+		}
+	}
 
 	@Override
 	public BusItemImg getModel() {

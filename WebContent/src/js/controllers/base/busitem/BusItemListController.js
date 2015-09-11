@@ -1,6 +1,20 @@
 'use strict';
 
-app.controller('busItemListController',['$scope','$state','$timeout','$http',function($scope,$state,$timeout,$http){
+app.controller('busItemListController',['$scope','$state','$timeout','$http','dataTableSearchService','sessionStorageService',function($scope,$state,$timeout,$http,dataTableSearchService,sessionStorageService){
+	
+	$scope.search = {};
+	
+	var isF5 = true ;
+	$scope.busItemDataTableProperties = null;
+	$scope.needCacheArray = ["busItemDataTableProperties"];
+	sessionStorageService.clearNoCacheItem($scope.needCacheArray);
+	$scope.busItemDataTableProperties  = sessionStorageService.getItemObj("busItemDataTableProperties");
+	
+	$scope.setBusItemDataTableProperties = function(obj){
+		$scope.busItemDataTableProperties = obj;
+		sessionStorageService.setItem("busItemDataTableProperties",obj);
+	}
+	
 	//单击表格中的一行应该调用这个方法
 	function clickTr(e,inp){
 	      var evt = e || window.event;
@@ -70,20 +84,36 @@ app.controller('busItemListController',['$scope','$state','$timeout','$http',fun
 		busItemTable.ajax.reload();//重新加载数据
 	}
 	
+	$scope.$evalAsync(initDataTable);
 	
-	//延迟加载 客户端不会报错，具体原因还不清楚
-	$timeout(function(){
-		initDataTable();
-	},30);
 	var busItemTable ;
 	function initDataTable(){
 		
 	busItemTable = $("#busItemTable").on('preXhr.dt', function ( e, settings, data ){
-		data.busTypeCode = $scope.busTypeTree.selectedTypeCode ;
+		if(isF5){
+			isF5 = false ;
+			var oldData = sessionStorageService.getItemObj("busItemDataTableProperties"); 
+			if(oldData){
+				angular.copy(oldData,data);
+				$scope.search.itemName = data.itemName ;
+				$scope.search.itemDes = data.itemDes ;
+				$scope.search.itemCode = data.itemCode ;
+				$scope.search.isActivity = data.isActivity ;
+				$scope.busTypeTree.selectedTypeCode = data.busTypeCode ;
+			}
+		}else{
+			data.itemName = $scope.search.itemName;
+			data.itemDes = $scope.search.itemDes;
+			data.itemCode = $scope.search.itemCode ;;
+			data.isActivity = $scope.search.isActivity;
+			data.busTypeCode = $scope.busTypeTree.selectedTypeCode ;
+			$scope.setBusItemDataTableProperties(data);
+		}
 	}).DataTable({
 		"sAjaxSource":"base/busItemAction!listBusItem.action",
     	"bServerSide":true,
     	"sAjaxDataProp":"data",
+    	"sServerMethod": "POST",
     	"pageLength":5,
     	"dom": '<"top">rt<"bottom"ip><"clear">',
     	"oLanguage": {
@@ -197,23 +227,38 @@ app.controller('busItemListController',['$scope','$state','$timeout','$http',fun
         			  $scope.clearRowIds();//调用上级controller中的清空ids的方法
         		  }
         	  });
-        	  
-//        	  $('#busItemTable tbody').on( 'click', 'tr', function () {
-//        		  console.info("-------------");
-//        		  console.info($(this));
-//        	        if ( $(this).hasClass('selected') ) {
-//        	            $(this).removeClass('selected');
-//        	            $(this).find("td").css("background-color","white");
-//        	        }
-//        	        else {
-//        	        	busItemTable.$('tr.selected').find("td").css("background-color","white");
-//        	            $(this).addClass('selected');
-//        	            $(this).find("td").css("background-color","#b0bed9");
-//        	        }
-//        	    } );
-          }
+          },
+          "initComplete":function(settings,json){
+            	if( $scope.busItemDataTableProperties){
+            		var pageIndex = $scope.busItemDataTableProperties.iDisplayStart/$scope.busItemDataTableProperties.iDisplayLength;
+            		busItemTable.page(pageIndex).draw(false);
+            	}
+            	initSearchDiv(settings,json);
+            }
 	});
 	}//结束初始化方法
+	
+	//初始化搜索框
+	var initSearchDiv = function(settings,json){
+		dataTableSearchService.initSearch([
+			  {formDataName:'search.itemCode',placeholder:'服务编号'},
+			  {formDataName:'search.itemName',placeholder:'服务名称'},
+			  {formDataName:'search.itemDes',placeholder:'服务描述'},
+              {
+           	   formDataName:'search.isActivity',
+           	   label:'是否参加聚惠',
+           	   options:[{label:'全部'},{
+           		//0=加盟店、1=合作店、3=直营店、4=中心店（区域旗舰店）
+			               		   value:0,
+			               		   label:"不参加"
+			               	   	},{
+		                		   value:1,
+		                   		   label:"参加"
+		                   			   }
+               	]
+              }
+		],$scope,settings,busItemTable);
+	}
 	
 	
 	/**

@@ -41,6 +41,29 @@ public class PushMessageState
 	 * 5：商家服务
 	 */
 	public static final Integer FMESSAGETYPE_SHOPITEM = 5 ;
-	
-	
+	/**
+	 * 推送消息类型
+	 * 6：推送商铺
+	 */
+	public static final Integer FMESSAGETYPE_CARSHOP = 6 ;
+	/**
+	 * 使用状态
+	 * 1：正常
+	 */
+	public static final Integer FUSESTATE_OK = 1 ;
+	/**
+	 * 使用状态
+	 * 2：停用
+	 */
+	public static final Integer FUSESTATE_STOP = 2 ;
+	/**
+	 * 发送消息的类型：
+	 * 1：发送给全部用户，没有指定特定的用户群体
+	 */
+	public static final Integer FSENDTYPE_ALL = 1 ;
+	/**
+	 * 发送消息的类型：
+	 * 2：发送给特定的用户群体
+	 */
+	public static final Integer FSENDTYPE_PART = 2 ;
 }

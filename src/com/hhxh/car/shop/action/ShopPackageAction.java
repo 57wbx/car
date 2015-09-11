@@ -51,15 +51,15 @@ public class ShopPackageAction extends BaseAction implements ModelDriven<ShopPac
 
 	@Resource
 	private ShopPackageService shopPackageService;
-	
+
 	/**
 	 * 推送的接口
 	 */
 	@Resource
-	private Push push ;
-	
+	private Push push;
+
 	@Resource
-	private PushMessageService pushMessageService ;
+	private PushMessageService pushMessageService;
 
 	/**
 	 * 获取套餐信息
@@ -294,7 +294,7 @@ public class ShopPackageAction extends BaseAction implements ModelDriven<ShopPac
 	/**
 	 * 删除记录
 	 */
-	@AuthCheck(isCheckLoginOnly=false)
+	@AuthCheck(isCheckLoginOnly = false)
 	public void deleteShopPackageByIds()
 	{
 		if (ids != null && ids.length > 0)
@@ -379,42 +379,50 @@ public class ShopPackageAction extends BaseAction implements ModelDriven<ShopPac
 			this.putJson(false, this.getMessageFromConfig("busPackageError"));
 		}
 	}
-	
+
 	/**
 	 * 推送一条商家套餐项，其中推送的title为服务项的名称。推送的内容为服务项的服务详情
 	 */
-	@AuthCheck(isCheckLoginOnly=false)
-	public void pushShopPackage(){
-		try{
-			if(isNotEmpty(this.shopPackage.getFid())){
-				this.shopPackage = this.baseService.get(ShopPackage.class,this.shopPackage.getFid());
-				if(shopPackage!=null){
+	@AuthCheck(isCheckLoginOnly = false)
+	public void pushShopPackage()
+	{
+		try
+		{
+			if (isNotEmpty(this.shopPackage.getFid()))
+			{
+				this.shopPackage = this.baseService.get(ShopPackage.class, this.shopPackage.getFid());
+				if (shopPackage != null)
+				{
 					PushMessage pushMessage = new PushMessage();
-					
+
 					pushMessage.setFcontent(shopPackage.getPackageDes());
 					pushMessage.setFtitle(shopPackage.getPackageName());
-					
+
 					pushMessage.setCreateUser(this.getLoginUser());
 					pushMessage.setFcreateDate(new Date());
 					pushMessage.setFmessageType(PushMessageState.FMESSAGETYPE_SHOPPACKAGE);
 					pushMessage.setFdeviceType(PushMessageState.DEVICETYPE_ALL);
 					pushMessage.setFpermid(shopPackage.getFid());
-					
-					Map<String,String> customValue = new HashMap<String,String>();
+					pushMessage.setFuseState(PushMessageState.FUSESTATE_OK);
+					pushMessage.setFsendType(PushMessageState.FSENDTYPE_ALL);
+
+					Map<String, String> customValue = new HashMap<String, String>();
 					customValue.put("messageType", PushMessageState.FMESSAGETYPE_SHOPPACKAGE.toString());
 					customValue.put("id", shopPackage.getFid());
-					
-					String pushResult = push.pushAllNotify(pushMessage.getFtitle(), shopPackage.getPackageDes(),customValue);
-					
-					log.debug("推送商家套餐返回的数据："+pushResult);
+
+					String pushResult = push.pushAllNotify(pushMessage.getFtitle(), shopPackage.getPackageDes(), customValue);
+
+					log.debug("推送商家套餐返回的数据：" + pushResult);
 					pushMessageService.addNotifyPushMessage(pushResult, pushMessage);
 					this.putJson();
 				}
-			}else{
+			} else
+			{
 				this.putJson(false, this.getMessageFromConfig("needBusPackageId"));
 			}
-		}catch(Exception e){
-			log.error("推送平台套餐失败",e);
+		} catch (Exception e)
+		{
+			log.error("推送平台套餐失败", e);
 			this.putJson(false, this.getMessageFromConfig("push_error"));
 		}
 	}

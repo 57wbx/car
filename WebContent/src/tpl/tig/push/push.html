@@ -8,21 +8,20 @@
 			</div>
 			
 			<div class="col-md-9 col-xs-12"
-				ng-init="single=true;only=false;mutiple=true;locked=true">
+				ng-init="single=true;only=false;mutiple=true;locked=true" >
 				<div class="panel-heading pull-right btn-group">
 					<button type="button"  class="btn btn-success" ng-click="addUnit()"  ng-if="btns.ADD"
 						ng-disabled="only">
 						<i class="fa fa-fw fa-plus"></i> <span class="hid">添加</span>
 					</button>
-					<button type="button" class="btn btn-primary" ng-click="editIt()" ng-if="btns.UPDATE"
-						ng-disabled="single">
-						<i class="fa fa-fw fa-pencil"></i> <span class="hid">修改</span>
-					</button>
-			
-					<button type="button" class="btn btn-danger" ng-click="removeIt()" ng-if="btns.DELETE"
-						ng-disabled="mutiple">
-						<i class="fa fa-fw fa-minus"></i> <span class="hid">删除</span>
-					</button>
+					<div class="btn-group dropdown" dropdown  ng-if="btns.STATE">
+					          <button class="btn btn-default" dropdown-toggle ng-disabled="mutiple"><i class="fa fa-fw icon-lock"></i>状态<span class="caret"></span></button>
+						          <ul class="dropdown-menu">
+						          		<!-- 1=正常、2=停用） -->
+							            <li><a href ng-click="setUseState(1);">正常</a></li>
+							            <li><a href ng-click="setUseState(2);">停用</a></li>
+						          </ul>
+					</div>
 					<button type="button" class="btn btn-default"  ng-if="btns.DETAILS"
 						ng-click="seeDetails()" ng-disabled="single">
 						<i class="fa fa-fw fa-eye"></i> <span class="hid">查看</span>

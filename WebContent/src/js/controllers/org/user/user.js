@@ -2,7 +2,7 @@
 
 app.controller('UserController', function($rootScope, $scope, $state, $timeout) {
   var allBtn =["add","delete","modify"];//btn id array
-  $scope.permBtn = app.utils.rolePerm(app.url.user.api.menuPerm,"004",allBtn);//已有权限项数组
+//  $scope.permBtn = app.utils.rolePerm(app.url.user.api.menuPerm,"004",allBtn);//已有权限项数组
   var url = app.url.org.api.list; // 后台API路径
   var data = null;
   app.utils.getData(url, function callback(dt){

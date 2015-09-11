@@ -43,7 +43,17 @@ public class JsonValueFilterConfig {
 	/**
 	 * buspackage 平台套餐需要过滤的数据
 	 */
-	public static final String[] BASEPACKAGE_HAS_BUSITEMS = new String[]{"busPackages","busAtoms","busItemImgs"};
+	public static final String[] BASEPACKAGE_HAS_BUSITEMS = new String[]{"busPackages","busAtoms","busItemImgs","busPackageImgs"};
+	
+	/**
+	 * buspackageImg 平台套餐需要过滤的数据
+	 */
+	public static final String[] BUSPACKAGEIMG_ONLY_BUSPACKAGEIMG = new String[]{"busPackage","user"};
+	
+	/**
+	 * buspackage 平台套餐需要过滤的数据
+	 */
+	public static final String[] BASEPACKAGE_HAS_BUSPACKAGEIMG = new String[]{"busItems","user"};
 	
 	/**
 	 * busatom 平台服务子项需要过滤的数据
@@ -147,4 +157,8 @@ public class JsonValueFilterConfig {
 	 * pushMessage 推送消息需要过滤掉的数据
 	 */
 	public static final String[] PUSHMESSAGE_ONLY_PUSHMESSAGE = new String[]{"pushMessageParts","createUser",HIBERNATE_LAZY_PROPERTISE_HANDLER,HIBERNATE_LAZY_PROPERTISE_LAZYINITIALIZER};
+	/**
+	 * pushMessage 推送消息需要过滤掉的数据
+	 */
+	public static final String[] PUSHMESSAGE_HAS_PUSHMESSAGEPART = new String[]{"pushMessage","createUser",HIBERNATE_LAZY_PROPERTISE_HANDLER,HIBERNATE_LAZY_PROPERTISE_LAZYINITIALIZER};
 }

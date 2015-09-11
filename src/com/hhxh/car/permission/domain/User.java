@@ -36,7 +36,6 @@ import com.hhxh.car.org.domain.Person;
 @Entity
 @Table(name = "T_PM_User")
 public class User implements Serializable,Comparable<Object> {
-	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GenericGenerator(name = "sasGenerator", strategy = "assigned")

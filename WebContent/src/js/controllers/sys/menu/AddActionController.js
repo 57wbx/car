@@ -1,23 +1,12 @@
 app.controller("addActionController",['$scope','$modalInstance','$http','$timeout','checkUniqueService',"permItemId","aData",function($scope,$modalInstance,$http,$timeout,checkUniqueService,permItemId,aData){
 	
-	console.info("permItemId",permItemId);
+	$scope.formData = {};
 	if(aData){
 		$scope.formData = aData ;
+	}else{
+		$scope.formData.fType = 0;
+		$scope.formData.useState = 0;
 	}
-	
-//	if(permItemId){
-//		$http({
-//			url:"sys/permItemAction!detailsPermItem.action",
-//			method:"post",
-//			data:{
-//				id:permItemId 
-//			}
-//		}).then(function(resp){
-//			if(resp.data.code==1){
-//				$scope.formData = resp.data.details ;
-//			}
-//		});
-//	}
 	
 	 $scope.ok = function() {
 		 	$scope.formData.useState = parseInt($scope.formData.useState);

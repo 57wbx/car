@@ -19,16 +19,22 @@ import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 import net.sf.json.util.CycleDetectionStrategy;
 
+import com.hhxh.car.base.busitem.domain.BusItem;
 import com.hhxh.car.base.carshop.domain.CarShop;
 import com.hhxh.car.base.carshop.domain.CarShopImg;
 import com.hhxh.car.base.carshop.service.CarShopService;
 import com.hhxh.car.common.action.BaseAction;
+import com.hhxh.car.common.annotation.AuthCheck;
 import com.hhxh.car.common.util.ErrorMessageException;
 import com.hhxh.car.common.util.FileUploadUtil;
 import com.hhxh.car.common.util.JsonDateValueProcessor;
 import com.hhxh.car.common.util.JsonValueFilterConfig;
 import com.hhxh.car.common.util.UrlUtils;
 import com.hhxh.car.org.domain.AdminOrgUnit;
+import com.hhxh.car.push.Push;
+import com.hhxh.car.tig.domain.PushMessage;
+import com.hhxh.car.tig.domain.PushMessageState;
+import com.hhxh.car.tig.service.PushMessageService;
 import com.opensymphony.xwork2.ModelDriven;
 
 public class CarShopAction extends BaseAction implements ModelDriven<CarShop>
@@ -43,6 +49,15 @@ public class CarShopAction extends BaseAction implements ModelDriven<CarShop>
 
 	@Resource
 	private CarShopService carShopService;
+	
+	/**
+	 * 推送的接口
+	 */
+	@Resource
+	private Push push ;
+	
+	@Resource
+	private PushMessageService pushMessageService ;
 
 	/**
 	 * 获取修车网店的信息
@@ -400,6 +415,47 @@ public class CarShopAction extends BaseAction implements ModelDriven<CarShop>
 		{
 			log.error("修改商铺状态失败", e);
 			this.putJson(false, this.getMessageFromConfig("carShop_error"));
+		}
+	}
+	
+	/**
+	 * 推送一条商铺项，其中推送的title为服务项的名称。推送的内容为服务项的服务详情
+	 */
+	@AuthCheck(isCheckLoginOnly=false)
+	public void pushCarShop(){
+		try{
+			if(isNotEmpty(this.carShop.getId())){
+				this.carShop = this.baseService.get(CarShop.class,this.carShop.getId());
+				if(carShop!=null){
+					PushMessage pushMessage = new PushMessage();
+					
+					pushMessage.setFcontent(carShop.getDescription());
+					pushMessage.setFtitle(carShop.getSimpleName());
+					
+					pushMessage.setCreateUser(this.getLoginUser());
+					pushMessage.setFcreateDate(new Date());
+					pushMessage.setFmessageType(PushMessageState.FMESSAGETYPE_CARSHOP);
+					pushMessage.setFdeviceType(PushMessageState.DEVICETYPE_ALL);
+					pushMessage.setFpermid(carShop.getId());
+					pushMessage.setFuseState(PushMessageState.FUSESTATE_OK);
+					pushMessage.setFsendType(PushMessageState.FSENDTYPE_ALL);
+					
+					Map<String,String> customValue = new HashMap<String,String>();
+					customValue.put("messageType", PushMessageState.FMESSAGETYPE_CARSHOP.toString());
+					customValue.put("id", carShop.getId());
+					
+					String pushResult = push.pushAllNotify(pushMessage.getFtitle(), pushMessage.getFcontent(),customValue);
+					
+					log.debug("推送商铺返回的数据："+pushResult);
+					pushMessageService.addNotifyPushMessage(pushResult, pushMessage);
+					this.putJson();
+				}
+			}else{
+				this.putJson(false, this.getMessageFromConfig("carShop_needId"));
+			}
+		}catch(Exception e){
+			log.error("推送平台服务失败",e);
+			this.putJson(false, this.getMessageFromConfig("push_error"));
 		}
 	}
 

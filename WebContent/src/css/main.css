@@ -483,8 +483,15 @@ ul.nav.nav-list.abn-tree .level-9 i.tree-icon {
     -moz-box-shadow: 2px 2px 6px 0px #DADADA;
     border-radius: 5px;
 }
+/*二级菜单样式 start*/
+.secondPanelAsideFoladedExpand {
+	left: 200px;
+}
+.secondPanelAsideFoladedClosed {
+	left: 60px;
+}
 .second-panel a:hover{
-	color: #fff;
+    color: #fff;
     background-color: #b4c2cc;
     text-decoration: none;
 }
@@ -659,11 +666,10 @@ div.dataTables_paginate {
   display: inline;/*自己添加的*/
 }
 
- textarea .ng-dirty.ng-invalid,
- select .ng-dirty.ng-invalid,
- input.ng-dirty.ng-invalid {
-    border-color: #e9322d;
-    -webkit-box-shadow: 0 0 6px #f8b9b7;
-    -moz-box-shadow: 0 0 6px #f8b9b7;
-    box-shadow: 0 0 6px #f8b9b7;
+form div .inputerror {
+	padding-left: 20px;
+	color:red;
+	font-weight: 300;
+	font-family: 微软雅黑;
+	font-size: 3px
 }

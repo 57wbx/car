@@ -30,8 +30,13 @@
 							            <li><a href ng-click="setUseState(4);">黑名单</a></li>
 						          </ul>
 					</div>
+					
+					<button type="button" class="btn btn-primary" ng-click="pushRow()" 
+						ng-disabled="single">
+						<i class="glyphicon glyphicon-envelope"></i> <span class="hid">推送</span>
+					</button>
 			
-					<button type="button" class="btn btn-danger" ng-click="removeIt()"
+					<button type="button" class="btn btn-danger" ng-click="deleteRow()"
 						ng-disabled="mutiple">
 						<i class="fa fa-fw fa-minus"></i> <span class="hid">删除</span>
 					</button>

@@ -1,11 +1,11 @@
 <div class="leave hbox hbox-auto-xs hbox-auto-sm"
-	ng-controller="manageItemImgController">
+	ng-controller="manageBusPackageImgController">
 <div class="panel panel-default">
 	<div class="panel-heading">
 		<div class="row">
 			<!-- <div class="col-md-4 col-xs-0"></div> -->
 			<div class="col-md-7  ">
-				<h2 class="leave-title text-right"><span class="text-center"><span ng-bind="busItemName"></span>-服务图片管理</span></h2>
+				<h2 class="leave-title text-right"><span class="text-center"><span ng-bind="packageName"></span>-套餐图片管理</span></h2>
 				<input type="file" class="hidden" id="addImage" nv-file-select="" uploader="uploader"  accept="image/*"/>
 			</div>
 			<div class="col-md-offset-1 col-md-4 ">
@@ -19,9 +19,9 @@
   <div class="progress-bar" role="progressbar" ng-style="{ 'width': uploader.progress + '%' }"></div>
 </div></div>
 			<div class="row">
-					    <div class=" col-md-4" ng-repeat="item in imgs">
+					  <div class=" col-md-4" ng-repeat="item in imgs">
 					    <div class="thumbnail">
-					      <img ng-src="http://{{item.serverIp}}:{{item.port}}/{{item.filePath}}" >
+					      <img ng-src="http://{{item.serverIp}}:{{item.port}}/{{item.filePath}}" alt="1">
 					
 					      <div class="caption">
 					       <h3>

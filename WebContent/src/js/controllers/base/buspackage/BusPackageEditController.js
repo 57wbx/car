@@ -495,6 +495,7 @@ app.controller("busPackageEditController",['$scope','$state','$http',function($s
 		}).then(function(resp){
 			if(resp.data.code == 1){//返回成功
 				$scope.formData = resp.data.details;
+				$scope.formData.photoUrlName = resp.data.details.photoUrl?"请点击&nbsp;<a style='color: blue; text-decoration: underline;'  onClick='$(\"#photoUrl\").click();'>预览！</a>":undefined;
 				//时间控件的初始化
 				$('#starTime').val($scope.formData.starTime);
 				$('#endTime').val($scope.formData.endTime);
@@ -521,6 +522,8 @@ app.controller("busPackageEditController",['$scope','$state','$http',function($s
 			}
 		});
 		
-	
+		//初始化选中的数据
+		$scope.setCanEdit(false);
+		$scope.clearRowIds();
 	
 }]);

@@ -1,0 +1,105 @@
+<div class="hbox hbox-auto-xs hbox-auto-sm" ng-controller="pushDetailsController">
+  <div class="panel-heading font-bold text-center">
+    推送详情
+  </div>
+  <div class="panel-body">
+    <form name="form" class="form-horizontal form-validation " method="get" ng-model="formData" novalidate>
+		
+		<div class="form-group">
+			<label class="col-sm-1 control-label">标题</label>
+			<div class="col-sm-11">
+				<input class="form-control" type="text"  ng-model="formData.ftitle" />
+			</div>
+		 </div>
+		 
+		 <div class="form-group">
+			<label class="col-sm-1 control-label">内容</label>
+			<div class="col-sm-11">
+				<textarea class="form-control" ng-model="formData.fcontent"></textarea>
+			</div>
+		 </div>
+		 
+		 <div class="form-group">
+			<label class="col-sm-1 control-label">消息类型</label>
+			<div class="col-sm-2">
+				<select ng-model="formData.fmessageType" class="form-control">
+<!-- 				1：普通消息2：平台套餐消息3：平台服务消息4：商家套餐消息5：商家服务消息6:商铺信息 -->
+					<option value="1">普通消息</option>
+					<option value="2">平台套餐消息</option>
+					<option value="3">平台服务消息</option>
+					<option value="4">商家套餐消息</option>
+					<option value="5">商家服务消息</option>
+					<option value="6">商铺消息</option>
+				</select>
+			</div>
+			<label class="col-sm-1 control-label">创建时间</label>
+			<div class="col-sm-2">
+				<input type="text" class="form-control" ng-model="formData.fcreateDate">
+			</div>
+			<label class="col-sm-1 control-label">发送时间</label>
+			<div class="col-sm-2" ng-if="formData.fsendTime">
+				<input type="text" class="form-control" ng-model="formData.fsendTime" disabled>
+			</div>
+			<div class="col-sm-2" ng-if="!formData.fsendTime">
+				<input type="text" class="form-control" value="立即发送" disabled>
+			</div>
+		 </div>
+		 
+		  <div class="form-group" style="border-bottom: black 1px solid;" ng-if="formData.pushMessageParts[0]">
+		  	<div class="col-sm-2">
+			  	<label class="col-sm-6 control-label">机型</label>
+	        		<p class="col-sm-6 form-text"  ><span ng-if="formData.pushMessageParts[0].deviceType==3">安卓</span><span ng-if="formData.pushMessageParts[0].deviceType!=3">IOS</span></p>
+		  	</div>
+			
+        		<div class="col-sm-2">
+			  	<label class="col-sm-6 control-label">状态</label>
+	        		<p class="col-sm-6 form-text"  ><span ng-if="formData.pushMessageParts[0].sendStatus==1">成功</span><span ng-if="formData.pushMessageParts[0].sendStatus===0"><span style="color:red;">失败</span></span></p>
+		  	</div>
+		  	
+		  	<div class="col-sm-2" ng-if="formData.pushMessageParts[0].sendStatus===0">
+			  	<label class="col-sm-6 control-label">错误码</label>
+	        		<p class="col-sm-6 form-text"  ><span ng-bind="formData.pushMessageParts[0].sendErrorCode"></span></p>
+		  	</div>
+		  	
+        		<div class="col-sm-2" ng-if="formData.pushMessageParts[0].sendStatus==1">
+			  	<label class="col-sm-6 control-label">状态</label>
+	        		<p class="col-sm-6 form-text"  ><span ng-bind="formData.pushMessageParts[0].msgId"></span></p>
+		  	</div>
+		 </div>
+		 
+		<div class="form-group" style="border-bottom: black 1px solid;" ng-if="formData.pushMessageParts[1]">
+		  	<div class="col-sm-2">
+			  	<label class="col-sm-6 control-label">机型</label>
+	        		<p class="col-sm-6 form-text"  ><span ng-if="formData.pushMessageParts[1].deviceType==3">安卓</span><span ng-if="formData.pushMessageParts[1].deviceType!=3">IOS</span></p>
+		  	</div>
+			
+        		<div class="col-sm-2">
+			  	<label class="col-sm-6 control-label">状态</label>
+	        		<p class="col-sm-6 form-text"  ><span ng-if="formData.pushMessageParts[1].sendStatus==1">成功</span><span ng-if="formData.pushMessageParts[1].sendStatus===0"><span style="color:red;">失败</span></span></p>
+		  	</div>
+		  	
+		  	<div class="col-sm-2" ng-if="formData.pushMessageParts[1].sendStatus===0">
+			  	<label class="col-sm-6 control-label">错误码</label>
+	        		<p class="col-sm-6 form-text"  ><span ng-bind="formData.pushMessageParts[1].sendErrorCode"></span></p>
+		  	</div>
+		  	
+        		<div class="col-sm-2" ng-if="formData.pushMessageParts[1].sendStatus==1">
+			  	<label class="col-sm-6 control-label">状态</label>
+	        		<p class="col-sm-6 form-text"  ><span ng-bind="formData.pushMessageParts[1].msgId"></span></p>
+		  	</div>
+		 </div>
+		 
+    </form>
+    
+      <div class="line line-dashed b-b line-lg pull-in"></div>
+      <div class="form-group" id="busItemSumbit" >
+        <div class="col-sm-offset-5 col-sm-2 col-xs-6">
+          <a ng-click="cancel()" class="w100 btn btn-default">返回</a>
+        </div>
+      </div>
+   
+  </div>
+  
+     <div class="form-group">&nbsp;</div>
+   
+</div>

@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import org.apache.log4j.Logger;
 import org.apache.struts2.ServletActionContext;
 
 import com.hhxh.car.common.service.BaseService;
@@ -39,6 +40,8 @@ public class AbstractAction extends ActionSupport {
 	
 	protected SimpleDateFormat ymdhm = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 	protected SimpleDateFormat ymd = new SimpleDateFormat("yyyy-MM-dd");
+	
+	protected Logger log  = Logger.getLogger(this.getClass());
 	
     /**
      * 获得会话

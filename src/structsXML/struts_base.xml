@@ -17,8 +17,8 @@
 			class="com.hhxh.car.base.busitem.action.BusItemAction" />
 		<action name="busItemImgAction"
 			class="com.hhxh.car.base.busitem.action.BusItemImgAction" />
-		<action name="busPackageAction"
-			class="com.hhxh.car.base.buspackage.action.BusPackageAction" />
+			<action name="busPackageAction" class="com.hhxh.car.base.buspackage.action.BusPackageAction" />
+			<action name="busPackageImgAction" class="com.hhxh.car.base.buspackage.action.BusPackageImgAction" />
 			<action name="baseProvinceAction" class="com.hhxh.car.base.district.action.BaseProvinceAction"></action>
 			<action name="baseCityAction" class="com.hhxh.car.base.district.action.BaseCityAction"></action>
 			<action name="baseAreaAction" class="com.hhxh.car.base.district.action.BaseAreaAction"></action>

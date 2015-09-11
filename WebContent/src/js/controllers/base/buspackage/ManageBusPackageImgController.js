@@ -1,17 +1,18 @@
 'use strict';
 
-app.controller('manageItemImgController',['$rootScope','$scope','$state','$timeout','$http','$modal','FileUploader','previewService','hintService','sessionStorageService','utilService',
+app.controller('manageBusPackageImgController',['$rootScope','$scope','$state','$timeout','$http','$modal','FileUploader','previewService','hintService','sessionStorageService','utilService',
                                       function($rootScope,$scope,$state,$timeout,$http,$modal,FileUploader,previewService,hintService,sessionStorageService,utilService){
 	//用来缓存服务项id
 	var itemId ;
+	$scope.imgs = [];
 
 	$scope.treeAPI.hiddenBusTypeTree();
 	
 	if($scope.rowIds[0]){
 		itemId = $scope.rowIds[0];
-		sessionStorageService.setItem("busItemIdForImg",$scope.rowIds[0]);
+		sessionStorageService.setItem("busPackageIdForImg",$scope.rowIds[0]);
 	}else{
-		itemId = sessionStorageService.getItemStr("busItemIdForImg");
+		itemId = sessionStorageService.getItemStr("busPackageIdForImg");
 		$scope.rowIds[0] = itemId ;
 	}
 	
@@ -19,7 +20,7 @@ app.controller('manageItemImgController',['$rootScope','$scope','$state','$timeo
 	 * 返回所有的图片列表
 	 */
 	$http({
-		url:"base/busItemAction!listItemImgByBusItem.action",
+		url:"base/busPackageAction!listBusPackageImgByBusPackage.action",
 		method:"get",
 		params:{
 			fid:itemId
@@ -30,17 +31,19 @@ app.controller('manageItemImgController',['$rootScope','$scope','$state','$timeo
 		}
 	});
 	/**
-	 * 返回服务项的名称
+	 * 返回套餐项的名称
 	 */
 	$http({
-		url:"base/busItemAction!detailsBusItem.action",
-		method:"params",
-		params:{
+		url:"base/busPackageAction!detailsBusPackage.action",
+		method:"post",
+		data:{
 			fid:itemId
 		}
 	}).then(function(resp){
 		if(resp.data.code==1){
-			$scope.busItemName = resp.data.details.itemName ;
+			$scope.packageName = resp.data.details.packageName ;
+		}else{
+			$state.go($scope.state.list);
 		}
 	});
 	
@@ -49,12 +52,12 @@ app.controller('manageItemImgController',['$rootScope','$scope','$state','$timeo
 	}
 	
 	 var uploader = $scope.uploader = new FileUploader({
-	        url: 'base/busItemImgAction!addBusItemImg.action',
+	        url: 'base/busPackageImgAction!addBusPackageImg.action',
 	        alias:"files",
 	        autoUpload:true,
 	        removeAfterUpload:true,
 	        formData:[{
-	        	itemId:itemId
+	        	busPackageId:itemId
 	        }]
 	    });
 	 
@@ -78,10 +81,8 @@ app.controller('manageItemImgController',['$rootScope','$scope','$state','$timeo
 	  * 返回值
 	  */
 	 uploader.onSuccessItem = function(fileItem, response, status, headers) {
-         console.info('onSuccessItem', fileItem, response, status, headers);
-         // response = {imgPath: "http://120.25.149.142:8048/group1/M00/00/04/eBmVjlW7RIKELGqbAAAAALC8Z0Q272.jpg", code: 1}
-         hintService.hint({title: "成功", content: "上传成功！" });
          if(response.code==1){
+        	 hintService.hint({title: "成功", content: "上传成功！" });
         	 $scope.imgs.push({
         		//http://{{item.serverIp}}:{{item.port}}/{{item.filePath}}
         		 id:response.id,
@@ -89,13 +90,15 @@ app.controller('manageItemImgController',['$rootScope','$scope','$state','$timeo
         		 port:response.port,
         		 filePath:response.filePath
         	 });
+         }else{
+        	 alert(response.message);
          }
      };
      
      
      $scope.deleteImg = function(item){
     	 $http({
-    		 url:"base/busItemImgAction!deleteItemImgById.action",
+    		 url:"base/busPackageImgAction!deleteBusPackageImgById.action",
     		 method:"get",
     		 params:{
     			 id:item.id
@@ -113,6 +116,9 @@ app.controller('manageItemImgController',['$rootScope','$scope','$state','$timeo
     			 if(index||index===0){
     				 $scope.imgs.splice(index,1);
     			 }
+    		 }else{
+    			 //删除不成功的情况下
+    			 alert(resp.data.message);
     		 }
     	 });
      }
@@ -140,10 +146,10 @@ app.controller('manageItemImgController',['$rootScope','$scope','$state','$timeo
 		 */
 		var showModal = function(item){
 			var modalInstance = $modal.open({
-    	     templateUrl: 'src/tpl/base/busitem/manage_itemimg_model.html',
+    	     templateUrl: 'src/tpl/shop/shoppackage/manage_shopitemimg_model.html',
     	     size: 'lg',
     	     backdrop:true,
-    	     controller:"manageItemImgDetailsController",
+    	     controller:"manageBusPackageImgDetailsController",
     	     resolve: {
     	    	 imgId:function(){
     	    		 return item.id;
@@ -164,6 +170,9 @@ app.controller('manageItemImgController',['$rootScope','$scope','$state','$timeo
 			});
 		}
      
+		//初始化选中的数据
+		$scope.setCanEdit(false);
+		$scope.clearRowIds();
      
 	//结束方法
 }]);

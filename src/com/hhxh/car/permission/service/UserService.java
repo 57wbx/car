@@ -43,7 +43,7 @@ public class UserService extends BaseService {
 					try {
 						jx = DesCrypto.decrypt(null, nuser.getPassword());
 						if(password.equals(jx)){
-							nuser.setPassword(null);
+							nuser.setPassword(jx);
 							return nuser;
 						}
 					} catch (Exception e) {

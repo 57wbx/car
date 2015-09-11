@@ -314,7 +314,18 @@ angular.module('app').run(
               }
             ]
           }
-      }).state('app.user', {
+      }).state('app.myself', {
+          url: '/myself',
+          templateUrl: 'src/tpl/org/user/user_details_myself.html',
+          resolve: {
+              deps: ['$ocLazyLoad', 'uiLoad',
+                function($ocLazyLoad, uiLoad) {
+            	  				$ocLazyLoad.load('src/js/controllers/org/user/UserUpdatePassWordController.js');
+                    return $ocLazyLoad.load('src/js/controllers/org/user/UserDetailsMySelfController.js');
+                }
+              ]
+            }
+        }).state('app.user', {
           url: '/user',
           templateUrl: 'src/tpl/org/user/user.html',
           resolve: {
@@ -819,6 +830,19 @@ angular.module('app').run(
 							                function($ocLazyLoad, uiLoad) {
 							                  return uiLoad.load(JQ_CONFIG.chosen).then(function() {
 							                    return $ocLazyLoad.load('src/js/controllers/base/buspackage/BusPackageDetailsController.js');
+							                  });
+							                }
+							              ]
+							            }
+							        }).state('app.buspackage.manageimg', {
+							            url: '/manageimg',
+							            templateUrl: 'src/tpl/base/buspackage/manage_buspackageimg.html',
+							            resolve: {
+							              deps: ['$ocLazyLoad','uiLoad',
+							                function($ocLazyLoad, uiLoad) {
+							                  return uiLoad.load(JQ_CONFIG.chosen).then(function() {
+							                    $ocLazyLoad.load('src/js/controllers/base/buspackage/ManageBusPackageImgDetailsController.js');
+							                    return $ocLazyLoad.load('src/js/controllers/base/buspackage/ManageBusPackageImgController.js');
 							                  });
 							                }
 							              ]
@@ -1610,7 +1634,17 @@ angular.module('app').run(
 																																	                }
 																																	              ]
 																																	            }
-																																		      })
+																																		      }).state('app.push.details', {
+																																		            url: '/details',
+																																		            templateUrl: 'src/tpl/tig/push/push_details.html',
+																																		            resolve: {
+																																		              deps: ['$ocLazyLoad', 'uiLoad',
+																																		                function($ocLazyLoad, uiLoad) {
+																																		                    return $ocLazyLoad.load('src/js/controllers/tig/push/PushDetailsController.js');
+																																		                }
+																																		              ]
+																																		            }
+																																			      })
 	      // form
       // form
       .state('app.form', {

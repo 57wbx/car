@@ -305,7 +305,7 @@ factory("orderStateService",[function(){
 	function getFmessageType(param){
 		//1：普通消息2：平台套餐消息3：平台服务消息4：商家套餐消息5：商家服务消息
 		var fmessageType = {
-				1:"普通消息",2:"平台套餐消息",3:"平台服务消息",4:"商家套餐消息",5:"商家服务消息"
+				1:"普通消息",2:"平台套餐消息",3:"平台服务消息",4:"商家套餐消息",5:"商家服务消息",6:"商铺消息"
 		};
 		return commonGetStateUtilService.get(param,fmessageType);
 	}
@@ -317,9 +317,17 @@ factory("orderStateService",[function(){
 		};
 		return commonGetStateUtilService.get(param,fdeviceType);
 	}
+	function getFuseState(param){
+		//1:正常2：停用
+		var fuseState = {
+				1:"正常",2:"停用"
+		};
+		return commonGetStateUtilService.get(param,fuseState);
+	}
 	
 	return {
 		getFmessageType:getFmessageType,
-		getFdeviceType:getFdeviceType
+		getFdeviceType:getFdeviceType,
+		getFuseState:getFuseState
 	};
 }]);

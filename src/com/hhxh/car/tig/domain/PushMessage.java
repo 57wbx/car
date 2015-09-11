@@ -44,6 +44,11 @@ public class PushMessage implements java.io.Serializable
 	private Date fsendTime;
 	@Column
 	private Integer fdeviceType;
+	@Column
+	private Integer fuseState ;
+	@Column
+	private Integer fsendType ;
+	
 	
 	@OneToMany(fetch=FetchType.LAZY,mappedBy="pushMessage")
 	private Set<PushMessagePart> pushMessageParts = new HashSet<PushMessagePart>();
@@ -180,4 +185,24 @@ public class PushMessage implements java.io.Serializable
 		this.createUser = createUser;
 	}
 
+	public Integer getFuseState()
+	{
+		return fuseState;
+	}
+
+	public void setFuseState(Integer fuseState)
+	{
+		this.fuseState = fuseState;
+	}
+
+	public Integer getFsendType()
+	{
+		return fsendType;
+	}
+
+	public void setFsendType(Integer fsendType)
+	{
+		this.fsendType = fsendType;
+	}
+	
 }

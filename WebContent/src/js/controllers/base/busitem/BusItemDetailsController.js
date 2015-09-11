@@ -1,13 +1,23 @@
-app.controller("busItemDetailsController",['$scope','$state','$http',function($scope,$state,$http){
+app.controller("busItemDetailsController",['$scope','$state','$http','sessionStorageService',function($scope,$state,$http,sessionStorageService){
 	
 //	$scope.formData.fitemID  新增开始的时候需要从服务器中下载下来，以便于子项的操作
 	$scope.treeAPI.hiddenBusTypeTree();
 	
+	$scope.needCacheArray = ["busItemDataTableProperties","busItemIdForDetails"];
+	sessionStorageService.clearNoCacheItem($scope.needCacheArray);
+	if($scope.rowIds[0]){
+		sessionStorageService.setItem("busItemIdForDetails",$scope.rowIds[0]);
+	}else{
+		$scope.rowIds[0]  = sessionStorageService.getItemStr("busItemIdForDetails");
+	}
 	
-	console.info("------------需要修改的id为："+$scope.rowIds[0]);
 	if(!$scope.rowIds[0]||$scope.rowIds[0]==""){
 		$state.go($scope.state.list);//返回到列表界面
 	}
+    
+	
+	console.info("------------需要修改的id为："+$scope.rowIds[0]);
+	
 	$("form[name=busItemDetailsform] input").attr("disabled",true);
 	$("form[name=busItemDetailsform] select").attr("disabled",true);
 	$("form[name=busItemDetailsform] textarea").attr("disabled",true);
@@ -175,17 +185,6 @@ app.controller("busItemDetailsController",['$scope','$state','$http',function($s
 		return newBusAtom;
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	/**
 	 * 取消按钮的操作，直接跳转到列表页面上
 	 */
@@ -193,5 +192,8 @@ app.controller("busItemDetailsController",['$scope','$state','$http',function($s
 		$state.go($scope.state.list);
 	}
 	
+	//初始化选中的数据
+	$scope.setCanEdit(false);
+	$scope.clearRowIds();
 	
 }]);

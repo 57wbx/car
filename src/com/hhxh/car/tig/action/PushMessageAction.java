@@ -18,6 +18,7 @@ import net.sf.json.JSONObject;
 
 import com.hhxh.car.base.car.domain.CarName;
 import com.hhxh.car.common.action.BaseAction;
+import com.hhxh.car.common.annotation.AuthCheck;
 import com.hhxh.car.common.util.CommonConstant;
 import com.hhxh.car.common.util.ConvertObjectMapUtil;
 import com.hhxh.car.common.util.JsonValueFilterConfig;
@@ -28,71 +29,74 @@ import com.hhxh.car.tig.domain.PushMessage;
 import com.hhxh.car.tig.domain.PushMessageState;
 import com.hhxh.car.tig.service.PushMessageService;
 import com.opensymphony.xwork2.ModelDriven;
-
+/**
+ * 消息推送的维护类
+ * @author zw
+ * @date 2015年9月10日 下午1:59:28
+ *
+ */
 public class PushMessageAction extends BaseAction implements ModelDriven<PushMessage>
 {
-	private PushMessage pushMessage ;
-	
-	private String fsendTimeStr ;
-	
-	private String orderName ;
+	private PushMessage pushMessage;
 
+	private String fsendTimeStr;
+
+	private String orderName;
+
+	private String[] ids;
 	/**
 	 * 推送使用的接口
 	 */
 	@Resource
-	private Push push ; 
-	
+	private Push push;
+
 	@Resource
-	private PushMessageService pushMessageService ;
-	
-	
+	private PushMessageService pushMessageService;
+
 	/**
 	 * 推送普通消息，并保存记录
 	 */
-	public void addPushMessage(){
-//			String pushContent = this.pushMessage.getFcontent() ; 
-//			if(this.pushMessage.getFdeviceType() == PushMessageState.DEVICETYPE_IOS || this.pushMessage.getFdeviceType()==PushMessageState.DEVICETYPE_ALL){
-//				if(isNotEmpty(this.pushMessage.getFtitle())){
-//					pushContent = "["+this.pushMessage.getFtitle()+"]"+this.pushMessage.getFcontent() ;
-//				}else{
-//					this.pushMessage.setFtitle("默认标题");
-//				}
-//			}
-			
-			if(this.pushMessage.getFdeviceType()==null){
-				this.pushMessage.setFdeviceType(PushMessageState.DEVICETYPE_ALL);
+	public void addPushMessage()
+	{
+
+		if (this.pushMessage.getFdeviceType() == null)
+		{
+			this.pushMessage.setFdeviceType(PushMessageState.DEVICETYPE_ALL);
+		}
+
+		this.pushMessage.setCreateUser(this.getLoginUser());
+		this.pushMessage.setFcreateDate(new Date());
+		this.pushMessage.setFmessageType(PushMessageState.FMESSAGETYPE_COMMON);
+		this.pushMessage.setFuseState(PushMessageState.FUSESTATE_OK);
+		this.pushMessage.setFsendType(PushMessageState.FSENDTYPE_ALL);
+
+		try
+		{
+			Long sendTime = null;
+			if (this.pushMessage.getFsendTime() != null)
+			{
+				sendTime = System.currentTimeMillis() / 1000 + (this.pushMessage.getFsendTime().getTime() - new Date().getTime()) / 1000;
 			}
-			
-			this.pushMessage.setCreateUser(this.getLoginUser());
-			this.pushMessage.setFcreateDate(new Date());
-			this.pushMessage.setFmessageType(PushMessageState.FMESSAGETYPE_COMMON);
-			
-			try
-			{
-				Long sendTime = null ; 
-				if(this.pushMessage.getFsendTime()!=null){
-					sendTime = System.currentTimeMillis()/1000 + (this.pushMessage.getFsendTime().getTime()-new Date().getTime())/1000 ;
-				}
-				String jsonStr = push.pushAllNotify(pushMessage.getFtitle(),pushMessage.getFcontent(),null,null,this.pushMessage.getFdeviceType(),this.pushMessage.getFexpiresTime(),sendTime);
-				log.debug("推送返回的json数据为："+jsonStr);
-				pushMessageService.addNotifyPushMessage(jsonStr, pushMessage);
-				this.putJson();
-			} catch (PushException e)
-			{
-				log.error("发送推送消息失败",e);
-				this.putJson(false,e.getMessage());
-			} catch (Exception e)
-			{
-				log.error("发送推送消息失败",e);
-				this.putJson(false,e.getMessage());
-			}
+			String jsonStr = push.pushAllNotify(pushMessage.getFtitle(), pushMessage.getFcontent(), null, null, this.pushMessage.getFdeviceType(), this.pushMessage.getFexpiresTime(), sendTime);
+			log.debug("推送返回的json数据为：" + jsonStr);
+			pushMessageService.addNotifyPushMessage(jsonStr, pushMessage);
+			this.putJson();
+		} catch (PushException e)
+		{
+			log.error("发送推送消息失败", e);
+			this.putJson(false, e.getMessage());
+		} catch (Exception e)
+		{
+			log.error("发送推送消息失败", e);
+			this.putJson(false, e.getMessage());
+		}
 	}
-	
+
 	/**
 	 * 获取所有推送完的消息
 	 */
-	public void listPushMessage(){
+	public void listPushMessage()
+	{
 		try
 		{
 			List<Criterion> params = new ArrayList<Criterion>();
@@ -117,12 +121,15 @@ public class PushMessageAction extends BaseAction implements ModelDriven<PushMes
 			orders.add(Order.desc("fexpiresTime"));
 
 			List<PushMessage> pushMessages = this.baseService.gets(PushMessage.class, params, criteriaMap, this.getIDisplayStart(), this.getIDisplayLength(), orders);
-			List<Map<String,Object>> datas = new ArrayList<Map<String,Object>>();
-			for(PushMessage pm : pushMessages){
+			List<Map<String, Object>> datas = new ArrayList<Map<String, Object>>();
+			for (PushMessage pm : pushMessages)
+			{
 				Map m = ConvertObjectMapUtil.convertObjectToMap(pm, JsonValueFilterConfig.PUSHMESSAGE_ONLY_PUSHMESSAGE);
-				if(pm.getCreateUser()!=null){
+				if (pm.getCreateUser() != null)
+				{
 					m.put("userName", pm.getCreateUser().getName());
-				}else{
+				} else
+				{
 					m.put("userName", null);
 				}
 				datas.add(m);
@@ -134,15 +141,67 @@ public class PushMessageAction extends BaseAction implements ModelDriven<PushMes
 			this.putJson();
 		} catch (Exception e)
 		{
-			log.error("查询车型数据失败", e);
-			this.putJson(false, this.getMessageFromConfig("car_error"));
+			log.error("查询推送数据失败", e);
+			this.putJson(false, this.getMessageFromConfig("pushMessage_error"));
+		}
+	}
+
+	/**
+	 * 改变记录的状态
+	 */
+	@AuthCheck(isCheckLoginOnly = false)
+	public void updateFuseStateByIds()
+	{
+		try
+		{
+			if (ids != null && ids.length > 0 && isNotEmpty(this.pushMessage.getFuseState()))
+			{
+				this.pushMessageService.updatePushMessageUseState(ids, this.pushMessage.getFuseState());
+				this.putJson();
+			} else
+			{
+				this.putJson(false, this.getMessageFromConfig("pushMessage_needId"));
+			}
+		} catch (Exception e)
+		{
+			log.error("修改推送消息的状态失败", e);
+			this.putJson(false, this.getMessageFromConfig("pushMessage_error"));
+		}
+	}
+
+	/**
+	 * 查询一条记录的详细信息
+	 */
+	@AuthCheck
+	public void detailsPushMessage()
+	{
+		try
+		{
+			if (isNotEmpty(this.pushMessage.getId()))
+			{
+				this.pushMessage = this.baseService.get(PushMessage.class, this.pushMessage.getId());
+				if (this.pushMessage != null)
+				{
+					this.jsonObject.accumulate("details", this.pushMessage,this.getJsonConfig(JsonValueFilterConfig.PUSHMESSAGE_HAS_PUSHMESSAGEPART));
+					this.putJson();
+				}else{
+					this.putJson(false, this.getMessageFromConfig("pushMessage_errorId"));
+				}
+			} else
+			{
+				this.putJson(false, this.getMessageFromConfig("pushMessage_needId"));
+			}
+		} catch (Exception e)
+		{
+			log.error("查询一条记录的详细信息失败", e);
+			this.putJson(false, this.getMessageFromConfig("pushMessage_error"));
 		}
 	}
 
 	@Override
 	public PushMessage getModel()
 	{
-		this.pushMessage = new PushMessage() ;
+		this.pushMessage = new PushMessage();
 		return this.pushMessage;
 	}
 
@@ -173,6 +232,16 @@ public class PushMessageAction extends BaseAction implements ModelDriven<PushMes
 	public void setOrderName(String orderName)
 	{
 		this.orderName = orderName;
+	}
+
+	public String[] getIds()
+	{
+		return ids;
+	}
+
+	public void setIds(String[] ids)
+	{
+		this.ids = ids;
 	}
 
 }

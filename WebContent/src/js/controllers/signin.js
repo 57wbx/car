@@ -7,8 +7,8 @@ app.controller('SigninFormController', ['$scope', '$http', '$state', '$cookieSto
     $scope.user = {};
     $scope.authError = null;
     $scope.login = function() {
-      $scope.authError = null;
-      $http.post(app.url.login, {
+    $scope.authError = null;
+    $http.post(app.url.login, {
         number: $scope.user.name,
         password: $scope.user.password
       }).then(function(response) {
@@ -17,6 +17,9 @@ app.controller('SigninFormController', ['$scope', '$http', '$state', '$cookieSto
           var exp = new Date();
           exp.setTime(exp.getTime() + 30 * 1000);
           $cookieStore.put('username', escape($scope.user.name) + ';expires=' + exp.toGMTString());
+          $scope.user.userName = response.data.userName ;
+          $scope.user.carShopName = response.data.carShopName ;
+          $scope.user.id = response.data.id ;
           $cookieStore.put('user',JSON.stringify($scope.user));
           //重新生成菜单数据
           $scope.$emit("refreshMenu");

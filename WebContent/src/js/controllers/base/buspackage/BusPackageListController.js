@@ -1,10 +1,23 @@
 'use strict';
 
-app.controller('busPackageListController',['$scope','$state','$timeout','$http',function($scope,$state,$timeout,$http){
+app.controller('busPackageListController',['$scope','$state','$timeout','$http','dataTableSearchService','sessionStorageService',function($scope,$state,$timeout,$http,dataTableSearchService,sessionStorageService){
 	
 	
 	//显示树
 	$scope.treeAPI.showBusTypeTree();
+	
+	var isF5 = true ;
+	$scope.search = {} ;
+	$scope.busPackageDataTableProperties = null;
+	$scope.needCacheArray = ["busPackageDataTableProperties"];
+	sessionStorageService.clearNoCacheItem($scope.needCacheArray);
+	$scope.busPackageDataTableProperties  = sessionStorageService.getItemObj("busPackageDataTableProperties");
+	
+	$scope.setBusPackageDataTableProperties = function(obj){
+		$scope.busPackageDataTableProperties = obj;
+		sessionStorageService.setItem("busPackageDataTableProperties",obj);
+	}
+	
 	/**
 	 * 初始化该页面的api
 	 * 提供给buspapckageController调用
@@ -75,13 +88,30 @@ app.controller('busPackageListController',['$scope','$state','$timeout','$http',
 	
 	
 	//延迟加载 客户端不会报错，具体原因还不清楚
-	$timeout(function(){
-		initDataTable();
-	},30);
+	$scope.$evalAsync(initDataTable);
+	
 	var busPackageTable ;
 	function initDataTable(){
 		busPackageTable = $("#busPackageTable").on('preXhr.dt', function ( e, settings, data ){
-			data.busTypeCode = $scope.busTypeTree.selectedTypeCode ;
+			if(isF5){
+				isF5 = false ;
+				var oldData = sessionStorageService.getItemObj("busPackageDataTableProperties"); 
+				if(oldData){
+					angular.copy(oldData,data);
+					$scope.search.packageCode = data.packageCode ;
+					$scope.search.packageName = data.packageName ;
+					$scope.search.packageDes = data.packageDes ;
+					$scope.search.isActivity = data.isActivity ;
+					$scope.busTypeTree.selectedTypeCode = data.busTypeCode ;
+				}
+			}else{
+				data.packageCode = $scope.search.packageCode;
+				data.packageName = $scope.search.packageName;
+				data.packageDes = $scope.search.itemCode ;
+				data.isActivity = $scope.search.isActivity;
+				data.busTypeCode = $scope.busTypeTree.selectedTypeCode ;
+				$scope.setBusPackageDataTableProperties(data);
+			}
 		}).DataTable({
 			"sAjaxSource":"base/busPackageAction!listBusPackage.action",
 	    	"bServerSide":true,
@@ -108,7 +138,11 @@ app.controller('busPackageListController',['$scope','$state','$timeout','$http',
 	              "render": function(param){
 	                return '<label class="i-checks"><input type="checkbox"><i></i></label>';
 	              }
-	            },{
+	            }, {
+	                "render":function( data, type, row ){
+	                	return row.busPackageImgs.length;
+	                }
+	              },{
 	            "mDataProp": "packageCode",
 	          }, {
 	            "mDataProp": "packageName",
@@ -208,11 +242,39 @@ app.controller('busPackageListController',['$scope','$state','$timeout','$http',
 	        			  $scope.clearRowIds();//调用上级controller中的清空ids的方法
 	        		  }
 	        	  });
-	        	  
-	          }
+	          },
+	          "initComplete":function(settings,json){
+	            	if( $scope.busPackageDataTableProperties){
+	            		var pageIndex = $scope.busPackageDataTableProperties.iDisplayStart/$scope.busPackageDataTableProperties.iDisplayLength;
+	            		busPackageTable.page(pageIndex).draw(false);
+	            	}
+	            	initSearchDiv(settings,json);
+	            }
 		});
 	
 	}//结束初始化方法
+	
+	//初始化搜索框
+	var initSearchDiv = function(settings,json){
+		dataTableSearchService.initSearch([
+			  {formDataName:'search.packageCode',placeholder:'套餐编号'},
+			  {formDataName:'search.packageName',placeholder:'套餐名称'},
+			  {formDataName:'search.packageDes',placeholder:'套餐描述'},
+              {
+           	   formDataName:'search.isActivity',
+           	   label:'是否参加聚惠',
+           	   options:[{label:'全部'},{
+           		//0=加盟店、1=合作店、3=直营店、4=中心店（区域旗舰店）
+			               		   value:0,
+			               		   label:"不参加"
+			               	   	},{
+		                		   value:1,
+		                   		   label:"参加"
+		                   			   }
+               	]
+              }
+		],$scope,settings,busPackageTable);
+	}
 	
 	/*
 	 * 服务的表格
@@ -228,7 +290,7 @@ app.controller('busPackageListController',['$scope','$state','$timeout','$http',
 		"paging":false,
 		"searching":false,
 		"pageLength":5,
-		"sAjaxSource":"base/busItemAction!listBusItem.action",
+		"sAjaxSource":"base/busPackageAction!getBusItemsByBusPackage.action",
     	"bServerSide":true,
     	"sAjaxDataProp":"data",
     	"oLanguage": {

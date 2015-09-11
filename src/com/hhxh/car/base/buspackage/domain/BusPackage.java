@@ -14,6 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.hhxh.car.base.busitem.domain.BusItem;
@@ -68,6 +69,9 @@ public class BusPackage implements java.io.Serializable {
 	@JoinTable(name="base_bus_package_item",joinColumns=@JoinColumn(name="fpackageID"),
 			inverseJoinColumns=@JoinColumn(name="fitemID"))
 	private Set<BusItem> busItems = new HashSet<BusItem>();
+	
+	@OneToMany(fetch=FetchType.LAZY,mappedBy="busPackage")
+	private Set<BusPackageImg> busPackageImgs = new HashSet<BusPackageImg>();
 
 	public BusPackage() {
 	}
@@ -290,7 +294,15 @@ public class BusPackage implements java.io.Serializable {
 				+ ", memo=" + memo + ", starTime=" + starTime + ", endTime="
 				+ endTime + "]";
 	}
+	
+	public Set<BusPackageImg> getBusPackageImgs()
+	{
+		return busPackageImgs;
+	}
+	
+	public void setBusPackageImgs(Set<BusPackageImg> busPackageImgs)
+	{
+		this.busPackageImgs = busPackageImgs;
+	}
 
-	
-	
 }

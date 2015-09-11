@@ -1,12 +1,18 @@
 'use strict';
 
-app.controller('busItemController',['$rootScope','$scope','$state','$timeout','$http','sessionStorageService','hintService','warnService',function($rootScope,$scope,$state,$timeout,$http,sessionStorageService,hintService,warnService){
+/**
+ * 该模块用的权限有 新增：ADD	、修改：UPDATE、删除：DELETE、详细信息：DETAILS
+ * $scope.btn = {"ADD":true,"UPDATE":true,"DELETE":true,"DETAILS":true,"MANAGEIMG","PUSH"}
+ */
+app.controller('busItemController',['$rootScope','$scope','$state','$timeout','$http','sessionStorageService','hintService','warnService','roleBtnService',function($rootScope,$scope,$state,$timeout,$http,sessionStorageService,hintService,warnService,roleBtnService){
 	
+	var roleBtnUiClass = "app.busitem.";//用于后台查找按钮权限
+	roleBtnService.getRoleBtnService(roleBtnUiClass,$scope);
 	/**
 	 * 在session中不能清除的内容，应该包含子缓存对象
 	 */
 	$scope.session = {};
-	$scope.session.cacheArray = ["busItemIdForImg"];
+	$scope.session.cacheArray = ["busItemDataTableProperties","busItemIdForImg","busItemIdForEdit","busItemIdForDetails"];
 	sessionStorageService.clearNoCacheItem($scope.session.cacheArray);
 	
 	$scope.rowIds = [];//用来保存所选列表的id
@@ -122,10 +128,6 @@ app.controller('busItemController',['$rootScope','$scope','$state','$timeout','$
 	 * 推送方法的按钮
 	 */
 	$scope.pushRow = function(){
-		if($scope.editId){
-//			$scope.clearRowIds();
-//			$scope.rowIds.push($scope.editId);
-		}
 		warnService.warn("操作提示","您确定要推送这一条服务信息吗？该操作是不可更改的！",function(){return push($scope.editId)},function(resp){
 			  if(resp.data.code===1){
 				  hintService.hint({title: "成功", content: "推送成功！" });
@@ -178,26 +180,6 @@ app.controller('busItemController',['$rootScope','$scope','$state','$timeout','$
 				  alert(resp.data.message);
 			  }
 		  });
-		
-//		 mask.insertBefore(container);
-//		 container.removeClass('none');
-//		 doIt = function(){
-//			 if($scope.rowIds.length>0){
-//					$http({
-//						url:'base/busItemAction!deleteBusItemByIds.action',
-//						method:'get',
-//						params:{
-//							ids:$scope.rowIds
-//						}
-//					}).then(function(resp){
-//						if(resp.data.code==1){//代表成功
-//							$state.reload();
-//						}else{
-//							alert("删除失败");
-//						}
-//					});
-//				}
-//		 }
 	}
 	  
 	
