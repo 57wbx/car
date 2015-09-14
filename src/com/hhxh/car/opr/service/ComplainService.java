@@ -17,7 +17,7 @@ import com.hhxh.car.common.service.BaseService;
 import com.hhxh.car.common.util.CommonConstant;
 import com.hhxh.car.common.util.ConfigResourcesGetter;
 import com.hhxh.car.opr.domain.Complain;
-import com.hhxh.car.opr.domain.ComplainState;
+import com.hhxh.car.opr.state.ComplainState;
 import com.hhxh.car.permission.domain.User;
 
 /**

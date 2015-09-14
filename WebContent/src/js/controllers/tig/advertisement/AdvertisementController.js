@@ -1,8 +1,11 @@
 'use strict';
 
-app.controller('advertisementController',['$rootScope','$scope','$state','$timeout','$http','sessionStorageService','previewService',function($rootScope,$scope,$state,$timeout,$http,sessionStorageService,previewService){
+app.controller('advertisementController',['$rootScope','$scope','$state','$timeout','$http','sessionStorageService','previewService','roleBtnService',function($rootScope,$scope,$state,$timeout,$http,sessionStorageService,previewService,roleBtnService){
 	
 	$scope.rowIds = [];//用来保存所选列表的id
+	
+	var roleBtnUiClass = "app.advertisement.";//用于后台查找按钮权限
+	roleBtnService.getRoleBtnService(roleBtnUiClass,$scope);
 	
 	$scope.session = {};
 	$scope.session.cacheArray = ["advertisementIdForEdit","advertisementIdForDetails"];

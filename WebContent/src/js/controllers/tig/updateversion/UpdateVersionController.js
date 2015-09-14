@@ -1,6 +1,9 @@
 'use strict';
 
-app.controller('updateVersionController',['$rootScope','$scope','$state','$timeout','$http','sessionStorageService',function($rootScope,$scope,$state,$timeout,$http,sessionStorageService){
+app.controller('updateVersionController',['$rootScope','$scope','$state','$timeout','$http','sessionStorageService','roleBtnService',function($rootScope,$scope,$state,$timeout,$http,sessionStorageService,roleBtnService){
+	
+	var roleBtnUiClass = "app.updateversion.";//用于后台查找按钮权限
+	roleBtnService.getRoleBtnService(roleBtnUiClass,$scope);
 	
 	$scope.rowIds = [];//用来保存所选列表的id
 	

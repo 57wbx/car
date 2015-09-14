@@ -4,7 +4,6 @@ app.controller("carownerAddController",['$scope','$state','$http','checkUniqueSe
 	$scope.formData = {};
 	
 	//初始化选中的数据
-	$scope.setCanEdit(false);
 	$scope.clearRowIds();
 	
 	

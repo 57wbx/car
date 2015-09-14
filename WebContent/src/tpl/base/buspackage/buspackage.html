@@ -11,28 +11,28 @@
 				<div class="panel-heading pull-right btn-group">
 					<button id="clickId" class="none" ng-click="click()"></button>
 					
-					<button type="button" class="btn btn-success" ng-click="addRow()"
+					<button type="button" class="btn btn-success" ng-click="addRow()" ng-if="btns.ADD"
 						>
 						<i class="fa fa-fw fa-plus"></i> <span class="hid">新增</span>
 					</button>
 					
-					<button type="button" class="btn btn-primary" ng-click="editRow()"
+					<button type="button" class="btn btn-primary" ng-click="editRow()" ng-if="btns.UPDATE"
 						ng-disabled="!canEdit">
 						<i class="fa fa-fw fa-pencil"></i> <span class="hid">修改</span>
 					</button>
-					<button type="button" class="btn btn-info" ng-click="manageImg()" 
+					<button type="button" class="btn btn-info" ng-click="manageImg()"  ng-if="btns.MANAGEIMG"
 						ng-disabled="!canEdit">
 						<i class=" glyphicon glyphicon-picture"></i> <span class="hid">管理显示图片</span>
 					</button>
-					<button type="button" class="btn btn-primary" ng-click="pushRow()"
+					<button type="button" class="btn btn-primary" ng-click="pushRow()" ng-if="btns.PUSH"
 						ng-disabled="!canEdit">
 						<i class="glyphicon glyphicon-envelope"></i> <span class="hid">推送</span>
 					</button>
-					<button type="button" class="btn btn-danger" ng-click="deleteRow()"
+					<button type="button" class="btn btn-danger" ng-click="deleteRow()" ng-if="btns.DELETE"
 						ng-disabled="!isMulti && !isSingle">
 						<i class="fa fa-fw fa-minus"></i> <span class="hid">删除</span>
 					</button>
-					<button type="button" class="btn btn-default" ng-click="seeDetails()"
+					<button type="button" class="btn btn-default" ng-click="seeDetails()" ng-if="btns.DETAILS"
 						ng-disabled="!canEdit">
 						<i class="fa fa-fw fa-eye"></i> <span class="hid">查看</span>
 					</button>

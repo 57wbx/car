@@ -1,8 +1,11 @@
 'use strict';
 
-app.controller('manageImgController',['$rootScope','$scope','$state','$timeout','$http','FileUploader','previewService','hintService',
-                                      function($rootScope,$scope,$state,$timeout,$http,FileUploader,previewService,hintService){
+app.controller('manageImgController',['$rootScope','$scope','$state','$timeout','$http','FileUploader','previewService','hintService','roleBtnService',
+                                      function($rootScope,$scope,$state,$timeout,$http,FileUploader,previewService,hintService,roleBtnService){
 
+	var roleBtnUiClass = "app.manageimg";//用于后台查找按钮权限
+	roleBtnService.getRoleBtnService(roleBtnUiClass,$scope);
+	
 	$http({
 		url:"base/carShopAction!listCarShopImgByLoginUser.action"
 	}).then(function(resp){

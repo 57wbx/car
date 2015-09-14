@@ -1,6 +1,9 @@
 'use strict';
 
-app.controller('baseCityController',['$rootScope','$scope','$state','$timeout','$http','sessionStorageService','utilService',function($rootScope,$scope,$state,$timeout,$http,sessionStorageService,utilService){
+app.controller('baseCityController',['$rootScope','$scope','$state','$timeout','$http','sessionStorageService','utilService','roleBtnService',function($rootScope,$scope,$state,$timeout,$http,sessionStorageService,utilService,roleBtnService){
+	
+	var roleBtnUiClass = "app.basecity";//用于后台查找按钮权限
+	roleBtnService.getRoleBtnService(roleBtnUiClass,$scope);
 	
 	$scope.rowIds = [];//用来保存所选列表的id
 	
@@ -232,6 +235,26 @@ app.controller('baseCityController',['$rootScope','$scope','$state','$timeout','
 		show();
 //		hiddenButton.trigger("click");
 	}
+	
+	  // 设置按钮的状态值
+	  $scope.setBtnStatus = function(){
+		  console.info("设置按钮",$scope.rowIds);
+	    if($scope.rowIds.length === 0){
+	      $scope.single = true;
+	      $scope.locked = true;
+	      $scope.mutiple = true;
+	    }else if($scope.rowIds.length === 1){
+	      $scope.single = false;
+	      $scope.locked = false;
+	      $scope.mutiple = false;
+	    }else{
+	      $scope.single = true;
+	      $scope.locked = true;
+	      $scope.mutiple = false;
+	    }
+
+	    $scope.$evalAsync();
+	  };
 	
 	/**
 	 * 清空需要操作的id，主要是在busAtomListController中调用

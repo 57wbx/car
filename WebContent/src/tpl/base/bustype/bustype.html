@@ -11,21 +11,20 @@
 				<div class="panel-heading pull-right btn-group">
 					<button id="clickId" class="none" ng-click="click()"></button>
 					
-					<button type="button" class="btn btn-success" ng-click="addBrotherBusType()"
-						ng-disabled="!addSign">
-						<i class="fa fa-fw fa-plus"></i> <span class="hid">添加同级业务类型</span>
-					</button>
+					<div class="btn-group dropdown" dropdown ng-if="btns.ADD">
+					          <button class="btn btn-success" dropdown-toggle ng-disabled="!addSign"><i class="fa fa-fw fa-plus"></i>添加业务类型<span class="caret"></span></button>
+						          <ul class="dropdown-menu">
+						          		<!-- 1=正常、2=停用、3=注销（黑名单） -->
+							            <li><a href ng-click="addBrotherBusType();">添加同级业务类型</a></li>
+							            <li><a href ng-click="addChildBusType();">添加下级业务类型</a></li>
+						          </ul>
+					</div>
 					
-					<button type="button" class="btn btn-info" ng-click="addChildBusType()"
-						ng-disabled="!addSign">
-						<i class="fa fa-fw fa-plus"></i> <span class="hid">添加下级业务类型</span>
-					</button>
-					
-					<button type="button" class="btn btn-primary" ng-click="editBusType()"
+					<button type="button" class="btn btn-primary" ng-click="editBusType()" ng-if="btns.UPDATE"
 						ng-disabled="!editSign">
 						<i class="fa fa-fw fa-pencil"></i> <span class="hid">修改</span>
 					</button>
-					<button type="button" class="btn btn-danger" ng-click="deleteBusType()"
+					<button type="button" class="btn btn-danger" ng-click="deleteBusType()" ng-if="btns.DELETE"
 						ng-disabled="!deleteSign">
 						<i class="fa fa-fw fa-minus"></i> <span class="hid">删除</span>
 					</button>

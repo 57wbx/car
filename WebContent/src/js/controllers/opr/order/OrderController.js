@@ -1,8 +1,11 @@
 'use strict';
 
-app.controller('orderController',['$rootScope','$scope','$state','$timeout','$http','sessionStorageService','previewService',function($rootScope,$scope,$state,$timeout,$http,sessionStorageService,previewService){
+app.controller('orderController',['$rootScope','$scope','$state','$timeout','$http','sessionStorageService','previewService','roleBtnService',function($rootScope,$scope,$state,$timeout,$http,sessionStorageService,previewService,roleBtnService){
 	
 	$scope.rowIds = [];//用来保存所选列表的id
+	
+	var roleBtnUiClass = "app.order.";//用于后台查找按钮权限
+	roleBtnService.getRoleBtnService(roleBtnUiClass,$scope);
 	
 	/**
 	 * 在session中不能清除的内容，应该包含子缓存对象

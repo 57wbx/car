@@ -1,7 +1,10 @@
 'use strict';
 
-app.controller('busPackageController', ['$rootScope','$scope','$state','$timeout','$http','warnService','hintService','sessionStorageService',function($rootScope, $scope, $state, $timeout,$http,warnService,hintService,sessionStorageService) {
+app.controller('busPackageController', ['$rootScope','$scope','$state','$timeout','$http','warnService','hintService','sessionStorageService','roleBtnService',function($rootScope, $scope, $state, $timeout,$http,warnService,hintService,sessionStorageService,roleBtnService) {
 //  var url = app.url.org.api.list; // 后台API路径
+	
+	var roleBtnUiClass = "app.buspackage.";//用于后台查找按钮权限
+	roleBtnService.getRoleBtnService(roleBtnUiClass,$scope);
 	
 	var url = "base/busTypeAction!listBusType.action";
 	var data = null;

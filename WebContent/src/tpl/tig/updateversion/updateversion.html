@@ -11,19 +11,19 @@
 				ng-init="single=true;only=false;mutiple=true;locked=true">
 				<div class="panel-heading pull-right btn-group">
 					<button id="clickId" class="none" ng-click="click()"></button>
-					<button type="button" class="btn btn-success" ng-click="addRow()"
+					<button type="button" class="btn btn-success" ng-click="addRow()" ng-if="btns.ADD"
 						ng-disabled="only">
 						<i class="fa fa-fw fa-plus"></i> <span class="hid">添加</span>
 					</button>
-					<button type="button" class="btn btn-primary" ng-click="editRow()"
+					<button type="button" class="btn btn-primary" ng-click="editRow()" ng-if="btns.UPDATE"
 						ng-disabled="!canEdit">
 						<i class="fa fa-fw fa-pencil"></i> <span class="hid">修改</span>
 					</button>
-					<button type="button" class="btn btn-danger" ng-click="deleteRow()"
+					<button type="button" class="btn btn-danger" ng-click="deleteRow()" ng-if="btns.DELETE"
 						ng-disabled="!isMulti && !isSingle">
 						<i class="fa fa-fw fa-minus"></i> <span class="hid">删除</span>
 					</button>
-					<button type="button" class="btn btn-default"
+					<button type="button" class="btn btn-default" ng-if="btns.DETAILS"
 						ng-click="seeDetails()" ng-disabled="!canEdit">
 						<i class="fa fa-fw fa-eye"></i> <span class="hid">查看</span>
 					</button>

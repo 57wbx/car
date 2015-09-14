@@ -20,8 +20,8 @@ import com.hhxh.car.common.annotation.AuthCheck;
 import com.hhxh.car.common.exception.ErrorMessageException;
 import com.hhxh.car.common.util.JsonValueFilterConfig;
 import com.hhxh.car.opr.domain.Complain;
-import com.hhxh.car.opr.domain.ComplainState;
 import com.hhxh.car.opr.service.ComplainService;
+import com.hhxh.car.opr.state.ComplainState;
 import com.opensymphony.xwork2.ModelDriven;
 
 /**

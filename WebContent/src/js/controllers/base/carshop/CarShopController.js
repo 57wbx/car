@@ -1,11 +1,13 @@
 'use strict';
 
-app.controller('carShopController', ['$rootScope','$scope','$state','$timeout','$location','$http','sessionStorageService','hintService','warnService','carShopStateService',function($rootScope, $scope, $state, $timeout,$location,$http,sessionStorageService,hintService,warnService,carShopStateService) {
+app.controller('carShopController', ['$rootScope','$scope','$state','$timeout','$location','$http','sessionStorageService','hintService','warnService','carShopStateService','roleBtnService',function($rootScope, $scope, $state, $timeout,$location,$http,sessionStorageService,hintService,warnService,carShopStateService,roleBtnService) {
   var url = app.url.org.api.list; // 后台API路径
   var data = null;
   
   $scope.rowIds = [];
   
+	var roleBtnUiClass = "app.carshop.";//用于后台查找按钮权限
+	roleBtnService.getRoleBtnService(roleBtnUiClass,$scope);
 	/**
 	 * 清空需要操作的id，主要是在busAtomListController中调用
 	 */

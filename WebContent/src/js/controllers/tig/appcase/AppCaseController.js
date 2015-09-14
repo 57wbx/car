@@ -1,6 +1,9 @@
 'use strict';
 
-app.controller('appCaseController',['$rootScope','$scope','$state','$timeout','$http','sessionStorageService','hintService',function($rootScope,$scope,$state,$timeout,$http,sessionStorageService,hintService){
+app.controller('appCaseController',['$rootScope','$scope','$state','$timeout','$http','sessionStorageService','hintService','roleBtnService',function($rootScope,$scope,$state,$timeout,$http,sessionStorageService,hintService,roleBtnService){
+	
+	var roleBtnUiClass = "app.appcase.";//用于后台查找按钮权限
+	roleBtnService.getRoleBtnService(roleBtnUiClass,$scope);
 	
 	/**
 	 * 在session中不能清除的内容，应该包含子缓存对象

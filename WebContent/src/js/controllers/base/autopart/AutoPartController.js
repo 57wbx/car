@@ -1,11 +1,9 @@
 'use strict';
 
-app.controller('autoPartController', function($rootScope, $scope, $state, $timeout) {
-  var url = app.url.org.api.menuPerm;
-  var allBtn =["add","delete","modify","freeze","attendance"];//btn id array
- 
-  
-  
+app.controller('autoPartController', ['$rootScope','$scope','$state','$timeout','roleBtnService',function($rootScope, $scope, $state, $timeout,roleBtnService) {
+	
+	var roleBtnUiClass = "app.autopart.";//用于后台查找按钮权限
+	roleBtnService.getRoleBtnService(roleBtnUiClass,$scope);
 
   $scope.click = function(){};
 
@@ -103,15 +101,6 @@ app.controller('autoPartController', function($rootScope, $scope, $state, $timeo
       $scope.locked = true;
       $scope.mutiple = false;
     }
-    if($scope.obj&&!$scope.obj.locked){
-      if(!$scope.single) {
-        $('button .fa-lock').next('span').html('冻结');
-      }
-    } else {
-      if(!$scope.single){
-        $('button .fa-lock').next('span').html('解冻');
-      }
-    }
     hButton.trigger('click'); // 触发一次点击事件，使所以按钮的状态值生效
   };
 
@@ -124,4 +113,4 @@ app.controller('autoPartController', function($rootScope, $scope, $state, $timeo
     }
   }
 
-});
+}]);

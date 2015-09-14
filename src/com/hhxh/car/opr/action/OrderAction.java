@@ -13,6 +13,7 @@ import org.hibernate.criterion.Restrictions;
 
 import com.hhxh.car.base.member.domain.Member;
 import com.hhxh.car.common.action.BaseAction;
+import com.hhxh.car.common.annotation.AuthCheck;
 import com.hhxh.car.common.util.JsonValueFilterConfig;
 import com.hhxh.car.opr.domain.Order;
 import com.hhxh.car.opr.domain.OrderTrack;
@@ -37,22 +38,7 @@ public class OrderAction extends BaseAction implements ModelDriven<Order>
 
 	private String workerId;// 师傅的code
 
-	/**
-	 * 订单状态
-	 */
-	private static final Integer ORDERSTATE_NEW = 0;
-	private static final Integer ORDERSTATE_ORDER = 1;
-	private static final Integer ORDERSTATE_RECEIVE = 2;
-	private static final Integer ORDERSTATE_WORKING = 3;
-	private static final Integer ORDERSTATE_DELIVERY = 4;
-	private static final Integer ORDERSTATE_PAY = 5;
-	private static final Integer ORDERSTATE_CANCEL = 9;
-
-	/**
-	 * payState 支付状态
-	 */
-	private static final Integer PAYSTATE_SUCCESS = 1;
-	private static final Integer PAYSTATE_NO_SUCCESS = 0;
+	
 
 	/**
 	 * 根据网店来，来查出所有该商店的订单信息
@@ -150,6 +136,7 @@ public class OrderAction extends BaseAction implements ModelDriven<Order>
 	/**
 	 * 为一个订单分配师傅
 	 */
+	@AuthCheck(isCheckLoginOnly=false)
 	public void distributeWorker()
 	{
 		try

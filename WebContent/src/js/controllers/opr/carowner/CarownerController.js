@@ -1,7 +1,10 @@
 'use strict';
 
-app.controller('carownerController',['$rootScope','$scope','$state','$timeout','$http','sessionStorageService','memberStateService','warnService','hintService',function($rootScope,$scope,$state,$timeout,$http,sessionStorageService,memberStateService,warnService,hintService){
+app.controller('carownerController',['$rootScope','$scope','$state','$timeout','$http','sessionStorageService','memberStateService','warnService','hintService','roleBtnService',function($rootScope,$scope,$state,$timeout,$http,sessionStorageService,memberStateService,warnService,hintService,roleBtnService){
 	
+	
+	var roleBtnUiClass = "app.carowner.";//用于后台查找按钮权限
+	roleBtnService.getRoleBtnService(roleBtnUiClass,$scope);
 	/**
 	 * 在session中不能清除的内容，应该包含子缓存对象
 	 */
@@ -24,53 +27,6 @@ app.controller('carownerController',['$rootScope','$scope','$state','$timeout','
 			add:"app.carowner.add",
 			edit:"app.carowner.edit",
 			details:"app.carowner.details"
-	}
-	
-	/**
-	 * 并无实际的意义，但是如果没有用这个方法的话，页面中菜单按钮将不会根据属性的值进行变化
-	 * 
-	 * 2015.7.15 利用一个隐藏的按钮来解决按钮状态值更新的事件clickId
-	 */
-//	var hiddenButton = $("#clickId");
-	function show(){
-		$timeout(function(){
-			//无实际作用，更新页面中的按钮菜单样式
-		},0);
-	}
-	/**
-	 * 设置按钮的状态按钮 其中包括三个属性 当选择0个 、1个、多个
-	 * 0个 都不显示
-	 * 1个显示修改和查看
-	 * 多个显示删除
-	 * canEdit 变量是在该页面中显示是否可以修改、详细信息的按钮
-	 * 
-	 */
-	$scope.canEdit = false;
-	$scope.setCanEdit = function(booleanValue,id){
-		$scope.canEdit = booleanValue ;
-		if(id){
-			$scope.editId = id;
-		}
-		show();
-	}
-	$scope.setButtonStatus = function(){
-		var len = $scope.rowIds.length ;//id的个数
-		console.info("父类中的设置按钮的状态");
-		if(len==0){
-			$scope.isSingle = false ;
-			$scope.isMulti = false ;
-			$scope.setCanEdit(false);
-		}else if(len==1){
-			$scope.isSingle = true ;
-			$scope.isMulti = false ;
-			$scope.setCanEdit(true,$scope.rowIds[0]);
-		}else{
-			$scope.isSingle = false ;
-			$scope.isMulti = true ;
-			$scope.setCanEdit(false);
-		}
-		show();
-//		hiddenButton.trigger("click");
 	}
 	
 	 // 设置按钮的状态值
@@ -126,7 +82,7 @@ app.controller('carownerController',['$rootScope','$scope','$state','$timeout','
 	 */
 	$scope.clearRowIds = function(){
 		$scope.rowIds = [];
-		$scope.setButtonStatus();
+		$scope.setBtnStatus();
 	}
 	
 	/**
@@ -170,7 +126,6 @@ app.controller('carownerController',['$rootScope','$scope','$state','$timeout','
 		}
 		$state.go($scope.state.edit);
 	}
-	
 
 	$scope.message = {
 			cell:{

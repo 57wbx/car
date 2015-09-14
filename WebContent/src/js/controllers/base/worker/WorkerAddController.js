@@ -4,7 +4,6 @@ app.controller("workerAddController",['$scope','$state','$http','checkUniqueServ
 	$scope.formData = {};
 	
 	//初始化选中的数据
-	$scope.setCanEdit(false);
 	$scope.clearRowIds();
 	
 	$scope.needCacheArray = ["memberDataTableProperties"];

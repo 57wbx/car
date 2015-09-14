@@ -1,8 +1,10 @@
 'use strict';
 
-app.controller('OrgController', function($rootScope, $scope, $state, $timeout) {
-  var allBtn =["add","delete","modify","freeze","attendance"];//btn id array
-  $scope.permBtn = app.utils.rolePerm(app.url.org.api.menuPerm,"001",allBtn);//已有权限项数组
+app.controller('OrgController', ['$rootScope','$scope','$state','$timeout','roleBtnService',function($rootScope, $scope, $state, $timeout,roleBtnService) {
+	
+	var roleBtnUiClass = "app.org.";//用于后台查找按钮权限
+	roleBtnService.getRoleBtnService(roleBtnUiClass,$scope);
+	
   var url = app.url.org.api.list;
   var data = null;
   app.utils.getData(url, function callback(dt){
@@ -255,4 +257,4 @@ app.controller('OrgController', function($rootScope, $scope, $state, $timeout) {
     }
   }
 
-});
+}]);

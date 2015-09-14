@@ -1,8 +1,10 @@
 'use strict';
 
-app.controller('RoleController', function($rootScope, $scope, $state, $timeout) {
-  var allBtn =["add","delete","modify","allot"];//btn id array
-  $scope.permBtn = app.utils.rolePerm(app.url.role.api.menuPerm,"005",allBtn);//已有权限项数组
+app.controller('RoleController', ['$rootScope','$scope','$state','$timeout','roleBtnService',function($rootScope, $scope, $state, $timeout,roleBtnService) {
+	
+	var roleBtnUiClass = "app.role.";//用于后台查找按钮权限
+	roleBtnService.getRoleBtnService(roleBtnUiClass,$scope);
+	
   var url = app.url.org.api.list; // 后台API路径
   var data = null;
   app.utils.getData(url, function callback(dt){
@@ -219,4 +221,4 @@ app.controller('RoleController', function($rootScope, $scope, $state, $timeout) 
     }
   }
 
-});
+}]);

@@ -11,14 +11,14 @@
 				<div class="panel-heading pull-right btn-group">
 					
 					<button type="button" class="btn btn-success" ng-click="addRow()"
-						ng-disabled="only">
+						ng-disabled="only" ng-if="btns.ADD">
 						<i class="fa fa-fw fa-plus"></i> <span class="hid">添加</span>
 					</button>
-					<button type="button" class="btn btn-primary" ng-click="editRow()"
+					<button type="button" class="btn btn-primary" ng-click="editRow()" ng-if="btns.UPDATE"
 						ng-disabled="single">
 						<i class="fa fa-fw fa-pencil"></i> <span class="hid">修改</span>
 					</button>
-					<div class="btn-group dropdown" dropdown>
+					<div class="btn-group dropdown" dropdown ng-if="btns.STATE">
 					          <button class="btn btn-default" dropdown-toggle ng-disabled="mutiple"><i class="fa fa-fw icon-lock"></i>状态<span class="caret"></span></button>
 						          <ul class="dropdown-menu">
 						          		<!-- 1=正常、2=停用、3=注销（黑名单） -->
@@ -28,7 +28,7 @@
 							            <li><a href ng-click="setUseState(4);">黑名单</a></li>
 						          </ul>
 					</div>
-					<button type="button" class="btn btn-default"
+					<button type="button" class="btn btn-default"  ng-if="btns.DETAILS"
 						ng-click="seeDetails()" ng-disabled="single">
 						<i class="fa fa-fw fa-eye"></i> <span class="hid">查看</span>
 					</button>

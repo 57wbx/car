@@ -1,7 +1,10 @@
 'use strict';
 
-app.controller('busTypeController', function($rootScope, $scope, $state, $timeout) {
+app.controller('busTypeController', ['$rootScope','$scope','$state','$timeout','roleBtnService',function($rootScope, $scope, $state, $timeout,roleBtnService) {
 //  var url = app.url.org.api.list; // 后台API路径
+	
+	var roleBtnUiClass = "app.bustype";//用于后台查找按钮权限
+	roleBtnService.getRoleBtnService(roleBtnUiClass,$scope);
 	
 	var url = "base/busTypeAction!listBusType.action";
 	var data = null;
@@ -282,4 +285,4 @@ app.controller('busTypeController', function($rootScope, $scope, $state, $timeou
       $scope.mutiple = param.mutiple
     }
   }
-});
+}]);

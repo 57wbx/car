@@ -8,7 +8,7 @@
 				<h2 class="leave-title text-right"><span class="text-center">门店照片管理</span></h2>
 				<input type="file" class="hidden" id="addImage" nv-file-select="" uploader="uploader"  accept="image/*"/>
 			</div>
-			<div class="col-md-offset-2 col-md-2 "><span class="btn btn-success btn-sm " role="button"  style="margin-top:25px" ng-click="seleceImg()">新增图片</span></div>	
+			<div class="col-md-offset-2 col-md-2 "><span class="btn btn-success btn-sm " role="button"  style="margin-top:25px" ng-click="seleceImg()" ng-if="btns.ADD">新增图片</span></div>	
 		</div>
 		</div>
   <div class="panel-body">
@@ -23,7 +23,7 @@
 					      <div class="caption">
 					        <p class="text-center">
 					        <span class="btn btn-info btn-sm" role="button"  ng-click="showImg(item)">查看原图</span>
-					          <span class="btn btn-danger btn-sm" role="button"  ng-click="deleteImg(item)">删除</span>
+					          <span class="btn btn-danger btn-sm" role="button"  ng-click="deleteImg(item)" ng-if="btns.DELETE">删除</span>
 					        </p>
 					      </div>
 					    </div>

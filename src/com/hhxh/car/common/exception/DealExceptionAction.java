@@ -34,7 +34,7 @@ public class DealExceptionAction  extends BaseAction
 			}
 		}catch(Exception e){
 			log.error("处理错误信息时失败",e);
-			e.printStackTrace();
+//			e.printStackTrace();
 		}
 	}
 	
