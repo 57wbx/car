@@ -20,6 +20,7 @@ import com.hhxh.car.base.busitem.domain.BusItem;
 import com.hhxh.car.base.carshop.domain.CarShop;
 import com.hhxh.car.common.action.AbstractAction;
 import com.hhxh.car.common.action.BaseAction;
+import com.hhxh.car.common.exception.ErrorMessageException;
 import com.hhxh.car.common.util.CommonConstant;
 import com.hhxh.car.common.util.DesCrypto;
 import com.hhxh.car.org.domain.AdminOrgUnit;
@@ -27,6 +28,7 @@ import com.hhxh.car.org.domain.Person;
 import com.hhxh.car.permission.domain.Role;
 import com.hhxh.car.permission.domain.User;
 import com.hhxh.car.permission.service.UserService;
+import com.hhxh.car.sys.domain.LoginLog;
 
 /***
  * Copyright (C), 2015-2025 Hhxh Tech. Co., Ltd
@@ -426,11 +428,44 @@ public class UserAction extends BaseAction {
 				json.put("carShopName", "平台");
 			}
 			setSessionValue(CommonConstant.LOGIN_USER, nuser);
+			loginLog(nuser);
 		}else{
 			json.put("code", "2");
 			json.put("msg", "fail");
 		}
 		putJson(json.toString());
+	}
+	
+	/**
+	 * 操作登陆日志
+	 * @param user
+	 */
+	private void loginLog(User user){
+		LoginLog loginLog = new LoginLog();
+		loginLog.setIp(this.getRequest().getRemoteAddr());
+		loginLog.setPort(this.getRequest().getRemotePort());
+		loginLog.setLoginTime(new Date());
+		loginLog.setUser(user);
+		loginLog.setClientType(this.getRequest().getHeader("User-Agent"));
+		try
+		{
+			this.baseService.saveObject(loginLog);
+			setSessionValue(CommonConstant.LOGIN_LOG, loginLog);
+		} catch (Exception e)
+		{
+			log.error("保存登陆日志出错", e);
+		}
+	}
+	
+	/**
+	 * 退出操作需要记录的导数据中的数据
+	 */
+	private void logoutLog(){
+		LoginLog loginLog = getSessionValue(CommonConstant.LOGIN_LOG);
+		if(loginLog!=null){
+			loginLog.setExitTime(new Date());
+			this.baseService.update(loginLog);
+		}
 	}
 
 	/**
@@ -439,9 +474,11 @@ public class UserAction extends BaseAction {
 	 */
 	public void logout() throws IOException
 	{
+		logoutLog();
 		HttpServletRequest request = ServletActionContext.getRequest ();
 		HttpSession session=request.getSession();
-		removeSessionValue("LOGIN_USER");
+		removeSessionValue(CommonConstant.LOGIN_USER);
+		removeSessionValue(CommonConstant.LOGIN_LOG);
 		session.invalidate();
 		JSONObject json=new JSONObject();
 		json.put("code", "1");
@@ -461,12 +498,11 @@ public class UserAction extends BaseAction {
 				this.putJson(false, this.getMessageFromConfig("user_updatePassWord_same"));
 				return ;
 			}
-			if(user!=null&&user.getPassword().equals(oldPassWord)){
+			if(user!=null&&user.getPassword().equals(DesCrypto.encrypt(null, oldPassWord))){
 				User needUpdateUser = this.baseService.get(User.class,user.getId());
 				needUpdateUser.setPassword(DesCrypto.encrypt(null, password));
 				this.baseService.save(needUpdateUser);
 				
-				needUpdateUser.setPassword(password);
 				setSessionValue(CommonConstant.LOGIN_USER, needUpdateUser);
 				
 				this.putJson();
@@ -477,6 +513,11 @@ public class UserAction extends BaseAction {
 			log.error("修改用户密码失败",e);
 			this.putJson(false,this.getMessageFromConfig("user_error"));
 		}
+	}
+	
+	public void test() throws ErrorMessageException {
+		System.out.println("test");
+		throw new ErrorMessageException("sdfsfsdfsdf");
 	}
 
 	public String getNumber() {

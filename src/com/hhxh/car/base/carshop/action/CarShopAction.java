@@ -25,7 +25,7 @@ import com.hhxh.car.base.carshop.domain.CarShopImg;
 import com.hhxh.car.base.carshop.service.CarShopService;
 import com.hhxh.car.common.action.BaseAction;
 import com.hhxh.car.common.annotation.AuthCheck;
-import com.hhxh.car.common.util.ErrorMessageException;
+import com.hhxh.car.common.exception.ErrorMessageException;
 import com.hhxh.car.common.util.FileUploadUtil;
 import com.hhxh.car.common.util.JsonDateValueProcessor;
 import com.hhxh.car.common.util.JsonValueFilterConfig;

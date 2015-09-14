@@ -9,15 +9,15 @@ import org.springframework.stereotype.Service;
 import com.hhxh.car.base.carshop.action.CarShopState;
 import com.hhxh.car.base.carshop.domain.CarShop;
 import com.hhxh.car.base.carshop.domain.ShopBlackList;
-import com.hhxh.car.base.member.action.MemberState;
 import com.hhxh.car.base.member.domain.Member;
+import com.hhxh.car.base.member.domain.MemberState;
 import com.hhxh.car.base.member.domain.WorkerBlackList;
+import com.hhxh.car.common.exception.ErrorMessageException;
 import com.hhxh.car.common.service.BaseService;
 import com.hhxh.car.common.util.CommonConstant;
 import com.hhxh.car.common.util.ConfigResourcesGetter;
-import com.hhxh.car.common.util.ErrorMessageException;
-import com.hhxh.car.opr.action.ComplainState;
 import com.hhxh.car.opr.domain.Complain;
+import com.hhxh.car.opr.domain.ComplainState;
 import com.hhxh.car.permission.domain.User;
 
 /**

@@ -15,9 +15,9 @@ import com.hhxh.car.base.carshop.action.CarShopState;
 import com.hhxh.car.base.carshop.dao.CarShopDao;
 import com.hhxh.car.base.carshop.domain.CarShop;
 import com.hhxh.car.base.carshop.domain.ShopBlackList;
+import com.hhxh.car.common.exception.ErrorMessageException;
 import com.hhxh.car.common.service.BaseService;
 import com.hhxh.car.common.util.ConfigResourcesGetter;
-import com.hhxh.car.common.util.ErrorMessageException;
 import com.hhxh.car.permission.domain.User;
 
 @Service

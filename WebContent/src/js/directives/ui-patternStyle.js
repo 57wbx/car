@@ -17,11 +17,13 @@ app.directive("patternStyle",[function(){
 													<span ng-show="formInput.$error.email&&inputMessage.email">{{inputMessage.email}};</span><span ng-show="formInput.$error.email&&!inputMessage.email">{{defaultEamilMessage}};</span>\
 													<span ng-show="formInput.$error.min&&inputMessage.min">{{inputMessage.min}};</span><span ng-show="formInput.$error.min&&!inputMessage.min">{{defaultMinMessage}};</span>\
 													<span ng-show="formInput.$error.max&&inputMessage.max">{{inputMessage.max}};</span><span ng-show="formInput.$error.max&&!inputMessage.max">{{defaultMaxMessage}};</span>\
+													<span ng-show="formInput.$error.number&&inputMessage.number">{{inputMessage.number}};</span><span ng-show="formInput.$error.number&&!inputMessage.number">{{defaultNumberMessage}};</span>\
 													<span ng-show="formInput.$error.custom_pattern&&inputMessage.custom_pattern">{{inputMessage.custom_pattern}};</span>\
 						</div>',
 		link:function(scope,ele,attr){
 			scope.defaultRequiredMessage = "字段不能为空";
 			scope.defaultEamilMessage = "必须为邮箱格式";
+			scope.defaultNumberMessage = "必须为数字格式";
 			if(ele.prev().attr("ng-minlength")){
 				scope.defaultMinLengthMessage = "该字段不能少于"+ele.prev().attr("ng-minlength")+"个字符";
 			}

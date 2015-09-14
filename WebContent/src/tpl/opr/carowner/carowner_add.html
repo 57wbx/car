@@ -8,7 +8,8 @@
 		<div class="form-group">
 			<label class="col-sm-1 control-label">姓名<i class="fa fa-asterisk text-danger"></i></label>
 			<div class="col-sm-3">
-				<input class="form-control" type="text" required ng-model="formData.name" />
+				<input name="name" class="form-control" type="text" required ng-model="formData.name" />
+				<div pattern-style form-input="form.name"  input-message="message.name" ></div>
 			</div>
 			<label class="col-sm-1 control-label">简称</label>
 			<div class="col-sm-3">
@@ -16,7 +17,8 @@
 			</div>
 			<label class="col-sm-1 control-label">手机号<i class="fa fa-asterisk text-danger"></i></label>
 			<div class="col-sm-3">
-				<input class="form-control" type="text" required ng-model="formData.cell" ng-pattern="/^[0-9]{11}$/" />
+				<input name="cell" class="form-control" type="text" required ng-model="formData.cell" ng-pattern="/^[0-9]{11}$/" />
+				<div pattern-style form-input="form.cell"  input-message="message.cell" ></div>
 			</div>
 		</div>  
 		
@@ -37,11 +39,11 @@
 			</div>
 			<label class="col-sm-1 control-label">使用状态<i class="fa fa-asterisk text-danger"></i></label>
 			<div class="col-sm-3">
-				<select ng-model="formData.useState" class="form-control" required>
+				<select ng-model="formData.useState" class="form-control" required ng-options="u.value as u.name for u in selectData.useState">
 <!-- 				1=正常、2=停用、3=注销（黑名单） -->
-					<option value="1">正常</option>
-					<option value="2">停用</option>
-					<option value="3">注销（黑名单）</option>
+<!-- 					<option value="1">正常</option> -->
+<!-- 					<option value="2">停用</option> -->
+<!-- 					<option value="3">注销（黑名单）</option> -->
 				</select>
 			</div>
 		</div> 
@@ -60,7 +62,8 @@
 			</div>
 			<label class="col-sm-1 control-label">积分</label>
 			<div class="col-sm-3">
-				<input class="form-control" type="text"  ng-model="formData.integration"  />
+				<input name="integration" class="form-control" type="number"  ng-model="formData.integration" min="0"  />
+				<div pattern-style form-input="form.integration"  input-message="message.integration" ></div>
 			</div>
 			
 		</div> 
@@ -68,7 +71,8 @@
 		<div class="form-group">
 			<label class="col-sm-1 control-label">身份证号<i class="fa fa-asterisk text-danger"></i></label>
 			<div class="col-sm-3">
-				<input class="form-control" type="text" required ng-model="formData.IDCARDNO"  />
+				<input name="IDCARDNO" class="form-control" type="text" required ng-model="formData.IDCARDNO" ng-pattern="/^[0-9]{16,17}[0-9x]$/"  />
+				<div pattern-style form-input="form.IDCARDNO"  input-message="message.IDCARDNO" ></div>
 			</div>
 			<label class="col-sm-1 control-label">婚姻</label>
 			<div class="col-sm-3">
@@ -159,7 +163,8 @@
       <div class="line line-dashed b-b line-lg pull-in"></div>
       <div class="form-group" id="busItemSumbit" >
         <div class="col-sm-offset-4 col-sm-2 col-xs-6">
-          <button type="button" id="add" class="w100 btn btn-success" ng-click="submit()" ng-disabled='form.$invalid  '>确定</button>
+<!--           <button type="button" id="add" class="w100 btn btn-success" ng-click="submit()" ng-disabled='form.$invalid  '>确定</button> -->
+          <div doing button-value="保存" doing-value="保存中..." is-doing="isDoing" doing-method="submit();" form-valid="form.$valid"></div>
         </div>
         <div class="col-sm-2 col-xs-6">
           <a ng-click="cancel()" class="w100 btn btn-default">取消</a>

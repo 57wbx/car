@@ -26,6 +26,52 @@ app.factory("commonGetStateUtilService",[function(){
 	}
 }]).
 /**
+ * 根据一个键值对对象，来获取可以适用于select标签的数据格式
+ */
+factory("selectDataService",[function(){
+	/**
+	 * @param obj 需要转换成指定格式的对象  必选 
+	 * 			示例：var shopType = {
+															0:"加盟店",1:"合作店",3:"直营店",4:"中心店(区域旗舰店)",
+														};
+	 * @param key 装换成对象的的key的名称  可选 默认为“name”
+	 * @param valueKey  转换成对象的valuekey，可选、默认为 “value”
+	 * 
+	 */
+	function getSelectData(obj,key,valueKey){
+		var _key = key ;
+		var _valueKey = valueKey ;
+		if(obj==null){
+			return ;
+		}
+		var returnArray = [];
+		if(!_key){
+			_key = "name" ;
+		}
+		if(!_valueKey ){
+			_valueKey = "value";
+		}
+		for(pro in obj){
+			var item = {};
+			//对象的属性值可能只能是数字类型的
+			var proInt = parseInt(pro);
+			if(proInt){
+				item[_valueKey] = proInt ;
+			}else{
+				item[_valueKey] = pro ;
+			}
+			
+			item[_key] = obj[pro] ;
+			returnArray.push(item);
+		}
+		console.info(returnArray);
+		return returnArray ;
+	}
+	return {
+		getSelectData:getSelectData
+	};
+}]).
+/**
  * 该服务提供了所有订单表中，有关的状态信息。
  * 
  */
@@ -108,8 +154,7 @@ factory("orderStateService",[function(){
 		getDealType:getDealType
 	};
 	//结束
-}]).factory("memberStateService",[function(){
-	
+}]).factory("memberStateService",['commonGetStateUtilService','selectDataService',function(commonGetStateUtilService,selectDataService){
 	var getUseType = function(param){
 		switch(param){
 		case 0 : return "车主";break ;
@@ -128,15 +173,17 @@ factory("orderStateService",[function(){
 		default : return "";break ;
 		}
 	};
-	//1=正常、2=停用、3=注销（黑名单）
-	var getUseState = function(param){
-		switch(param){
-		case 1: return "正常";break ;
-		case 2: return "停用";break ;
-		case 3: return "注销（黑名单）";break ;
-		default : return""; break ;
-		}
+	
+	//1=正常、2=停用、3=注销4=（黑名单）
+	var useState = {
+			1:"正常",2:"停用",3:"注销",4:"黑名单"
 	};
+	function getUseState(param){
+		return commonGetStateUtilService.get(param,useState);
+	};
+	function getUseStateObject(){
+		return selectDataService.getSelectData(useState) ;
+	}
 	//0=一般用户、1=普通会员、2=VIP会员、3=白金VI、4=钻石VIP
 	var getVIPLevel = function(param){
 		switch(param){
@@ -175,6 +222,7 @@ factory("orderStateService",[function(){
 		getUseType:getUseType,
 		getAuditState:getAuditState,
 		getUseState:getUseState,
+		getUseStateObject:getUseStateObject,
 		getVIPLevel:getVIPLevel,
 		getGender:getGender,
 		getMerriageState:getMerriageState

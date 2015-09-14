@@ -151,6 +151,7 @@ app.controller('carownerEditController', ['$rootScope','$scope', '$http', '$stat
     		}else{
     			alert(resp.data.message);
     		}
+    		$scope.isDoing = false ;
     	});
     }
     

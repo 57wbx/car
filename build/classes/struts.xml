@@ -22,6 +22,19 @@
 <!-- 					<param name="root">dataMap</param> -->
 <!-- 				</result> -->
 <!-- 			</global-results> -->
+		<global-results>
+			<result  type="chain" name="dealException">
+				<param name="actionName">dealExceptionAction</param>              
+				<param name="namespace">/</param>
+				<param name="method">handler</param>
+			</result>
+		</global-results>
+	 	<global-exception-mappings>
+	 		<exception-mapping result="dealException" exception="java.lang.Exception"></exception-mapping>
+	 	</global-exception-mappings>
+	 	
+	 	<action name="dealExceptionAction" class="com.hhxh.car.common.exception.DealExceptionAction" >
+	 	</action>
 	  </package>
 
         

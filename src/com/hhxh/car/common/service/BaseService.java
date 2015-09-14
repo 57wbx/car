@@ -124,16 +124,16 @@ public class BaseService {
 	 * 
 	 * @author LDP
 	 */
-	public void save(Object o) throws Exception {
-		dao.save(o);
+	public Serializable save(Object o) throws Exception {
+		return dao.save(o);
 	}
 
 	/**
 	 * 普通id保存实体
 	 * 
 	 * */
-	public void saveObject(Object o) throws Exception {
-		dao.saveObject(o);
+	public Serializable saveObject(Object o) throws Exception {
+		return dao.saveObject(o);
 	}
 	
 	
@@ -246,7 +246,7 @@ public class BaseService {
 	public void deleteByIds(Class clazz,Serializable[] ids)throws Exception{
 		if(ids!=null&&ids.length>0){
 			for(int i=0;i<ids.length;i++){
-				this.delete(clazz, ids[i]);
+				this.dao.deleteObject(clazz, ids[i]);
 			}
 		}
 	}

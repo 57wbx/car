@@ -15,15 +15,21 @@
 						<i class="fa fa-fw fa-plus"></i> <span class="hid">添加</span>
 					</button>
 					<button type="button" class="btn btn-primary" ng-click="editRow()"
-						ng-disabled="!canEdit">
+						ng-disabled="single">
 						<i class="fa fa-fw fa-pencil"></i> <span class="hid">修改</span>
 					</button>
-					<button type="button" class="btn btn-danger" ng-click="deleteRow()"
-						ng-disabled="!isMulti && !isSingle">
-						<i class="fa fa-fw fa-minus"></i> <span class="hid">删除</span>
-					</button>
+					<div class="btn-group dropdown" dropdown>
+					          <button class="btn btn-default" dropdown-toggle ng-disabled="mutiple"><i class="fa fa-fw icon-lock"></i>状态<span class="caret"></span></button>
+						          <ul class="dropdown-menu">
+						          		<!-- 1=正常、2=停用、3=注销（黑名单） -->
+							            <li><a href ng-click="setUseState(1);">正常</a></li>
+							            <li><a href ng-click="setUseState(2);">停用</a></li>
+							            <li><a href ng-click="setUseState(3);">注销</a></li>
+							            <li><a href ng-click="setUseState(4);">黑名单</a></li>
+						          </ul>
+					</div>
 					<button type="button" class="btn btn-default"
-						ng-click="seeDetails()" ng-disabled="!canEdit">
+						ng-click="seeDetails()" ng-disabled="single">
 						<i class="fa fa-fw fa-eye"></i> <span class="hid">查看</span>
 					</button>
 					

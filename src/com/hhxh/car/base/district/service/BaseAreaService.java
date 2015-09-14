@@ -3,9 +3,9 @@ package com.hhxh.car.base.district.service;
 import org.springframework.stereotype.Service;
 
 import com.hhxh.car.base.district.domain.BaseArea;
+import com.hhxh.car.common.exception.ErrorMessageException;
 import com.hhxh.car.common.service.BaseService;
 import com.hhxh.car.common.util.ConfigResourcesGetter;
-import com.hhxh.car.common.util.ErrorMessageException;
 /**
  * 
  * @author zw

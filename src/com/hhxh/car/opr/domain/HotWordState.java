@@ -1,4 +1,4 @@
-package com.hhxh.car.opr.action;
+package com.hhxh.car.opr.domain;
 
 public class HotWordState
 {

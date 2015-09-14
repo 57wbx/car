@@ -1,6 +1,6 @@
 'use strict';
 
-app.controller('carownerController',['$rootScope','$scope','$state','$timeout','$http','sessionStorageService',function($rootScope,$scope,$state,$timeout,$http,sessionStorageService){
+app.controller('carownerController',['$rootScope','$scope','$state','$timeout','$http','sessionStorageService','memberStateService','warnService','hintService',function($rootScope,$scope,$state,$timeout,$http,sessionStorageService,memberStateService,warnService,hintService){
 	
 	/**
 	 * 在session中不能清除的内容，应该包含子缓存对象
@@ -11,6 +11,11 @@ app.controller('carownerController',['$rootScope','$scope','$state','$timeout','
 	
 	$scope.rowIds = [];//用来保存所选列表的id
 	
+	$scope.selectData = {
+			useState:memberStateService.getUseStateObject()
+	}
+	
+	console.info($scope.selectData.useState);
 	/**
 	 * 模块路由路径统一管理
 	 */
@@ -68,6 +73,54 @@ app.controller('carownerController',['$rootScope','$scope','$state','$timeout','
 //		hiddenButton.trigger("click");
 	}
 	
+	 // 设置按钮的状态值
+	  $scope.setBtnStatus = function(){
+		  console.info("设置按钮",$scope.rowIds);
+	    if($scope.rowIds.length === 0){
+	      $scope.single = true;
+	      $scope.locked = true;
+	      $scope.mutiple = true;
+	    }else if($scope.rowIds.length === 1){
+	      $scope.single = false;
+	      $scope.locked = false;
+	      $scope.mutiple = false;
+	    }else{
+	      $scope.single = true;
+	      $scope.locked = true;
+	      $scope.mutiple = false;
+	    }
+
+	    $scope.$evalAsync();
+//	    if(){
+//	    	hButton.trigger('click'); // 触发一次点击事件，使所以按钮的状态值生效
+//	    }
+	  };
+	  
+	  /**
+	   * 改变状态的操作
+	   */
+	  $scope.setUseState = function(param){
+		  //1=正常、2=停用、3=注销4=（黑名单）
+		 var useState = memberStateService.getUseState(param);
+		  warnService.warn(null,"您确定要将该记录的状态变换为："+useState+" 吗？",function(){
+			  return $http({
+				  url:"base/memberAction!updateMemberUseState.action",
+			  	  method:"post",
+			  	  data:{
+			  		  ids :$scope.rowIds,
+			  		  useState : param 
+			  	  }
+			  });
+		  },function(resp){
+			  if(resp.data.code==1){
+				  hintService.hint({title: "成功", content: "状态更改成功！" });
+				  $state.reload($scope.state.list);
+			  }else{
+				  alert(resp.data.message);
+			  }
+		  });
+	  }
+	
 	/**
 	 * 清空需要操作的id，主要是在busAtomListController中调用
 	 */
@@ -118,47 +171,14 @@ app.controller('carownerController',['$rootScope','$scope','$state','$timeout','
 		$state.go($scope.state.edit);
 	}
 	
-	/**
-	 * 页面弹出框对象
-	 */
-	var mask = $('<div class="mask"></div>');
-	var container = $('#dialog-container');	
-	var doIt = function(){};
-	 // 执行操作
-	  $rootScope.do = function(){
-	    doIt();
-	  };
 
-	  // 模态框退出
-	  $rootScope.cancel = function(){
-	    mask.remove();
-	    container.addClass('none');
-	  };  
-	/**
-	 * 删除方法的按钮
-	 */
-	$scope.deleteRow = function(){
-		 mask.insertBefore(container);
-		 container.removeClass('none');
-		 doIt = function(){
-			 if($scope.rowIds.length>0){
-					$http({
-						url:'base/busItemAction!deleteBusItemByIds.action',
-						method:'get',
-						params:{
-							ids:$scope.rowIds
-						}
-					}).then(function(resp){
-						if(resp.data.code==1){//代表成功
-							$state.reload();
-						}else{
-							alert("删除失败");
-						}
-					});
-				}
-		 }
+	$scope.message = {
+			cell:{
+				pattern:"请输入正确的手机号码"
+			},
+			IDCARDNO:{
+				pattern:"请输入正确格式的身份证号"
+			}
 	}
-	  
-	
 	//结束方法
 }]);

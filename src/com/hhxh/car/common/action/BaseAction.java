@@ -255,15 +255,15 @@ public class BaseAction extends ActionSupport
 		User user = getSessionValue("LOGIN_USER");
 		if (user == null)
 		{
-			try
-			{
-				String path = ServletActionContext.getRequest().getRemoteHost();
-				System.out.println(path);
-				ServletActionContext.getResponse().sendRedirect(path + "/car");
-			} catch (IOException e)
-			{
-				e.printStackTrace();
-			}
+//			try
+//			{
+////				String path = ServletActionContext.getRequest().getRemoteHost();
+////				System.out.println(path);
+////				ServletActionContext.getResponse().sendRedirect(path + "/car");
+//			} catch (IOException e)
+//			{
+//				e.printStackTrace();
+//			}
 		}
 		return user;
 	}
@@ -280,6 +280,15 @@ public class BaseAction extends ActionSupport
 	public boolean isNotEmpty(Integer i)
 	{
 		if (i == null || i == INTGER_EMPTY)
+		{
+			return false;
+		}
+		return true;
+	}
+	
+	public boolean isNotEmpty(String[] ids)
+	{
+		if (ids == null || ids.length<=0)
 		{
 			return false;
 		}

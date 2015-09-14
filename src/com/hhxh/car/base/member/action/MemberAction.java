@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.annotation.Resource;
+
 import org.apache.commons.lang.ArrayUtils;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.MatchMode;
@@ -11,7 +13,11 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
 import com.hhxh.car.base.member.domain.Member;
+import com.hhxh.car.base.member.domain.MemberState;
+import com.hhxh.car.base.member.service.MemberService;
 import com.hhxh.car.common.action.BaseAction;
+import com.hhxh.car.common.annotation.AuthCheck;
+import com.hhxh.car.common.exception.ErrorMessageException;
 import com.hhxh.car.common.util.CopyObjectUtil;
 import com.hhxh.car.common.util.JsonValueFilterConfig;
 import com.opensymphony.xwork2.ModelDriven;
@@ -23,56 +29,25 @@ public class MemberAction extends BaseAction implements ModelDriven<Member>
 
 	private String orderName;
 
-	/**
-	 * 师傅的用户类型
-	 */
-	private static final Integer USERTYPE_WORKER = 1;
-	/**
-	 * 会员的用户内省
-	 */
-	private static final Integer USERTYPE_CAROWNER = 0;
-	/**
-	 * 既是会员又是师傅
-	 */
-	private static final Integer USERTYPE_BOTH = 2;
+	private String[] ids;
 
-	/**
-	 * 审核状态初始
-	 */
-	private static final Integer AUDITSTATE_NEW = 0;
-
-	/**
-	 * 使用状态正常
-	 */
-	private static final Integer USESTATE_OK = 1;
-
-	/**
-	 * 更新或者新增记录的时候不需要从前台传进来的系统数据
-	 */
-	private static final String[] MEMBER_DONT_UPDATE_PROPERTIESE = new String[] { "userType", "carShop", "auditState", "useState", "VIPtime", "VIPlevel", "integration", "updateTime" };
-
-	/**
-	 * 除了不要从前台传进来的数据以外，会员还有自己特殊的字段，这个字段在师傅信息维护信息表中是没有的，所以修改师傅数据的时候 不能对该字段进行任何操作
-	 */
-	private static final String[] CAROWNER_PROPERTIESE_ONLY = new String[] { "VIN" };
-
-	/**
-	 * 技工独有的数据，在更新会员信息的时候不需要更新这些数据
-	 */
-	private static final String[] WORKER_PROPERTIESE_ONLY = new String[] { "code", "MCARDNO", "MCARDURL", "carShop", "VIPtime", "updateTime" };
+	@Resource
+	private MemberService memberService;
 
 	/**
 	 * 添加师傅信息
+	 * 
+	 * @throws ErrorMessageException
 	 */
-	public void addWorker()
+	public void addWorker() throws ErrorMessageException
 	{
 		try
 		{
 			this.member.setUpdateTime(new Date());
-			this.member.setUserType(USERTYPE_WORKER);
+			this.member.setUserType(MemberState.USERTYPE_WORKER);
 			this.member.setCarShop(this.getLoginUser().getCarShop());
-			this.member.setAuditState(AUDITSTATE_NEW);
-			this.member.setUseState(USESTATE_OK);
+			this.member.setAuditState(MemberState.AUDITSTATE_NEW);
+			this.member.setUseState(MemberState.USESTATE_OK);
 			// 会员的一些信息变为空，防止从前台传进来一些破坏性的参数
 			this.member.setVIPlevel(null);
 			this.member.setVIPtime(null);
@@ -83,20 +58,22 @@ public class MemberAction extends BaseAction implements ModelDriven<Member>
 		} catch (Exception e)
 		{
 			log.error("保存师傅信息失败", e);
-			this.putJson(false, this.getMessageFromConfig("member_error"));
+			throw new ErrorMessageException(this.getMessageFromConfig("member_error"), e);
 		}
 	}
 
 	/**
 	 * 查询出所有的师傅信息
+	 * 
+	 * @throws ErrorMessageException
 	 */
-	public void listWorker()
+	public void listWorker() throws ErrorMessageException
 	{
 		try
 		{
 			List<Criterion> params = new ArrayList<Criterion>();
 			params.add(Restrictions.eq("carShop", this.getLoginUser().getCarShop()));
-			params.add(Restrictions.in("userType", new Object[] { USERTYPE_WORKER, USERTYPE_BOTH }));
+			params.add(Restrictions.in("userType", new Object[] { MemberState.USERTYPE_WORKER, MemberState.USERTYPE_BOTH }));
 			if (isNotEmpty(this.member.getCode()))
 			{
 				params.add(Restrictions.like("code", this.member.getCode(), MatchMode.ANYWHERE));
@@ -113,17 +90,15 @@ public class MemberAction extends BaseAction implements ModelDriven<Member>
 			{
 				params.add(Restrictions.eq("gender", this.member.getGender()));
 			}
-			// 在上面添加查询条件
-			Order order = null;
+			// 排序的规则
+			List<Order> orders = new ArrayList<Order>();
 			if (isNotEmpty(orderName))
 			{
-				order = Order.asc(orderName);
-			} else
-			{
-				order = Order.desc("updateTime");
+				orders.add(Order.asc(orderName));
 			}
+			orders.add(Order.asc("updateTime"));
 
-			List<Member> members = this.baseService.gets(Member.class, params, this.getIDisplayStart(), this.getIDisplayLength(), order);
+			List<Member> members = this.baseService.gets(Member.class, params, null, this.getIDisplayStart(), this.getIDisplayLength(), orders);
 
 			int recordsTotal = this.baseService.getSize(Member.class, params);
 
@@ -134,7 +109,7 @@ public class MemberAction extends BaseAction implements ModelDriven<Member>
 		} catch (Exception e)
 		{
 			log.error("查询所有的师傅信息出错", e);
-			this.putJson(false, this.getMessageFromConfig("member_error"));
+			throw new ErrorMessageException(this.getMessageFromConfig("member_error"), e);
 		}
 	}
 
@@ -142,8 +117,9 @@ public class MemberAction extends BaseAction implements ModelDriven<Member>
 	 * 查询出一个师傅的详细信息
 	 * 
 	 * @return
+	 * @throws ErrorMessageException
 	 */
-	public void detailsWorker()
+	public void detailsWorker() throws ErrorMessageException
 	{
 		try
 		{
@@ -170,14 +146,16 @@ public class MemberAction extends BaseAction implements ModelDriven<Member>
 		} catch (Exception e)
 		{
 			log.error("查询师傅的详细信息失败", e);
-			this.putJson(false, this.getMessageFromConfig("member_error"));
+			throw new ErrorMessageException(this.getMessageFromConfig("member_error"), e);
 		}
 	}
 
 	/**
 	 * 更新一条师傅记录
+	 * 
+	 * @throws ErrorMessageException
 	 */
-	public void updateWorker()
+	public void updateWorker() throws ErrorMessageException
 	{
 		try
 		{
@@ -187,7 +165,7 @@ public class MemberAction extends BaseAction implements ModelDriven<Member>
 				// 判断数据是否是师傅数据，并且是否是这一家商店的
 				if (isWorker(worker) && worker.getCarShop().getId().equals(this.getLoginUser().getCarShop().getId()))
 				{
-					String[] filterProperties = (String[]) ArrayUtils.addAll(MEMBER_DONT_UPDATE_PROPERTIESE, CAROWNER_PROPERTIESE_ONLY);
+					String[] filterProperties = (String[]) ArrayUtils.addAll(MemberState.MEMBER_DONT_UPDATE_PROPERTIESE, MemberState.CAROWNER_PROPERTIESE_ONLY);
 					log.info("更新之前的worker对象的详细信息：" + worker);
 					worker = (Member) CopyObjectUtil.copyValueToObject(member, worker, filterProperties);
 					log.info("更新之后的worker对象的详细信息：" + worker);
@@ -206,14 +184,16 @@ public class MemberAction extends BaseAction implements ModelDriven<Member>
 		} catch (Exception e)
 		{
 			log.error("更新师傅记录的时候出错", e);
-			this.putJson(false, this.getMessageFromConfig("member_error"));
+			throw new ErrorMessageException(this.getMessageFromConfig("member_error"), e);
 		}
 	}
 
 	/**
 	 * 添加会员信息 平台用户添加会员，不会将影响会员的挂靠网店 商家添加的会员将添加会员的挂靠网店
+	 * 
+	 * @throws ErrorMessageException
 	 */
-	public void addCarowner()
+	public void addCarowner() throws ErrorMessageException
 	{
 		// TODO 后期需要将初始化状态，现在所有的状态操作都在一张表上面
 		try
@@ -224,25 +204,27 @@ public class MemberAction extends BaseAction implements ModelDriven<Member>
 			}
 			this.member.setUpdateTime(new Date());
 			this.member.setVIPtime(new Date());
-			this.member.setUserType(USERTYPE_CAROWNER);
+			this.member.setUserType(MemberState.USERTYPE_CAROWNER);
 			this.baseService.saveObject(member);
 			this.putJson();
 		} catch (Exception e)
 		{
 			log.error("添加会员信息出错！", e);
-			this.putJson(false, this.getMessageFromConfig("member_error"));
+			throw new ErrorMessageException(this.getMessageFromConfig("member_error"), e);
 		}
 	}
 
 	/**
 	 * 获取所有的会员信息
+	 * 
+	 * @throws ErrorMessageException
 	 */
-	public void listCarowner()
+	public void listCarowner() throws ErrorMessageException
 	{
 		try
 		{
 			List<Criterion> params = new ArrayList<Criterion>();
-			params.add(Restrictions.in("userType", new Object[] { USERTYPE_CAROWNER, USERTYPE_BOTH }));
+			params.add(Restrictions.in("userType", new Object[] { MemberState.USERTYPE_CAROWNER, MemberState.USERTYPE_BOTH }));
 			if (isNotEmpty(this.member.getCell()))
 			{
 				params.add(Restrictions.like("cell", this.member.getCell(), MatchMode.ANYWHERE));
@@ -275,14 +257,16 @@ public class MemberAction extends BaseAction implements ModelDriven<Member>
 		} catch (Exception e)
 		{
 			log.error("查询所有的会员信息出错", e);
-			this.putJson(false, this.getMessageFromConfig("member_error"));
+			throw new ErrorMessageException(this.getMessageFromConfig("member_error"), e);
 		}
 	}
 
 	/**
 	 * 查看一个会员的信息
+	 * 
+	 * @throws ErrorMessageException
 	 */
-	public void detailsCarowner()
+	public void detailsCarowner() throws ErrorMessageException
 	{
 		try
 		{
@@ -304,14 +288,16 @@ public class MemberAction extends BaseAction implements ModelDriven<Member>
 		} catch (Exception e)
 		{
 			log.error("查看会员详情失败", e);
-			this.putJson(false, this.getMessageFromConfig("member_error"));
+			throw new ErrorMessageException(this.getMessageFromConfig("member_error"), e);
 		}
 	}
 
 	/**
 	 * 修改一个会员信息
+	 * 
+	 * @throws ErrorMessageException
 	 */
-	public void updateCarowner()
+	public void updateCarowner() throws ErrorMessageException
 	{
 		try
 		{
@@ -320,7 +306,7 @@ public class MemberAction extends BaseAction implements ModelDriven<Member>
 				Member needUpdateObject = this.baseService.get(Member.class, this.member.getId());
 				if (member != null)
 				{
-					CopyObjectUtil.copyValueToObject(member,needUpdateObject, WORKER_PROPERTIESE_ONLY);
+					CopyObjectUtil.copyValueToObject(member, needUpdateObject, MemberState.WORKER_PROPERTIESE_ONLY);
 					this.baseService.update(needUpdateObject);
 					this.putJson();
 				} else
@@ -334,7 +320,7 @@ public class MemberAction extends BaseAction implements ModelDriven<Member>
 		} catch (Exception e)
 		{
 			log.error("更新会员信息失败", e);
-			this.putJson(false, this.getMessageFromConfig("member_error"));
+			throw new ErrorMessageException(this.getMessageFromConfig("member_error"), e);
 		}
 	}
 
@@ -347,7 +333,7 @@ public class MemberAction extends BaseAction implements ModelDriven<Member>
 	private boolean isWorker(Member m)
 	{
 		// 判断一条记录是否是师傅信息
-		if (m != null && (m.getUserType() == USERTYPE_WORKER || m.getUserType() == USERTYPE_BOTH))
+		if (m != null && (m.getUserType() == MemberState.USERTYPE_WORKER || m.getUserType() == MemberState.USERTYPE_BOTH))
 		{
 			return true;
 		} else
@@ -357,13 +343,34 @@ public class MemberAction extends BaseAction implements ModelDriven<Member>
 	}
 
 	/**
+	 * 设置member 记录的使用状态
+	 */
+	@AuthCheck(isCheckLoginOnly = false)
+	public void updateMemberUseState()
+	{
+		if (!isNotEmpty(ids))
+		{
+			this.putJson(false, this.getMessageFromConfig("member_needId"));
+			return;
+		}
+		if (!isNotEmpty(this.member.getUseState()))
+		{
+			this.putJson(false, this.getMessageFromConfig("member_needUseState"));
+			return;
+		}
+
+		this.memberService.updateMemberUseState(ids, this.member.getUseState());
+		this.putJson();
+	}
+
+	/**
 	 * 查看一条信息是否是会员信息
 	 * 
 	 * @return
 	 */
 	private boolean isCarowner(Member m)
 	{
-		if (m != null && (m.getUserType() == USERTYPE_CAROWNER || m.getUserType() == USERTYPE_BOTH))
+		if (m != null && (m.getUserType() == MemberState.USERTYPE_CAROWNER || m.getUserType() == MemberState.USERTYPE_BOTH))
 		{
 			return true;
 		} else
@@ -387,6 +394,16 @@ public class MemberAction extends BaseAction implements ModelDriven<Member>
 	{
 		this.member = new Member();
 		return this.member;
+	}
+
+	public String[] getIds()
+	{
+		return ids;
+	}
+
+	public void setIds(String[] ids)
+	{
+		this.ids = ids;
 	}
 
 }

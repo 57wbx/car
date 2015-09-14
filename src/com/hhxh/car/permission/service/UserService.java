@@ -11,6 +11,7 @@ import com.hhxh.car.common.service.BaseService;
 import com.hhxh.car.common.util.DesCrypto;
 import com.hhxh.car.permission.dao.UserDao;
 import com.hhxh.car.permission.domain.User;
+import com.hhxh.car.sys.domain.LoginLog;
 
 /***
  * Copyright (C), 2015-2025 Hhxh Tech. Co., Ltd
@@ -25,33 +26,67 @@ import com.hhxh.car.permission.domain.User;
  *
  */
 @Service
-public class UserService extends BaseService {
-	
+public class UserService extends BaseService
+{
+
 	@Resource
 	protected UserDao userDao;
-	
-	public User checkLogin(String number,String password){
-		Map<String, Object> paramMap=new HashMap<String,Object>();
-		paramMap.put("number",number);
-		User nuser = (User)userDao.get("from User where number=:number", paramMap);
-		if(nuser!=null){
-			if(nuser.getPassword()==null){
+
+	public User checkLogin(String number, String password)
+	{
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("number", number);
+		User nuser = (User) userDao.get("from User where number=:number", paramMap);
+		if (nuser != null)
+		{
+			if (nuser.getPassword() == null)
+			{
+				// 将登陆密码保存为新密码，第一次设置的密码为新密码
+				try
+				{
+					nuser.setPassword(DesCrypto.encrypt(null, password));
+				} catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+				this.update(nuser);
+
 				return nuser;
-			}else{
-				if(password!=null){
+			} else
+			{
+				if (password != null)
+				{
 					String jx;
-					try {
+					try
+					{
 						jx = DesCrypto.decrypt(null, nuser.getPassword());
-						if(password.equals(jx)){
-							nuser.setPassword(jx);
+						if (password.equals(jx))
+						{
 							return nuser;
 						}
-					} catch (Exception e) {
-						e.printStackTrace();
+					} catch (Exception e )
+					{
+						// e.printStackTrace();
+						// 不能解密，说明保存在数据库中的密码为明文密码，需要对其进行加密操作
+						if (password != null && password.equals(nuser.getPassword()))
+						{
+							try
+							{
+								nuser.setPassword(DesCrypto.encrypt(null, password));
+							} catch (Exception e1)
+							{
+								e1.printStackTrace();
+							}
+							this.update(nuser);
+							
+//							nuser.setPassword(password);
+							return nuser ;
+						}
 					}
 				}
 			}
 		}
 		return null;
 	}
+
 }

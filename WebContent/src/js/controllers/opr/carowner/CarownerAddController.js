@@ -129,6 +129,7 @@ app.controller("carownerAddController",['$scope','$state','$http','checkUniqueSe
 			}else{//代表保存失败
 				alert(resp.data.message);
 			}
+			$scope.isDoing = false ;
 		});
 	}
 	

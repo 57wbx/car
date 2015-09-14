@@ -308,7 +308,7 @@ public class Dao
 	 * @throws Exception
 	 *             修改时间 2012/7/12
 	 */
-	public void saveObject(Object t) throws Exception
+	public Serializable saveObject(Object t) throws Exception
 	{
 		// 反射获取id属性
 		Field field = t.getClass().getDeclaredField("id");
@@ -328,16 +328,16 @@ public class Dao
 				field.set(t, id);
 			}
 		}
-		getSession().save(t);
+		return getSession().save(t);
 	}
 
 	/**
 	 * 普通id生成方式保存实体
 	 * 
 	 * */
-	public void save(Object t)
+	public Serializable save(Object t)
 	{
-		getSession().save(t);
+		return getSession().save(t);
 	}
 
 	public void updateObject(Object t)

@@ -1,4 +1,4 @@
-package com.hhxh.car.common.util;
+package com.hhxh.car.common.exception;
 
 /**
  * 异常类，当删除，或者其他操作数据库时，需要抛出自定义的信息

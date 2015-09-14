@@ -37,11 +37,11 @@
 			</div>
 			<label class="col-sm-1 control-label">使用状态<i class="fa fa-asterisk text-danger"></i></label>
 			<div class="col-sm-3">
-				<select ng-model="formData.useState" class="form-control" required>
+				<select ng-model="formData.useState" class="form-control" required ng-options="u.value as u.name for u in selectData.useState">
 <!-- 				1=正常、2=停用、3=注销（黑名单） -->
-					<option value="1">正常</option>
-					<option value="2">停用</option>
-					<option value="3">注销（黑名单）</option>
+<!-- 					<option value="1">正常</option> -->
+<!-- 					<option value="2">停用</option> -->
+<!-- 					<option value="3">注销（黑名单）</option> -->
 				</select>
 			</div>
 		</div> 

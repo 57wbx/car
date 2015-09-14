@@ -12,7 +12,7 @@ import com.hhxh.car.base.district.domain.BaseArea;
 import com.hhxh.car.base.district.domain.BaseCity;
 import com.hhxh.car.base.district.service.BaseAreaService;
 import com.hhxh.car.common.action.BaseAction;
-import com.hhxh.car.common.util.ErrorMessageException;
+import com.hhxh.car.common.exception.ErrorMessageException;
 import com.hhxh.car.common.util.JsonValueFilterConfig;
 import com.opensymphony.xwork2.ModelDriven;
 

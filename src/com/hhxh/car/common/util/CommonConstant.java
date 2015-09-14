@@ -30,6 +30,10 @@ public class CommonConstant
 	 * 用户登陆之后储存在session的key
 	 */
 	public static final String LOGIN_USER = "LOGIN_USER";
+	/**
+	 * 用户登陆之后保存的登陆日志
+	 */
+	public static final String LOGIN_LOG = "login_log" ;
 	
 	/**
 	 * 登陆

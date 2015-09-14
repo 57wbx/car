@@ -56,6 +56,16 @@
 			<tx:method name="update*" propagation="REQUIRED" rollback-for="java.lang.Throwable"/>
 		</tx:attributes>
 	</tx:advice>
+	
+	<aop:config >
+		<!-- 操作日志管理 -->
+		<aop:aspect id="logUtil" ref="logUtil">
+			<aop:pointcut id="log"  expression="execution ( * com.hhxh.car.*.service..save*(..)) or execution(* com.hhxh.car.*.service..add*(..)) or execution(* com.hhxh.car.*.service..update*(..)) or execution(* com.hhxh.car.*.service..delete*(..))
+												 or execution (* com.hhxh.car..service..save*(..)) or execution(* com.hhxh.car..service..add*(..)) or execution(* com.hhxh.car..service..update*(..)) or execution(* com.hhxh.car..service..delete*(..))"/>
+			<aop:around method="doAround" pointcut-ref="log"/>
+		</aop:aspect>
+	</aop:config>
+	
 	<aop:config>
 		<aop:pointcut id="allManagerMethodOne" expression="execution(* com.hhxh.car.*.service..*(..))" />
 		<aop:pointcut id="allManagerMethodTwo" expression="execution(* com.hhxh.car.*.*.service..*(..))" />
@@ -68,4 +78,8 @@
 		<aop:advisor pointcut-ref="allManagerMethodOne" advice-ref="txAdvice" />
 		<aop:advisor pointcut-ref="messageMethod" advice-ref="txAdvice" />
 	</aop:config>
+	
+	
+	
+	
 </beans>
