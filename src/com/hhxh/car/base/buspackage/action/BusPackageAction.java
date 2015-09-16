@@ -363,7 +363,7 @@ public class BusPackageAction extends BaseAction implements ModelDriven<BusPacka
 					String pushResult = push.pushAllNotify(pushMessage.getFtitle(), busPackage.getPackageDes(),customValue);
 					
 					log.debug("推送平台套餐返回的数据："+pushResult);
-					pushMessageService.addNotifyPushMessage(pushResult, pushMessage);
+					pushMessageService.addNotifyPushMessage( pushMessage,pushResult);
 					this.putJson();
 				}
 			}else{

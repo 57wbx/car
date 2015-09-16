@@ -25,7 +25,7 @@ public class PushMessageService extends BaseService
 	 * @param pushMessage  需要推送的消息数据
 	 * @throws Exception 
 	 */
-	public void addNotifyPushMessage(String pushResult,PushMessage pushMessage) throws Exception{
+	public void addNotifyPushMessage(PushMessage pushMessage,String pushResult) throws Exception{
 		String uuid = this.getUUID();//消息推送的id
 		pushMessage.setId(uuid);
 		this.dao.save(pushMessage);

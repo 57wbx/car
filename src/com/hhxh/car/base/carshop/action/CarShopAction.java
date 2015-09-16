@@ -447,7 +447,7 @@ public class CarShopAction extends BaseAction implements ModelDriven<CarShop>
 					String pushResult = push.pushAllNotify(pushMessage.getFtitle(), pushMessage.getFcontent(),customValue);
 					
 					log.debug("推送商铺返回的数据："+pushResult);
-					pushMessageService.addNotifyPushMessage(pushResult, pushMessage);
+					pushMessageService.addNotifyPushMessage(pushMessage,pushResult);
 					this.putJson();
 				}
 			}else{

@@ -157,10 +157,10 @@ public class ShopItemAction extends BaseAction implements ModelDriven<ShopItem>
 					{
 						if (eunitPrice instanceof java.lang.Integer)
 						{
-							ba.setEunitPrice(new BigDecimal((int) eunitPrice));
+							ba.setEunitPrice(new BigDecimal((Integer) eunitPrice));
 						} else if (eunitPrice instanceof java.lang.Double)
 						{
-							ba.setEunitPrice(new BigDecimal((double) eunitPrice));
+							ba.setEunitPrice(new BigDecimal((Double) eunitPrice));
 						}
 					}
 					ba.setMemo((String) m.get("memo"));
@@ -264,10 +264,10 @@ public class ShopItemAction extends BaseAction implements ModelDriven<ShopItem>
 				{
 					if (eunitPrice instanceof java.lang.Integer)
 					{
-						ba.setEunitPrice(new BigDecimal((int) eunitPrice));
+						ba.setEunitPrice(new BigDecimal((Integer) eunitPrice));
 					} else if (eunitPrice instanceof java.lang.Double)
 					{
-						ba.setEunitPrice(new BigDecimal((double) eunitPrice));
+						ba.setEunitPrice(new BigDecimal((Double) eunitPrice));
 					}
 				}
 				ba.setMemo((String) m.get("memo"));
@@ -475,11 +475,14 @@ public class ShopItemAction extends BaseAction implements ModelDriven<ShopItem>
 					Map<String,String> customValue = new HashMap<String,String>();
 					customValue.put("messageType", PushMessageState.FMESSAGETYPE_SHOPITEM.toString());
 					customValue.put("id", shopItem.getFid());
+					if(shopItem.getCarShop()!=null){
+						customValue.put("shopId",shopItem.getCarShop().getId());
+					}
 					
 					String pushResult = push.pushAllNotify(pushMessage.getFtitle(), shopItem.getItemDes(),customValue);
 					
 					log.debug("推送商家服务返回的数据："+pushResult);
-					pushMessageService.addNotifyPushMessage(pushResult, pushMessage);
+					pushMessageService.addNotifyPushMessage(pushMessage,pushResult);
 					this.putJson();
 				}
 			}else{

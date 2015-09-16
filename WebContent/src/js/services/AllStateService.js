@@ -378,4 +378,58 @@ factory("orderStateService",[function(){
 		getFdeviceType:getFdeviceType,
 		getFuseState:getFuseState
 	};
+}]).factory("operatorLogStateService",['commonGetStateUtilService',function(commonGetStateUtilService){
+	var operationType = {
+			//1新增 2删除 3修改
+			1:"新增",2:"删除",3:"修改"
+	};
+	var objName = {
+			"AutoPart":"配件",
+			"BusAtom":"服务子项",
+			"BusItem":"平台服务",
+			"BusItemImg":"平台服务图片",
+			"BusPackage":"平台套餐",
+			"BusPackageImg":"平台套餐图片",
+			"BusType":"业务类型",
+			"Car":"车型",
+			"CarName":"车品牌",
+			"CarShop":"商铺",
+			"CarShopImg":"商铺图片",
+			"ShopBlackList":"商铺黑名单",
+			"BaseProvince":"省",
+			"BaseCity":"市",
+			"BaseArea":"区域",
+			"Member":"会员或师傅",
+			"WorkerBlackList":"师傅黑名单",
+			"Complain":"投诉",
+			"HotWord":"热门词汇",
+			"Order":"订单",
+			"OrderTrack":"订单跟踪",
+			"Position":"职位",
+			"AdminOrgUnit":"组织",
+			"Person":"员工",
+			"MainMenuItem":"菜单",
+			"PermItem":"菜单",
+			"Role":"角色",
+			"User":"用户",
+			"ShopAtom":"商家服务子项",
+			"ShopItem":"商家服务",
+			"ShopItemImg":"商家服务图片",
+			"ShopPackage":"商家套餐",
+			"ShopPackageImg":"商家套餐图片",
+			"Advertisement":"广告",
+			"AppCase":"应用",
+			"PushMessage":"推送消息",
+			"UpdateVersion":"APP版本"
+	}
+	function getOperationType(param){
+		return commonGetStateUtilService.get(param,operationType);
+	}
+	function getObjName(param){
+		return commonGetStateUtilService.get(param,objName);
+	}
+	return {
+		getOperationType:getOperationType,
+		getObjName:getObjName
+	}
 }]);

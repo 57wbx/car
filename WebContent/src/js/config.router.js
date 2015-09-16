@@ -1644,7 +1644,37 @@ angular.module('app').run(
 																																		                }
 																																		              ]
 																																		            }
-																																			      })
+																																			      }).state('app.log', {
+																																			            url: '/log',
+																																			            templateUrl: 'src/tpl/sys/log/log.html',
+																																			            resolve: {
+																																			              deps: ['$ocLazyLoad', 'uiLoad',
+																																			                function($ocLazyLoad, uiLoad) {
+																																			                    return $ocLazyLoad.load('src/js/controllers/sys/log/LogController.js');
+																																			                }
+																																			              ]
+																																			            }
+																																				      }).state('app.log.login', {
+																																				            url: '/login',
+																																				            templateUrl: 'src/tpl/sys/log/log_login.html',
+																																				            resolve: {
+																																				              deps: ['$ocLazyLoad', 'uiLoad',
+																																				                function($ocLazyLoad, uiLoad) {
+																																				                    return $ocLazyLoad.load('src/js/controllers/sys/log/LoginLogController.js');
+																																				                }
+																																				              ]
+																																				            }
+																																					      }).state('app.log.operator', {
+																																					            url: '/operator',
+																																					            templateUrl: 'src/tpl/sys/log/log_operator.html',
+																																					            resolve: {
+																																					              deps: ['$ocLazyLoad', 'uiLoad',
+																																					                function($ocLazyLoad, uiLoad) {
+																																					                    return $ocLazyLoad.load('src/js/controllers/sys/log/OperatorLogController.js');
+																																					                }
+																																					              ]
+																																					            }
+																																						      })
 	      // form
       // form
       .state('app.form', {

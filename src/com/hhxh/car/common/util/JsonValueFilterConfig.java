@@ -161,4 +161,12 @@ public class JsonValueFilterConfig {
 	 * pushMessage 推送消息需要过滤掉的数据
 	 */
 	public static final String[] PUSHMESSAGE_HAS_PUSHMESSAGEPART = new String[]{"pushMessage","createUser",HIBERNATE_LAZY_PROPERTISE_HANDLER,HIBERNATE_LAZY_PROPERTISE_LAZYINITIALIZER};
+	/**
+	 * LoginLog 登陆日志需要过滤的数据
+	 */
+	public static final String[]  LOGINLOG_ONLY_LOGINLOG = new String[]{"user",HIBERNATE_LAZY_PROPERTISE_HANDLER,HIBERNATE_LAZY_PROPERTISE_LAZYINITIALIZER};
+	/**
+	 * operatorLog 操作日志需要过滤的数据
+	 */
+	public static final String[] OPERATORLOG_ONLY_OPERATORLOG = new String[]{"operator",HIBERNATE_LAZY_PROPERTISE_HANDLER,HIBERNATE_LAZY_PROPERTISE_LAZYINITIALIZER};
 }

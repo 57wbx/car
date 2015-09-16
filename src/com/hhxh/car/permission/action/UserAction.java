@@ -515,10 +515,6 @@ public class UserAction extends BaseAction {
 		}
 	}
 	
-	public void test() throws ErrorMessageException {
-		System.out.println("test");
-		throw new ErrorMessageException("sdfsfsdfsdf");
-	}
 
 	public String getNumber() {
 		return number;

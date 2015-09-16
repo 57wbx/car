@@ -409,11 +409,14 @@ public class ShopPackageAction extends BaseAction implements ModelDriven<ShopPac
 					Map<String, String> customValue = new HashMap<String, String>();
 					customValue.put("messageType", PushMessageState.FMESSAGETYPE_SHOPPACKAGE.toString());
 					customValue.put("id", shopPackage.getFid());
+					if(shopPackage.getCarShop()!=null){
+						customValue.put("shopId",shopPackage.getCarShop().getId());
+					}
 
 					String pushResult = push.pushAllNotify(pushMessage.getFtitle(), shopPackage.getPackageDes(), customValue);
 
 					log.debug("推送商家套餐返回的数据：" + pushResult);
-					pushMessageService.addNotifyPushMessage(pushResult, pushMessage);
+					pushMessageService.addNotifyPushMessage(pushMessage,pushResult);
 					this.putJson();
 				}
 			} else

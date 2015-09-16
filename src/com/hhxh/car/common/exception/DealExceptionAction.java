@@ -27,6 +27,7 @@ public class DealExceptionAction  extends BaseAction
 			log.info("struts机制获取异常，在这里进行输出错误信息操作,并记录日志");
 			Exception ex = (Exception) ActionContext.getContext() .getValueStack().findValue("exception"); 
 			addErrorLog(ex);
+			log.error("系统出错", ex);
 			if(ex instanceof ErrorMessageException){
 				this.putJson(false, ex.getMessage());
 			}else{
@@ -59,6 +60,7 @@ public class DealExceptionAction  extends BaseAction
 		}
 		errorLog.setOperationTime(new Date());
 		this.baseService.saveObject(errorLog);
+		
 	}
 	
 }

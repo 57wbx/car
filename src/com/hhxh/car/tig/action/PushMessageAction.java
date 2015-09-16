@@ -79,7 +79,7 @@ public class PushMessageAction extends BaseAction implements ModelDriven<PushMes
 			}
 			String jsonStr = push.pushAllNotify(pushMessage.getFtitle(), pushMessage.getFcontent(), null, null, this.pushMessage.getFdeviceType(), this.pushMessage.getFexpiresTime(), sendTime);
 			log.debug("推送返回的json数据为：" + jsonStr);
-			pushMessageService.addNotifyPushMessage(jsonStr, pushMessage);
+			pushMessageService.addNotifyPushMessage(pushMessage,jsonStr);
 			this.putJson();
 		} catch (PushException e)
 		{

@@ -172,10 +172,10 @@ public class BusItemAction extends BaseAction implements ModelDriven<BusItem>
 				{
 					if (eunitPrice instanceof java.lang.Integer)
 					{
-						ba.setEunitPrice(new BigDecimal((int) eunitPrice));
+						ba.setEunitPrice(new BigDecimal((Integer) eunitPrice));
 					} else if (eunitPrice instanceof java.lang.Double)
 					{
-						ba.setEunitPrice(new BigDecimal((double) eunitPrice));
+						ba.setEunitPrice(new BigDecimal((Double) eunitPrice));
 
 					}
 				}
@@ -248,10 +248,10 @@ public class BusItemAction extends BaseAction implements ModelDriven<BusItem>
 				{
 					if (eunitPrice instanceof java.lang.Integer)
 					{
-						ba.setEunitPrice(new BigDecimal((int) eunitPrice));
+						ba.setEunitPrice(new BigDecimal((Integer) eunitPrice));
 					} else if (eunitPrice instanceof java.lang.Double)
 					{
-						ba.setEunitPrice(new BigDecimal((double) eunitPrice));
+						ba.setEunitPrice(new BigDecimal((Double) eunitPrice));
 					}
 				}
 				ba.setMemo((String) m.get("memo"));
@@ -485,7 +485,7 @@ public class BusItemAction extends BaseAction implements ModelDriven<BusItem>
 					String pushResult = push.pushAllNotify(pushMessage.getFtitle(), busItem.getItemDes(),customValue);
 					
 					log.debug("推送平台服务返回的数据："+pushResult);
-					pushMessageService.addNotifyPushMessage(pushResult, pushMessage);
+					pushMessageService.addNotifyPushMessage(pushMessage,pushResult);
 					this.putJson();
 				}
 			}else{
