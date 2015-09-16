@@ -1,37 +1,46 @@
 'use strict';
 
-app.controller('autoPartController', ['$rootScope','$scope','$state','$timeout','roleBtnService',function($rootScope, $scope, $state, $timeout,roleBtnService) {
+app.controller('autoPartController', ['$rootScope','$scope','$state','$timeout','roleBtnService','sessionStorageService',function($rootScope, $scope, $state, $timeout,roleBtnService,sessionStorageService) {
 	
 	var roleBtnUiClass = "app.autopart.";//用于后台查找按钮权限
 	roleBtnService.getRoleBtnService(roleBtnUiClass,$scope);
 
-  $scope.click = function(){};
+	$scope.rowIds = [];
+	
+	/**
+	 * 在session中不能清除的内容，应该包含子缓存对象
+	 */
+	$scope.session = {};
+	$scope.session.cacheArray = ["autoPartListDataTableProperties","autoPartIdForEdit","autoPartIdForDetails"];
+	sessionStorageService.clearNoCacheItem($scope.session.cacheArray);
+	
+	/**
+	 * 清空需要操作的id，主要是在busAtomListController中调用
+	 */
+	$scope.clearRowIds = function(){
+		$scope.rowIds = [];
+		$scope.setBtnStatus();
+	}
 
-  var status_false = {
-    only : false,
-    single : true,
-    locked : true,
-    mutiple : true
-  };
+  $scope.search ={};
+	
+	$scope.state = {
+			add:"app.autopart.add",
+			edit:"app.autopart.edit" ,
+			details:"app.autopart.details",
+			list:"app.autopart.list"
+	}
 
-  var status = {
-    only : false,
-    single : true,
-    locked : true,
-    mutiple : true
-  };
 
   // 添加组织（工具栏按钮）
   $scope.addAutoPart = function(){
     $rootScope.details = {};
-    setStatus(status_false);
-    $state.go('app.autopart.add');
+    $state.go($scope.state.add);
   };
 
   // 编辑某一组织（工具栏按钮）
   $scope.editAutoPart = function(){
-	  setStatus(status_false);
-	  $state.go('app.autopart.edit');
+	  $state.go($scope.state.edit);
   };   
 
   var mask = $('<div class="mask"></div>');
@@ -59,58 +68,54 @@ app.controller('autoPartController', ['$rootScope','$scope','$state','$timeout',
     };
   };
 
-  // 执行操作
-  $rootScope.do = function(){
-    doIt();
-  };
-
-  // 模态框退出
-  $rootScope.cancel = function(){
-    mask.remove();
-    container.addClass('none');
-  };  
-
-  // 不操作返回
-  $scope.return = function(){
-    $rootScope.ids = [];
-    setStatus(status);
-    window.history.back();
-  };  
-
-  // 查看某一组织详情（工具栏按钮）
+  /// 查看某一组织详情（工具栏按钮）
   $scope.seeDetails = function(id){
-    setStatus(status_false);
-    $state.go('app.autopart.details');
-  };
+	    if(id){
+	    	$scope.rowIds.push(id);
+	    }
+	    $state.go($scope.state.details);
+	  };
 
-  // 设置按钮的状态值
-  $scope.setBtnStatus = function(){
-    if($scope.ids.length === 0){
-      $scope.only = false;
-      $scope.single = true;
-      $scope.locked = true;
-      $scope.mutiple = true;
-    }else if($scope.ids.length === 1){
-      $scope.only = false;
-      $scope.single = false;
-      $scope.locked = false;
-      $scope.mutiple = false;
-    }else{
-      $scope.only = false;
-      $scope.single = true;
-      $scope.locked = true;
-      $scope.mutiple = false;
-    }
-    hButton.trigger('click'); // 触发一次点击事件，使所以按钮的状态值生效
-  };
+	  // 设置按钮的状态值
+	  $scope.setBtnStatus = function(){
+		  console.info("设置按钮",$scope.rowIds);
+	    if($scope.rowIds.length === 0){
+	      $scope.single = true;
+	      $scope.locked = true;
+	      $scope.mutiple = true;
+	    }else if($scope.rowIds.length === 1){
+	      $scope.single = false;
+	      $scope.locked = false;
+	      $scope.mutiple = false;
+	    }else{
+	      $scope.single = true;
+	      $scope.locked = true;
+	      $scope.mutiple = false;
+	    }
 
-  function setStatus(param){
-    if(param){
-      $scope.only = param.only,
-      $scope.single = param.single,
-      $scope.locked = param.locked,
-      $scope.mutiple = param.mutiple
-    }
-  }
+	    $scope.$evalAsync();
+	  };
+	  
+	  /**
+	   * 用户输入框提示信息
+	   */
+	  $scope.message = {
+			  partCode:{
+				  pattern:"编号只能为数字、字母和点的组成"
+			  },
+			  sunitPrice:{
+				  pattern:"出厂价格最多只能带两位小数"
+			  },
+			  yunitPrice:{
+				  pattern:"优惠价格最多只能带两位小数"
+			  },
+			  eunitPrice:{
+				  pattern:"市场价格最多只能带两位小数"
+			  },
+			  stock:{
+				  pattern:"库存数只能为整数"
+			  }
+	  }
+	  
 
 }]);

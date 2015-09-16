@@ -3,33 +3,34 @@
     添加配件信息
   </div>
   <div class="panel-body">
-    <form name="form" class="form-horizontal form-validation" method="get" ng-model="formData" novalidate>
+    <form name="form" class="form-horizontal form-validation" method="post" ng-model="formData" novalidate>
+    
       <div class="form-group">
       
-     	<label class="col-sm-1 control-label">业务类型<i class="fa fa-asterisk text-danger"></i></label>
-        <div class="col-sm-2">
-          <input type="text" placeholder="业务类型" id="busTypeName" class="form-control" ng-model="formData.busTypeName"  required disabled>
-          <div bus_type_ztree inputName="busTypeName" showElement="choseBusType" needClick="true"></div>
-        </div>
-	     <div class="col-sm-1">
-	          <button type="button" class="btn btn-info" id="choseBusType">选择</button>
-	     </div>
+	     	<label class="col-sm-1 control-label">业务类型<i class="fa fa-asterisk text-danger"></i></label>
+	        <div class="col-sm-2">
+		          <input type="text" placeholder="业务类型" id="busTypeName" class="form-control" ng-model="formData.busTypeName"  required disabled>
+		          <div bus_type_ztree inputName="busTypeName" showElement="choseBusType" needClick="true"></div>
+	        </div>
+		<div class="col-sm-1">
+		          <button type="button" class="btn btn-info" id="choseBusType">选择</button>
+		</div>
 			     
-        <label class="col-sm-1 control-label">编号<i class="fa fa-asterisk text-danger"></i></label>
-        <div class="col-sm-3">
-        	<div class="input-group">
-	       		<div class="input-group-addon"><span ng-bind="formData.busTypeCode"></span></div>
-	            <input type="text" name="partCode" id="partCode" placeholder="+编号（仓库）" class="form-control" ng-model="formData.partCode" ng-pattern="/^[0-9a-zA-z\.]{1,40}$/" required >
-	            <div class="input-group-addon" ng-show="!partCodeIsUnique" style="background:red;"><span ng-bind="notUniqueMessage"></span></div>
-        	</div>
-        </div>
+	        <label class="col-sm-1 control-label">编号<i class="fa fa-asterisk text-danger"></i></label>
+	        <div class="col-sm-3">
+	        	<div class="input-group">
+		       		<div class="input-group-addon"><span ng-bind="formData.busTypeCode"></span></div>
+		                <input type="text" name="partCode" id="partCode" placeholder="+编号（仓库）" class="form-control" ng-model="formData.partCode" maxlength="10" ng-pattern="/^[0-9a-zA-z\.]{1,40}$/" required >
+		                <div class="input-group-addon" ng-show="!partCodeIsUnique" style="background:red;"><span ng-bind="notUniqueMessage"></span></div>
+	        	</div>
+	        	<div pattern-style form-input="form.partCode"  input-message="message.partCode" ></div>
+	        </div>
         
-        <label class="col-sm-1 control-label">名称<i class="fa fa-asterisk text-danger"></i></label>
-        <div class="col-sm-3">
-          <input type="text" placeholder="名称"  class="form-control" ng-model="formData.partName" required>
-        </div>
-        
-        
+	        <label class="col-sm-1 control-label">名称<i class="fa fa-asterisk text-danger"></i></label>
+	        <div class="col-sm-3">
+	          	<input name="partName" type="text" placeholder="名称"  class="form-control" ng-model="formData.partName" required maxlength="25" >
+	          	<div pattern-style form-input="form.partName"  input-message="message.partName" ></div>
+	        </div>
         
       </div>
       
@@ -37,90 +38,94 @@
       	
 	       <label class="col-sm-1 control-label">品牌</label>
 	        <div class="col-sm-3">
-	          <input type="text" placeholder="品牌" class="form-control" ng-model="formData.brandName">
+	          	<input name="brandName" type="text" placeholder="品牌" class="form-control" ng-model="formData.brandName" maxlength="25">
+	          	<div pattern-style form-input="form.brandName"  input-message="message.brandName" ></div>
 	        </div>
       
-        <label class="col-sm-1 control-label">规格</label>
-        <div class="col-sm-3">
-          <input type="text" placeholder="规格" class="form-control" ng-model="formData.spec">
-        </div>
+	        <label class="col-sm-1 control-label">规格</label>
+	        <div class="col-sm-3">
+	          	<input name="spec" type="text" placeholder="规格" class="form-control" ng-model="formData.spec" maxlength="25">
+	          	<div pattern-style form-input="form.spec"  input-message="message.spec" ></div>
+	        </div>
         
-        <label class="col-sm-1 control-label">出厂价格</label>
-        <div class="col-sm-3">
-          <input type="number" placeholder="出厂价格" class="form-control" ng-model="formData.sunitPrice">
-        </div>
-        
-       
+	        <label class="col-sm-1 control-label">出厂价格</label>
+	        <div class="col-sm-3">
+	          	<input name="sunitPrice" type="number" placeholder="出厂价格" class="form-control" ng-model="formData.sunitPrice" min="0" ng-pattern="/^[0-9]+(\.[0-9]{1,2})?$/" >
+	          	<div pattern-style form-input="form.sunitPrice"  input-message="message.sunitPrice" ></div>
+	        </div>
         
       </div>
       
       
       <div class="form-group">
-        <label class="col-sm-1 control-label">优惠价格</label>
-        <div class="col-sm-3">
-          <input type="number" placeholder="优惠价格" class="form-control" ng-model="formData.yunitPrice" >
-        </div>
+	        <label class="col-sm-1 control-label">优惠价格</label>
+	        <div class="col-sm-3">
+	          	<input name="yunitPrice" type="number" placeholder="优惠价格" class="form-control" ng-model="formData.yunitPrice" min="0" ng-pattern="/^[0-9]+(\.[0-9]{1,2})?$/" >
+	          	<div pattern-style form-input="form.yunitPrice"  input-message="message.yunitPrice" ></div>
+	        </div>
         
-          <label class="col-sm-1 control-label">市场价格<i class="fa fa-asterisk text-danger"></i></label>
-        <div class="col-sm-3">
-          <input type="nubmer" placeholder="市场价格" class="form-control" ng-model="formData.eunitPrice" required>
-        </div>
+	        <label class="col-sm-1 control-label">市场价格<i class="fa fa-asterisk text-danger"></i></label>
+	        <div class="col-sm-3">
+	          	<input name="eunitPrice" type="number" placeholder="市场价格" class="form-control" ng-model="formData.eunitPrice" required  min="0" ng-pattern="/^[0-9]+(\.[0-9]{1,2})?$/">
+	          	<div pattern-style form-input="form.eunitPrice"  input-message="message.eunitPrice" ></div>
+	        </div>
         
-        <label class="col-sm-1 control-label">使用状态<i class="fa fa-asterisk text-danger"></i></label>
-        <div class="col-sm-3">
-          <select id="useState" class="form-control" required ng-model="formData.useState">
-          	<!-- 0=初始化、1=待审核、2=发布（审核通过）、3=停止/下架、4=强制下架（违规） -->
-            <option value="0">初始化</option>
-            <option value="1">待审核</option>
-            <option value="2">发布（审核通过）</option>
-            <option value="3">停止/下架</option>
-            <option value="4">强制下架（违规）</option>
-          </select>
-        </div>
-        
-        
+	        <label class="col-sm-1 control-label">使用状态<i class="fa fa-asterisk text-danger"></i></label>
+	        <div class="col-sm-3">
+		          <select id="useState" class="form-control" required ng-model="formData.useState">
+		          	<!-- 0=初始化、1=待审核、2=发布（审核通过）、3=停止/下架、4=强制下架（违规） -->
+			            <option value="0">初始化</option>
+			            <option value="1">待审核</option>
+			            <option value="2">发布（审核通过）</option>
+			            <option value="3">停止/下架</option>
+			            <option value="4">强制下架（违规）</option>
+		          </select>
+	        </div>
         
       </div>
       
       <div class="form-group">
       
-      	<label class="col-sm-1 control-label">是否参与聚会<i class="fa fa-asterisk text-danger"></i></label>
-        <div class="col-sm-3">
-          <select id="isActivity" class="form-control" required ng-model="formData.isActivity">
-          	<!-- 0=不参加（默认），1=参加 -->
-            <option value="0">不参加</option>
-            <option value="1">参加</option>
-          </select>
-        </div>
+	      	<label class="col-sm-1 control-label">是否参与聚会<i class="fa fa-asterisk text-danger"></i></label>
+	        <div class="col-sm-3">
+		          <select id="isActivity" class="form-control" required ng-model="formData.isActivity">
+		          	<!-- 0=不参加（默认），1=参加 -->
+			            <option value="0">不参加</option>
+			            <option value="1">参加</option>
+		          </select>
+	        </div>
       
-        <label class="col-sm-1 control-label">库存数</label>
-        <div class="col-sm-3">
-          <input type="text" placeholder="库存数" class="form-control" ng-model="formData.stock" ng-pattern="/^[1-9][0-9]{0,7}$/">
-        </div>
+	        <label class="col-sm-1 control-label">库存数</label>
+	        <div class="col-sm-3">
+	          	<input type="number" name="stock" placeholder="库存数" class="form-control" ng-model="formData.stock" min="0" max="100000000" ng-pattern="/^[0-9]{0,8}$/">
+	          	<div pattern-style form-input="form.stock"  input-message="message.stock" ></div>
+	        </div>
         
-       	 <label class="col-sm-1 control-label">来源</label>
-        <div class="col-sm-3">
-          <input type="text" placeholder="来源" class="form-control" ng-model="formData.partSource" ng-maxlength="100">
-        </div>
+	       	<label class="col-sm-1 control-label">来源</label>
+	        <div class="col-sm-3">
+	          	<input type="text" placeholder="来源" class="form-control" ng-model="formData.partSource" ng-maxlength="100">
+	        </div>
         
       </div>
      
       <div class="form-group">
-        <label class="col-sm-1 control-label">备注</label>
-        <div class="col-sm-11">
-          <textarea placeholder="备注" class="form-control" ng-model="formData.memo" ng-maxlength="100"></textarea>
-        </div>
+	        <label class="col-sm-1 control-label">备注</label>
+	        <div class="col-sm-11">
+	          	<textarea placeholder="备注" class="form-control" ng-model="formData.memo" ng-maxlength="100"></textarea>
+	        </div>
       </div>
       
       <div class="line line-dashed b-b line-lg pull-in"></div>
+      
       <div class="form-group">
-        <div class="col-sm-offset-4 col-sm-2 col-xs-6">
-          <button type="button" id="add" class="w100 btn btn-success" ng-click="submit()" ng-disabled='form.$invalid || !partCodeIsUnique'>确定</button>
-        </div>
-        <div class="col-sm-2 col-xs-6">
-          <a ng-click="cancel()" class="w100 btn btn-default">取消</a>
-        </div>
+	        <div class="col-sm-offset-4 col-sm-2 col-xs-6">
+	          	<button type="button" id="add" class="w100 btn btn-success" ng-click="submit()" ng-disabled='form.$invalid || !partCodeIsUnique'>确定</button>
+	        </div>
+	        <div class="col-sm-2 col-xs-6">
+	          	<a ng-click="cancel()" class="w100 btn btn-default">取消</a>
+	        </div>
       </div>
+      
     </form>
   </div>
 </div>

@@ -199,7 +199,7 @@
 			      <div class="form-group">
 				         <label class="col-sm-2 control-label">配件数<i class="fa fa-asterisk text-danger"></i></label>
 				        <div class="col-sm-4">
-				          	<input type="number" name="autoParts" min="0" max="100000" placeholder="配件数" class="form-control" ng-model="formData.autoParts" required ng-pattern="/^[1-9][0-9]{0,8}$/">
+				          	<input type="number" name="autoParts" min="0" max="100000" placeholder="配件数" class="form-control" ng-model="formData.autoParts" required ng-pattern="/^[0-9]{0,8}$/">
 				          	<div pattern-style form-input="busAtomForm.autoParts"  input-message="message.autoParts" ></div>
 				        </div>
 				        

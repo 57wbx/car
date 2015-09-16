@@ -1,9 +1,20 @@
 'use strict';
-app.controller('autoPartDetailsController', ['$scope','$rootScope', '$state','$http', 'uiLoad','JQ_CONFIG',
-  function($scope, $rootScope,$state,$http ,uiLoad, JQ_CONFIG) {
-    uiLoad.load(JQ_CONFIG.dataTable);
+app.controller('autoPartDetailsController', ['$scope','$rootScope', '$state','$http', 'sessionStorageService',
+  function($scope, $rootScope,$state,$http,sessionStorageService) {
     
     $scope.treeAPI.hiddenBusTypeTree();
+    
+    $scope.needCacheArray = ["autoPartListDataTableProperties","autoPartIdForDetails"];
+	sessionStorageService.clearNoCacheItem($scope.needCacheArray);
+	if($scope.rowIds[0]){
+		sessionStorageService.setItem("autoPartIdForDetails",$scope.rowIds[0]);
+	}else{
+		$scope.rowIds[0]  = sessionStorageService.getItemStr("autoPartIdForDetails");
+	}
+	
+	if(!$scope.rowIds[0]||$scope.rowIds[0]==""){
+		$state.go($scope.state.list);//返回到列表界面
+	}
     
     //调用初始化方法
     initData();
@@ -12,13 +23,10 @@ app.controller('autoPartDetailsController', ['$scope','$rootScope', '$state','$h
      */
     //初始化数据方法
     function initData(){
-    	if(!$rootScope.details || !$rootScope.details.id){
-    		$state.go("app.autopart.list");
-    	}
     	$http({
     		url:"base/autoPartAction!detailsAutoPartById.action",
     		data:{
-    			id : $rootScope.details.id
+    			id : $scope.rowIds[0]
     		},
     		method:"post"
     	}).then(function(resp){
@@ -27,7 +35,7 @@ app.controller('autoPartDetailsController', ['$scope','$rootScope', '$state','$h
     			$scope.formData = resp.data.details ;
     		}else{
     			alert(resp.data.message);
-    			$state.go("app.autopart.list");
+    			$state.go($scope.state.list);
     		}
     	});
     }
@@ -47,7 +55,7 @@ app.controller('autoPartDetailsController', ['$scope','$rootScope', '$state','$h
     	}).then(function(resp){
     		var code = resp.data.code ;//服务器返回的数据
     		if(code==1){//成功的代码
-    			$state.go("app.autopart.list");
+    			$state.go($scope.state.list);
     		}else{//不成功
     			alert(resp.data.message);
     			return ;
@@ -57,10 +65,10 @@ app.controller('autoPartDetailsController', ['$scope','$rootScope', '$state','$h
     
     //取消方法
     $scope.cancel = function(){
-    	$state.go("app.autopart.list");
+    	$state.go($scope.state.list);
     }
     
-    
+    $scope.clearRowIds();
     
 }
 ]);

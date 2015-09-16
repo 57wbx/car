@@ -1,12 +1,12 @@
 'use strict';
-app.controller('autoPartAddController', ['$scope', '$state','$http', 'uiLoad','JQ_CONFIG','checkUniqueService'
-  ,function($scope, $state,$http ,uiLoad, JQ_CONFIG,checkUniqueService) {
-    uiLoad.load(JQ_CONFIG.dataTable);
+app.controller('autoPartAddController', ['$scope', '$state','$http','checkUniqueService'
+  ,function($scope, $state,$http ,checkUniqueService) {
     
     $scope.treeAPI.hiddenBusTypeTree();
     
     $scope.formData = {};
     
+    defaultFormData();
     /*
      * 页面方法api 
      */
@@ -47,7 +47,7 @@ app.controller('autoPartAddController', ['$scope', '$state','$http', 'uiLoad','J
     	}).then(function(resp){
     		var code = resp.data.code ;//服务器返回的数据
     		if(code==1){//成功的代码
-    			$state.go("app.autopart.list");
+    			$state.go($scope.state.list);
     		}else{//不成功
     			alert(resp.data.message);
     			return ;
@@ -57,10 +57,20 @@ app.controller('autoPartAddController', ['$scope', '$state','$http', 'uiLoad','J
     
     //取消方法
     $scope.cancel = function(){
-    	$state.go("app.autopart.list");
+    	$state.go($scope.state.list);
     }
     
     
+    /**
+     * 数据新增的默认值
+     */
+    function defaultFormData(){
+    	$scope.formData.sunitPrice = 0;
+    	$scope.formData.yunitPrice = 0;
+    	$scope.formData.eunitPrice = 0;
+    	$scope.formData.useState = 0;
+    	$scope.formData.isActivity = 0;
+    	$scope.formData.stock = 0;
+    }
     
-}
-]);
+}]);

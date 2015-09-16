@@ -1,33 +1,24 @@
 'use strict';
-app.controller('autoPartListController', ['$rootScope','$scope','$state','$timeout','utils'
-,function($rootScope, $scope, $state,$timeout, utils) {
+app.controller('autoPartListController', ['$rootScope','$scope','$state','$timeout','utils','dataTableSearchService','sessionStorageService'
+,function($rootScope, $scope, $state,$timeout, utils,dataTableSearchService,sessionStorageService) {
 	
-	$timeout(function(){
-		//等待页面加载
-		initTable();
-	},10);
+	$scope.search = {};
 	
+	var isF5 = true ;
+	$scope.autoPartListDataTableProperties = null;
+	$scope.needCacheArray = ["autoPartListDataTableProperties"];
+	sessionStorageService.clearNoCacheItem($scope.needCacheArray);
+	$scope.autoPartListDataTableProperties  = sessionStorageService.getItemObj("autoPartListDataTableProperties");
+	
+	$scope.setAutoPartListDataTableProperties = function(obj){
+		$scope.autoPartListDataTableProperties = obj;
+		sessionStorageService.setItem("autoPartListDataTableProperties",obj);
+	}
+	
+	
+	$scope.$evalAsync(initTable);
 	
 	var data = null;
-//  $scope.init = function(){
-	  
-	  /**
-	   * 删除这段代码angularjs会报错 虽然在这里的远程获取数据并没有什么用
-	   * base/autoPartAction!listAutoPart.action?iDisplayStart=0&iDisplayLength=10
-	   * 
-	   * 2015.7.14 用timeout延迟加载解决该报错的问题
-	   */
-////    utils.getData("base/busTypeAction!listBusType.action", function callback(dt){
-//    	
-//      if(dTable){
-//        dTable.fnDestroy();
-//        initTable();
-//      }else{
-//        initTable();
-//      }
-////    });
-//  };
-//  $scope.init();
  
 	$scope.treeAPI.showBusTypeTree();
 	/**
@@ -42,122 +33,38 @@ app.controller('autoPartListController', ['$rootScope','$scope','$state','$timeo
 	}
 	
 
- 
-
-  //var ids = [], obj;
-  $rootScope.ids = [], $rootScope.obj;
-
-  function clicked(target, that){
-    var classname = 'rowSelected', id;
-
-    target.click(function(e){
-      var evt = e || window.event;
-      //evt.preventDefault();
-      evt.stopPropagation();
-      if(!that){
-        that = $(this).parents('tr');
-      }
-
-//      $rootScope.details = $rootScope.obj = app.utils.getDataByKey(data, 'id', that.data('id'));
-//      id = $rootScope.obj['id'];
-      id = that.data('id');
-      $rootScope.details = {
-    		  id:id
-      };
-      if(!$(this)[0].checked){
-        var idx = $rootScope.ids.indexOf(id);
-        if(idx !== -1 ) $rootScope.ids.splice(idx, 1);
-        //that.removeClass(classname);
-      }else{
-        $rootScope.ids.push(id);
-        //that.addClass(classname);
-      }
-      $scope.setBtnStatus();
-    });
-  }
-
   // 初始化表格 jQuery datatable
   var autoPartList, dTable;
   function initTable() {
 	autoPartList = $('#autoPartList');
     dTable = autoPartList.on('preXhr.dt', function ( e, settings, data ){
-		data.busTypeCode = $scope.busTypeTree.selectedTypeCode ;
+    	if(isF5){
+			isF5 = false ;
+			var oldData = sessionStorageService.getItemObj("autoPartListDataTableProperties"); 
+			if(oldData){
+				angular.copy(oldData,data);
+//				data = oldData ;
+				$scope.search.partName = data.partName ;
+				$scope.search.brandName = data.brandName ;
+				$scope.search.spec = data.spec ;
+				$scope.search.model = data.model ;
+				$scope.busTypeTree.selectedTypeCode = data.busTypeCode ;
+			}
+		}else{
+			data.partName = $scope.search.partName ;
+			data.brandName = $scope.search.brandName;
+			data.spec = $scope.search.spec;
+			data.busTypeCode = $scope.busTypeTree.selectedTypeCode ;
+			data.model = $scope.search.model ;
+			$scope.setAutoPartListDataTableProperties(data);
+		}
 	}).DataTable({
     	"sAjaxSource":"base/autoPartAction!listAutoPart.action",
     	"bServerSide":true,
     	"sAjaxDataProp":"data",
-      "oLanguage": {
-        "sLengthMenu": "每页 _MENU_ 条",
-        "sZeroRecords": "没有找到符合条件的数据",
-        "sProcessing": "&lt;img src=’./loading.gif’ /&gt;",
-        "sInfo": "当前第 _START_ - _END_ 条，共 _TOTAL_ 条",
-        "sInfoEmpty": "没有记录",
-        "sInfoFiltered": "(从 _MAX_ 条记录中过滤)",
-        "sSearch": "搜索",
-        "oPaginate": {
-          "sFirst": "<<",
-          "sPrevious": "<",
-          "sNext": ">",
-          "sLast": ">>"
-        }
-      },
-      "fnCreatedRow": function(nRow, aData, iDataIndex){
-    	  //初始化每一行的点击行为
-        $(nRow).attr('data-id', aData['id']);
-        $(nRow).dblclick(function(e, settings) {
-            $scope.seeDetails($(this).data('id'));
-        });
-        $(nRow).click(function(e) {
-            var evt = e || window.event;
-            var target = event.target || event.srcElement;
-
-            evt.preventDefault();
-            //evt.stopPropagation();
-            var ipt = $(this).find('.i-checks input');
-            clicked(ipt.off(), $(this));
-            ipt.trigger('click');
-            var input = autoPartList.find('thead .i-checks input');
-            var inputs = autoPartList.find('tbody .i-checks input');
-            var len = inputs.length, allChecked = true;
-            for(var i=0; i<len; i++){
-              if(!inputs.eq(i)[0].checked){
-                allChecked = false;
-                break;
-              }
-            }
-            if(allChecked){
-              input[0].checked = true;
-            }else{
-              input[0].checked = false;
-            }
-        })
-      },
-      "drawCallback": function( settings ) {
-        var input = autoPartList.find('thead .i-checks input');
-        var inputs = autoPartList.find('tbody .i-checks input');
-        var len = inputs.length, allChecked = true;
-        for(var i=0; i<len; i++){
-          if(!inputs.eq(i)[0].checked){
-            allChecked = false;
-            break;
-          }
-        }
-        if(allChecked){
-          input[0].checked = true;
-        }else{
-          input[0].checked = false;
-        }
-        
-        input.off().click(function(){
-          for(var i=0; i<len; i++){
-            if(!inputs.eq(i)[0].checked || !$(this)[0].checked){  
-              clicked(inputs.eq(i).off());
-              inputs.eq(i).trigger('click');
-            }
-          }
-        });
-      },
-      "aoColumns": [{
+    	 "dom": '<"top">rt<"bottom"ip><"clear">',
+    	 "sServerMethod": "POST",
+         "aoColumns": [{
         "orderable": false,
         "render": function(param){
           return '<label class="i-checks"><input type="checkbox"><i></i></label>';
@@ -216,12 +123,35 @@ app.controller('autoPartListController', ['$rootScope','$scope','$state','$timeo
     	"mDataProp":"partSource"  
       },{
     	"mDataProp":"memo"  
-      }]
+      }],
+      "fnCreatedRow": function(nRow, aData, iDataIndex){
+     	 //初始化每一行的点击行为
+         $(nRow).attr('data-id', aData['id']);
+         $(nRow).dblclick(function(e, settings) {
+             $scope.seeDetails($(this).data('id'));
+         });
+       },
+       "drawCallback": function( settings ) {
+    	   dataTableSearchService.initClick(dTable,$scope.rowIds,$scope.setBtnStatus,$scope.seeDetails);
+       }, "initComplete":function(settings,json){
+       	if( $scope.autoPartListDataTableProperties){
+    		var pageIndex = $scope.autoPartListDataTableProperties.iDisplayStart/$scope.autoPartListDataTableProperties.iDisplayLength;
+              dTable.page(pageIndex).draw(false);
+    	}
+    	initSearchDiv(settings,json);
+    }
     });
-    
   }
-
   
+//初始化搜索框
+	function initSearchDiv(settings,json){
+		dataTableSearchService.initSearch([
+			  {formDataName:'search.partName',placeholder:'配件名称'},
+			  {formDataName:'search.brandName',placeholder:'品牌'},
+			  {formDataName:'search.spec',placeholder:'规格'},
+			  {formDataName:'search.model',placeholder:'型号'}
+		],$scope,settings,dTable);
+	}
   
   
 }]);

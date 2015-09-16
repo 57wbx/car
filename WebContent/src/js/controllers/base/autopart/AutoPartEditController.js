@@ -1,10 +1,20 @@
 'use strict';
-app.controller('autoPartEditController', ['$scope','$rootScope', '$state','$http', 'uiLoad','JQ_CONFIG','checkUniqueService',
-  function($scope, $rootScope,$state,$http ,uiLoad, JQ_CONFIG,checkUniqueService) {
-    uiLoad.load(JQ_CONFIG.dataTable);
+app.controller('autoPartEditController', ['$scope','$rootScope', '$state','$http','checkUniqueService','sessionStorageService',
+  function($scope, $rootScope,$state,$http ,checkUniqueService,sessionStorageService) {
     
     $scope.treeAPI.hiddenBusTypeTree()
     
+	$scope.needCacheArray = ["autoPartListDataTableProperties","autoPartIdForEdit"];
+	sessionStorageService.clearNoCacheItem($scope.needCacheArray);
+	if($scope.rowIds[0]){
+		sessionStorageService.setItem("autoPartIdForEdit",$scope.rowIds[0]);
+	}else{
+		$scope.rowIds[0]  = sessionStorageService.getItemStr("autoPartIdForEdit");
+	}
+	
+	if(!$scope.rowIds[0]||$scope.rowIds[0]==""){
+		$state.go($scope.state.list);//返回到列表界面
+	}
     
     /**
 	 * 检测所需要保存的partCode是否唯一
@@ -39,15 +49,10 @@ app.controller('autoPartEditController', ['$scope','$rootScope', '$state','$http
      */
     //初始化数据方法
     function initData(){
-    	if(!$rootScope.details || !$rootScope.details.id){
-    		$state.go("app.autopart.list");
-    	}
-    	console.info("--------------------------");
-    	console.info($rootScope.details.id);
     	$http({
     		url:"base/autoPartAction!detailsAutoPartById.action",
     		data:{
-    			id : $rootScope.details.id
+    			id : $scope.rowIds[0]
     		},
     		method:"post"
     	}).then(function(resp){
@@ -56,13 +61,10 @@ app.controller('autoPartEditController', ['$scope','$rootScope', '$state','$http
     			$scope.formData = resp.data.details ;
     		}else{
     			alert(resp.data.message);
-    			$state.go("app.autopart.list");
+    			$state.go($scope.state.list);
     		}
     	});
     }
-    
-    
-    
     /*
      * 页面方法api 
      */
@@ -76,7 +78,7 @@ app.controller('autoPartEditController', ['$scope','$rootScope', '$state','$http
     	}).then(function(resp){
     		var code = resp.data.code ;//服务器返回的数据
     		if(code==1){//成功的代码
-    			$state.go("app.autopart.list");
+    			$state.go($scope.state.list);
     		}else{//不成功
     			alert(resp.data.message);
     			return ;
@@ -86,10 +88,8 @@ app.controller('autoPartEditController', ['$scope','$rootScope', '$state','$http
     
     //取消方法
     $scope.cancel = function(){
-    	$state.go("app.autopart.list");
+    	$state.go($scope.state.list);
     }
     
-    
-    
-}
-]);
+//结束controller
+}]);
