@@ -1,0 +1,49 @@
+<style>
+	.panel-body{
+		padding:0px;
+	}
+	.wrapper-md{
+		padding:0px;
+	}
+</style>
+<div class="modal-content">
+	<div class="modal-header">
+		
+		<button type="button" class="close" ng-click="cancel()"  aria-label="Close">
+			<span aria-hidden="true">&times;</span>
+		</button>
+		<h4 class="modal-title">选择配件</h4>
+	</div>
+      	<div class="modal-body">
+      		<div class="row">
+      			<div class="col-sm-3">
+      				<div bus_type_tree>
+					<abn-tree tree-data="tree_data" tree-control="org_tree"
+								on-select="tree_handler(branch)" expand-level="2"
+								initial-selection="" icon-leaf="icon-users"
+								icon-expand="fa fa-plus" icon-collapse="fa fa-minus">
+					</abn-tree>
+				</div>
+      			</div>
+      			<div class="col-sm-9">
+      			
+		      		<div class="table-responsive">
+			      		<table class="table table-striped b-t b-b" id="autoPartChooseTableModel">
+					      	<thead>
+					      		<tr>
+					      			<th>选择</th>
+			      					<th>配件名称</th>
+			      					<th>品牌</th>
+			      					<th>规格</th>
+			      					<th>型号</th>
+			      					<th>市场单价</th>
+			      					<th>是否参加聚会</th>
+					      		</tr>
+					      	</thead>
+				      	</table>
+		      		</div>
+		      		
+      			</div>
+      		</div>
+      </div>
+</div>

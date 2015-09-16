@@ -3,9 +3,18 @@ app.controller("shopItemAddController",['$scope','$state','$http','checkUniqueSe
 //	$scope.formData.fitemID  新增开始的时候需要从服务器中下载下来，以便于子项的操作
 	$scope.treeAPI.hiddenBusTypeTree();
 	
+	$scope.model.resultCallBack = function(aData){
+		clickTr(aData);
+	}
+	
 	$scope.formData = {};
+	defaultFormData($scope.formData);
 	$scope.busAtomData = [];//用来保存该服务项中的所有子项，用来显示在列表中，并在保存的时候提交到服务器端
 	$scope.formData.busAtomDataStr = "";//该对象是将busAtomData对象进行字符串化，以便于后台进行操作
+	/**
+	 * 初始化要填的数据
+	 */
+	
 	
 	//初始化选中的数据
 	$scope.setCanEdit(false);
@@ -53,31 +62,6 @@ app.controller("shopItemAddController",['$scope','$state','$http','checkUniqueSe
 		}
 	});
 	
-	//初始化时间控件
-	$('#starTime').focus(
-	    		function(){
-		    		var optionSet = {
-							singleDatePicker : true,
-							timePicker : true,
-							format : 'YYYY-MM-DD HH:mm'
-						};
-		    		$('#starTime').daterangepicker(optionSet).on('apply.daterangepicker', function(ev){
-		    			$scope.formData.starTimeStr=$('#starTime').val();
-		    		});
-	    		}
-	);
-	$('#endTime').focus(
-    		function(){
-	    		var optionSet = {
-						singleDatePicker : true,
-						timePicker : true,
-						format : 'YYYY-MM-DD HH:mm'
-					};
-	    		$('#endTime').daterangepicker(optionSet).on('apply.daterangepicker', function(ev){
-	    			$scope.formData.endTimeStr=$('#endTime').val();
-	    		});
-    		}
-	);
 	/**
 	 * 初始化文件上传控件
 	 */
@@ -379,18 +363,19 @@ app.controller("shopItemAddController",['$scope','$state','$http','checkUniqueSe
 	 * 子项配件的相关方法
 	 */
 	$scope.choose = function(){
-		if(!$scope.formData.chooseAutoPartButton){
-			$scope.formData.chooseAutoPartButton = true;
-			if(!autoPartChooseTable){
-				initAutoPartChooseTable();
-			}
-			$("#autoPartChooseTablePanel").removeClass("none");
-			$scope.formData.chooseAutoPartName = "关闭选择框";
-		}else{
-			$scope.formData.chooseAutoPartButton = false ;
-			$("#autoPartChooseTablePanel").addClass("none");
-			$scope.formData.chooseAutoPartName = "选择";
-		}
+		$scope.showModel();
+//		if(!$scope.formData.chooseAutoPartButton){
+//			$scope.formData.chooseAutoPartButton = true;
+//			if(!autoPartChooseTable){
+//				initAutoPartChooseTable();
+//			}
+//			$("#autoPartChooseTablePanel").removeClass("none");
+//			$scope.formData.chooseAutoPartName = "关闭选择框";
+//		}else{
+//			$scope.formData.chooseAutoPartButton = false ;
+//			$("#autoPartChooseTablePanel").addClass("none");
+//			$scope.formData.chooseAutoPartName = "选择";
+//		}
 	}
 	
 	/**
@@ -447,6 +432,7 @@ app.controller("shopItemAddController",['$scope','$state','$http','checkUniqueSe
 		});
 	}
 	
+	
 	/**
 	 * 点击一行触发的事件
 	 */
@@ -483,8 +469,10 @@ app.controller("shopItemAddController",['$scope','$state','$http','checkUniqueSe
 			}else{//代表保存失败
 				alert("保存失败");
 			}
+			$scope.isDoing = false ;
 		},function(resp){
 			alert("保存出错");
+			$scope.isDoing = false ;
 		});
 	}
 	
@@ -526,5 +514,18 @@ app.controller("shopItemAddController",['$scope','$state','$http','checkUniqueSe
 		$("#busItemSumbit").removeClass("none");
 	}
 	
+	/**
+	 * 初始化要填的默认数据
+	 */
+	function defaultFormData(formData){
+		if(formData){
+			formData.useState = 0 ;//初始化
+			formData.isActivity = 0 ; //不参加聚会
+			formData.standardPrice = 0; //标准价
+			formData.actualPrice = 0 ;//实际价
+			formData.workHours = 0 ; //工时费
+			formData.autoPartsPrice = 0 ;//配件合计价
+		}
+	}
 	
 }]);

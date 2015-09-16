@@ -4,6 +4,10 @@ app.controller("shopItemEditController",['$scope','$state','$http','checkUniqueS
 //	$scope.formData.fitemID  新增开始的时候需要从服务器中下载下来，以便于子项的操作
 	$scope.treeAPI.hiddenBusTypeTree();
 	
+	$scope.model.resultCallBack = function(aData){
+		clickTr(aData);
+	}
+	
 	$scope.needCacheArray = ["shopItemDataTableProperties","shopItemIdForEdit"];
 	sessionStorageService.clearNoCacheItem($scope.needCacheArray);
 	if($scope.rowIds[0]){
@@ -137,8 +141,8 @@ app.controller("shopItemEditController",['$scope','$state','$http','checkUniqueS
 		$scope.formData.chooseAutoPartName='选择';
 		$scope.formData.chooseAutoPartButton=false;
 		//时间控件需要进行dom操作渲染
-		$("#starTime").val(data.details.starTime);
-		$("#endTime").val(data.details.endTime);
+//		$("#starTime").val(data.details.starTime);
+//		$("#endTime").val(data.details.endTime);
 		$scope.formData.starTimeStr = data.details.starTime;
 		$scope.formData.endTimeStr = data.details.endTime;
 		/*
@@ -187,31 +191,6 @@ app.controller("shopItemEditController",['$scope','$state','$http','checkUniqueS
 	$scope.setCanEdit(false);
 	$scope.clearRowIds();
 	
-	//初始化时间控件
-	$('#starTime').focus(
-	    		function(){
-		    		var optionSet = {
-							singleDatePicker : true,
-							timePicker : true,
-							format : 'YYYY-MM-DD HH:mm'
-						};
-		    		$('#starTime').daterangepicker(optionSet).on('apply.daterangepicker', function(ev){
-		    			$scope.formData.starTimeStr=$('#starTime').val();
-		    		});
-	    		}
-	);
-	$('#endTime').focus(
-    		function(){
-	    		var optionSet = {
-						singleDatePicker : true,
-						timePicker : true,
-						format : 'YYYY-MM-DD HH:mm'
-					};
-	    		$('#endTime').daterangepicker(optionSet).on('apply.daterangepicker', function(ev){
-	    			$scope.formData.endTimeStr=$('#endTime').val();
-	    		});
-    		}
-	);
 	
 	/**
 	 * 初始化服务子项的datatables列表
@@ -366,6 +345,8 @@ app.controller("shopItemEditController",['$scope','$state','$http','checkUniqueS
 			//修改记录的方法
 			//1、现将form中的数据更新到该缓存对象中，保证fid不能被更新
 			$scope.getUpdateBusAtom();
+			//对服务表单中的配件合计做运算
+			$scope.addAutoPartsPrice($scope.needUpdateRowData.autoParts * $scope.needUpdateRowData.eunitPrice);//将价钱反写到服务中
 			//渲染到列表中
 			busAtomTable.row($scope.needUpdateRowData.index).data($scope.needUpdateRowData);
 			//需要重新绑定更新按钮和删除按钮事件
@@ -473,73 +454,9 @@ app.controller("shopItemEditController",['$scope','$state','$http','checkUniqueS
 	 * 子项配件的相关方法
 	 */
 	$scope.choose = function(){
-		if(!$scope.formData.chooseAutoPartButton){
-			$scope.formData.chooseAutoPartButton = true;
-			if(!autoPartChooseTable){
-				initAutoPartChooseTable();
-			}
-			$("#autoPartChooseTablePanel").removeClass("none");
-			$scope.formData.chooseAutoPartName = "关闭选择框";
-		}else{
-			$scope.formData.chooseAutoPartButton = false ;
-			$("#autoPartChooseTablePanel").addClass("none");
-			$scope.formData.chooseAutoPartName = "选择";
-		}
+		$scope.showModel();
 	}
 	
-	/**
-	 * 初始化配件选择列表
-	 */
-	var autoPartChooseTable ;
-	function initAutoPartChooseTable(){
-		autoPartChooseTable = $("#autoPartChooseTable").dataTable({
-			"bServerSide":true,
-			"sAjaxSource":"base/autoPartAction!listAutoPart.action",
-			"sAjaxDataProp":"data",
-			"aoColumns": [{
-		    	"mDataProp":"partName"  
-		      },{
-		    	"mDataProp":"brandName"  
-		      },{
-		    	"mDataProp":"spec"  
-		      },{
-		    	"mDataProp":"model"  
-		      },{
-		    	"mDataProp":"eunitPrice"  
-		      },{
-		    	"mDataProp":"isActivity",
-		    	"render":function(param){
-		        	//0=不参加（默认），1=参加
-		        	switch(param){
-		        	case 0:
-		        		return "不参加";break;
-		        	case 1:
-		        		return "参加";break;
-		        	default:
-		        		return "";break;
-		        	}}
-		      }],"oLanguage": {
-	              "sLengthMenu": "每页 _MENU_ 条",
-	              "sZeroRecords": "没有找到符合条件的数据",
-	              "sProcessing": "&lt;img src=’./loading.gif’ /&gt;",
-	              "sInfo": "当前第 _START_ - _END_ 条，共 _TOTAL_ 条",
-	              "sInfoEmpty": "没有记录",
-	              "sInfoFiltered": "(从 _MAX_ 条记录中过滤)",
-	              "sSearch": "搜索",
-	              "oPaginate": {
-	                "sFirst": "<<",
-	                "sPrevious": "<",
-	                "sNext": ">",
-	                "sLast": ">>"
-	              }
-	            }, "fnCreatedRow": function(nRow, aData, iDataIndex){
-	        	  $(nRow).attr("data-id",aData['id']);
-	        	  $(nRow).click(function(){
-	        		  clickTr(aData);
-	        	  });
-	          }
-		});
-	}
 	
 	/**
 	 * 点击一行触发的事件
@@ -578,9 +495,12 @@ app.controller("shopItemEditController",['$scope','$state','$http','checkUniqueS
 			}else{//代表保存失败
 				alert("保存失败");
 			}
+			$scope.isDoing = false ;
 		},function(resp){
 			alert("保存出错");
+			$scope.isDoing = false ;
 		});
+		
 	}
 	
 	/**

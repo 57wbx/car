@@ -4,7 +4,7 @@
  * 该模块用的权限有 新增：ADD	、修改：UPDATE、删除：DELETE、详细信息：DETAILS、图片管理：MANAGEIMG、推送：PUSH
  * $scope.btn = {"ADD":true,"UPDATE":true,"DELETE":true,"DETAILS":true,"MANAGEIMG":true,"PUSH":true}
  */
-app.controller('shopItemController',['$rootScope','$scope','$state','$timeout','$http','sessionStorageService','previewService','warnService','hintService','roleBtnService',function($rootScope,$scope,$state,$timeout,$http,sessionStorageService,previewService,warnService,hintService,roleBtnService){
+app.controller('shopItemController',['$rootScope','$scope','$state','$timeout','$http','$modal','sessionStorageService','previewService','warnService','hintService','roleBtnService',function($rootScope,$scope,$state,$timeout,$http,$modal,sessionStorageService,previewService,warnService,hintService,roleBtnService){
 	
 	var roleBtnUiClass = "app.shopitem.";//用于后台查找按钮权限
 	roleBtnService.getRoleBtnService(roleBtnUiClass,$scope);
@@ -222,7 +222,54 @@ app.controller('shopItemController',['$rootScope','$scope','$state','$timeout','
     $scope.API.deleteImg = function(urlObject){
     	urlObject.atomPhotoUrl = undefined;
     }
+    
+    /**
+	 * 弹窗事件 显示配件信息的弹窗
+	 */
+    $scope.model = {};
+	var showModal = $scope.showModel = function(nRow,aData){
+			var modalInstance = $modal.open({
+		   	     templateUrl: 'src/tpl/shop/shopitem/autopart_model.html',
+		   	     size: 'lg',
+		   	     backdrop:true,
+		   	     controller:"autoPartModelController"
+	   	   });
+		/**
+		 * 弹窗关闭事件
+		 */
+		modalInstance.result.then(function (aData) {
+			if($scope.model.resultCallBack){
+				$scope.model.resultCallBack(aData);
+			}
+    	});
+	}
 	
+    /**
+     * 用户输入提示信息
+     */
+    $scope.message = {
+    		itemCode:{
+    			pattern:"编码只能为数字和字母组成"
+    		},
+    		standardPrice:{
+    			pattern:"标准价最多只能带两位小数"
+    		},
+    		actualPrice:{
+    			pattern:"实际价最多只能带两位小数"
+    		},
+    		workHours:{
+    			pattern:"工时费最多只能带两位小数"
+    		},
+    		atomCode:{
+    			pattern:"编码只能有数字和字母组成"
+    		},
+    		autoParts:{
+    			pattern:"配件数量必须为整数"
+    		},
+    		eunitPrice:{
+    			pattern:"配件单价最多只能带两位小数"
+    		}
+    }
 	
 	//结束方法
 }]);

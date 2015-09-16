@@ -41,6 +41,7 @@ public class RolePermAction extends AbstractAction{
 	 * 返回当前登录用户的最低级菜单列表(中间桌面菜单)
 	 * @throws IOException
 	 */
+	@AuthCheck
 	public void getMenuList() throws IOException
 	{
 		JSONObject json = new JSONObject();
@@ -66,6 +67,7 @@ public class RolePermAction extends AbstractAction{
 	 * 获得第一层（level=0）菜单列表
 	 * @throws IOException 
 	 */
+	@AuthCheck
 	public void getFirstMenuList() throws IOException
 	{
 		JSONObject json = new JSONObject();

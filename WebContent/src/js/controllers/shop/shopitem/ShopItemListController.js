@@ -114,6 +114,7 @@ app.controller('shopItemListController',['$scope','$state','$timeout','$http','s
 		"sAjaxSource":"shop/shopItemAction!listShopItem.action",
     	"bServerSide":true,
     	"sAjaxDataProp":"data",
+    	"sServerMethod": "POST",
     	"pageLength":5,
     	"dom": '<"top">rt<"bottom"ip><"clear">',
     	"oLanguage": {

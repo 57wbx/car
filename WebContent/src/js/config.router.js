@@ -583,6 +583,7 @@ angular.module('app').run(
 			            }
 			        }).state('app.autopart', {
 			            url: '/autopart',
+			            abstract:true,
 			            templateUrl: 'src/tpl/base/autopart/autopart.html',
 			            resolve: {
 			              deps: ['$ocLazyLoad', 'uiLoad',
@@ -1193,11 +1194,13 @@ angular.module('app').run(
 									        }).state('app.shopitem', {
 								            url: '/shopitem',
 								            templateUrl: 'src/tpl/shop/shopitem/shopitem.html',
+								            abstract:true,
 								            resolve: {
 								              deps: ['$ocLazyLoad', 'uiLoad',
 								                function($ocLazyLoad, uiLoad) {
 								                  return $ocLazyLoad.load('angularBootstrapNavTree').then(function() {
-								                    return $ocLazyLoad.load('src/js/controllers/shop/shopitem/ShopItemController.js');
+									                	$ocLazyLoad.load('src/js/controllers/shop/shopitem/AutoPartModelController.js');
+									                    return $ocLazyLoad.load('src/js/controllers/shop/shopitem/ShopItemController.js');
 								                  });
 								                }
 								              ]
