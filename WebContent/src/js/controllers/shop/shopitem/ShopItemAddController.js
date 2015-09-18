@@ -95,16 +95,16 @@ app.controller("shopItemAddController",['$scope','$state','$http','checkUniqueSe
 	  /**
 		  * 返回值
 		  */
-      uploaderForAtom.onSuccessItem = function(fileItem, response, status, headers) {
-			 $scope.uploading = false ;
-	         if(response.code==1){
-	        	 hintService.hint({title: "成功", content: "上传成功！" });
-	        	 //上传成功的返回数据：{"name":"13293618_1200x1000_0.jpg","code":1,"url":"http://120.25.149.142:8048/group1/M00/00/0C/eBmVjlXCvHCERq5wAAAAAKmTBbk746.jpg"}
-	        	$scope.formData.atomPhotoUrl = response.url ;
-	         }else{
-	        	 alert(response.message)
-	         }
-	     };
+     uploaderForAtom.onSuccessItem = function(fileItem, response, status, headers) {
+		 $scope.uploading = false ;
+         if(response.code==1){
+        	 hintService.hint({title: "成功", content: "上传成功！" });
+        	 //上传成功的返回数据：{"name":"13293618_1200x1000_0.jpg","code":1,"url":"http://120.25.149.142:8048/group1/M00/00/0C/eBmVjlXCvHCERq5wAAAAAKmTBbk746.jpg"}
+        	$scope.formData.atomPhotoUrl = response.url ;
+         }else{
+        	 alert(response.message)
+         }
+      };
 	
 	/**
 	 * 初始化服务子项的datatables列表
@@ -458,6 +458,13 @@ app.controller("shopItemAddController",['$scope','$state','$http','checkUniqueSe
 	$scope.submit = function(){
 		$scope.formData.busAtomDataStr = JSON.stringify($scope.busAtomData);//对json数组进行序列化
 		$scope.formData.itemCode = ($scope.formData.busTypeCode || "") + $scope.formData.itemCode;
+		
+		$scope.formData.standardPrice = $scope.formData.workHours + $scope.formData.autoPartsPrice ;
+		if($scope.formData.isActivity == 0){
+			$scope.formData.actualPrice = $scope.formData.workHours + $scope.formData.autoPartsPrice ;
+			$scope.formData.starTimeStr = undefined;
+			$scope.formData.endTimeStr = undefined;
+		}
 		$http({
 			url:"shop/shopItemAction!addShopItem.action",
 			method:'post',
@@ -528,5 +535,16 @@ app.controller("shopItemAddController",['$scope','$state','$http','checkUniqueSe
 			formData.autoPartsPrice = 0 ;//配件合计价
 		}
 	}
+	
+	/**
+	 * 监控是否参加活动的变化
+	 */
+	$scope.$watch("formData.isActivity",function(val){
+		if(val == 0){
+			$scope.formData.actualPrice = 0 ;
+		}else if(val == 1){
+			$scope.formData.actualPrice = $scope.formData.workHours + $scope.formData.autoPartsPrice ;
+		}
+	})
 	
 }]);

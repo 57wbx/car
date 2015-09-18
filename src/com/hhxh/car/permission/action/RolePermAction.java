@@ -7,8 +7,9 @@ import javax.annotation.Resource;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
-import com.hhxh.car.common.action.AbstractAction;
+import com.hhxh.car.common.action.BaseAction;
 import com.hhxh.car.common.annotation.AuthCheck;
+import com.hhxh.car.permission.domain.Role;
 import com.hhxh.car.permission.domain.User;
 import com.hhxh.car.permission.service.RolePermService;
 
@@ -25,7 +26,7 @@ import com.hhxh.car.permission.service.RolePermService;
  * @author：jiangdw
  *
  */
-public class RolePermAction extends AbstractAction{
+public class RolePermAction extends BaseAction{
 
 	private static final long serialVersionUID = 1L;
 	private String id;
@@ -80,6 +81,13 @@ public class RolePermAction extends AbstractAction{
 		json.put("rows", items==null?new Object[]{}:items);
 		json.put("code", 1);
 		putJson(json.toString());
+//		Role role = user.getRole();
+//		if(role == null){
+//			this.putJson(false, null);
+//			return ;
+//		}
+//		String roleId = role.getId();
+		
 	}
 	
 	/**

@@ -1,5 +1,5 @@
-app.controller("shopItemEditController",['$scope','$state','$http','checkUniqueService','FileUploader','hintService','sessionStorageService',
-                                         function($scope,$state,$http,checkUniqueService,FileUploader,hintService,sessionStorageService){
+app.controller("shopItemEditController",['$scope','$state','$http','$timeout','checkUniqueService','FileUploader','hintService','sessionStorageService',
+                                         function($scope,$state,$http,$timeout,checkUniqueService,FileUploader,hintService,sessionStorageService){
 	
 //	$scope.formData.fitemID  新增开始的时候需要从服务器中下载下来，以便于子项的操作
 	$scope.treeAPI.hiddenBusTypeTree();
@@ -36,6 +36,7 @@ app.controller("shopItemEditController",['$scope','$state','$http','checkUniqueS
 			var code = resp.data.code ;
 			if(code == 1){
 				renderData(resp.data);//渲染数据
+				watchIsActivity();
 			}else{
 				$state.go($scope.state.list);
 			}
@@ -484,6 +485,14 @@ app.controller("shopItemEditController",['$scope','$state','$http','checkUniqueS
 		$scope.formData.busAtomDataStr = JSON.stringify($scope.busAtomData);
 		$scope.formData.deleteBusAtomIds = $scope.deleteBusAtomIds;
 		$scope.formData.busPackages = undefined ;
+		
+		$scope.formData.standardPrice = $scope.formData.workHours + $scope.formData.autoPartsPrice ;
+		if($scope.formData.isActivity == 0){
+			$scope.formData.actualPrice = $scope.formData.workHours + $scope.formData.autoPartsPrice ;
+			$scope.formData.starTimeStr = undefined;
+			$scope.formData.endTimeStr = undefined;
+		}
+		
 		$http({
 			url:"shop/shopItemAction!saveShopItem.action",
 			method:'post',
@@ -542,6 +551,22 @@ app.controller("shopItemEditController",['$scope','$state','$http','checkUniqueS
 		$("form[name=busItemForm]").removeClass(" none ");
 		$("#busItemSumbit").removeClass("none");
 	}
+	
+	/**
+	 * 监控是否参加活动的变化
+	 */
+	function watchIsActivity(){
+		var isFirst = true ;
+		$scope.$watch("formData.isActivity",function(val){
+			if(val == 0){
+				$scope.formData.actualPrice = 0 ;
+			}else if(val == 1 && !isFirst){
+				$scope.formData.actualPrice = $scope.formData.workHours + $scope.formData.autoPartsPrice ;
+			}
+			isFirst = false ;
+		})
+	}
+	
 	
 	
 }]);

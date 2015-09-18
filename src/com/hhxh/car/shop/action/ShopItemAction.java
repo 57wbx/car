@@ -2,6 +2,7 @@ package com.hhxh.car.shop.action;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -26,6 +27,7 @@ import com.hhxh.car.base.busitem.domain.BusItem;
 import com.hhxh.car.base.carshop.domain.CarShop;
 import com.hhxh.car.common.action.BaseAction;
 import com.hhxh.car.common.annotation.AuthCheck;
+import com.hhxh.car.common.exception.ErrorMessageException;
 import com.hhxh.car.common.util.ConfigResourcesGetter;
 import com.hhxh.car.common.util.JsonDateValueProcessor;
 import com.hhxh.car.common.util.JsonValueFilterConfig;
@@ -35,6 +37,7 @@ import com.hhxh.car.shop.domain.ShopAtom;
 import com.hhxh.car.shop.domain.ShopItem;
 import com.hhxh.car.shop.domain.ShopItemImg;
 import com.hhxh.car.shop.service.ShopItemService;
+import com.hhxh.car.shop.state.ShopItemState;
 import com.hhxh.car.tig.domain.PushMessage;
 import com.hhxh.car.tig.domain.PushMessageState;
 import com.hhxh.car.tig.service.PushMessageService;
@@ -60,15 +63,15 @@ public class ShopItemAction extends BaseAction implements ModelDriven<ShopItem>
 
 	@Resource
 	private ShopItemService shopItemService;
-	
+
 	/**
 	 * 推送的接口
 	 */
 	@Resource
-	private Push push ;
-	
+	private Push push;
+
 	@Resource
-	private PushMessageService pushMessageService ;
+	private PushMessageService pushMessageService;
 
 	/**
 	 * 获取所有的商家服务项
@@ -79,9 +82,9 @@ public class ShopItemAction extends BaseAction implements ModelDriven<ShopItem>
 		try
 		{
 			List<Criterion> params = new ArrayList<Criterion>();
-			
+
 			params.add(Restrictions.eq("carShop", this.getLoginUser().getCarShop()));
-			
+
 			if (isNotEmpty(this.getBusTypeCode()))
 			{
 				params.add(Restrictions.like("itemCode", this.getBusTypeCode(), MatchMode.ANYWHERE));
@@ -90,7 +93,8 @@ public class ShopItemAction extends BaseAction implements ModelDriven<ShopItem>
 			{
 				params.add(Restrictions.like("itemName", this.shopItem.getItemName(), MatchMode.ANYWHERE));
 			}
-			if(isNotEmpty(this.shopItem.getIsActivity())){
+			if (isNotEmpty(this.shopItem.getIsActivity()))
+			{
 				params.add(Restrictions.eq("isActivity", this.shopItem.getIsActivity()));
 			}
 
@@ -118,81 +122,90 @@ public class ShopItemAction extends BaseAction implements ModelDriven<ShopItem>
 
 	/**
 	 * 添加一個服务项,和服务子项一起保存，其中服务子项是以字符串的形式上传上来的
+	 * 
+	 * @throws ErrorMessageException
 	 */
 	@AuthCheck
-	public void addShopItem()
+	public void addShopItem() throws ErrorMessageException
 	{
 		/**
 		 * busAtomDataStr = [{\
-		 * "atomCode\":\"123\",\"atomName\":\"123\",\"autoParts\":123,\"eunitPrice\":\"
-		 * \ " ,\"memo\":\"\",\"partName\":\"前刹车片\" ,\
+		 * "atomCode\":\"123\",\"atomName\":\"123\",\"autoParts\":123,\"eunitPrice\":\
+		 * " \ " ,\"memo\":\"\",\"partName\":\"前刹车片\" ,\
 		 * "brandName\":\"迈氏\",\"spec\":\"GB5763-200\",\"model\":\"广州本田飞度1.3L
 		 * 五档手动 两厢\",\"isActivity\":0}, {\
 		 * "atomCode\":\"123\",\"atomName\":\"123\",\"autoParts\":123,\"eunitPrice\":\"\",\"memo\":\"\",\"partName\":\"前刹车片\",\"brandName\":\"迈氏\",\"spec\":\"GB5763-2008\",\"model\":\"广州本田飞度1.3L 五档手动 两厢\""
 		 * autoPartId":"5",\"isActivity\":0}]
 		 */
-		try
+		this.shopItem.setCarShop(this.getLoginUser().getCarShop());
+
+		JSONArray shopAtoms = null;
+		List<ShopAtom> shopAtomList = null;
+		if (busAtomDataStr != null && !"".equals(busAtomDataStr))
 		{
-			this.shopItem.setCarShop(this.getLoginUser().getCarShop());
-
-			JSONArray shopAtoms = null;
-			List<ShopAtom> shopAtomList = null;
-			if (busAtomDataStr != null && !"".equals(busAtomDataStr))
+			shopAtoms = JSONArray.fromObject(busAtomDataStr);
+		}
+		if (shopAtoms != null && shopAtoms.size() > 0)
+		{
+			shopAtomList = new ArrayList<ShopAtom>();
+			for (int i = 0; i < shopAtoms.size(); i++)
 			{
-				shopAtoms = JSONArray.fromObject(busAtomDataStr);
-			}
-			if (shopAtoms != null && shopAtoms.size() > 0)
-			{
-				shopAtomList = new ArrayList<ShopAtom>();
-				for (int i = 0; i < shopAtoms.size(); i++)
+				Map<String, Object> m = (Map<String, Object>) shopAtoms.get(i);
+				ShopAtom ba = new ShopAtom();
+				ba.setAtomCode((String) m.get("atomCode"));
+				ba.setAtomName((String) m.get("atomName"));
+				ba.setPhotoUrl((String) m.get("photoUrl"));
+				ba.setAutoParts(TypeTranslate.getObjectInteger((m.get("autoParts"))));
+				Object eunitPrice = m.get("eunitPrice");
+				if (m.get("eunitPrice") != null)
 				{
-					Map<String, Object> m = (Map<String, Object>) shopAtoms.get(i);
-					ShopAtom ba = new ShopAtom();
-					ba.setAtomCode((String) m.get("atomCode"));
-					ba.setAtomName((String) m.get("atomName"));
-					ba.setPhotoUrl((String) m.get("photoUrl"));
-					ba.setAutoParts(TypeTranslate.getObjectInteger((m.get("autoParts"))));
-					Object eunitPrice = m.get("eunitPrice");
-					if (m.get("eunitPrice") != null)
+					if (eunitPrice instanceof java.lang.Integer)
 					{
-						if (eunitPrice instanceof java.lang.Integer)
-						{
-							ba.setEunitPrice(new BigDecimal((Integer) eunitPrice));
-						} else if (eunitPrice instanceof java.lang.Double)
-						{
-							ba.setEunitPrice(new BigDecimal((Double) eunitPrice));
-						}
+						ba.setEunitPrice(new BigDecimal((Integer) eunitPrice));
+					} else if (eunitPrice instanceof java.lang.Double)
+					{
+						ba.setEunitPrice(new BigDecimal((Double) eunitPrice));
 					}
-					ba.setMemo((String) m.get("memo"));
-					ba.setAutoPart(new AutoPart((String) m.get("autoPartId")));
-					ba.setUpdateTime(new Date());
-					ba.setCarShop(this.getLoginUser().getCarShop());
-					shopAtomList.add(ba);
 				}
+				ba.setMemo((String) m.get("memo"));
+				ba.setAutoPart(new AutoPart((String) m.get("autoPartId")));
+				ba.setUpdateTime(new Date());
+				ba.setCarShop(this.getLoginUser().getCarShop());
+				shopAtomList.add(ba);
 			}
-			Date starTime = null;
-			Date endTime = null;
+		}
+		Date starTime = null;
+		Date endTime = null;
 
-			if (isNotEmpty(starTimeStr))
+		if (isNotEmpty(starTimeStr))
+		{
+			try
 			{
 				starTime = ymdhm.parse(starTimeStr);
+			} catch (ParseException e)
+			{
+				throw new ErrorMessageException("");
 			}
-			if (isNotEmpty(endTimeStr))
+		}
+		if (isNotEmpty(endTimeStr))
+		{
+			try
 			{
 				endTime = ymdhm.parse(endTimeStr);
+			} catch (ParseException e)
+			{
+				throw new ErrorMessageException("");
 			}
-			this.shopItem.setShopAtoms(null);
-			this.shopItem.setStarTime(starTime);
-			this.shopItem.setEndTime(endTime);
-			this.shopItem.setUpdateTime(new Date());
-			// this.busItemService.saveBusItemContainsBusAtomWithNoId(busItem,busAtomList);
-			this.shopItemService.saveShopItemContainsShopAtomWithNoId(shopItem, shopAtomList);
-			this.putJson();
-		} catch (Exception e)
-		{
-			log.error("新增商家服务项失败", e);
-			this.putJson(false, this.getMessageFromConfig("saveShopItemError"));
 		}
+		
+		this.shopItem.setShopAtoms(null);
+		this.shopItem.setStarTime(starTime);
+		this.shopItem.setEndTime(endTime);
+		this.shopItem.setUpdateTime(new Date());
+		
+		// this.busItemService.saveBusItemContainsBusAtomWithNoId(busItem,busAtomList);
+		this.shopItemService.saveShopItemContainsShopAtomWithNoId(shopItem, shopAtomList);
+		this.putJson();
 	}
 
 	/**
@@ -358,7 +371,7 @@ public class ShopItemAction extends BaseAction implements ModelDriven<ShopItem>
 	/**
 	 * 删除一组数据的方法
 	 */
-	@AuthCheck(isCheckLoginOnly=false)
+	@AuthCheck(isCheckLoginOnly = false)
 	public void deleteShopItemByIds()
 	{
 		this.shopItemService.deleteShopItemByIds(ids);
@@ -449,21 +462,25 @@ public class ShopItemAction extends BaseAction implements ModelDriven<ShopItem>
 			this.putJson(false, this.getMessageFromConfig("listImg_error"));
 		}
 	}
-	
+
 	/**
 	 * 推送一条服务项，其中推送的title为服务项的名称。推送的内容为服务项的服务详情
 	 */
-	@AuthCheck(isCheckLoginOnly=false)
-	public void pushShopItem(){
-		try{
-			if(isNotEmpty(this.shopItem.getFid())){
-				this.shopItem = this.baseService.get(ShopItem.class,this.shopItem.getFid());
-				if(shopItem!=null){
+	@AuthCheck(isCheckLoginOnly = false)
+	public void pushShopItem()
+	{
+		try
+		{
+			if (isNotEmpty(this.shopItem.getFid()))
+			{
+				this.shopItem = this.baseService.get(ShopItem.class, this.shopItem.getFid());
+				if (shopItem != null)
+				{
 					PushMessage pushMessage = new PushMessage();
-					
+
 					pushMessage.setFcontent(shopItem.getItemDes());
 					pushMessage.setFtitle(shopItem.getItemName());
-					
+
 					pushMessage.setCreateUser(this.getLoginUser());
 					pushMessage.setFcreateDate(new Date());
 					pushMessage.setFmessageType(PushMessageState.FMESSAGETYPE_SHOPITEM);
@@ -471,25 +488,28 @@ public class ShopItemAction extends BaseAction implements ModelDriven<ShopItem>
 					pushMessage.setFpermid(shopItem.getFid());
 					pushMessage.setFuseState(PushMessageState.FUSESTATE_OK);
 					pushMessage.setFsendType(PushMessageState.FSENDTYPE_ALL);
-					
-					Map<String,String> customValue = new HashMap<String,String>();
+
+					Map<String, String> customValue = new HashMap<String, String>();
 					customValue.put("messageType", PushMessageState.FMESSAGETYPE_SHOPITEM.toString());
 					customValue.put("id", shopItem.getFid());
-					if(shopItem.getCarShop()!=null){
-						customValue.put("shopId",shopItem.getCarShop().getId());
+					if (shopItem.getCarShop() != null)
+					{
+						customValue.put("shopId", shopItem.getCarShop().getId());
 					}
-					
-					String pushResult = push.pushAllNotify(pushMessage.getFtitle(), shopItem.getItemDes(),customValue);
-					
-					log.debug("推送商家服务返回的数据："+pushResult);
-					pushMessageService.addNotifyPushMessage(pushMessage,pushResult);
+
+					String pushResult = push.pushAllNotify(pushMessage.getFtitle(), shopItem.getItemDes(), customValue);
+
+					log.debug("推送商家服务返回的数据：" + pushResult);
+					pushMessageService.addNotifyPushMessage(pushMessage, pushResult);
 					this.putJson();
 				}
-			}else{
+			} else
+			{
 				this.putJson(false, this.getMessageFromConfig("needShopItemId"));
 			}
-		}catch(Exception e){
-			log.error("推送平台服务失败",e);
+		} catch (Exception e)
+		{
+			log.error("推送平台服务失败", e);
 			this.putJson(false, this.getMessageFromConfig("push_error"));
 		}
 	}
