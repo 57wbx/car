@@ -3,6 +3,7 @@
  * 使用方法：为该标签添加两个属性 inputName：为指定input的id，树将出现在这个input下面，并且，当用户点击了一个业务类型的时候，会将业务名称反写到该input中
  *  showElement：是触发显示该树的元素，触发该元素的点击事件
  *  needClick:是否触发点击事件，更新view中的数据
+ *  zw
  */
 app.directive("busTypeZtree",['$http','modelDataCacheService',function($http,modelDataCacheService){
 	return {

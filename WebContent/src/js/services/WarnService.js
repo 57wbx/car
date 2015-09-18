@@ -3,10 +3,6 @@
  * @author zw
  */
 app.factory("warnService",['$rootScope','$compile',function($rootScope,$compile){
-	 
-
-	  
-	
 //	  $compile(container)($rootScope);
 
 	  /**
@@ -32,10 +28,28 @@ app.factory("warnService",['$rootScope','$compile',function($rootScope,$compile)
 		  var dialog = $('#dialog');
 		  var msgHead = $('#msgHead');
 		  var msgBody = $('#msgP');
-		  var hButton = $('#clickId');
+		  var commitButton = $('#warnCommitButton');
+		  var cancelButton = $('#warnCancelButton');
 		  var bodyMessage_default = "你确定要执行该操作吗？";
 		  var headMessage_default = "操作确认";
 		  var doIt = function(){};
+		  
+		  /**
+		   * 禁用按钮点击，以免出现多次请求
+		   */
+		  function disableButton(){
+			  commitButton.attr("disabled",true);
+			  commitButton.html("操作中...");
+			  cancelButton.attr("disabled",true);
+		  }
+		  /**
+		   * 按钮可以点击
+		   */
+		  function activeButton(){
+			  commitButton.removeAttr("disabled");
+			  commitButton.html("确定");
+			  cancelButton.removeAttr("disabled");
+		  }
 		  
 		  // 重新绑定事件
 		  $rootScope.cancel = function(){
@@ -60,23 +74,26 @@ app.factory("warnService",['$rootScope','$compile',function($rootScope,$compile)
 		  container.removeClass('none');
 		  doIt = function(){//回调函数
 			  if(fn){
+				  disableButton();
 				  var result = fn();
 				  if(callBackFn&&result){
-					  
 					  result.then(function(resp){
 						  try{
 							  callBackFn(resp);
 						  } catch(e){
 							  console.error(e);
 						  }finally{
+							  //激活按钮
+							  activeButton();
 							  $rootScope.cancel();
 						  }
 					  });
 					  
 				  }else{
+					  //激活按钮
+					  activeButton();
 					  $rootScope.cancel();
 				  }
-				  
 			  }
 		  }
 	  }

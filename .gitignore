@@ -16,3 +16,6 @@ src/com/zw/test/domain/hibernate.cfg.xml
 *.xml
 src/com/zw/test/domain/hibernate.reveng.xml
 src/com/zw/test/hibernate/TeseDao.java
+build/classes/百度账号.txt
+src/com/zw/test/hibernate/hibernate.cfg.xml
+src/com/zw/test/hibernate/TeseDao.java

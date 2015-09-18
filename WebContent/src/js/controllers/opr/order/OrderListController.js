@@ -1,7 +1,7 @@
 'use strict';
 
-app.controller('orderListController',['$scope','$state','$timeout','$http','$modal','sessionStorageService','dataTableSearchService','orderStateService',
-                                      function($scope,$state,$timeout,$http,$modal,sessionStorageService,dataTableSearchService,orderStateService){
+app.controller('orderListController',['$scope','$state','$timeout','$http','$modal','sessionStorageService','dataTableSearchService','orderStateService','utilService',
+                                      function($scope,$state,$timeout,$http,$modal,sessionStorageService,dataTableSearchService,orderStateService,utilService){
 	
 	$scope.search = {};
 	$scope.cache = {};//用来缓存选中的数据，因为在弹框事件需要该数据
@@ -110,30 +110,9 @@ app.controller('orderListController',['$scope','$state','$timeout','$http','$mod
     	"pageLength":5,
     	"ordering":false,
     	"dom": '<"top">rt<"bottom"ip><"clear">',
-    	"oLanguage": {
-            "sLengthMenu": "每页 _MENU_ 条",
-            "sZeroRecords": "没有找到符合条件的数据",
-            "sProcessing": "&lt;img src=’./loading.gif’ /&gt;",
-            "sInfo": "当前第 _START_ - _END_ 条，共 _TOTAL_ 条",
-            "sInfoEmpty": "没有记录",
-            "sInfoFiltered": "(从 _MAX_ 条记录中过滤)",
-            "sSearch": "搜索",
-            "oPaginate": {
-              "sFirst": "<<",
-              "sPrevious": "<",
-              "sNext": ">",
-              "sLast": ">>"
-            }
-          },scrollX:true,
-    	  "aoColumns": [{
-            "orderable": false,
-            "render": function(param){
-              return '<label class="i-checks"><input type="checkbox"><i></i></label>';
-            }
-          }, {
+    	 scrollX:true,
+    	  "aoColumns": [ {
             "mDataProp": "id",
-          }, {
-            "mDataProp": "payOrderCode",
           }, {
             "mDataProp": "orderName",
           }, {
@@ -194,10 +173,6 @@ app.controller('orderListController',['$scope','$state','$timeout','$http','$mod
             }],
           "fnCreatedRow": function(nRow, aData, iDataIndex){
         	  $(nRow).attr("data-id",aData['id']);
-//        	  $(nRow).dblclick(function(){
-//        		  $scope.setCanEdit(true,$(this).data('id'));
-//        		  $scope.seeDetails($(this).data('id'));//调用上级controller中的查看方法
-//        	  });
         	  $(nRow).click(function(e){
         		  if(e.target.nodeName=="TD"||e.target.nodeName=="td"){
         			  showBusAtoms($(this));
@@ -209,39 +184,7 @@ app.controller('orderListController',['$scope','$state','$timeout','$http','$mod
         	  });
           },
           "drawCallback":function(setting){
-        	  $scope.clearRowIds();//首先清空上级controller中的ids
         	  //清空服务子项的内容
-//        	  getBusAtoms("");//清空服务子项的内容
-        	  $(this).parents(".dataTables_scroll").find("thead .i-checks input").prop("checked",false);
-        	  //设置标题全选按钮事件
-        	  $(this).parents(".dataTables_scroll").find("thead .i-checks input").off().click(function(){
-        		  var inputs = $(setting.nScrollBody).find("tbody input");
-        		  if($(setting.nScrollHead).find(".i-checks input").prop("checked")){
-        			  inputs.prop("checked",true);
-        			  $scope.clearRowIds();
-        			  for(var i=0;i<inputs.length;i++){
-        				  $scope.rowIds.push($(inputs[i]).parents("tr").data('id'));
-        			  }
-        			  $scope.setButtonStatus();//设置按钮状态
-        		  }else{
-        			  inputs.prop("checked",false);
-        			  $scope.clearRowIds();//调用上级controller中的清空ids的方法
-        		  }
-        	  });
-        	  
-//        	  $('#busItemTable tbody').on( 'click', 'tr', function () {
-//        		  console.info("-------------");
-//        		  console.info($(this));
-//        	        if ( $(this).hasClass('selected') ) {
-//        	            $(this).removeClass('selected');
-//        	            $(this).find("td").css("background-color","white");
-//        	        }
-//        	        else {
-//        	        	busItemTable.$('tr.selected').find("td").css("background-color","white");
-//        	            $(this).addClass('selected');
-//        	            $(this).find("td").css("background-color","#b0bed9");
-//        	        }
-//        	    } );
           },
           "initComplete":function(settings,json){
           	if( $scope.orderDataTableProperties){
@@ -257,7 +200,7 @@ app.controller('orderListController',['$scope','$state','$timeout','$http','$mod
 	var initSearchDiv = function(settings,json){
 		dataTableSearchService.initSearch([
               {formDataName:'search.id',placeholder:'订单编号'},
-              {formDataName:'search.payOrderCode',placeholder:'订单编号(第三方支付)'},
+//              {formDataName:'search.payOrderCode',placeholder:'订单编号(第三方支付)'},
 			  {formDataName:'search.userName',placeholder:'客户名称'},
 			  {formDataName:'search.workerName',placeholder:'师傅名称'}
 		],$scope,settings,busItemTable);
@@ -271,6 +214,27 @@ app.controller('orderListController',['$scope','$state','$timeout','$http','$mod
 			alert("该记录已经分配师傅了！");
 		}
 	}
+	
+	//从新加载数据表
+	$scope.API.reloadTable = function(){
+		busItemTable.ajax.reload();
+		$scope.setCanEdit(false);
+	}
+	
+	/**
+	 * 判断一条记录是否能够被查看相信支付信息
+	 */
+	$scope.API.canSeeDetails = function(id){
+		var aData = utilService.getObjectFromArray("id",id,busItemTable.data());
+		if(aData){
+			//4 代表支付完成
+			if(aData.payState == 4){
+				return true ;
+			} 
+		}
+		return false ;
+	}
+	
 	/**
 	 * 弹窗事件
 	 */

@@ -984,7 +984,17 @@ angular.module('app').run(
 																	                }
 																	              ]
 																	            }
-																		      }).state('app.complain', {
+																		      }).state('app.order.paydetails', {
+																		            url: '/paydetails',
+																		            templateUrl: 'src/tpl/opr/order/order_paydetails.html',
+																		            resolve: {
+																		              deps: ['$ocLazyLoad', 'uiLoad',
+																		                function($ocLazyLoad, uiLoad) {
+																		                	  return $ocLazyLoad.load('src/js/controllers/opr/order/OrderPayDetailsController.js');
+																		                }
+																		              ]
+																		            }
+																			      }).state('app.complain', {
 																		            url: '/complain',
 																		            abstract:true,
 																		            templateUrl: 'src/tpl/opr/complain/complain.html',
@@ -1268,6 +1278,7 @@ angular.module('app').run(
 									            }
 									        }).state('app.shoppackage', {
 									            url: '/shoppackage',
+									            abstract:true,
 									            templateUrl: 'src/tpl/shop/shoppackage/shoppackage.html',
 									            resolve: {
 									              deps: ['$ocLazyLoad', 'uiLoad',

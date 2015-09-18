@@ -21,6 +21,7 @@ import javax.persistence.Table;
 
 
 
+
 import com.hhxh.car.base.carshop.domain.CarShop;
 import com.hhxh.car.base.member.domain.Member;
 import com.hhxh.car.tig.domain.TigUsers;
@@ -44,6 +45,8 @@ public class Order implements java.io.Serializable
 	@Column
 	private Date expectTime;
 	@Column
+	private String expectTimeStr;
+	@Column
 	private Integer serviceType;
 	@Column
 	private Integer orderState;
@@ -51,6 +54,10 @@ public class Order implements java.io.Serializable
 	private Integer orderNum;
 	@Column
 	private BigDecimal totalAmount;
+	@Column
+	private BigDecimal actualPayAmount;
+	@Column
+	private BigDecimal couponFee;
 	@Column
 	private Integer payType;
 	@Column
@@ -323,7 +330,35 @@ public class Order implements java.io.Serializable
 	{
 		this.orderTracks = orderTracks;
 	}
-	
-	
+
+	public String getExpectTimeStr()
+	{
+		return expectTimeStr;
+	}
+
+	public void setExpectTimeStr(String expectTimeStr)
+	{
+		this.expectTimeStr = expectTimeStr;
+	}
+
+	public BigDecimal getActualPayAmount()
+	{
+		return actualPayAmount;
+	}
+
+	public void setActualPayAmount(BigDecimal actualPayAmount)
+	{
+		this.actualPayAmount = actualPayAmount;
+	}
+
+	public BigDecimal getCouponFee()
+	{
+		return couponFee;
+	}
+
+	public void setCouponFee(BigDecimal couponFee)
+	{
+		this.couponFee = couponFee;
+	}
 	
 }

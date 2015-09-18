@@ -115,6 +115,14 @@
       </div>
       
       <div class="form-group">
+	        <label class="col-sm-1 control-label">使用规则<i class="fa fa-asterisk text-danger"></i></label>
+	        <div class="col-sm-11">
+	          	<textarea name="useRule" class="form-control" rows="3" ng-model="formData.useRule"  required maxlength="400"></textarea>
+	          	<div pattern-style form-input="busPackageForm.useRule"  input-message="message.useRule" ></div>
+	        </div>
+      </div>
+      
+      <div class="form-group">
 	        <label class="col-sm-1 control-label">备注</label>
 	        <div class="col-sm-11">
 	          	<textarea class="form-control" rows="1" ng-model="formData.memo" ></textarea>
@@ -235,8 +243,6 @@
  		</div>
  	</div>
  	
-     	
-      
      <div class="form-group">
         <label class="col-sm-1 control-label">备注</label>
         <div class="col-sm-11">

@@ -180,5 +180,17 @@ app.controller('shopPackageController', ['$rootScope','$scope','$state','$timeou
 			  }
 		  });
 	}
+	
+	$scope.message = {
+			packageCode:{
+				pattern:"套餐编号必须为数字、字母组成"
+			},
+			standardPrice:{
+				pattern:"标准价最多只能带两位小数"
+			},
+			actualPrice:{
+				pattern:"实际价最多只能带两位小数"
+			}
+	}
 
 }]);

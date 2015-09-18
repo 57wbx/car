@@ -463,6 +463,7 @@ app.controller("shopItemAddController",['$scope','$state','$http','checkUniqueSe
 			method:'post',
 			data : $scope.formData
 		}).then(function(resp){
+			hintService.hint({title: "成功", content: "保存成功！" });
 			var code = resp.data.code ;
 			if(code == 1){//代表保存成功
 				$state.go($scope.state.list);

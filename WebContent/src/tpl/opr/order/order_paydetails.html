@@ -1,0 +1,57 @@
+<div class="hbox hbox-auto-xs hbox-auto-sm" ng-controller="orderPayDetailsController">
+  <div class="panel-heading font-bold text-center">
+   	订单支付详情
+  </div>
+  
+  	<div class="panel-body">
+    	<form name="form" class="form-horizontal form-validation" method="post" ng-model="formData" enctype="multipart/form-data" novalidate>
+    	
+	      <div class="form-group">
+	      
+		        <label class="col-sm-1 control-label">支付方式</label>
+		        <div class="col-sm-2">
+		        	<input type="text" class="form-control" ng-model="formData.payType"  disabled/>
+		        </div>
+	        
+		        <label class="col-sm-1  control-label">第三方支付号</label>
+		        <div class="col-sm-4 ">
+		          	<input type="text" class="form-control" ng-model="formData.payOrderCode"  disabled/>
+		      	 </div>
+		      	 
+		      	 <label class="col-sm-1  control-label">业务结果</label>
+		        <div class="col-sm-3 ">
+		        	<input type="text" class="form-control" ng-model="formData.resultCode"  disabled/>
+		      	 </div>
+		      	 
+	      </div>
+	      
+	      <div class="form-group">
+	      
+		        <label class="col-sm-1 control-label">总金额</label>
+		        <div class="col-sm-3">
+		        	<input type="text" class="form-control" ng-model="formData.totalFee" disabled />
+		        </div>
+	        
+		        <label class="col-sm-1  control-label">现金支付金额</label>
+		        <div class="col-sm-3 ">
+		          	<input type="text" class="form-control" ng-model="formData.cashFee"  disabled />
+		      	 </div>
+		      	 
+		      	 <label class="col-sm-1  control-label">支付完成时间</label>
+		        <div class="col-sm-3 ">
+		        	<input type="text" class="form-control" ng-model="formData.endTime"  disabled />
+		      	 </div>
+		      	 
+	      </div>
+	      
+      <div class="line line-dashed b-b line-lg pull-in"></div>
+      
+      <div class="form-group">
+        <div class="col-sm-offset-5 col-sm-2 col-xs-6">
+          <a ng-click="cancel()" class="w100 btn btn-default">返回</a>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+

@@ -4,134 +4,153 @@
   </div>
   <div class="panel-body">
     <form name="busPackageForm" id="busPackageForm" class="form-horizontal form-validation" method="get" ng-model="formData" novalidate>
+    
      <div class="form-group">
-        <label class="col-sm-1 control-label ">业务类型<i class="fa fa-asterisk text-danger"></i></label>
-        <div class="col-sm-2">
-          <input type="text" id="busTypeName" placeholder="业务类型" class="form-control" ng-model="formData.busTypeName" tabindex="1" required disabled>
-          <input type="hidden"   ng-model="formData.busTypeCode"  required >
-            <!-- 业务类型ztree -->
-        <div id="menuContent" class="menuContent" style="display:none; position: absolute; z-index:20;background-color:white;border: 1px solid #617775;">
-			<ul id="treeDemo" class="ztree" style="margin-top:0; width:160px;"></ul>
-		</div>
-        </div>
-      
-        
-        <div class="col-sm-1">
-        	<button type="button" class="btn btn-info" ng-click="initBusTypeZTree()">选择</button>
-        </div>
-        
-        <label class="col-sm-1 control-label">套餐编号<i class="fa fa-asterisk text-danger"></i></label>
-        <div class="col-sm-3">
-        	<div class="input-group">
-        		<div class="input-group-addon"><span ng-bind="formData.busTypeCode"></span></div>
-	          <input type="text" name="packageCode" placeholder="+套餐编号" id="packageCode" class="form-control" ng-model="formData.packageCode"  required ng-disabled="!formData.busTypeCode" ng-pattern="/^[0-9a-zA-z\.]{1,40}$/">
-	          <div class="input-group-addon" ng-show="!isUnique" style="background:red;"><span ng-bind="notUniqueMessage"></span></div>
-        	</div>
-        </div>
-        
-        <label class="col-sm-1 control-label">套餐名称</label>
-        <div class="col-sm-3">
-          <input type="text" placeholder="套餐名称" class="form-control" ng-model="formData.packageName" ng-maxlength="50">
-        </div>
-        
-      </div>
-      
-      <div class="form-group">
-      
-	      <label class="col-sm-1 control-label">服务类型</label>
-	        <div class="col-sm-3">
-	          <select id="serviceType" class="form-control" required ng-model="formData.serviceType">
-	          	<!-- 1=标准型、2=经济型、3=高效型、4=原厂型 -->
-	            <option value="1">标准型</option>
-	            <option value="2">经济型</option>
-	            <option value="3">高效型</option>
-	            <option value="4">原厂型</option>
-	          </select>
+	        <label class="col-sm-1 control-label ">业务类型<i class="fa fa-asterisk text-danger"></i></label>
+	        <div class="col-sm-2">
+          		<input type="text" id="busTypeName" name="busTypeName" placeholder="业务类型" class="form-control" ng-model="formData.busTypeName" tabindex="1" required disabled>
+		        <div pattern-style form-input="busPackageForm.busTypeName"  input-message="message.busTypeName" ></div>
+			<div bus_type_ztree inputName="busTypeName" showElement="choseBusType" needClick="true"></div>
 	        </div>
-       <label class="col-sm-1 control-label">工时费</label>
-        <div class="col-sm-3">
-          <input type="number" placeholder="工时费（合计）" class="form-control" ng-model="formData.workHours"  disabled>
-        </div>
-        <label class="col-sm-1 control-label">预计工时长</label>
-        <div class="col-sm-3">
-          <input type="text" placeholder="预计工时长" class="form-control" ng-model="formData.expectHours">
-        </div>
+	        
+	       <div class="col-sm-1">
+	       	<button type="button" class="btn btn-info" id="choseBusType" >选择</button>
+	       </div>
+        
+        	<label class="col-sm-1 control-label">套餐编号<i class="fa fa-asterisk text-danger"></i></label>
+	        <div class="col-sm-3">
+	        	<div class="input-group">
+	        		<div class="input-group-addon"><span ng-bind="formData.busTypeCode"></span></div>
+		         	<input type="text" name="packageCode" id="packageCode" placeholder="+套餐编号" id="packageCode" class="form-control" ng-model="formData.packageCode" 
+		         	 required ng-disabled="!formData.busTypeCode" ng-pattern="/^[0-9a-zA-z\.]{1,40}$/" maxlength="10">
+		          	<div class="input-group-addon" ng-show="!isUnique" style="background:red;"><span ng-bind="notUniqueMessage"></span></div>
+	        	</div>
+	        	<div pattern-style form-input="busPackageForm.packageCode"  input-message="message.packageCode" ></div>
+	        </div>
+        
+	        <label class="col-sm-1 control-label">套餐名称<i class="fa fa-asterisk text-danger"></i></label>
+	        <div class="col-sm-3">
+	          	<input type="text" name="packageName" placeholder="套餐名称" class="form-control" ng-model="formData.packageName" maxlength="50" required>
+	          	<div pattern-style form-input="busPackageForm.packageName"  input-message="message.packageName" ></div>
+	        </div>
+        
+      </div>
+      
+      <div class="form-group">
+      
+	        <label class="col-sm-1 control-label">服务类型</label>
+	        <div class="col-sm-3">
+		          <select id="serviceType" class="form-control" required ng-model="formData.serviceType">
+		          	<!-- 1=标准型、2=经济型、3=高效型、4=原厂型 -->
+			            <option value="1">标准型</option>
+			            <option value="2">经济型</option>
+			            <option value="3">高效型</option>
+			            <option value="4">原厂型</option>
+		          </select>
+	        </div>
+	        
+	        <label class="col-sm-1 control-label">工时费</label>
+	        <div class="col-sm-3">
+	          	<input type="number" placeholder="工时费（合计）" class="form-control" ng-model="formData.workHours" disabled >
+	        </div>
+	        
+	        <label class="col-sm-1 control-label">预计工时长</label>
+	        <div class="col-sm-3">
+	          	<input type="text" name="expectHours" placeholder="预计工时长" class="form-control" ng-model="formData.expectHours"  maxlength="20">
+	        </div>
         
       </div>
       
       
       <div class="form-group">
       
-      <label class="col-sm-1 control-label">配件费</label>
-        <div class="col-sm-3">
-          <input type="number" placeholder="配件费（合计）" class="form-control" ng-model="formData.autoPartsPrice" disabled>
-        </div>
-       <label class="col-sm-1 control-label">标准价<i class="fa fa-asterisk text-danger"></i></label>
-        <div class="col-sm-3">
-          <input type="number" placeholder="标准价" class="form-control" ng-model="formData.standardPrice" >
-        </div>
-        <label class="col-sm-1 control-label">实际价</label>
-        <div class="col-sm-3">
-          <input type="number" placeholder="实际价" class="form-control" ng-model="formData.actualPrice">
-        </div>
+	        <label class="col-sm-1 control-label">配件费</label>
+	        <div class="col-sm-3">
+	          	<input type="number" placeholder="配件费（合计）" class="form-control" ng-model="formData.autoPartsPrice" disabled>
+	        </div>
+	        
+	        <label class="col-sm-1 control-label">标准价<i class="fa fa-asterisk text-danger"></i></label>
+	        <div class="col-sm-3">
+	          	<input name="standardPrice" type="number" placeholder="标准价" class="form-control" ng-model="formData.standardPrice" required min="0" ng-pattern="/^[0-9]+(\.[0-9]{1,2})?$/"  >
+	          	<div pattern-style form-input="busPackageForm.standardPrice"  input-message="message.standardPrice" ></div>
+	        </div>
+	        
+	        <label class="col-sm-1 control-label">实际价<i class="fa fa-asterisk text-danger"></i></label>
+	        <div class="col-sm-3">
+	          	<input name="actualPrice" type="number" placeholder="实际价" class="form-control" ng-model="formData.actualPrice" required min="0" ng-pattern="/^[0-9]+(\.[0-9]{1,2})?$/" >
+	          	<div pattern-style form-input="busPackageForm.actualPrice"  input-message="message.actualPrice" ></div>
+	        </div>
         
       </div>
       
       
       <div class="form-group">
        
-        <label class="col-sm-1 control-label">使用状态<i class="fa fa-asterisk text-danger"></i></label>
-        <div class="col-sm-3">
-          <select id="useState" class="form-control" required ng-model="formData.useState">
-          	<!-- 0=初始化、1=待审核、2=发布（审核通过）、3=停止/下架、4=强制下架（违规） -->
-            <option value="0">初始化</option>
-            <option value="1">待审核</option>
-            <option value="2">发布（审核通过）</option>
-            <option value="3">停止/下架</option>
-            <option value="4">强制下架（违规）</option>
-          </select>
-        </div>
+	        <label class="col-sm-1 control-label">使用状态<i class="fa fa-asterisk text-danger"></i></label>
+	        <div class="col-sm-3">
+		          <select id="useState" class="form-control" required ng-model="formData.useState">
+		          	<!-- 0=初始化、1=待审核、2=发布（审核通过）、3=停止/下架、4=强制下架（违规） -->
+			            <option value="0">初始化</option>
+			            <option value="1">待审核</option>
+			            <option value="2">发布（审核通过）</option>
+			            <option value="3">停止/下架</option>
+			            <option value="4">强制下架（违规）</option>
+		          </select>
+	        </div>
         
-        <label class="col-sm-1 control-label">是否参与聚会<i class="fa fa-asterisk text-danger"></i></label>
-        <div class="col-sm-3">
-          <select id="isActivity" class="form-control" required ng-model="formData.isActivity">
-          	<!-- 0=不参加（默认），1=参加 -->
-            <option value="0">不参加</option>
-            <option value="1">参加</option>
-          </select>
-        </div>
+	        <label class="col-sm-1 control-label">是否参与聚会<i class="fa fa-asterisk text-danger"></i></label>
+	        <div class="col-sm-3">
+		          <select id="isActivity" class="form-control" required ng-model="formData.isActivity">
+		          	<!-- 0=不参加（默认），1=参加 -->
+			            <option value="0">不参加</option>
+			            <option value="1">参加</option>
+		          </select>
+	        </div>
+	        
       </div>
       
-     <div class="form-group">
-        <label class="col-sm-1  control-label">开始时间</label>
-        <div class="col-sm-3 ">
-          <input type="text" style="width: 100%" name="starTime" id="starTime"
-						class="form-control" value="" ng-model="formData.starTimeStr"/>
-      	 </div>
-      	  <label class="col-sm-1  control-label">结束时间</label>
-        <div class="col-sm-3 ">
-          <input type="text" style="width: 100%" name="endTime" id="endTime"
-						class="form-control" value="" ng-model="formData.endTimeStr"/>
-      	 </div>
+     <div class="form-group" ng-if="formData.isActivity==1">
+     
+	        <label class="col-sm-1  control-label">开始时间</label>
+	        <div class="col-sm-3 ">
+<!-- 	          	<input type="text" style="width: 100%" name="starTime" id="starTime" class="form-control" value="" ng-model="formData.starTimeStr"/> -->
+			<div date date-model="formData.starTimeStr" ></div>
+	      	</div>
+	      	 
+	      	 <label class="col-sm-1  control-label">结束时间</label>
+	        <div class="col-sm-3 ">
+<!-- 	          	<input type="text" style="width: 100%" name="endTime" id="endTime" class="form-control" value="" ng-model="formData.endTimeStr"/> -->
+			<div date date-model="formData.endTimeStr" ></div>
+	      	 </div>
+	      	 
       </div>
-      
-      <div class="form-group"  >
-			       <label class="col-sm-1 control-label">显示图片</label>
-			       <div upload_one_img url="formData.photoUrl" name="formData.photoUrlName" label="photoUrl"></div>
+   
+   	<div class="form-group"  >
+	       <label class="col-sm-1 control-label">显示图片</label>
+	       <div upload_one_img url="formData.photoUrl" name="formData.photoUrlName" label="photoUrl"></div>
        	</div> 
-      
+   
       <div class="form-group">
-        <label class="col-sm-1 control-label">描述</label>
-        <div class="col-sm-11">
-          <textarea class="form-control" rows="1" ng-model="formData.packageDes" ></textarea>
-        </div>
+	        <label class="col-sm-1 control-label">描述<i class="fa fa-asterisk text-danger"></i></label>
+	        <div class="col-sm-11">
+	          	<textarea name="packageDes" class="form-control" rows="1" ng-model="formData.packageDes"  required maxlength="400"></textarea>
+	          	<div pattern-style form-input="busPackageForm.packageDes"  input-message="message.packageDes" ></div>
+	        </div>
       </div>
       
       <div class="form-group">
-        <label class="col-sm-1 control-label">备注</label>
-        <div class="col-sm-11">
-          <textarea class="form-control" rows="1" ng-model="formData.memo" ></textarea>
-        </div>
+	        <label class="col-sm-1 control-label">使用规则<i class="fa fa-asterisk text-danger"></i></label>
+	        <div class="col-sm-11">
+	          	<textarea name="useRule" class="form-control" rows="3" ng-model="formData.useRule"  required maxlength="400"></textarea>
+	          	<div pattern-style form-input="busPackageForm.useRule"  input-message="message.useRule" ></div>
+	        </div>
+      </div>
+      
+      <div class="form-group">
+	        <label class="col-sm-1 control-label">备注</label>
+	        <div class="col-sm-11">
+	          	<textarea class="form-control" rows="1" ng-model="formData.memo" ></textarea>
+	        </div>
       </div>
      
         <!-- 一下为服务子项信息的增加页面 -->
@@ -171,10 +190,11 @@
       <div class="line line-dashed b-b line-lg pull-in"></div>
       <div class="form-group" >
         <div class="col-sm-offset-4 col-sm-2 col-xs-6">
-          <button type="button" id="add" class="w100 btn btn-success" ng-click="submit()" ng-disabled='busPackageForm.$invalid || !isUnique'>确定</button>
+<!--           <button type="button" id="add" class="w100 btn btn-success" ng-click="submit()" ng-disabled='busPackageForm.$invalid || !isUnique'>确定</button> -->
+		<div doing button-value="保存" doing-value="保存中..." is-doing="isDoing" doing-method="submit();" form-valid="busPackageForm.$valid"></div>
         </div>
         <div class="col-sm-2 col-xs-6">
-          <a ng-click="cancel()" class="w100 btn btn-default">取消</a>
+          	<a ng-click="cancel()" class="w100 btn btn-default">取消</a>
         </div>
       </div>
   </form>

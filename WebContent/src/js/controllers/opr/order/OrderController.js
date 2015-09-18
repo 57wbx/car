@@ -1,6 +1,7 @@
 'use strict';
 
-app.controller('orderController',['$rootScope','$scope','$state','$timeout','$http','sessionStorageService','previewService','roleBtnService',function($rootScope,$scope,$state,$timeout,$http,sessionStorageService,previewService,roleBtnService){
+app.controller('orderController',['$rootScope','$scope','$state','$timeout','$http','sessionStorageService','previewService','roleBtnService','orderStateService','warnService','hintService',
+                                  function($rootScope,$scope,$state,$timeout,$http,sessionStorageService,previewService,roleBtnService,orderStateService,warnService,hintService){
 	
 	$scope.rowIds = [];//用来保存所选列表的id
 	
@@ -21,19 +22,11 @@ app.controller('orderController',['$rootScope','$scope','$state','$timeout','$ht
 			list:"app.order.list",
 			add:"app.order.add",
 			edit:"app.order.edit",
-			details:"app.order.details"
+			details:"app.order.paydetails"
 	}
 	
-	/**
-	 * 并无实际的意义，但是如果没有用这个方法的话，页面中菜单按钮将不会根据属性的值进行变化
-	 * 
-	 * 2015.7.15 利用一个隐藏的按钮来解决按钮状态值更新的事件clickId
-	 */
-//	var hiddenButton = $("#clickId");
 	function show(){
-		$timeout(function(){
-			//无实际作用，更新页面中的按钮菜单样式
-		},0);
+		$scope.$evalAsync();
 	}
 	/**
 	 * 设置按钮的状态按钮 其中包括三个属性 当选择0个 、1个、多个
@@ -46,40 +39,38 @@ app.controller('orderController',['$rootScope','$scope','$state','$timeout','$ht
 	$scope.canEdit = false;
 	$scope.setCanEdit = function(booleanValue,id){
 		$scope.canEdit = booleanValue ;
+		$scope.clearRowIds();
 		if(id){
-			$scope.editId = id;
+			 $scope.rowIds.push(id);
 		}
 		show();
 	}
-	$scope.setButtonStatus = function(){
-		var len = $scope.rowIds.length ;//id的个数
-		if(len==0){
-			$scope.isSingle = false ;
-			$scope.isMulti = false ;
-		}else if(len==1){
-			$scope.isSingle = true ;
-			$scope.isMulti = false ;
-		}else{
-			$scope.isSingle = false ;
-			$scope.isMulti = true ;
-		}
-		show();
-//		hiddenButton.trigger("click");
+	
+	$scope.setState = function(stateCode){
+		warnService.warn("操作提示","您确定要将该订单记录更改为 "+orderStateService.getOrderState(stateCode)+" 状态吗？",function(){ return setOrderState($scope.rowIds[0],stateCode);},function(resp){
+			  if(resp.data.code===1){
+				  hintService.hint({title: "成功", content: "更改成功！" });
+				  if($scope.API.reloadTable){
+					  $scope.API.reloadTable();
+				  }
+			  }else{
+				  alert(resp.data.message);
+			  }
+		  });
 	}
 	
 	/**
-	 * 清空需要操作的id，主要是在busAtomListController中调用
+	 * 请求服务，将一条记录的订单状态改变为指定的状态
 	 */
-	$scope.clearRowIds = function(){
-		$scope.rowIds = [];
-		$scope.setButtonStatus();
-	}
-	
-	/**
-	 * 新增按钮的方法
-	 */
-	$scope.addRow = function(){
-		$state.go($scope.state.add);
+	function setOrderState(id,stateCode){
+		return $http({
+			url:"opr/orderAction!updateOrderState.action",
+			method:"post",
+			data:{
+				id:id,
+				orderState:stateCode
+			}
+		}) ;
 	}
 	
 	/**
@@ -92,76 +83,22 @@ app.controller('orderController',['$rootScope','$scope','$state','$timeout','$ht
 		}else if($scope.editId){
 			$scope.rowIds.push($scope.editId);
 		}
+		if($scope.API.canSeeDetails){
+			if(!$scope.API.canSeeDetails($scope.rowIds[0])){
+				alert("必须选择已经支付完成的订单");
+				return ;
+			}
+		}
 		$state.go($scope.state.details);
 	}
 	
 	/**
-	 * 修改方法的按钮
+	 * 清除缓存数据
 	 */
-	$scope.editRow = function(){
-		if($scope.editId){
-			$scope.clearRowIds();
-			$scope.rowIds.push($scope.editId);
-		}
-		$state.go($scope.state.edit);
+	$scope.clearRowIds = function(){
+		$scope.rowIds = [];
 	}
 	
-	/**
-	 * 管理图片的方法
-	 */
-	$scope.manageImg = function(){
-		if($scope.editId){
-			$scope.clearRowIds();
-			$scope.rowIds.push($scope.editId);
-		}
-		$state.go($scope.state.manageimg);
-	}
-	
-	/**
-	 * 页面弹出框对象
-	 */
-	var mask = $('<div class="mask"></div>');
-	var container = $('#dialog-container');	
-	var doIt = function(){};
-	 // 执行操作
-	  $rootScope.do = function(){
-	    doIt();
-	  };
-
-	  // 模态框退出
-	  $rootScope.cancel = function(){
-	    mask.remove();
-	    container.addClass('none');
-	  };  
-	/**
-	 * 删除方法的按钮
-	 */
-	$scope.deleteRow = function(){
-		 mask.insertBefore(container);
-		 container.removeClass('none');
-		 doIt = function(){
-			 if($scope.rowIds.length>0){
-					$http({
-						url:'shop/shopItemAction!deleteShopItemByIds.action',
-						method:'get',
-						params:{
-							ids:$scope.rowIds
-						}
-					}).then(function(resp){
-						if(resp.data.code==1){//代表成功
-							$state.reload();
-						}else{
-							alert("删除失败");
-						}
-					});
-				}
-		 }
-	}
-	
-	
-	 /**
-     * 显示原始图片的方法
-     */
 	$scope.API = {};
 	$scope.distributionTask = function(){
 		$scope.API.distributionTask();

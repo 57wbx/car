@@ -1,5 +1,6 @@
-app.controller("shopPackageEditController",['$scope','$state','$http','sessionStorageService','uploadOneImgService',function($scope,$state,$http,sessionStorageService,uploadOneImgService){
+app.controller("shopPackageEditController",['$scope','$state','$http','sessionStorageService','uploadOneImgService','dataTableSearchService','hintService',function($scope,$state,$http,sessionStorageService,uploadOneImgService,dataTableSearchService,hintService){
 	
+	$scope.search = {} ;
 	$scope.needCacheArray = ["shopPackageDataTableProperties","shopPackageIdForEdit"];
 	sessionStorageService.clearNoCacheItem($scope.needCacheArray);
 	if($scope.rowIds[0]){
@@ -65,34 +66,6 @@ app.controller("shopPackageEditController",['$scope','$state','$http','sessionSt
 	}
 	
 
-	/**
-	 * 初始化上传图片控件
-	 */
-	//初始化时间控件
-	$('#starTime').focus(
-	    		function(){
-		    		var optionSet = {
-							singleDatePicker : true,
-							timePicker : true,
-							format : 'YYYY-MM-DD HH:mm'
-						};
-		    		$('#starTime').daterangepicker(optionSet).on('apply.daterangepicker', function(ev){
-		    			$scope.formData.starTimeStr=$('#starTime').val();
-		    		});
-	    		}
-	);
-	$('#endTime').focus(
-    		function(){
-	    		var optionSet = {
-						singleDatePicker : true,
-						timePicker : true,
-						format : 'YYYY-MM-DD HH:mm'
-					};
-	    		$('#endTime').daterangepicker(optionSet).on('apply.daterangepicker', function(ev){
-	    			$scope.formData.endTimeStr=$('#endTime').val();
-	    		});
-    		}
-	);
 	
 	/**
 	 * 初始化服务的datatables列表
@@ -174,10 +147,13 @@ app.controller("shopPackageEditController",['$scope','$state','$http','sessionSt
 			if($scope.busTypeTree.selectedTypeCode){
 				data.busTypeCode = $scope.busTypeTree.selectedTypeCode;
 			}
+			data.itemName = $scope.search.itemName;
+			data.isActivity = $scope.search.isActivity;
 	    }).DataTable({
 	    	"sAjaxSource":"shop/shopItemAction!listShopItem.action",
 	    	"bServerSide":true,
 	    	"sAjaxDataProp":"data",
+	    	"sServerMethod": "POST",
 	    	"pageLength":5,
 	    	"dom": '<"top">rt<"bottom"p><"clear">',
 	    	"oLanguage": {
@@ -259,8 +235,30 @@ app.controller("shopPackageEditController",['$scope','$state','$http','sessionSt
 	        			  showBusAtomInfo(busItemTableForChoose,nRow,aData.fid);//根据这一行的id来获取所有服务子项的信息
 	        		  }
 	        	  });
+	          },"initComplete":function(settings,json){
+	        	  initSearchDiv(settings,json);
 	          }
 		});
+	}
+	
+	//初始化搜索框  服务项的搜索框
+	var initSearchDiv = function(settings,json){
+		dataTableSearchService.initSearch([
+			  {formDataName:'search.itemName',placeholder:'服务名称'},
+              {
+           	   formDataName:'search.isActivity',
+           	   label:'是否参加聚惠',
+           	   options:[{label:'全部'},{
+           		//0=加盟店、1=合作店、3=直营店、4=中心店（区域旗舰店）
+			               		   value:0,
+			               		   label:"不参加"
+			               	   	},{
+		                		   value:1,
+		                   		   label:"参加"
+		                   			   }
+               	]
+              }
+		],$scope,settings,busItemTableForChoose);
 	}
 	
 	/**
@@ -384,13 +382,16 @@ app.controller("shopPackageEditController",['$scope','$state','$http','sessionSt
 		}).then(function(resp){
 			var code = resp.data.code ;
 			if(code == 1){//代表保存成功
+				hintService.hint({title: "成功", content: "修改成功！" });
 				$state.go($scope.state.list);
 				$scope.treeAPI.showBusTypeTree();
 			}else{//代表保存失败
-				alert("保存失败");
+				alert(resp.data.message);
 			}
+			$scope.isDoing = false ;
 		},function(resp){
 			alert("保存出错");
+			$scope.isDoing = false ;
 		});
 	}
 	

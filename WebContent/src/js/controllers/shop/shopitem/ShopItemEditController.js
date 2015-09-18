@@ -491,6 +491,7 @@ app.controller("shopItemEditController",['$scope','$state','$http','checkUniqueS
 		}).then(function(resp){
 			var code = resp.data.code ;
 			if(code == 1){//代表保存成功
+				 hintService.hint({title: "成功", content: "保存成功！" });
 				$state.go($scope.state.list);
 			}else{//代表保存失败
 				alert("保存失败");

@@ -1,15 +1,14 @@
 /**
 * 所有的表的状态，或者需要装换的数据，都将从该文件中找相关的表服务
 * 表服务的命名规则为：表名+StateService  例如：orderStateService
+* zw
 */
-
-
 app.factory("commonGetStateUtilService",[function(){
 	return {
 		/**key为需要装换的值，列如：1，Value对象为保存可能出现的状态 列如：{1：“hello”,2:"helloworld"}
 		 * 当value不存在时返回空，当value中没有这个属性值时也返回空*/
 		get:function(key,ValueObj){
-			if(!key){
+			if(key===null||key===undefined||key===""){//以免出现 key 为0的情况
 				return " ";
 			}
 			if(ValueObj){
@@ -75,7 +74,7 @@ factory("selectDataService",[function(){
  * 该服务提供了所有订单表中，有关的状态信息。
  * 
  */
-factory("orderStateService",[function(){
+factory("orderStateService",['commonGetStateUtilService',function(commonGetStateUtilService){
 	/**
 	 * 服务的详细实现 
 	 */
@@ -90,19 +89,13 @@ factory("orderStateService",[function(){
 		default:return ""; break ;
 		}
 	};
-	//orderState for Order 0=初始、1=下单、2=接单、3=作业中、4=交付、5=结算、9=退单
-	var getOrderState = function(param){
-		switch(param){
-    	//0=初始、1=下单、2=接单、3=作业中、4=交付、5=结算、9=退单
-    	case 0 : return "初始"; break;
-    	case 1 : return "下单";break;
-    	case 2 : return "接单";break;
-    	case 3 : return "作业中";break;
-    	case 4 : return "交付";break;
-    	case 5 : return "结算";break;
-    	case 9 : return "退单";break;
-    	default:return ""; break ;
-    	}
+	//orderState for Order 0=0=初始、1=下单（客户）、2=接单、3=车辆到店、4=派单（分配技工）、
+	//5=作业中、6=完工、7=交付（核查）、8=结算（完成）、9=退单、10=异常（结束）
+	var orderState = {
+			0:"初始",1:"下单",2:"接单",3:"车辆到店",4:"派单（分配技工）",5:"作业中",6:"完工",7:"交付（核查）",8:"结算（完成）",9:"退单",10:"异常（结束）"
+	}
+	function getOrderState(param){
+		return commonGetStateUtilService.get(param,orderState);
 	};
 	//payType 支付方式 1=支付宝、2=微信、3=银联、4=财付通、5=线下
 	var getPayType = function(param){
@@ -115,13 +108,13 @@ factory("orderStateService",[function(){
 		default:return ""; break ;
 		}
 	};
-	//payState 0=未支付、1=已支付  支付状态
-	var getPayState = function(param){
-		switch(param){
-		case 0:return "未支付";break ;
-		case 1:return "已支付";break ;
-		default:return ""; break;
-		}
+	//payState 0=初始化（init）1=预付、2=支付中、3=支付失败（fail）、4=支付成功（success）、9=退款（退单）back
+
+	var payState = {
+			0:"初始化",1:"预付",2:"支付中",3:"支付失败",4:"支付成功",9:"退款（退单）"
+	}
+	function getPayState(param){
+		return commonGetStateUtilService.get(param,payState);
 	};
 	//busType 业务类型 0=送车、1=上门取车、2=现场
 	var getBusType = function(param){

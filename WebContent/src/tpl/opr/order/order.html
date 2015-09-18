@@ -8,6 +8,26 @@
 				<div class="col-sm-9 text-right">
 					<div class="btn-group" role="group"  style="margin-top: 20px;">
 										  <button type="button" class="btn btn-default " ng-click="distributionTask()" ng-disabled="!canEdit" ng-if="btns.DISTRIBUTE"><i class="glyphicon glyphicon-user" ></i>分配师傅</button>
+										  
+										  <div class="btn-group dropdown" dropdown ng-if="btns.STATE">
+					          					<button ng-disabled="!canEdit"  class="btn btn-default" dropdown-toggle ng-disabled="mutiple"><i class="fa fa-fw icon-lock"></i>状态<span class="caret"></span></button>
+										        <ul class="dropdown-menu">
+										          		<!-- 1=正常、2=停用、3=注销（黑名单） -->
+											            <li><a href ng-click="setState(0);">初始</a></li>
+											            <li><a href ng-click="setState(1);">下单</a></li>
+											            <li><a href ng-click="setState(2);">接单</a></li>
+											            <li><a href ng-click="setState(3);">车辆到店</a></li>
+											            <li><a href ng-click="setState(4);">派单（分配技工）</a></li>
+											            <li><a href ng-click="setState(5);">作业中</a></li>
+											            <li><a href ng-click="setState(6);">完工</a></li>
+											            <li><a href ng-click="setState(7);">交付（核查）</a></li>
+											            <li><a href ng-click="setState(8);">结算（完成）</a></li>
+											            <li><a href ng-click="setState(9);">退单</a></li>
+											            <li><a href ng-click="setState(10);">异常（结束）</a></li>
+										        </ul>
+										</div>
+										  
+										  <button type="button" class="btn btn-default " ng-click="seeDetails();" ng-disabled="!canEdit" ng-if="btns.DISTRIBUTE"><i class="fa fa-fw fa-eye" ></i>查看订单详情</button>
 					</div>
 				</div>
 			</div>

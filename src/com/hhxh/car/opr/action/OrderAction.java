@@ -14,9 +14,13 @@ import org.hibernate.criterion.Restrictions;
 import com.hhxh.car.base.member.domain.Member;
 import com.hhxh.car.common.action.BaseAction;
 import com.hhxh.car.common.annotation.AuthCheck;
+import com.hhxh.car.common.util.ConvertObjectMapUtil;
 import com.hhxh.car.common.util.JsonValueFilterConfig;
 import com.hhxh.car.opr.domain.Order;
+import com.hhxh.car.opr.domain.OrderAlipay;
 import com.hhxh.car.opr.domain.OrderTrack;
+import com.hhxh.car.opr.domain.OrderWxpay;
+import com.hhxh.car.opr.state.OrderState;
 import com.opensymphony.xwork2.ModelDriven;
 
 /**
@@ -37,8 +41,6 @@ public class OrderAction extends BaseAction implements ModelDriven<Order>
 	private String orderName;
 
 	private String workerId;// 师傅的code
-
-	
 
 	/**
 	 * 根据网店来，来查出所有该商店的订单信息
@@ -136,7 +138,7 @@ public class OrderAction extends BaseAction implements ModelDriven<Order>
 	/**
 	 * 为一个订单分配师傅
 	 */
-	@AuthCheck(isCheckLoginOnly=false)
+	@AuthCheck(isCheckLoginOnly = false)
 	public void distributeWorker()
 	{
 		try
@@ -150,6 +152,7 @@ public class OrderAction extends BaseAction implements ModelDriven<Order>
 					if (worker != null)
 					{
 						order.setWorker(worker);
+						order.setOrderState(OrderState.ORDERSTATE_DELIVERY_WORKER);
 						this.baseService.update(order);
 						this.putJson();
 					} else
@@ -170,6 +173,88 @@ public class OrderAction extends BaseAction implements ModelDriven<Order>
 		{
 			log.error("为订单分配师傅失败", e);
 			this.putJson(false, this.getMessageFromConfig("order_error"));
+		}
+	}
+
+	/**
+	 * 获取订单支付详情
+	 */
+	@AuthCheck
+	public void detailsOrderPay()
+	{
+		if (isNotEmpty(this.order.getId()))
+		{
+			this.order = this.baseService.get(Order.class, this.order.getId());
+			if (this.order != null)
+			{
+				List<Criterion> params = new ArrayList<Criterion>();
+				params.add(Restrictions.eq("orderCode", this.order.getId()));
+
+				if (order.getPayType() == OrderState.PAYTYPE_WEIXIN)
+				{
+					// 微信
+					OrderWxpay payDetails = this.baseService.get(OrderWxpay.class, params);
+					if (payDetails == null)
+					{
+						this.putJson(false, this.getMessageFromConfig("order_errorId"));
+						return;
+					}
+					Map<String, Object> details = ConvertObjectMapUtil.convertObjectToMap(payDetails, null);
+					details.put("payType", OrderState.PAYTYPE_WEIXIN);
+					jsonObject.put("details", details);
+					this.putJson();
+					return;
+				} else if (this.order.getPayType() == OrderState.PAYTYPE_ZFB)
+				{
+					// 支付宝
+					OrderAlipay payDetails = this.baseService.get(OrderAlipay.class, params);
+					Map<String, Object> details = ConvertObjectMapUtil.convertObjectToMap(payDetails, null);
+					if (payDetails == null)
+					{
+						this.putJson(false, this.getMessageFromConfig("order_errorId"));
+						return;
+					}
+					details.put("payType", OrderState.PAYTYPE_ZFB);
+					jsonObject.put("details", details);
+					this.putJson();
+					return;
+				}
+				this.putJson(false, this.getMessageFromConfig("order_errorId"));
+				return;
+			} else
+			{
+				this.putJson(false, this.getMessageFromConfig("order_errorId"));
+			}
+		} else
+		{
+			this.putJson(false, this.getMessageFromConfig("order_needId"));
+		}
+	}
+
+	/**
+	 * 更改订单的状态
+	 * 
+	 * @return
+	 */
+	@AuthCheck(isCheckLoginOnly = false)
+	public void updateOrderState()
+	{
+		Integer orderState = this.order.getOrderState();
+		if(!OrderState.checkOrderStateValid(orderState)){
+			this.putJson(false, this.getMessageFromConfig("order_orderStateInvalid"));
+			return ;
+		}
+		if(isNotEmpty(this.order.getId())){
+			this.order = this.baseService.get(Order.class,this.order.getId());
+			if(this.order != null){
+				this.order.setOrderState(orderState);
+				this.baseService.update(this.order);
+				this.putJson();
+			}else{
+				this.putJson(false, this.getMessageFromConfig("order_errorId"));
+			}
+		}else{
+			this.putJson(false, this.getMessageFromConfig("order_needId"));
 		}
 	}
 
