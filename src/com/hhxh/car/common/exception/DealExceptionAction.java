@@ -26,16 +26,17 @@ public class DealExceptionAction  extends BaseAction
 		try{
 			log.info("struts机制获取异常，在这里进行输出错误信息操作,并记录日志");
 			Exception ex = (Exception) ActionContext.getContext() .getValueStack().findValue("exception"); 
-			addErrorLog(ex);
-			log.error("系统出错", ex);
+			
 			if(ex instanceof ErrorMessageException){
+				log.info("业务类型错误，不需要进行数据库保存。只要输出错误信息就行");
 				this.putJson(false, ex.getMessage());
 			}else{
+				log.error("系统出错,struts处理异常机制处理异常", ex);
+				addErrorLog(ex);
 				this.putJson(false, this.getMessageFromConfig("common_deflaut_message"));
 			}
 		}catch(Exception e){
 			log.error("处理错误信息时失败",e);
-//			e.printStackTrace();
 		}
 	}
 	

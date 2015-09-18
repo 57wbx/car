@@ -47,11 +47,11 @@
 	          	<input name="spec" type="text" placeholder="规格" class="form-control" ng-model="formData.spec" maxlength="25">
 	          	<div pattern-style form-input="form.spec"  input-message="message.spec" ></div>
 	        </div>
-        
-	        <label class="col-sm-1 control-label">出厂价格</label>
+	        
+	        <label class="col-sm-1 control-label">型号</label>
 	        <div class="col-sm-3">
-	          	<input name="sunitPrice" type="number" placeholder="出厂价格" class="form-control" ng-model="formData.sunitPrice" min="0" ng-pattern="/^[0-9]+(\.[0-9]{1,2})?$/" >
-	          	<div pattern-style form-input="form.sunitPrice"  input-message="message.sunitPrice" ></div>
+	          	<input name="spec" type="text" placeholder="型号" class="form-control" ng-model="formData.model" maxlength="25">
+	          	<div pattern-style form-input="form.model"  input-message="message.model" ></div>
 	        </div>
         
       </div>
@@ -70,18 +70,12 @@
 	          	<div pattern-style form-input="form.eunitPrice"  input-message="message.eunitPrice" ></div>
 	        </div>
         
-	        <label class="col-sm-1 control-label">使用状态<i class="fa fa-asterisk text-danger"></i></label>
+        	<label class="col-sm-1 control-label">出厂价格</label>
 	        <div class="col-sm-3">
-		          <select id="useState" class="form-control" required ng-model="formData.useState">
-		          	<!-- 0=初始化、1=待审核、2=发布（审核通过）、3=停止/下架、4=强制下架（违规） -->
-			            <option value="0">初始化</option>
-			            <option value="1">待审核</option>
-			            <option value="2">发布（审核通过）</option>
-			            <option value="3">停止/下架</option>
-			            <option value="4">强制下架（违规）</option>
-		          </select>
+	          	<input name="sunitPrice" type="number" placeholder="出厂价格" class="form-control" ng-model="formData.sunitPrice" min="0" ng-pattern="/^[0-9]+(\.[0-9]{1,2})?$/" >
+	          	<div pattern-style form-input="form.sunitPrice"  input-message="message.sunitPrice" ></div>
 	        </div>
-        
+        	
       </div>
       
       <div class="form-group">
@@ -106,6 +100,22 @@
 	          	<input type="text" placeholder="来源" class="form-control" ng-model="formData.partSource" ng-maxlength="100">
 	        </div>
         
+      </div>
+      
+      <div class="form-group">
+      
+      		<label class="col-sm-1 control-label">使用状态<i class="fa fa-asterisk text-danger"></i></label>
+	        <div class="col-sm-3">
+		          <select id="useState" class="form-control" required ng-model="formData.useState">
+		          	<!-- 0=初始化、1=待审核、2=发布（审核通过）、3=停止/下架、4=强制下架（违规） -->
+			            <option value="0">初始化</option>
+			            <option value="1">待审核</option>
+			            <option value="2">发布（审核通过）</option>
+			            <option value="3">停止/下架</option>
+			            <option value="4">强制下架（违规）</option>
+		          </select>
+	        </div>
+      
       </div>
      
       <div class="form-group">

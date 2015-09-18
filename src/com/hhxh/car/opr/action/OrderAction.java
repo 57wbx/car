@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.hibernate.Criteria;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Restrictions;
@@ -83,16 +82,14 @@ public class OrderAction extends BaseAction implements ModelDriven<Order>
 				criterions.add(Restrictions.like("name", this.workerName, MatchMode.ANYWHERE));
 			}
 			// 排序的规则
-			org.hibernate.criterion.Order o = null;
+			List<org.hibernate.criterion.Order> os = null;
 			if (isNotEmpty(orderName))
 			{
-				o = org.hibernate.criterion.Order.asc(orderName);
-			} else
-			{
-				o = org.hibernate.criterion.Order.desc("updateTime");
+				os.add(org.hibernate.criterion.Order.asc(orderName));
 			}
+			os.add(org.hibernate.criterion.Order.desc("updateTime"));
 
-			List<Order> orders = this.baseService.gets(Order.class, params, criteriaMap, this.getIDisplayStart(), this.getIDisplayLength(), o);
+			List<Order> orders = this.baseService.gets(Order.class, params, criteriaMap, this.getIDisplayStart(), this.getIDisplayLength(), os);
 			int recordsTotal = this.baseService.getSize(Order.class, params, criteriaMap);
 			jsonObject.accumulate("data", orders, this.getJsonConfig(JsonValueFilterConfig.ORDER_HAS_TIGUSERS_HAS_WORKER));
 			jsonObject.put("recordsFiltered", recordsTotal);

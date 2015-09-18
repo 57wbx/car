@@ -7,17 +7,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
+
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
-import net.sf.json.JsonConfig;
-
 import com.hhxh.car.base.autopart.domain.AutoPart;
+import com.hhxh.car.base.autopart.service.AutoPartService;
 import com.hhxh.car.common.action.BaseAction;
 import com.hhxh.car.common.annotation.AuthCheck;
-import com.hhxh.car.common.util.JsonDateValueProcessor;
+import com.hhxh.car.common.exception.ErrorMessageException;
 import com.opensymphony.xwork2.ModelDriven;
 
 public class AutoPartAction extends BaseAction implements ModelDriven<AutoPart>
@@ -28,6 +29,9 @@ public class AutoPartAction extends BaseAction implements ModelDriven<AutoPart>
 	private String busTypeCode;
 
 	private String orderName;
+
+	@Resource
+	private AutoPartService autoPartService;
 
 	/**
 	 * 返回所有的配件数据
@@ -80,124 +84,97 @@ public class AutoPartAction extends BaseAction implements ModelDriven<AutoPart>
 	}
 
 	/**
-	 * 保存一个配件
+	 * 保存一个配件 修改或者新增一个配件
+	 * 
+	 * @throws Exception
 	 */
-	public void addAutoPart()
+	@AuthCheck
+	public void addAutoPart() throws Exception
 	{
-		jsonObject.put("code", 1);
 		autoPart.setUpdateTime(new Date());
-		try
+		if (isNotEmpty(this.autoPart.getId()))
 		{
-			if (autoPart.getId() != null && !"".equals(autoPart.getId()))
-			{
-				this.baseService.update(autoPart);
-			} else
-			{
-				this.baseService.saveObject(autoPart);
-			}
-		} catch (Exception e)
+			this.baseService.update(autoPart);
+		} else
 		{
-			jsonObject.put("code", 0);
-			jsonObject.put("message", "保存失败");
+			this.baseService.saveObject(autoPart);
 		}
+		this.putJson();
 
-		try
-		{
-			this.putJson(jsonObject.toString());
-		} catch (IOException e)
-		{
-		}
 	}
 
 	/**
 	 * 获取一个指定id的组件信息
 	 */
+	@AuthCheck
 	public void detailsAutoPartById()
 	{
-		AutoPart ap = this.baseService.get(AutoPart.class, autoPart.getId());
-
-		JsonConfig jsonConfig = new JsonConfig();
-		jsonConfig.registerJsonValueProcessor(Date.class, new JsonDateValueProcessor());
-
-		if (ap != null)
+		if (isNotEmpty(this.autoPart.getId()))
 		{
-			jsonObject.put("code", 1);// 成功返回
-			jsonObject.accumulate("details", ap, jsonConfig);
+			this.autoPart = this.baseService.get(AutoPart.class, this.autoPart.getId());
+			if (this.autoPart != null)
+			{
+				this.jsonObject.accumulate("details", this.autoPart, this.getJsonConfig(null));
+				this.putJson();
+			} else
+			{
+				this.putJson(false, this.getMessageFromConfig("autopart_errorId"));
+			}
 		} else
 		{
-			jsonObject.put("code", 0);
-			jsonObject.accumulate("message", "获取数据失败");
-		}
-
-		try
-		{
-			this.putJson(jsonObject.toString());
-		} catch (IOException e)
-		{
-			e.printStackTrace();
+			this.putJson(false, this.getMessageFromConfig("autopart_needId"));
 		}
 	}
 
 	/**
-	 * 根据删除一个指定的组件记录
+	 * 根据删除一个指定的组件记录 需要权限验证
+	 * 
+	 * @throws ErrorMessageException
 	 */
-	public void deleteAutoPartByIds()
+	@AuthCheck(isCheckLoginOnly = false)
+	public void deleteAutoPartByIds() throws ErrorMessageException
 	{
-		jsonObject.put("code", 0);
-		jsonObject.put("message", "删除记录失败");
-		if (ids != null && ids.length > 0)
+		if (isNotEmpty(ids))
 		{
-			for (String id : ids)
-			{
-				this.baseService.delete(AutoPart.class, id);
-			}
-			jsonObject.put("code", 1);// 删除成功
-			jsonObject.put("message", "删除记录成功");
-		}
-
-		try
+			this.autoPartService.deleteAutoPartByIds(ids);
+			this.putJson();
+		} else
 		{
-			this.putJson(jsonObject.toString());
-		} catch (IOException e)
-		{
-			e.printStackTrace();
+			this.putJson(false, this.getMessageFromConfig("autopart_needId"));
 		}
 	}
 
 	/**
 	 * 检查一个编码是否唯一
 	 */
+	@AuthCheck
 	public void checkPartCodeUnique()
 	{
 		Map<String, Object> paramMap = new HashMap<String, Object>();
-		jsonObject.put("code", 1);
-		if (autoPart.getId() == null || "".equals(autoPart.getId()))
+		paramMap.put("partCode", autoPart.getPartCode());
+		
+		if (!isNotEmpty(this.autoPart.getId()))
 		{
 			// 属于新增操作的检查
-			paramMap.put("partCode", autoPart.getPartCode());
 			autoPart = (AutoPart) this.baseService.get("From AutoPart b where b.partCode = :partCode", paramMap);
 			if (autoPart != null)
 			{
-				jsonObject.put("code", 0);
+				this.putJson(false, null);
+				return ;
 			}
 		} else
 		{
 			// 属于修改操作
-			paramMap.put("partCode", autoPart.getPartCode());
 			paramMap.put("id", autoPart.getId());
 			autoPart = (AutoPart) this.baseService.get("From AutoPart b where b.partCode = :partCode and b.id <> :id", paramMap);
 			if (autoPart != null)
 			{
-				jsonObject.put("code", 0);
+				this.putJson(false, null);
+				return ;
 			}
 		}
-		try
-		{
-			this.putJson(jsonObject.toString());
-		} catch (IOException e)
-		{
-			e.printStackTrace();
-		}
+		//检测配件编码还没有被其他的使用
+		this.putJson();
 	}
 
 	@Override

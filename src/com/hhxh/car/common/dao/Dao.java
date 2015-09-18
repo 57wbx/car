@@ -152,6 +152,7 @@ public class Dao
 	{
 		return getSize(clazz, null);
 	}
+	
 
 	/**
 	 * 

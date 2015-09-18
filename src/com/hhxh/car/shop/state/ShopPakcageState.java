@@ -1,4 +1,4 @@
-package com.hhxh.car.shop.action;
+package com.hhxh.car.shop.state;
 
 public class ShopPakcageState
 {
