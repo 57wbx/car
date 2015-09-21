@@ -2,14 +2,12 @@ package com.hhxh.car.common.dao;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.TreeSet;
 
 import javax.annotation.Resource;
 
@@ -548,7 +546,10 @@ public class Dao
 	}
 	
 	/**
-	 * 查询方法
+	 * 查询方法 利用qbc来进行查询
+	 * @param params 当前javabean中的查询条件
+	 * @param criteriaMap 子对象，或者子集合中的查询条件；当只有key，value为空时，那么只强制加载其key名称的子对象或者子集合
+	 * @author zw
 	 */
 	public <T> List<T> gets(Class<T> class1, List<Criterion> params, Map<String, List<Criterion>> criteriaMap, int iDisplayStart, int iDisplayLength, List<Order> orders)
 	{
@@ -572,9 +573,11 @@ public class Dao
 			for (String k : keys)
 			{
 				List<Criterion> childsCriterions = criteriaMap.get(k);
+				//当key存在时，不论其list是否具有值，都进行强制加载
+				mainCriteria.setFetchMode(k, FetchMode.JOIN);
+				
 				if (childsCriterions != null && childsCriterions.size() > 0)
 				{
-					mainCriteria.setFetchMode(k, FetchMode.JOIN);
 					Criteria childCriteria = mainCriteria.createCriteria(k);
 					for (Criterion child : childsCriterions)
 					{

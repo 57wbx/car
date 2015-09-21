@@ -35,6 +35,9 @@ public class OrderTrack implements java.io.Serializable
 	@Column
 	private String memo;
 	
+	@Column
+	private Integer operatorType ;
+	
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="orderCode")
 	private Order order ;
@@ -127,6 +130,16 @@ public class OrderTrack implements java.io.Serializable
 	public void setOrder(Order order)
 	{
 		this.order = order;
+	}
+
+	public Integer getOperatorType()
+	{
+		return operatorType;
+	}
+
+	public void setOperatorType(Integer operatorType)
+	{
+		this.operatorType = operatorType;
 	}
 
 }

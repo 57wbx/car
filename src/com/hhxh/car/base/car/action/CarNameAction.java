@@ -67,7 +67,7 @@ public class CarNameAction extends BaseAction implements ModelDriven<CarName>
 
 			List<CarName> cars = this.baseService.gets(CarName.class, params, criteriaMap, this.getIDisplayStart(), this.getIDisplayLength(), orders);
 			int recordsTotal = this.baseService.getSize(CarName.class, params, criteriaMap);
-			jsonObject.accumulate("data", cars, this.getJsonConfig(JsonValueFilterConfig.CARNAME_ONLY_CARNAME));
+			jsonObject.accumulate("data", cars, this.getJsonConfig(JsonValueFilterConfig.Base.CarName.CARNAME_ONLY_CARNAME));
 			jsonObject.put("recordsFiltered", recordsTotal);
 			jsonObject.put("recordsTotal", recordsTotal);
 			this.putJson();
@@ -142,7 +142,7 @@ public class CarNameAction extends BaseAction implements ModelDriven<CarName>
 				this.carName = this.baseService.get(CarName.class, this.carName.getId());
 				if (this.carName != null)
 				{
-					jsonObject.accumulate("details", this.carName, this.getJsonConfig(JsonValueFilterConfig.CARNAME_ONLY_CARNAME));
+					jsonObject.accumulate("details", this.carName, this.getJsonConfig(JsonValueFilterConfig.Base.CarName.CARNAME_ONLY_CARNAME));
 					this.putJson();
 				} else
 				{

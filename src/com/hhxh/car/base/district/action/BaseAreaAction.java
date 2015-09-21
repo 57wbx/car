@@ -113,7 +113,7 @@ public class BaseAreaAction extends BaseAction implements ModelDriven<BaseArea>
 			try
 			{
 				baseArea = this.baseService.get(BaseArea.class, this.baseArea.getId());
-				this.jsonObject.accumulate("details", baseArea, this.getJsonConfig(JsonValueFilterConfig.BASEAREA_ONLY_BASEAREA));
+				this.jsonObject.accumulate("details", baseArea, this.getJsonConfig(JsonValueFilterConfig.Base.District.BASEAREA_ONLY_BASEAREA));
 				this.putJson();
 			} catch (Exception e)
 			{
@@ -135,7 +135,7 @@ public class BaseAreaAction extends BaseAction implements ModelDriven<BaseArea>
 				params.add(Restrictions.eq("cellCode", this.baseArea.getCellCode()));
 				baseArea = this.baseService.get(BaseArea.class,params,new String[]{"baseAreas"});
 				if(baseArea!=null){
-					jsonObject.accumulate("data", baseArea.getBaseAreas(),this.getJsonConfig(JsonValueFilterConfig.BASEAREA_ONLY_BASEAREA));
+					jsonObject.accumulate("data", baseArea.getBaseAreas(),this.getJsonConfig(JsonValueFilterConfig.Base.District.BASEAREA_ONLY_BASEAREA));
 					this.putJson();
 				}else{
 					this.putJson(false, this.getMessageFromConfig("district_errorId"));

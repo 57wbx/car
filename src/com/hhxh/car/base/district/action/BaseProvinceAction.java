@@ -71,7 +71,7 @@ public class BaseProvinceAction extends BaseAction implements ModelDriven<BasePr
 				if (baseProvince != null)
 				{
 					List<BaseCity> citys = new ArrayList<BaseCity>(baseProvince.getBaseCitys());
-					jsonObject.accumulate("data", citys, this.getJsonConfig(JsonValueFilterConfig.BASECITY_ONLY_BASECITY));
+					jsonObject.accumulate("data", citys, this.getJsonConfig(JsonValueFilterConfig.Base.District.BASECITY_ONLY_BASECITY));
 					this.putJson();
 				} else
 				{

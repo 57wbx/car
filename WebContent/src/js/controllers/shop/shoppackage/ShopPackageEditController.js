@@ -375,6 +375,13 @@ app.controller("shopPackageEditController",['$scope','$state','$http','sessionSt
 		$scope.formData.itemIds = $scope.itemIds;
 		$scope.formData.packageCode = $scope.formData.busTypeCode + $scope.formData.packageCode;
 		
+		$scope.formData.standardPrice = $scope.formData.workHours + $scope.formData.autoPartsPrice ;
+		if($scope.formData.isActivity == 0){
+			$scope.formData.actualPrice = $scope.formData.workHours + $scope.formData.autoPartsPrice ;
+			$scope.formData.starTimeStr = undefined;
+			$scope.formData.endTimeStr = undefined;
+		}
+		
 		$http({
 			url:"shop/shopPackageAction!saveShopPackage.action",
 			method:'post',
@@ -421,73 +428,6 @@ app.controller("shopPackageEditController",['$scope','$state','$http','sessionSt
 			$scope.treeAPI.showBusTypeTree();
 		}
 	}
-	/**
-	 * 初始话提供选择的业务类型树
-	 */
-	$scope.initBusTypeZTree = function(e){
-		showMenu();
-	}
-	
-	/**
-	 * 业务类型zTree的配置文件
-	 */
-	var setting = {
-			view: {
-				dblClickExpand: false,
-				showIcon: false
-			},
-			data: {
-				simpleData: {
-					enable: true
-				}
-			},
-			callback: {
-				onClick: onClick
-			}
-		};
-		
-		/**
-		 * 获取业务类型的数据
-		 */
-		$http({
-			url:"base/busTypeAction!busTypeTree.action",
-			method:'get'
-		}).then(function(resp){
-			var zNodes = resp.data.busTypes;
-			$.fn.zTree.init($("#treeDemo"), setting, zNodes);
-		});
-		
-		function onClick(e, treeId, treeNode) {
-			$scope.formData.busTypeName = treeNode.name ;
-			$("#busTypeName").val(treeNode.name);
-			$scope.formData.busTypeCode = treeNode.id ;
-			$("#clickId").trigger("click");
-		}
-
-		function showMenu() {
-			if($("#menuContent").attr("style").indexOf("none")>-1){
-				var cityObj = $("#busTypeName");
-				$("#menuContent").css({left:15 + "px", top:34 + "px"}).slideDown("fast");
-				$("#menuContent").css("width",cityObj.innerWidth());
-				$("body").bind("mousedown", onBodyDown);
-			}else{
-				hideMenu();
-			}
-			
-		}
-		function hideMenu() {
-			$("#menuContent").fadeOut("fast");
-			$("body").unbind("mousedown", onBodyDown);
-		}
-		function onBodyDown(event) {
-			if (!(event.target.id == "menuBtn" || event.target.id == "menuContent" || $(event.target).parents("#menuContent").length>0)) {
-				hideMenu();
-			}
-		}
-	
-		
-		
-		
 		
 		/**
 		 * 初始化表单中的数据
@@ -526,6 +466,8 @@ app.controller("shopPackageEditController",['$scope','$state','$http','sessionSt
 				$scope.formData.shopItems = undefined;
 				$scope.formData.updateTime = undefined;
 				
+				//监控是否聚会的值的变化
+				watchIsActivity();
 			}else{
 				$state.go($scope.state.list);
 			}
@@ -534,5 +476,20 @@ app.controller("shopPackageEditController",['$scope','$state','$http','sessionSt
 		//初始化选中的数据
 		$scope.setCanEdit(false);
 		$scope.clearRowIds();
+		
+		/**
+		 * 监控是否参加活动的变化
+		 */
+		function watchIsActivity(){
+			var isFirst = true ;
+			$scope.$watch("formData.isActivity",function(val){
+				if(val == 0){
+					$scope.formData.actualPrice = 0 ;
+				}else if(val == 1 && !isFirst){
+					$scope.formData.actualPrice = $scope.formData.workHours + $scope.formData.autoPartsPrice ;
+				}
+				isFirst = false ;
+			})
+		}
 	
 }]);

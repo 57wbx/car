@@ -124,7 +124,7 @@ public class PushMessageAction extends BaseAction implements ModelDriven<PushMes
 			List<Map<String, Object>> datas = new ArrayList<Map<String, Object>>();
 			for (PushMessage pm : pushMessages)
 			{
-				Map m = ConvertObjectMapUtil.convertObjectToMap(pm, JsonValueFilterConfig.PUSHMESSAGE_ONLY_PUSHMESSAGE);
+				Map m = ConvertObjectMapUtil.convertObjectToMap(pm, JsonValueFilterConfig.Tig.PushMessage.PUSHMESSAGE_ONLY_PUSHMESSAGE);
 				if (pm.getCreateUser() != null)
 				{
 					m.put("userName", pm.getCreateUser().getName());
@@ -182,7 +182,7 @@ public class PushMessageAction extends BaseAction implements ModelDriven<PushMes
 				this.pushMessage = this.baseService.get(PushMessage.class, this.pushMessage.getId());
 				if (this.pushMessage != null)
 				{
-					this.jsonObject.accumulate("details", this.pushMessage,this.getJsonConfig(JsonValueFilterConfig.PUSHMESSAGE_HAS_PUSHMESSAGEPART));
+					this.jsonObject.accumulate("details", this.pushMessage,this.getJsonConfig(JsonValueFilterConfig.Tig.PushMessage.PUSHMESSAGE_HAS_PUSHMESSAGEPART));
 					this.putJson();
 				}else{
 					this.putJson(false, this.getMessageFromConfig("pushMessage_errorId"));

@@ -100,7 +100,7 @@ public class BaseCityAction extends BaseAction implements ModelDriven<BaseCity>{
 				params.add(Restrictions.eq("cellCode", this.baseCity.getCellCode()));
 				baseCity = this.baseService.get(BaseCity.class,params,new String[]{"baseAreas"});
 				if(baseCity!=null){
-					jsonObject.accumulate("data", baseCity.getBaseAreas(),this.getJsonConfig(JsonValueFilterConfig.BASEAREA_ONLY_BASEAREA));
+					jsonObject.accumulate("data", baseCity.getBaseAreas(),this.getJsonConfig(JsonValueFilterConfig.Base.District.BASEAREA_ONLY_BASEAREA));
 					this.putJson();
 				}else{
 					this.putJson(false, this.getMessageFromConfig("district_errorId"));

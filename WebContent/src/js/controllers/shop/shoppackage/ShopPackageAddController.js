@@ -365,6 +365,13 @@ app.controller("shopPackageAddController",['$scope','$state','$http','sessionSto
 		$scope.formData.itemIds = $scope.itemIds;
 		$scope.formData.packageCode = $scope.formData.busTypeCode + $scope.formData.packageCode;
 		
+		$scope.formData.standardPrice = $scope.formData.workHours + $scope.formData.autoPartsPrice ;
+		if($scope.formData.isActivity == 0){
+			$scope.formData.actualPrice = $scope.formData.workHours + $scope.formData.autoPartsPrice ;
+			$scope.formData.starTimeStr = undefined;
+			$scope.formData.endTimeStr = undefined;
+		}
+		
 		$http({
 			url:"shop/shopPackageAction!addShopPackage.action",
 			method:'post',
@@ -425,5 +432,16 @@ app.controller("shopPackageAddController",['$scope','$state','$http','sessionSto
 		$scope.formData.useState = 0;
 		$scope.formData.isActivity = 0 ;
 	}
+	
+	/**
+	 * 监控是否参加活动的变化
+	 */
+	$scope.$watch("formData.isActivity",function(val){
+		if(val == 0){
+			$scope.formData.actualPrice = 0 ;
+		}else if(val == 1){
+			$scope.formData.actualPrice = $scope.formData.workHours + $scope.formData.autoPartsPrice ;
+		}
+	})
 	
 }]);

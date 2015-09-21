@@ -57,6 +57,7 @@ public class ShopItemService extends BaseService
 
 	/**
 	 * 修改一个商家服务
+	 * 
 	 * @param shopItem
 	 * @param shopAtomList
 	 * @param deleteBusAtomIds

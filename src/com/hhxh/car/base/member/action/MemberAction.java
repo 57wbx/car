@@ -104,7 +104,7 @@ public class MemberAction extends BaseAction implements ModelDriven<Member>
 
 			jsonObject.put("recordsFiltered", recordsTotal);
 			jsonObject.put("recordsTotal", recordsTotal);
-			jsonObject.accumulate("data", members, this.getJsonConfig(JsonValueFilterConfig.MEMBER_ONLY_MEMBER));
+			jsonObject.accumulate("data", members, this.getJsonConfig(JsonValueFilterConfig.Base.Member.MEMBER_ONLY_MEMBER));
 			this.putJson();
 		} catch (Exception e)
 		{
@@ -129,7 +129,7 @@ public class MemberAction extends BaseAction implements ModelDriven<Member>
 				if (isWorker(member))
 				{
 					// 当数据存在，并且数据内容数据类型是师傅数据
-					this.jsonObject.accumulate("details", member, this.getJsonConfig(JsonValueFilterConfig.MEMBER_ONLY_MEMBER));
+					this.jsonObject.accumulate("details", member, this.getJsonConfig(JsonValueFilterConfig.Base.Member.MEMBER_ONLY_MEMBER));
 					this.putJson();
 					return;
 				} else
@@ -251,7 +251,7 @@ public class MemberAction extends BaseAction implements ModelDriven<Member>
 			int recordsTotal = this.baseService.getSize(Member.class, params);
 			jsonObject.put("recordsFiltered", recordsTotal);
 			jsonObject.put("recordsTotal", recordsTotal);
-			jsonObject.accumulate("data", carowners, this.getJsonConfig(JsonValueFilterConfig.MEMBER_ONLY_MEMBER));
+			jsonObject.accumulate("data", carowners, this.getJsonConfig(JsonValueFilterConfig.Base.Member.MEMBER_ONLY_MEMBER));
 			this.putJson();
 
 		} catch (Exception e)
@@ -275,7 +275,7 @@ public class MemberAction extends BaseAction implements ModelDriven<Member>
 				member = this.baseService.get(Member.class, this.member.getId());
 				if (member != null && isCarowner(member))
 				{
-					this.jsonObject.accumulate("details", member, this.getJsonConfig(JsonValueFilterConfig.MEMBER_ONLY_MEMBER));
+					this.jsonObject.accumulate("details", member, this.getJsonConfig(JsonValueFilterConfig.Base.Member.MEMBER_ONLY_MEMBER));
 					this.putJson();
 				} else
 				{

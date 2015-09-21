@@ -116,6 +116,15 @@ app.controller('orderListController',['$scope','$state','$timeout','$http','$mod
           }, {
             "mDataProp": "orderName",
           }, {
+              "mDataProp": "orderNum",
+          }, {
+            "mDataProp": "totalAmount",
+          }, {
+              "mDataProp": "payState",
+              "render":function(param){
+            	  return orderStateService.getPayState(param);
+              }
+          }, {
             "render":function(data,type,row){
             	if(row.tigUsers){
             		return row.tigUsers.mySign;
@@ -125,8 +134,8 @@ app.controller('orderListController',['$scope','$state','$timeout','$http','$mod
             }
           }, {
         	  "render":function(data,type,row){
-              	if(row.worker){
-              		return row.worker.name;
+              	if(row.tigUsers){
+              		return row.tigUsers.FMobile;
               	}else{
               		return "";
               	}
@@ -135,7 +144,23 @@ app.controller('orderListController',['$scope','$state','$timeout','$http','$mod
             "mDataProp": "orderTime",
           }, {
             "mDataProp": "expectTime",
+            "render":function(param){
+            	if(param){
+            		return param.substr(0,10);
+            	}
+            	return "";
+            }
           }, {
+            "mDataProp": "expectTimeStr",
+          },{
+        	  "render":function(data,type,row){
+              	if(row.worker){
+              		return row.worker.name;
+              	}else{
+              		return "";
+              	}
+              }
+          },{
                 "mDataProp": "serviceType",
                 "render":function(param){
                 	return orderStateService.getServiceType(param);
@@ -146,18 +171,9 @@ app.controller('orderListController',['$scope','$state','$timeout','$http','$mod
             	  return orderStateService.getOrderState(param);
               }
             }, {
-              "mDataProp": "orderNum",
-            }, {
-              "mDataProp": "totalAmount",
-            }, {
               "mDataProp": "payType",
               "render":function(param){
             	  return orderStateService.getPayType(param);
-              }
-            }, {
-              "mDataProp": "payState",
-              "render":function(param){
-            	  return orderStateService.getPayState(param);
               }
             }, {
               "mDataProp": "takeFare",
@@ -236,9 +252,9 @@ app.controller('orderListController',['$scope','$state','$timeout','$http','$mod
 	}
 	
 	/**
-	 * 弹窗事件
+	 * 选择师傅的弹窗事件
 	 */
-	var showModal = function(aData){
+	function showModal(aData){
 		var modalInstance = $modal.open({
    	     templateUrl: 'src/tpl/opr/order/choose_worker.html',
    	     size: 'lg',
@@ -257,6 +273,7 @@ app.controller('orderListController',['$scope','$state','$timeout','$http','$mod
 			busItemTable.ajax.reload();
     	});
 	}
+	
 	
 	/**
 	 * 显示子项信息列表
@@ -296,7 +313,7 @@ app.controller('orderListController',['$scope','$state','$timeout','$http','$mod
           },{
         	"mDataProp":"operTime"  
           },{
-        	"mDataProp":"exReason"  
+        	"mDataProp":"memo"  
           }]
 	});
 	

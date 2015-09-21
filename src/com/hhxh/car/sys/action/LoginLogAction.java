@@ -65,7 +65,7 @@ public class LoginLogAction extends BaseAction implements ModelDriven<LoginLog>
 		List<LoginLog> loginLogs = this.baseService.gets(LoginLog.class, params, criteriaMap, this.getIDisplayStart(), this.getIDisplayLength(), orders);
 		List<Map<String,Object>> returnMap = new ArrayList<Map<String,Object>>();
 		for(LoginLog log : loginLogs){
-			Map<String,Object> map = ConvertObjectMapUtil.convertObjectToMap(log, JsonValueFilterConfig.LOGINLOG_ONLY_LOGINLOG);
+			Map<String,Object> map = ConvertObjectMapUtil.convertObjectToMap(log, JsonValueFilterConfig.Sys.Log.LOGINLOG_ONLY_LOGINLOG);
 			if(log.getUser()!=null){
 				map.put("userName", log.getUser().getName());
 			}
@@ -74,7 +74,7 @@ public class LoginLogAction extends BaseAction implements ModelDriven<LoginLog>
 		
 		int recordsTotal = this.baseService.getSize(LoginLog.class, params, criteriaMap);
 		
-		jsonObject.accumulate("data", returnMap, this.getJsonConfig(JsonValueFilterConfig.LOGINLOG_ONLY_LOGINLOG));
+		jsonObject.accumulate("data", returnMap, this.getJsonConfig(JsonValueFilterConfig.Sys.Log.LOGINLOG_ONLY_LOGINLOG));
 		jsonObject.put("recordsFiltered", recordsTotal);
 		jsonObject.put("recordsTotal", recordsTotal);
 		this.putJson();

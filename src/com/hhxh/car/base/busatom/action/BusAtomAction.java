@@ -141,7 +141,7 @@ public class BusAtomAction extends BaseAction implements ModelDriven<BusAtom>{
 				if(ba!=null){
 					ba.getBusItem().setBusAtoms(null);
 					ba.getBusItem().setBusPackages(null);
-					this.jsonObject.accumulate("details", ba, this.getJsonConfig(JsonValueFilterConfig.BASEATOM_HAS_BUSITEM));
+					this.jsonObject.accumulate("details", ba, this.getJsonConfig(JsonValueFilterConfig.Base.BusAtom.BASEATOM_HAS_BUSITEM));
 					this.putJson();
 					return;
 				}else{

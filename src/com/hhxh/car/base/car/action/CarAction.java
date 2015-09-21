@@ -84,7 +84,7 @@ public class CarAction extends BaseAction implements ModelDriven<Car>
 
 			List<Car> cars = this.baseService.gets(Car.class, params, criteriaMap, this.getIDisplayStart(), this.getIDisplayLength(), orders);
 			int recordsTotal = this.baseService.getSize(Car.class, params, criteriaMap);
-			jsonObject.accumulate("data", cars, this.getJsonConfig(JsonValueFilterConfig.CAR_ONLY_CAR));
+			jsonObject.accumulate("data", cars, this.getJsonConfig(JsonValueFilterConfig.Base.Car.CAR_ONLY_CAR));
 			jsonObject.put("recordsFiltered", recordsTotal);
 			jsonObject.put("recordsTotal", recordsTotal);
 			this.putJson();

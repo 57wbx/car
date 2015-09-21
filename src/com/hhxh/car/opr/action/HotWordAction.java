@@ -63,7 +63,7 @@ public class HotWordAction extends BaseAction implements ModelDriven<HotWord>
 
 			List<HotWord> hotWords = this.baseService.gets(HotWord.class, params, criteriaMap, this.getIDisplayStart(), this.getIDisplayLength(), orders);
 			int recordsTotal = this.baseService.getSize(HotWord.class, params, criteriaMap);
-			jsonObject.accumulate("data", hotWords, this.getJsonConfig(JsonValueFilterConfig.HOTWORD_ONLY_HOTWORD));
+			jsonObject.accumulate("data", hotWords, this.getJsonConfig(JsonValueFilterConfig.Opr.HotWord.HOTWORD_ONLY_HOTWORD));
 			jsonObject.put("recordsFiltered", recordsTotal);
 			jsonObject.put("recordsTotal", recordsTotal);
 			this.putJson();
@@ -106,7 +106,7 @@ public class HotWordAction extends BaseAction implements ModelDriven<HotWord>
 				this.hotWord = this.baseService.get(HotWord.class, this.hotWord.getId());
 				if (this.hotWord != null)
 				{
-					jsonObject.accumulate("details", this.hotWord, this.getJsonConfig(JsonValueFilterConfig.HOTWORD_ONLY_HOTWORD));
+					jsonObject.accumulate("details", this.hotWord, this.getJsonConfig(JsonValueFilterConfig.Opr.HotWord.HOTWORD_ONLY_HOTWORD));
 					this.putJson();
 				} else
 				{

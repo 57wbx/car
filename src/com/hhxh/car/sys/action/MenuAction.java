@@ -17,6 +17,7 @@ import com.hhxh.car.common.util.TypeTranslate;
 import com.hhxh.car.permission.domain.MainMenuItem;
 import com.hhxh.car.permission.domain.PermItem;
 import com.hhxh.car.sys.service.MenuService;
+import com.hhxh.car.sys.state.MenuState;
 import com.opensymphony.xwork2.ModelDriven;
 
 /**
@@ -53,11 +54,11 @@ public class MenuAction extends BaseAction implements ModelDriven<MainMenuItem>
 			List<Map<String, Object>> menusMapList = new ArrayList<Map<String, Object>>();
 			for (MainMenuItem menu : menus)
 			{
-				Map<String, Object> m = ConvertObjectMapUtil.convertObjectToMap(menu, JsonValueFilterConfig.MENU_ONLY_MENU);
+				Map<String, Object> m = ConvertObjectMapUtil.convertObjectToMap(menu, JsonValueFilterConfig.Sys.Menu.MENU_ONLY_MENU);
 				m.put("parentId", menu.getParent() == null ? "" : menu.getParent().getId());
 				menusMapList.add(m);
 			}
-			this.jsonObject.accumulate("data", menusMapList, this.getJsonConfig(JsonValueFilterConfig.MENU_ONLY_MENU));
+			this.jsonObject.accumulate("data", menusMapList, this.getJsonConfig(JsonValueFilterConfig.Sys.Menu.MENU_ONLY_MENU));
 			this.putJson();
 		} catch (Exception e)
 		{
@@ -78,7 +79,7 @@ public class MenuAction extends BaseAction implements ModelDriven<MainMenuItem>
 				menu = this.baseService.get(MainMenuItem.class, this.menu.getId());
 				if (menu != null)
 				{
-					this.jsonObject.accumulate("details", menu, this.getJsonConfig(JsonValueFilterConfig.MENU_ONLY_MENU));
+					this.jsonObject.accumulate("details", menu, this.getJsonConfig(JsonValueFilterConfig.Sys.Menu.MENU_ONLY_MENU));
 					this.putJson();
 				} else
 				{
@@ -104,7 +105,7 @@ public class MenuAction extends BaseAction implements ModelDriven<MainMenuItem>
 				menu = this.baseService.get(MainMenuItem.class, this.menu.getId());
 				if (menu != null)
 				{
-					this.jsonObject.accumulate("data", menu.getPermItems(), this.getJsonConfig(JsonValueFilterConfig.PERMITEM_ONLY_PERMITEM));
+					this.jsonObject.accumulate("data", menu.getPermItems(), this.getJsonConfig(JsonValueFilterConfig.Sys.Menu.PERMITEM_ONLY_PERMITEM));
 					this.putJson();
 				} else
 				{

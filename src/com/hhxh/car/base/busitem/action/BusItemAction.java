@@ -123,7 +123,7 @@ public class BusItemAction extends BaseAction implements ModelDriven<BusItem>
 			List<BusItem> busItems = this.baseService.gets(BusItem.class, params, criteriaMap, this.getIDisplayStart(), this.getIDisplayLength(), orders);
 			int recordsTotal = this.baseService.getSize(BusItem.class, params, criteriaMap);
 
-			jsonObject.accumulate("data", busItems, this.getJsonConfig(JsonValueFilterConfig.BASEITEM_HAS_BASEITEMIMG));
+			jsonObject.accumulate("data", busItems, this.getJsonConfig(JsonValueFilterConfig.Base.BusItem.BASEITEM_HAS_BASEITEMIMG));
 			jsonObject.put("recordsTotal", recordsTotal);
 			jsonObject.put("recordsFiltered", recordsTotal);
 			
@@ -328,8 +328,8 @@ public class BusItemAction extends BaseAction implements ModelDriven<BusItem>
 						busAtomsReturnValue.add(ba);
 					}
 				}
-				jsonObject.accumulate("details", busItem, this.getJsonConfig(JsonValueFilterConfig.BASEITEM_ONLY_BASEITEM));
-				jsonObject.accumulate("busAtoms", busAtomsReturnValue, this.getJsonConfig(JsonValueFilterConfig.BASEITEM_ONLY_BASEITEM));
+				jsonObject.accumulate("details", busItem, this.getJsonConfig(JsonValueFilterConfig.Base.BusItem.BASEITEM_ONLY_BASEITEM));
+				jsonObject.accumulate("busAtoms", busAtomsReturnValue, this.getJsonConfig(JsonValueFilterConfig.Base.BusItem.BASEITEM_ONLY_BASEITEM));
 				this.putJson();
 			}
 		} catch (Exception e)
@@ -437,7 +437,7 @@ public class BusItemAction extends BaseAction implements ModelDriven<BusItem>
 				this.busItem = this.baseService.get(BusItem.class, this.busItem.getFid());
 				if (busItem != null)
 				{
-					this.jsonObject.accumulate("images", busItem.getBusItemImgs(), this.getJsonConfig(JsonValueFilterConfig.BASEITEMIMG_ONLY_BASEITEMIMG));
+					this.jsonObject.accumulate("images", busItem.getBusItemImgs(), this.getJsonConfig(JsonValueFilterConfig.Base.BusItem.BASEITEMIMG_ONLY_BASEITEMIMG));
 					this.putJson();
 					return;
 				} else

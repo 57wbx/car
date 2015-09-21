@@ -79,45 +79,42 @@ public class ShopItemAction extends BaseAction implements ModelDriven<ShopItem>
 	@AuthCheck
 	public void listShopItem()
 	{
-		try
+		List<Criterion> params = new ArrayList<Criterion>();
+
+		// 用来缓存子查询
+		Map<String, List<Criterion>> criteriaMap = new HashMap<String, List<Criterion>>();
+		criteriaMap.put("shopItemImgs", null);
+
+		params.add(Restrictions.eq("carShop", this.getLoginUser().getCarShop()));
+
+		if (isNotEmpty(this.getBusTypeCode()))
 		{
-			List<Criterion> params = new ArrayList<Criterion>();
-
-			params.add(Restrictions.eq("carShop", this.getLoginUser().getCarShop()));
-
-			if (isNotEmpty(this.getBusTypeCode()))
-			{
-				params.add(Restrictions.like("itemCode", this.getBusTypeCode(), MatchMode.ANYWHERE));
-			}
-			if (isNotEmpty(this.shopItem.getItemName()))
-			{
-				params.add(Restrictions.like("itemName", this.shopItem.getItemName(), MatchMode.ANYWHERE));
-			}
-			if (isNotEmpty(this.shopItem.getIsActivity()))
-			{
-				params.add(Restrictions.eq("isActivity", this.shopItem.getIsActivity()));
-			}
-
-			Order order = null;
-			if (isNotEmpty(orderName))
-			{
-				order = Order.asc(orderName);
-			} else
-			{
-				order = Order.desc("updateTime");
-			}
-			List<ShopItem> shopItems = this.baseService.gets(ShopItem.class, params, this.getIDisplayStart(), this.getIDisplayLength(), order);
-			int recordsTotal = this.baseService.getSize(ShopItem.class, params);
-
-			jsonObject.accumulate("data", shopItems, this.getJsonConfig(JsonValueFilterConfig.SHOPITEM_HAS_SHOPITEMIMG));
-			jsonObject.put("recordsTotal", recordsTotal);
-			jsonObject.put("recordsFiltered", recordsTotal);
-			this.putJson();
-		} catch (Exception e)
-		{
-			log.error("获取商家服务", e);
-			this.putJson(false, this.getMessageFromConfig("listShopItemError"));
+			params.add(Restrictions.like("itemCode", this.getBusTypeCode(), MatchMode.ANYWHERE));
 		}
+		if (isNotEmpty(this.shopItem.getItemName()))
+		{
+			params.add(Restrictions.like("itemName", this.shopItem.getItemName(), MatchMode.ANYWHERE));
+		}
+		if (isNotEmpty(this.shopItem.getIsActivity()))
+		{
+			params.add(Restrictions.eq("isActivity", this.shopItem.getIsActivity()));
+		}
+
+		List<Order> orders = new ArrayList<Order>();
+		if (isNotEmpty(orderName))
+		{
+			orders.add(Order.asc(orderName));
+		}
+		orders.add(Order.desc("updateTime"));
+
+		List<ShopItem> shopItems = this.baseService.gets(ShopItem.class, params, criteriaMap, this.getIDisplayStart(), this.getIDisplayLength(), orders);
+
+		int recordsTotal = this.baseService.getSize(ShopItem.class, params);
+
+		jsonObject.accumulate("data", shopItems, this.getJsonConfig(JsonValueFilterConfig.Shop.ShopItem.SHOPITEM_HAS_SHOPITEMIMG));
+		jsonObject.put("recordsTotal", recordsTotal);
+		jsonObject.put("recordsFiltered", recordsTotal);
+		this.putJson();
 	}
 
 	/**
@@ -130,8 +127,8 @@ public class ShopItemAction extends BaseAction implements ModelDriven<ShopItem>
 	{
 		/**
 		 * busAtomDataStr = [{\
-		 * "atomCode\":\"123\",\"atomName\":\"123\",\"autoParts\":123,\"eunitPrice\":\
-		 * " \ " ,\"memo\":\"\",\"partName\":\"前刹车片\" ,\
+		 * "atomCode\":\"123\",\"atomName\":\"123\",\"autoParts\":123,\"eunitPrice\
+		 * " : \ " \ " ,\"memo\":\"\",\"partName\":\"前刹车片\" ,\
 		 * "brandName\":\"迈氏\",\"spec\":\"GB5763-200\",\"model\":\"广州本田飞度1.3L
 		 * 五档手动 两厢\",\"isActivity\":0}, {\
 		 * "atomCode\":\"123\",\"atomName\":\"123\",\"autoParts\":123,\"eunitPrice\":\"\",\"memo\":\"\",\"partName\":\"前刹车片\",\"brandName\":\"迈氏\",\"spec\":\"GB5763-2008\",\"model\":\"广州本田飞度1.3L 五档手动 两厢\""
@@ -184,7 +181,7 @@ public class ShopItemAction extends BaseAction implements ModelDriven<ShopItem>
 				starTime = ymdhm.parse(starTimeStr);
 			} catch (ParseException e)
 			{
-				throw new ErrorMessageException("");
+				throw new ErrorMessageException(this.getMessageFromConfig("time_pattern_error"));
 			}
 		}
 		if (isNotEmpty(endTimeStr))
@@ -194,15 +191,15 @@ public class ShopItemAction extends BaseAction implements ModelDriven<ShopItem>
 				endTime = ymdhm.parse(endTimeStr);
 			} catch (ParseException e)
 			{
-				throw new ErrorMessageException("");
+				throw new ErrorMessageException(this.getMessageFromConfig("time_pattern_error"));
 			}
 		}
-		
+
 		this.shopItem.setShopAtoms(null);
 		this.shopItem.setStarTime(starTime);
 		this.shopItem.setEndTime(endTime);
 		this.shopItem.setUpdateTime(new Date());
-		
+
 		// this.busItemService.saveBusItemContainsBusAtomWithNoId(busItem,busAtomList);
 		this.shopItemService.saveShopItemContainsShopAtomWithNoId(shopItem, shopAtomList);
 		this.putJson();
@@ -250,9 +247,11 @@ public class ShopItemAction extends BaseAction implements ModelDriven<ShopItem>
 
 	/**
 	 * 用来做修改的方法,
+	 * 
+	 * @throws ErrorMessageException
 	 */
 	@AuthCheck
-	public void saveShopItem()
+	public void saveShopItem() throws ErrorMessageException
 	{
 		JSONArray shopAtoms = null;
 		List<ShopAtom> shopAtomList = null;
@@ -289,38 +288,36 @@ public class ShopItemAction extends BaseAction implements ModelDriven<ShopItem>
 				shopAtomList.add(ba);
 			}
 		}
-		try
-		{
-			Date starTime = null;
-			Date endTime = null;
+		Date starTime = null;
+		Date endTime = null;
 
-			if (starTimeStr != null && !"".equals(starTimeStr))
+		if (starTimeStr != null && !"".equals(starTimeStr))
+		{
+			try
 			{
 				starTime = ymdhm.parse(starTimeStr);
+			} catch (ParseException e)
+			{
+				throw new ErrorMessageException(this.getMessageFromConfig("time_pattern_error"));
 			}
-			if (endTimeStr != null && !"".equals(endTimeStr))
+		}
+		if (endTimeStr != null && !"".equals(endTimeStr))
+		{
+			try
 			{
 				endTime = ymdhm.parse(endTimeStr);
+			} catch (ParseException e)
+			{
+				throw new ErrorMessageException(this.getMessageFromConfig("time_pattern_error"));
 			}
-			this.shopItem.setShopAtoms(null);
-			this.shopItem.setStarTime(starTime);
-			this.shopItem.setEndTime(endTime);
-			this.shopItem.setUpdateTime(new Date());
-			this.shopItem.setCarShop(this.getLoginUser().getCarShop());
-			this.shopItemService.updateBusItemWithBusAtom(shopItem, shopAtomList, deleteBusAtomIds);
-			jsonObject.put("code", 1);// 保存成功
-		} catch (Exception e)
-		{
-			jsonObject.put("code", 0);
-			e.printStackTrace();
 		}
-		try
-		{
-			this.putJson(jsonObject.toString());
-		} catch (IOException e)
-		{
-			e.printStackTrace();
-		}
+		this.shopItem.setShopAtoms(null);
+		this.shopItem.setStarTime(starTime);
+		this.shopItem.setEndTime(endTime);
+		this.shopItem.setUpdateTime(new Date());
+		this.shopItem.setCarShop(this.getLoginUser().getCarShop());
+		this.shopItemService.updateBusItemWithBusAtom(shopItem, shopAtomList, deleteBusAtomIds);
+		this.putJson();
 	}
 
 	/**
@@ -348,8 +345,8 @@ public class ShopItemAction extends BaseAction implements ModelDriven<ShopItem>
 						}
 					}
 
-					jsonObject.accumulate("details", shopItem, this.getJsonConfig(JsonValueFilterConfig.SHOPITEM_ONLY_SHOPITEM));
-					jsonObject.accumulate("busAtoms", busAtomsReturnValue, this.getJsonConfig(JsonValueFilterConfig.SHOPATOM_HAS_AUTOPART));
+					jsonObject.accumulate("details", shopItem, this.getJsonConfig(JsonValueFilterConfig.Shop.ShopItem.SHOPITEM_ONLY_SHOPITEM));
+					jsonObject.accumulate("busAtoms", busAtomsReturnValue, this.getJsonConfig(JsonValueFilterConfig.Shop.ShopAtom.SHOPATOM_HAS_AUTOPART));
 					this.putJson();
 					return;
 				} else
@@ -446,7 +443,7 @@ public class ShopItemAction extends BaseAction implements ModelDriven<ShopItem>
 				if (shopItem != null)
 				{
 					List<ShopItemImg> list = new ArrayList<ShopItemImg>(shopItem.getShopItemImgs());
-					this.jsonObject.accumulate("images", list, this.getJsonConfig(JsonValueFilterConfig.SHOPITEMIMG_ONLY_SHOPITEMIMG));
+					this.jsonObject.accumulate("images", list, this.getJsonConfig(JsonValueFilterConfig.Shop.ShopItem.SHOPITEMIMG_ONLY_SHOPITEMIMG));
 					this.putJson();
 				} else
 				{

@@ -6,14 +6,13 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import jxl.common.Logger;
 
+
+import org.apache.log4j.Logger;
 import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Example;
 import org.hibernate.criterion.Order;
 import org.springframework.stereotype.Service;
 
-import com.hhxh.car.base.car.domain.Car;
 import com.hhxh.car.common.dao.Dao;
 
 @Service
@@ -270,6 +269,12 @@ public class BaseService {
 	public <T> T  get(Class<T> clazz,List<Criterion> params,String[] needFetchName){
 		return this.dao.get(clazz, params, needFetchName);
 	}
+	/**
+	 * 查询方法 利用qbc来进行查询
+	 * @param params 当前javabean中的查询条件
+	 * @param criteriaMap 子对象，或者子集合中的查询条件；当只有key，value为空时，那么只强制加载其key名称的子对象或者子集合
+	 * @author zw
+	 */
 	public <T> List<T> gets(Class<T> class1, List<Criterion> params, Map<String, List<Criterion>> criteriaMap, int iDisplayStart, int iDisplayLength, List<Order> orders)
 	{
 		return this.dao.gets(class1, params,criteriaMap,iDisplayStart,iDisplayLength,orders);

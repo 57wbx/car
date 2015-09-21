@@ -58,7 +58,7 @@ public class OperatorLogAction extends BaseAction implements ModelDriven<Operato
 
 		int recordsTotal = this.baseService.getSize(OperatorLog.class, params, criteriaMap);
 
-		jsonObject.accumulate("data", operatorLogs, this.getJsonConfig(JsonValueFilterConfig.OPERATORLOG_ONLY_OPERATORLOG));
+		jsonObject.accumulate("data", operatorLogs, this.getJsonConfig(JsonValueFilterConfig.Sys.Log.OPERATORLOG_ONLY_OPERATORLOG));
 		jsonObject.put("recordsFiltered", recordsTotal);
 		jsonObject.put("recordsTotal", recordsTotal);
 		this.putJson();

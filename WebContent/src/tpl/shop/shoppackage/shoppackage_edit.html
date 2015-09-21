@@ -71,14 +71,22 @@
 	        
 	        <label class="col-sm-1 control-label">标准价<i class="fa fa-asterisk text-danger"></i></label>
 	        <div class="col-sm-3">
-	          	<input name="standardPrice" type="number" placeholder="标准价" class="form-control" ng-model="formData.standardPrice" required min="0" ng-pattern="/^[0-9]+(\.[0-9]{1,2})?$/"  >
-	          	<div pattern-style form-input="busPackageForm.standardPrice"  input-message="message.standardPrice" ></div>
+<!-- 	          	<input name="standardPrice" type="number" placeholder="标准价" class="form-control" ng-model="formData.standardPrice" required min="0" ng-pattern="/^[0-9]+(\.[0-9]{1,2})?$/"  > -->
+<!-- 	          	<div pattern-style form-input="busPackageForm.standardPrice"  input-message="message.standardPrice" ></div> -->
+			<input class="form-control" value="{{formData.workHours + formData.autoPartsPrice}}" disabled>
 	        </div>
 	        
 	        <label class="col-sm-1 control-label">实际价<i class="fa fa-asterisk text-danger"></i></label>
 	        <div class="col-sm-3">
-	          	<input name="actualPrice" type="number" placeholder="实际价" class="form-control" ng-model="formData.actualPrice" required min="0" ng-pattern="/^[0-9]+(\.[0-9]{1,2})?$/" >
-	          	<div pattern-style form-input="busPackageForm.actualPrice"  input-message="message.actualPrice" ></div>
+<!-- 	          	<input name="actualPrice" type="number" placeholder="实际价" class="form-control" ng-model="formData.actualPrice" required min="0" ng-pattern="/^[0-9]+(\.[0-9]{1,2})?$/" > -->
+<!-- 	          	<div pattern-style form-input="busPackageForm.actualPrice"  input-message="message.actualPrice" ></div> -->
+			<div ng-if="formData.isActivity == 1">
+		          	<input name="actualPrice" type="number" placeholder="实际价" class="form-control" ng-model="formData.actualPrice" min="0" ng-pattern="/^[0-9]+(\.[0-9]{1,2})?$/" required >
+		          	<div pattern-style form-input="busPackageForm.actualPrice"  input-message="message.actualPrice" ></div>
+	        	</div>
+	        	<div ng-if="formData.isActivity == 0">
+	        		<input class="form-control" value="{{formData.workHours+formData.autoPartsPrice}}" disabled />
+	        	</div>
 	        </div>
         
       </div>

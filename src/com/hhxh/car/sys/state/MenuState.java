@@ -1,4 +1,4 @@
-package com.hhxh.car.sys.action;
+package com.hhxh.car.sys.state;
 
 /**
  * menu维护类中需要使用到的一些常量

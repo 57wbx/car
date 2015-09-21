@@ -1,7 +1,7 @@
 'use strict';
 
-app.controller('orderController',['$rootScope','$scope','$state','$timeout','$http','sessionStorageService','previewService','roleBtnService','orderStateService','warnService','hintService',
-                                  function($rootScope,$scope,$state,$timeout,$http,sessionStorageService,previewService,roleBtnService,orderStateService,warnService,hintService){
+app.controller('orderController',['$rootScope','$scope','$state','$timeout','$http','$modal','sessionStorageService','previewService','roleBtnService','orderStateService','warnService','hintService',
+                                  function($rootScope,$scope,$state,$timeout,$http,$modal,sessionStorageService,previewService,roleBtnService,orderStateService,warnService,hintService){
 	
 	$scope.rowIds = [];//用来保存所选列表的id
 	
@@ -47,30 +47,58 @@ app.controller('orderController',['$rootScope','$scope','$state','$timeout','$ht
 	}
 	
 	$scope.setState = function(stateCode){
-		warnService.warn("操作提示","您确定要将该订单记录更改为 "+orderStateService.getOrderState(stateCode)+" 状态吗？",function(){ return setOrderState($scope.rowIds[0],stateCode);},function(resp){
-			  if(resp.data.code===1){
-				  hintService.hint({title: "成功", content: "更改成功！" });
-				  if($scope.API.reloadTable){
-					  $scope.API.reloadTable();
-				  }
-			  }else{
-				  alert(resp.data.message);
-			  }
-		  });
+//		warnService.warn("操作提示","您确定要将该订单记录更改为 "+orderStateService.getOrderState(stateCode)+" 状态吗？",function(){ return setOrderState($scope.rowIds[0],stateCode);},function(resp){
+//			  if(resp.data.code===1){
+//				  hintService.hint({title: "成功", content: "更改成功！" });
+//				  if($scope.API.reloadTable){
+//					  $scope.API.reloadTable();
+//				  }
+//			  }else{
+//				  alert(resp.data.message);
+//			  }
+//		  });
+		showModalForUpdateState($scope.rowIds[0],stateCode);
 	}
 	
 	/**
 	 * 请求服务，将一条记录的订单状态改变为指定的状态
 	 */
-	function setOrderState(id,stateCode){
-		return $http({
-			url:"opr/orderAction!updateOrderState.action",
-			method:"post",
-			data:{
-				id:id,
-				orderState:stateCode
-			}
-		}) ;
+//	function setOrderState(id,stateCode){
+//		return $http({
+//			url:"opr/orderAction!updateOrderState.action",
+//			method:"post",
+//			data:{
+//				id:id,
+//				orderState:stateCode
+//			}
+//		}) ;
+//	}
+	
+	/**
+	 * 修改订单状态的弹窗事件
+	 */
+	function showModalForUpdateState(id,stateCode){
+		var modalInstance = $modal.open({
+   	     templateUrl: 'src/tpl/opr/order/order_updatestate_model.html',
+   	     size: 'lg',
+   	     backdrop:true,
+   	     controller:"orderUpdateStateModelController",
+   	     resolve: {
+   	    	 id:function(){
+   	    		 return id;
+   	    	 },
+   	    	orderState:function(){
+   	    		return stateCode ;
+   	    	}
+   	     }
+   	   });
+		/**
+		 * 弹窗关闭事件
+		 */
+		modalInstance.result.then(function () {
+			hintService.hint({title: "成功", content: "更改成功！" });
+			$state.reload();
+    	});
 	}
 	
 	/**
@@ -85,7 +113,7 @@ app.controller('orderController',['$rootScope','$scope','$state','$timeout','$ht
 		}
 		if($scope.API.canSeeDetails){
 			if(!$scope.API.canSeeDetails($scope.rowIds[0])){
-				alert("必须选择已经支付完成的订单");
+				alert("该订单还未支付！");
 				return ;
 			}
 		}

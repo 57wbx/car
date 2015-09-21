@@ -32,7 +32,7 @@ public class AdvertisementAction extends BaseAction implements ModelDriven<Adver
 		{
 			List<Advertisement> list = this.baseService.gets(Advertisement.class,this.getIDisplayStart(),this.getIDisplayLength());
 			int recordsTotal = this.baseService.getSize(Advertisement.class);
-			this.jsonObject.accumulate("data", list, this.getJsonConfig(JsonValueFilterConfig.ADVERTISEMENT_ONLY_ADVERTISEMENT));
+			this.jsonObject.accumulate("data", list, this.getJsonConfig(JsonValueFilterConfig.Tig.Advertisement.ADVERTISEMENT_ONLY_ADVERTISEMENT));
 			jsonObject.put("recordsTotal",recordsTotal);
 			jsonObject.put("recordsFiltered",recordsTotal);
 			this.putJson();
@@ -78,7 +78,7 @@ public class AdvertisementAction extends BaseAction implements ModelDriven<Adver
 				advertisement = this.baseService.get(Advertisement.class, advertisement.getId());
 				if(advertisement!=null)
 				{
-					this.jsonObject.accumulate("details", advertisement, this.getJsonConfig(JsonValueFilterConfig.ADVERTISEMENT_ONLY_ADVERTISEMENT));
+					this.jsonObject.accumulate("details", advertisement, this.getJsonConfig(JsonValueFilterConfig.Tig.Advertisement.ADVERTISEMENT_ONLY_ADVERTISEMENT));
 					this.putJson();
 				}
 				else

@@ -37,7 +37,7 @@ public class CarShopDao extends Dao
 		List<CarShop> carShops = criteria.list() ;
 		List<Map<String,Object>> returnList = new ArrayList<Map<String,Object>>();
 		for(CarShop carShop : carShops){
-			Map map = ConvertObjectMapUtil.convertObjectToMap(carShop, JsonValueFilterConfig.CARSHOP_ONLY_CARSHOP);
+			Map map = ConvertObjectMapUtil.convertObjectToMap(carShop, JsonValueFilterConfig.Base.CarShop.CARSHOP_ONLY_CARSHOP);
 			map.put("username", carShop.getUser()!=null?carShop.getUser().getName():null);
 			map.put("userid", carShop.getUser()!=null?carShop.getUser().getId():null);
 			returnList.add(map);

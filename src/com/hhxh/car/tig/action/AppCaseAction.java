@@ -66,7 +66,7 @@ public class AppCaseAction extends BaseAction implements ModelDriven<AppCase>
 
 			List<AppCase> appCases = this.baseService.gets(AppCase.class, params, this.getIDisplayStart(), this.getIDisplayLength(), order);
 			int recordsTotal = this.baseService.getSize(AppCase.class, params);
-			jsonObject.accumulate("data", appCases, this.getJsonConfig(JsonValueFilterConfig.APPCASE_HAS_USER));
+			jsonObject.accumulate("data", appCases, this.getJsonConfig(JsonValueFilterConfig.Tig.AppCase.APPCASE_HAS_USER));
 			jsonObject.put("recordsTotal", recordsTotal);
 			jsonObject.put("recordsFiltered", recordsTotal);
 			this.putJson();
@@ -110,7 +110,7 @@ public class AppCaseAction extends BaseAction implements ModelDriven<AppCase>
 				appCase = this.baseService.get(AppCase.class, this.appCase.getId());
 				if (appCase != null)
 				{
-					jsonObject.accumulate("details", appCase, this.getJsonConfig(JsonValueFilterConfig.APPCASE_ONLY_APPCASE));
+					jsonObject.accumulate("details", appCase, this.getJsonConfig(JsonValueFilterConfig.Tig.AppCase.APPCASE_ONLY_APPCASE));
 					this.putJson();
 				} else
 				{

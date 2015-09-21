@@ -1,6 +1,6 @@
 package com.hhxh.car.shop.action;
 
-import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -19,6 +19,7 @@ import org.hibernate.criterion.Restrictions;
 import com.hhxh.car.base.bustype.domain.BusType;
 import com.hhxh.car.common.action.BaseAction;
 import com.hhxh.car.common.annotation.AuthCheck;
+import com.hhxh.car.common.exception.ErrorMessageException;
 import com.hhxh.car.common.util.JsonValueFilterConfig;
 import com.hhxh.car.push.Push;
 import com.hhxh.car.shop.domain.ShopItem;
@@ -67,48 +68,43 @@ public class ShopPackageAction extends BaseAction implements ModelDriven<ShopPac
 	@AuthCheck
 	public void listShopPackage()
 	{
-		try
+		List<Criterion> params = new ArrayList<Criterion>();
+		
+		// 用来缓存子查询
+		Map<String, List<Criterion>> criteriaMap = new HashMap<String, List<Criterion>>();
+		criteriaMap.put("shopPackageImgs", null);
+		
+		params.add(Restrictions.eq("carShop", this.getLoginUser().getCarShop()));
+		if (isNotEmpty(this.shopPackage.getBusTypeCode()))
 		{
-			List<Criterion> params = new ArrayList<Criterion>();
-			params.add(Restrictions.eq("carShop", this.getLoginUser().getCarShop()));
-			if (isNotEmpty(this.shopPackage.getBusTypeCode()))
-			{
-				params.add(Restrictions.like("packageCode", this.shopPackage.getBusTypeCode(), MatchMode.ANYWHERE));
-			}
-			if (isNotEmpty(this.shopPackage.getPackageName()))
-			{
-				params.add(Restrictions.like("packageName", this.shopPackage.getPackageName(), MatchMode.ANYWHERE));
-			}
-			if (isNotEmpty(this.shopPackage.getIsActivity()))
-			{
-				params.add(Restrictions.eq("isActivity", this.shopPackage.getIsActivity()));
-			}
-			/*
-			 * 往这里添加查询条件
-			 */
-
-			Order order = null;
-			if (isNotEmpty(orderName))
-			{
-				order = Order.asc(orderName);
-			} else
-			{
-				order = Order.desc("updateTime");
-			}
-
-			List<ShopPackage> shopPackages = this.baseService.gets(ShopPackage.class, params, this.getIDisplayStart(), this.getIDisplayLength(), order);
-			int recordsTotal = this.baseService.getSize(ShopPackage.class, params);
-
-			this.jsonObject.accumulate("data", shopPackages, this.getJsonConfig(JsonValueFilterConfig.SHOPPACKAGE_HAS_SHOPPACKAGEIMG));
-			jsonObject.put("recordsTotal", recordsTotal);
-			jsonObject.put("recordsFiltered", recordsTotal);
-			this.putJson();
-
-		} catch (Exception e)
-		{
-			log.error("查询商家套餐列表出错", e);
-			this.putJson(false, this.getMessageFromConfig("busPackageError"));
+			params.add(Restrictions.like("packageCode", this.shopPackage.getBusTypeCode(), MatchMode.ANYWHERE));
 		}
+		if (isNotEmpty(this.shopPackage.getPackageName()))
+		{
+			params.add(Restrictions.like("packageName", this.shopPackage.getPackageName(), MatchMode.ANYWHERE));
+		}
+		if (isNotEmpty(this.shopPackage.getIsActivity()))
+		{
+			params.add(Restrictions.eq("isActivity", this.shopPackage.getIsActivity()));
+		}
+		/*
+		 * 往这里添加查询条件
+		 */
+
+		List<Order> orders = new ArrayList<Order>();
+		if (isNotEmpty(orderName))
+		{
+			orders.add(Order.asc(orderName));
+		}
+		orders.add(Order.desc("updateTime"));
+
+		List<ShopPackage> shopPackages = this.baseService.gets(ShopPackage.class, params, criteriaMap, this.getIDisplayStart(), this.getIDisplayLength(), orders);
+		int recordsTotal = this.baseService.getSize(ShopPackage.class, params);
+
+		this.jsonObject.accumulate("data", shopPackages, this.getJsonConfig(JsonValueFilterConfig.Shop.ShopPackage.SHOPPACKAGE_HAS_SHOPPACKAGEIMG));
+		jsonObject.put("recordsTotal", recordsTotal);
+		jsonObject.put("recordsFiltered", recordsTotal);
+		this.putJson();
 	}
 
 	/**
@@ -119,83 +115,77 @@ public class ShopPackageAction extends BaseAction implements ModelDriven<ShopPac
 	@AuthCheck
 	public void getShopItemsByShopPackage()
 	{
-		try
+		if (isNotEmpty(shopPackage.getFid()))
 		{
-			if (isNotEmpty(shopPackage.getFid()))
+			ShopPackage bp = this.baseService.get(ShopPackage.class, shopPackage.getFid());
+			if (bp != null)
 			{
-				ShopPackage bp = this.baseService.get(ShopPackage.class, shopPackage.getFid());
-				if (bp != null)
-				{
-					Set<ShopItem> shopItems = bp.getShopItems();
+				Set<ShopItem> shopItems = bp.getShopItems();
 
-					this.jsonObject.accumulate("data", new ArrayList<ShopItem>(shopItems), this.getJsonConfig(JsonValueFilterConfig.SHOPITEM_ONLY_SHOPITEM));
-					this.putJson();
-				} else
-				{
-					this.putJson(false, this.getMessageFromConfig("busPackageIdError"));
-				}
+				this.jsonObject.accumulate("data", new ArrayList<ShopItem>(shopItems), this.getJsonConfig(JsonValueFilterConfig.Shop.ShopItem.SHOPITEM_ONLY_SHOPITEM));
+				this.putJson();
 			} else
 			{
-				this.putJson(false, this.getMessageFromConfig("needBusPackageId"));
+				this.putJson(false, this.getMessageFromConfig("busPackageIdError"));
 			}
-		} catch (Exception e)
+		} else
 		{
-			log.error("查询套餐下的服务失败", e);
-			this.putJson(false, this.getMessageFromConfig("busPackageError"));
+			this.putJson(false, this.getMessageFromConfig("needBusPackageId"));
 		}
 	}
 
 	/**
 	 * 新增一条套餐对象
+	 * 
+	 * @throws ErrorMessageException
 	 */
 	@AuthCheck
-	public void addShopPackage()
+	public void addShopPackage() throws ErrorMessageException
 	{
-		try
+		Date starTime = null;
+		Date endTime = null;
+		if (starTimeStr != null && !"".equals(starTimeStr))
 		{
-			Date starTime = null;
-			Date endTime = null;
-			if (starTimeStr != null && !"".equals(starTimeStr))
+			try
 			{
 				starTime = ymdhm.parse(starTimeStr);
+			} catch (ParseException e)
+			{
+				throw new ErrorMessageException(this.getMessageFromConfig("time_pattern_error"));
 			}
-			if (endTimeStr != null && !"".equals(endTimeStr))
+		}
+		if (endTimeStr != null && !"".equals(endTimeStr))
+		{
+			try
 			{
 				endTime = ymdhm.parse(endTimeStr);
-			}
-
-			shopPackage.setStarTime(starTime);
-			shopPackage.setEndTime(endTime);
-
-			shopPackage.setUpdateTime(new Date());
-			shopPackage.setCarShop(this.getLoginUser().getCarShop());
-			// 添加套餐与服务的联系
-			if (itemIds != null && itemIds.length > 0)
+			} catch (ParseException e)
 			{
-				Set<ShopItem> shopItems = new HashSet<ShopItem>();
-				for (String id : itemIds)
-				{
-					shopItems.add(new ShopItem(id));
-				}
-				shopPackage.setShopItems(shopItems);
-			} else
-			{
-				shopPackage.setShopItems(null);
+				throw new ErrorMessageException(this.getMessageFromConfig("time_pattern_error"));
 			}
-			this.shopPackageService.saveShopPackageWithNoFid(shopPackage);
-			this.jsonObject.put("code", 1);
-		} catch (Exception e)
-		{
-			e.printStackTrace();
-			this.jsonObject.put("code", 0);
 		}
 
-		try
+		shopPackage.setStarTime(starTime);
+		shopPackage.setEndTime(endTime);
+
+		shopPackage.setUpdateTime(new Date());
+		shopPackage.setCarShop(this.getLoginUser().getCarShop());
+		// 添加套餐与服务的联系
+		if (itemIds != null && itemIds.length > 0)
 		{
-			this.putJson(jsonObject.toString());
-		} catch (IOException e)
+			Set<ShopItem> shopItems = new HashSet<ShopItem>();
+			for (String id : itemIds)
+			{
+				shopItems.add(new ShopItem(id));
+			}
+			shopPackage.setShopItems(shopItems);
+		} else
 		{
+			shopPackage.setShopItems(null);
 		}
+		this.shopPackageService.saveShopPackageWithNoFid(shopPackage);
+
+		this.putJson();
 	}
 
 	//
@@ -206,89 +196,84 @@ public class ShopPackageAction extends BaseAction implements ModelDriven<ShopPac
 	@AuthCheck
 	public void detailsShopPackage()
 	{
-		try
+		if (isNotEmpty(shopPackage.getFid()))
 		{
-			if (isNotEmpty(shopPackage.getFid()))
+			shopPackage = this.baseService.get(ShopPackage.class, shopPackage.getFid());
+			if (shopPackage != null)
 			{
-				shopPackage = this.baseService.get(ShopPackage.class, shopPackage.getFid());
-				if (shopPackage != null)
-				{
-					BusType busType = this.baseService.get(BusType.class, shopPackage.getBusTypeCode());
-					jsonObject.put("busTypeName", busType.getBusTypeName());
-					jsonObject.accumulate("details", shopPackage, this.getJsonConfig(JsonValueFilterConfig.SHOPPACKAGE_HAS_SHOPITEM));
-					this.putJson();
-					return;
-				} else
-				{
-					// 没有指定id的套餐
-					this.putJson(false, this.getMessageFromConfig("busPackageIdError"));
-					return;
-				}
+				BusType busType = this.baseService.get(BusType.class, shopPackage.getBusTypeCode());
+				jsonObject.put("busTypeName", busType.getBusTypeName());
+				jsonObject.accumulate("details", shopPackage, this.getJsonConfig(JsonValueFilterConfig.Shop.ShopPackage.SHOPPACKAGE_HAS_SHOPITEM));
+				this.putJson();
+				return;
 			} else
 			{
-				// 没有上传id
-				this.putJson(false, this.getMessageFromConfig("needBusPackageId"));
+				// 没有指定id的套餐
+				this.putJson(false, this.getMessageFromConfig("busPackageIdError"));
 				return;
 			}
-		} catch (Exception e)
+		} else
 		{
-			// 出错
-			log.error("查询套餐详细信息失败", e);
-			this.putJson(false, this.getMessageFromConfig("busPackageError"));
+			// 没有上传id
+			this.putJson(false, this.getMessageFromConfig("needBusPackageId"));
+			return;
 		}
 	}
 
 	/**
 	 * 修改一个套餐
+	 * 
+	 * @throws ErrorMessageException
 	 */
 	@AuthCheck
-	public void saveShopPackage()
+	public void saveShopPackage() throws ErrorMessageException
 	{
 		shopPackage.setCarShop(this.getLoginUser().getCarShop());
-		try
+
+		Date starTime = null;
+		Date endTime = null;
+		if (starTimeStr != null && !"".equals(starTimeStr))
 		{
-			Date starTime = null;
-			Date endTime = null;
-			if (starTimeStr != null && !"".equals(starTimeStr))
+			try
 			{
 				starTime = ymdhm.parse(starTimeStr);
+			} catch (ParseException e)
+			{
+				throw new ErrorMessageException(this.getMessageFromConfig("time_pattern_error"));
 			}
-			if (endTimeStr != null && !"".equals(endTimeStr))
+		}
+		if (endTimeStr != null && !"".equals(endTimeStr))
+		{
+			try
 			{
 				endTime = ymdhm.parse(endTimeStr);
-			}
-
-			shopPackage.setStarTime(starTime);
-			shopPackage.setEndTime(endTime);
-
-			shopPackage.setUpdateTime(new Date());
-
-			// 添加套餐与服务的联系
-			if (itemIds != null && itemIds.length > 0)
+			} catch (ParseException e)
 			{
-				Set<ShopItem> shopItems = new HashSet<ShopItem>();
-				for (String id : itemIds)
-				{
-					shopItems.add(new ShopItem(id));
-				}
-				shopPackage.setShopItems(shopItems);
-			} else
-			{
-				shopPackage.setShopItems(null);
+				throw new ErrorMessageException(this.getMessageFromConfig("time_pattern_error"));
 			}
+		}
 
-			this.baseService.update(shopPackage);
-			this.jsonObject.put("code", 1);
-		} catch (Exception e)
+		shopPackage.setStarTime(starTime);
+		shopPackage.setEndTime(endTime);
+
+		shopPackage.setUpdateTime(new Date());
+
+		// 添加套餐与服务的联系
+		if (itemIds != null && itemIds.length > 0)
 		{
-			this.jsonObject.put("code", 0);
+			Set<ShopItem> shopItems = new HashSet<ShopItem>();
+			for (String id : itemIds)
+			{
+				shopItems.add(new ShopItem(id));
+			}
+			shopPackage.setShopItems(shopItems);
+		} else
+		{
+			shopPackage.setShopItems(null);
 		}
-		try
-		{
-			this.putJson(jsonObject.toString());
-		} catch (IOException e)
-		{
-		}
+
+		this.shopPackageService.updateShopPackage(shopPackage);
+		this.putJson();
 	}
 
 	/**
@@ -300,14 +285,10 @@ public class ShopPackageAction extends BaseAction implements ModelDriven<ShopPac
 		if (ids != null && ids.length > 0)
 		{
 			this.shopPackageService.deleteShopPackageByIds(ids);
-		}
-		this.jsonObject.put("code", 1);
-		try
+			this.putJson();
+		} else
 		{
-			this.putJson(jsonObject.toString());
-		} catch (IOException e)
-		{
-			e.printStackTrace();
+			this.putJson(false, this.getMessageFromConfig("needBusPackageId"));
 		}
 	}
 
@@ -319,7 +300,7 @@ public class ShopPackageAction extends BaseAction implements ModelDriven<ShopPac
 	{
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("carShop", this.getLoginUser().getCarShop());
-		jsonObject.put("code", 1);
+
 		if (shopPackage.getFid() == null || "".equals(shopPackage.getFid()))
 		{
 			// 属于新增操作的检查
@@ -327,7 +308,8 @@ public class ShopPackageAction extends BaseAction implements ModelDriven<ShopPac
 			shopPackage = (ShopPackage) this.baseService.get("From ShopPackage b where b.packageCode = :packageCode and b.carShop = :carShop", paramMap);
 			if (shopPackage != null)
 			{
-				jsonObject.put("code", 0);
+				this.putJson(false, null);
+				return;
 			}
 		} else
 		{
@@ -337,16 +319,12 @@ public class ShopPackageAction extends BaseAction implements ModelDriven<ShopPac
 			shopPackage = (ShopPackage) this.baseService.get("From ShopPackage b where b.packageCode = :packageCode and b.fid <> :fid and b.carShop = :carShop", paramMap);
 			if (shopPackage != null)
 			{
-				jsonObject.put("code", 0);
+				this.putJson(false, null);
+				return;
 			}
 		}
-		try
-		{
-			this.putJson(jsonObject.toString());
-		} catch (IOException e)
-		{
-			e.printStackTrace();
-		}
+
+		this.putJson();
 	}
 
 	/**
@@ -355,28 +333,21 @@ public class ShopPackageAction extends BaseAction implements ModelDriven<ShopPac
 	@AuthCheck
 	public void listShopPackageImgByShopPackage()
 	{
-		try
+		if (isNotEmpty(shopPackage.getFid()))
 		{
-			if (isNotEmpty(shopPackage.getFid()))
+			shopPackage = this.baseService.get(ShopPackage.class, shopPackage.getFid());
+			if (shopPackage != null)
 			{
-				shopPackage = this.baseService.get(ShopPackage.class, shopPackage.getFid());
-				if (shopPackage != null)
-				{
-					List<ShopPackageImg> list = new ArrayList<ShopPackageImg>(shopPackage.getShopPackageImgs());
-					this.jsonObject.accumulate("images", list, this.getJsonConfig(JsonValueFilterConfig.SHOPPACKAGEIMG_ONLY_SHOPPACKAGEIMG));
-					this.putJson();
-				} else
-				{
-					this.putJson(false, this.getMessageFromConfig("busPackageIdError"));
-				}
+				List<ShopPackageImg> list = new ArrayList<ShopPackageImg>(shopPackage.getShopPackageImgs());
+				this.jsonObject.accumulate("images", list, this.getJsonConfig(JsonValueFilterConfig.Shop.ShopPackage.SHOPPACKAGEIMG_ONLY_SHOPPACKAGEIMG));
+				this.putJson();
 			} else
 			{
-				this.putJson(false, this.getMessageFromConfig("needBusPackageId"));
+				this.putJson(false, this.getMessageFromConfig("busPackageIdError"));
 			}
-		} catch (Exception e)
+		} else
 		{
-			log.error("获取商家套餐图片信息列表失败", e);
-			this.putJson(false, this.getMessageFromConfig("busPackageError"));
+			this.putJson(false, this.getMessageFromConfig("needBusPackageId"));
 		}
 	}
 
@@ -409,14 +380,15 @@ public class ShopPackageAction extends BaseAction implements ModelDriven<ShopPac
 					Map<String, String> customValue = new HashMap<String, String>();
 					customValue.put("messageType", PushMessageState.FMESSAGETYPE_SHOPPACKAGE.toString());
 					customValue.put("id", shopPackage.getFid());
-					if(shopPackage.getCarShop()!=null){
-						customValue.put("shopId",shopPackage.getCarShop().getId());
+					if (shopPackage.getCarShop() != null)
+					{
+						customValue.put("shopId", shopPackage.getCarShop().getId());
 					}
 
 					String pushResult = push.pushAllNotify(pushMessage.getFtitle(), shopPackage.getPackageDes(), customValue);
 
 					log.debug("推送商家套餐返回的数据：" + pushResult);
-					pushMessageService.addNotifyPushMessage(pushMessage,pushResult);
+					pushMessageService.addNotifyPushMessage(pushMessage, pushResult);
 					this.putJson();
 				}
 			} else

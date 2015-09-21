@@ -38,7 +38,7 @@ public class PermItemAction extends BaseAction implements ModelDriven<PermItem>
 				permItem = this.baseService.get(PermItem.class,this.permItem.getId());
 				if (permItem != null)
 				{
-					jsonObject.accumulate("details", permItem,this.getJsonConfig(JsonValueFilterConfig.PERMITEM_ONLY_PERMITEM));
+					jsonObject.accumulate("details", permItem,this.getJsonConfig(JsonValueFilterConfig.Sys.Menu.PERMITEM_ONLY_PERMITEM));
 					this.putJson();
 				} else
 				{

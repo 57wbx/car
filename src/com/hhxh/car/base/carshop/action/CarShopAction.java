@@ -233,7 +233,7 @@ public class CarShopAction extends BaseAction implements ModelDriven<CarShop>
 				cs = baseService.get(CarShop.class, carShop.getId());
 				if (cs != null)
 				{
-					jsonObject.accumulate("details", cs, this.getJsonConfig(JsonValueFilterConfig.CARSHOP_HAS_ORG));
+					jsonObject.accumulate("details", cs, this.getJsonConfig(JsonValueFilterConfig.Base.CarShop.CARSHOP_HAS_ORG));
 					this.putJson();
 					return;
 				} else

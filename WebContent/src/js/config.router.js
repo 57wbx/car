@@ -962,12 +962,11 @@ angular.module('app').run(
 																      }).state('app.order', {
 																            url: '/order',
 																            templateUrl: 'src/tpl/opr/order/order.html',
+																            abstract:true,
 																            resolve: {
 																              deps: ['$ocLazyLoad', 'uiLoad',
 																                function($ocLazyLoad, uiLoad) {
-																                  return $ocLazyLoad.load('angularBootstrapNavTree').then(function() {
-																                    return $ocLazyLoad.load('src/js/controllers/opr/order/OrderController.js');
-																                  });
+																                   return $ocLazyLoad.load('src/js/controllers/opr/order/OrderController.js');
 																                }
 																              ]
 																            }
@@ -979,6 +978,7 @@ angular.module('app').run(
 																	                function($ocLazyLoad, uiLoad) {
 																	                  return $ocLazyLoad.load('angularBootstrapNavTree').then(function() {
 																	                    $ocLazyLoad.load('src/js/controllers/opr/order/ChooseWorkerController.js');
+																	                    $ocLazyLoad.load('src/js/controllers/opr/order/OrderUpdateStateModelController.js');
 																	                    return $ocLazyLoad.load('src/js/controllers/opr/order/OrderListController.js');
 																	                  });
 																	                }

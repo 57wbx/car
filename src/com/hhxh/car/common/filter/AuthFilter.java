@@ -2,7 +2,6 @@ package com.hhxh.car.common.filter;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,17 +14,13 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.struts2.ServletActionContext;
-import org.apache.struts2.dispatcher.mapper.ActionMapping;
+import org.apache.log4j.Logger;
 import org.springframework.web.context.ContextLoader;
 
 import com.hhxh.car.common.service.BaseService;
 import com.hhxh.car.common.util.CommonConstant;
 import com.hhxh.car.permission.domain.User;
-import com.opensymphony.xwork2.ActionContext;
-import com.opensymphony.xwork2.ActionInvocation;
 
-import jxl.common.Logger;
 
 /**
  * 判定权限的过滤器

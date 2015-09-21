@@ -119,7 +119,7 @@ public class ComplainAction extends BaseAction implements ModelDriven<Complain>
 
 			jsonObject.put("recordsFiltered", recordsTotal);
 			jsonObject.put("recordsTotal", recordsTotal);
-			jsonObject.accumulate("data", complains, this.getJsonConfig(JsonValueFilterConfig.COMPLAINS_HAS_COMPLAINUSER_HAS_DEALUSER));
+			jsonObject.accumulate("data", complains, this.getJsonConfig(JsonValueFilterConfig.Opr.Complain.COMPLAINS_HAS_COMPLAINUSER_HAS_DEALUSER));
 			this.putJson();
 		} catch (Exception e)
 		{
@@ -164,7 +164,7 @@ public class ComplainAction extends BaseAction implements ModelDriven<Complain>
 			if(isNotEmpty(this.complain.getId())){
 				complain = this.baseService.get(Complain.class,this.complain.getId());
 				if(complain!=null){
-					jsonObject.accumulate("details", complain,this.getJsonConfig(JsonValueFilterConfig.COMPLAIN_ONLY_COMPLAIN));
+					jsonObject.accumulate("details", complain,this.getJsonConfig(JsonValueFilterConfig.Opr.Complain.COMPLAIN_ONLY_COMPLAIN));
 					this.putJson();
 				}else{
 					this.putJson(false, this.getMessageFromConfig("complain_errorId"));
