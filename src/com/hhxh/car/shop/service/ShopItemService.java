@@ -1,13 +1,12 @@
 package com.hhxh.car.shop.service;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
-import com.hhxh.car.base.busatom.domain.BusAtom;
-import com.hhxh.car.base.busitem.domain.BusItem;
+import com.hhxh.car.common.exception.ErrorMessageException;
 import com.hhxh.car.common.service.BaseService;
 import com.hhxh.car.shop.domain.ShopAtom;
 import com.hhxh.car.shop.domain.ShopItem;
@@ -17,7 +16,7 @@ import com.hhxh.car.shop.state.ShopItemState;
 public class ShopItemService extends BaseService
 {
 
-	public void saveShopItemContainsShopAtomWithNoId(ShopItem shopItem, List<ShopAtom> shopAtoms)
+	public String saveShopItemContainsShopAtomWithNoId(ShopItem shopItem, List<ShopAtom> shopAtoms)
 	{
 		String uuid = this.dao.getUUID();
 		if (shopItem != null)
@@ -53,6 +52,8 @@ public class ShopItemService extends BaseService
 				}
 			}
 		}
+
+		return shopItem.getFid();
 	}
 
 	/**
@@ -62,7 +63,7 @@ public class ShopItemService extends BaseService
 	 * @param shopAtomList
 	 * @param deleteBusAtomIds
 	 */
-	public void updateBusItemWithBusAtom(ShopItem shopItem, List<ShopAtom> shopAtomList, String[] deleteBusAtomIds)
+	public String updateBusItemWithBusAtom(ShopItem shopItem, List<ShopAtom> shopAtomList, String[] deleteBusAtomIds)
 	{
 
 		shopItem.setStandardPrice(null);
@@ -111,28 +112,53 @@ public class ShopItemService extends BaseService
 				this.delete(ShopAtom.class, fid);
 			}
 		}
+		return shopItem.getFid();
 	}
 
-	public void deleteShopItemByIds(String[] ids)
+	/**
+	 * 删除指定的商家服务
+	 * 
+	 * @param ids
+	 * @throws ErrorMessageException
+	 */
+	public String deleteShopItemByIds(String[] ids) throws ErrorMessageException
 	{
 		if (ids != null && ids.length > 0)
 		{
-			for (String id : ids)
+			// 检查服务是否可以被删除--有套餐关联的服务不能被删除
+			if (checkCanDelete(ids))
 			{
-				ShopItem bi = this.dao.get(ShopItem.class, id);
-				Set<ShopAtom> bas = bi.getShopAtoms();
-				if (bas != null && bas.size() > 0)
-				{// 删除服务子项
-					List<ShopAtom> list = new ArrayList<ShopAtom>(bas);
-					for (ShopAtom b : bas)
-					{
-						b.setShopItem(null);
-						this.dao.deleteObject(ShopAtom.class, b.getFid());
-					}
-				}
-				this.dao.deleteObject(ShopItem.class, id);
+				// 没有关联的数据
+				String shopAtomHql = "DELETE FROM ShopAtom atom WHERE shopItem.fid IN :ids";
+				String shopItemHql = "DELETE FROM ShopItem item WHERE fid IN :ids";
+				Map<String, Object> paramMap = new HashMap<String, Object>();
+				paramMap.put("ids", ids);
+
+				this.dao.executeHqlUpdate(shopAtomHql, paramMap);
+				this.dao.executeHqlUpdate(shopItemHql, paramMap);
 			}
 		}
+
+		return joinArray(ids);
 	}
 
+	/**
+	 * 
+	 * 
+	 * @param ids
+	 * @return
+	 * @throws ErrorMessageException
+	 */
+	private boolean checkCanDelete(String[] ids) throws ErrorMessageException
+	{
+		String checkHql = "SELECT new Map(si.itemCode as itemCode,si.itemName as itemName) FROM ShopItem si WHERE si.id IN :ids AND si.shopPackages.size > 0 ";
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("ids", ids);
+		List<Map<String, Object>> results = this.dao.gets(checkHql, paramMap);
+		if (results != null && results.size() > 0)
+		{
+			throw new ErrorMessageException("服务编号为：" + results.get(0).get("itemCode") + "；服务名称为： " + results.get(0).get("itemName") + " 存在相关联的套餐信息，不可以被删除，请先删除套餐信息之后，在删除该数据。");
+		}
+		return true;
+	}
 }

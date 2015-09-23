@@ -5,8 +5,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
-
-
 /**
  * 提供一系列的静态对象，给jsonconfig中的string数组使用。 排除无限循环的意外。
  * 目的：因为domain可能会经常变化，其中的关系可能一会发生变化，如果在每个action中都定义一个String数组，维护起来比较麻烦，
@@ -49,7 +47,7 @@ public class JsonValueFilterConfig
 
 		if (list.size() > 0)
 		{
-			return list.toArray(new String[]{});
+			return list.toArray(new String[] {});
 		}
 		return null;
 	}
@@ -63,7 +61,7 @@ public class JsonValueFilterConfig
 	private static String[] CombineStringArrayNoSame(String[]... args)
 	{
 		String[] hasSameStringArray = CombineStringArrayHasSame(args);
-		return (String[]) new HashSet<String>(Arrays.asList(hasSameStringArray)).toArray(new String[]{});
+		return (String[]) new HashSet<String>(Arrays.asList(hasSameStringArray)).toArray(new String[] {});
 	}
 
 	/**
@@ -120,6 +118,17 @@ public class JsonValueFilterConfig
 
 		}
 
+		public static class BusAtom
+		{
+			private BusAtom()
+			{
+			}
+
+			public static final String[] BUSATOM_ONLY_BUSATOM = new String[] { "busItem" };
+
+			public static final String[] BASEATOM_HAS_BUSITEM = new String[] { "busPackages", "busAtoms", "busItemImgs" };
+		}
+
 		public static class District
 		{
 			private District()
@@ -135,19 +144,6 @@ public class JsonValueFilterConfig
 			 * basecity 城市中 中需要排除的数据
 			 */
 			public static final String[] BASECITY_ONLY_BASECITY = new String[] { "baseProvince", "baseAreas" };
-
-		}
-
-		public static class BusAtom
-		{
-			private BusAtom()
-			{
-			}
-
-			/**
-			 * busatom 平台服务子项需要过滤的数据
-			 */
-			public static final String[] BASEATOM_HAS_BUSITEM = new String[] { "busPackages", "busAtoms", "busItemImgs" };
 
 		}
 
@@ -258,7 +254,8 @@ public class JsonValueFilterConfig
 			 * Order 订单需要过滤的信息
 			 */
 			public static final String[] ORDER_HAS_TIGUSERS_HAS_WORKER = (String[]) CombineStringArrayNoSame(new String[] { "carShop", "orders", "order", "orderTracks", "workerBlackList", "user_pw",
-					"user_account", HIBERNATE_LAZY_PROPERTISE_HANDLER, HIBERNATE_LAZY_PROPERTISE_LAZYINITIALIZER }, Permission.User.USER_ONLY_PRIMARY_PROPERTIESE,Base.Member.MEMBER_ONLY_PRIMARY_PROPERTIESE);
+					"user_account", HIBERNATE_LAZY_PROPERTISE_HANDLER, HIBERNATE_LAZY_PROPERTISE_LAZYINITIALIZER }, Permission.User.USER_ONLY_PRIMARY_PROPERTIESE,
+					Base.Member.MEMBER_ONLY_PRIMARY_PROPERTIESE);
 
 			/**
 			 * OrderTrack 订单跟踪状态需要过滤的信息

@@ -69,11 +69,11 @@ public class ShopPackageAction extends BaseAction implements ModelDriven<ShopPac
 	public void listShopPackage()
 	{
 		List<Criterion> params = new ArrayList<Criterion>();
-		
+
 		// 用来缓存子查询
 		Map<String, List<Criterion>> criteriaMap = new HashMap<String, List<Criterion>>();
 		criteriaMap.put("shopPackageImgs", null);
-		
+
 		params.add(Restrictions.eq("carShop", this.getLoginUser().getCarShop()));
 		if (isNotEmpty(this.shopPackage.getBusTypeCode()))
 		{
@@ -278,9 +278,11 @@ public class ShopPackageAction extends BaseAction implements ModelDriven<ShopPac
 
 	/**
 	 * 删除记录
+	 * 
+	 * @throws ErrorMessageException
 	 */
 	@AuthCheck(isCheckLoginOnly = false)
-	public void deleteShopPackageByIds()
+	public void deleteShopPackageByIds() throws ErrorMessageException
 	{
 		if (ids != null && ids.length > 0)
 		{

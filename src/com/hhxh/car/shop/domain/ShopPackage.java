@@ -18,7 +18,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.hhxh.car.base.busitem.domain.BusItem;
 import com.hhxh.car.base.carshop.domain.CarShop;
 
 /**

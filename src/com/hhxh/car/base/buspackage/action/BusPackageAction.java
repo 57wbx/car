@@ -1,6 +1,6 @@
 package com.hhxh.car.base.buspackage.action;
 
-import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -16,9 +16,6 @@ import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
-import net.sf.json.JsonConfig;
-import net.sf.json.util.CycleDetectionStrategy;
-
 import com.hhxh.car.base.busitem.domain.BusItem;
 import com.hhxh.car.base.buspackage.domain.BusPackage;
 import com.hhxh.car.base.buspackage.domain.BusPackageImg;
@@ -26,11 +23,9 @@ import com.hhxh.car.base.buspackage.service.BusPackageService;
 import com.hhxh.car.base.bustype.domain.BusType;
 import com.hhxh.car.common.action.BaseAction;
 import com.hhxh.car.common.annotation.AuthCheck;
-import com.hhxh.car.common.util.JsonDateValueProcessor;
+import com.hhxh.car.common.exception.ErrorMessageException;
 import com.hhxh.car.common.util.JsonValueFilterConfig;
 import com.hhxh.car.push.Push;
-import com.hhxh.car.shop.domain.ShopPackage;
-import com.hhxh.car.shop.domain.ShopPackageImg;
 import com.hhxh.car.tig.domain.PushMessage;
 import com.hhxh.car.tig.domain.PushMessageState;
 import com.hhxh.car.tig.service.PushMessageService;
@@ -98,9 +93,9 @@ public class BusPackageAction extends BaseAction implements ModelDriven<BusPacka
 			params.add(Restrictions.like("packageDes", this.busPackage.getPackageDes(), MatchMode.ANYWHERE));
 		}
 
-		//强制加载图片信息
+		// 强制加载图片信息
 		criteriaMap.put("busPackageImgs", null);
-		
+
 		// 排序的规则
 		List<Order> orders = new ArrayList<Order>();
 		if (isNotEmpty(orderName))
@@ -124,121 +119,117 @@ public class BusPackageAction extends BaseAction implements ModelDriven<BusPacka
 	 * 
 	 * @return
 	 */
+	@AuthCheck
 	public void getBusItemsByBusPackage()
 	{
-		try
+		if (isNotEmpty(busPackage.getFid()))
 		{
-			if (isNotEmpty(busPackage.getFid()))
+			BusPackage bp = this.baseService.get(BusPackage.class, busPackage.getFid());
+			if (bp != null)
 			{
-				BusPackage bp = this.baseService.get(BusPackage.class, busPackage.getFid());
 				Set<BusItem> busItems = bp.getBusItems();
 				// 放入数据
 				this.jsonObject.accumulate("data", new ArrayList<BusItem>(busItems), this.getJsonConfig(JsonValueFilterConfig.Base.BusItem.BASEITEM_ONLY_BASEITEM));
 				this.putJson();
 			} else
 			{
-				this.putJson(false, "查询套餐服务失败！没有指定套餐");
+				this.putJson(false, this.getMessageFromConfig("busPackageIdError"));
 			}
-		} catch (Exception e)
+		} else
 		{
-			log.error("查询套餐下的服务失败", e);
-			this.putJson(false, "查询套餐服务失败！");
+			this.putJson(false, this.getMessageFromConfig("needBusPackageId"));
 		}
-
 	}
 
 	/**
 	 * 获取一个平台套餐下的所有的图片信息
 	 */
+	@AuthCheck
 	public void listBusPackageImgByBusPackage()
 	{
-		try
+		if (isNotEmpty(busPackage.getFid()))
 		{
-			if (isNotEmpty(busPackage.getFid()))
+			busPackage = this.baseService.get(BusPackage.class, busPackage.getFid());
+			if (busPackage != null)
 			{
-				busPackage = this.baseService.get(BusPackage.class, busPackage.getFid());
-				if (busPackage != null)
-				{
-					List<BusPackageImg> list = new ArrayList<BusPackageImg>(busPackage.getBusPackageImgs());
-					this.jsonObject.accumulate("images", list, this.getJsonConfig(JsonValueFilterConfig.Base.BusPackage.BUSPACKAGEIMG_ONLY_BUSPACKAGEIMG));
-					this.putJson();
-				} else
-				{
-					this.putJson(false, this.getMessageFromConfig("busPackageIdError"));
-				}
+				List<BusPackageImg> list = new ArrayList<BusPackageImg>(busPackage.getBusPackageImgs());
+				this.jsonObject.accumulate("images", list, this.getJsonConfig(JsonValueFilterConfig.Base.BusPackage.BUSPACKAGEIMG_ONLY_BUSPACKAGEIMG));
+				this.putJson();
 			} else
 			{
-				this.putJson(false, this.getMessageFromConfig("needBusPackageId"));
+				this.putJson(false, this.getMessageFromConfig("busPackageIdError"));
 			}
-		} catch (Exception e)
+		} else
 		{
-			log.error("获取平台套餐图片信息列表失败", e);
-			this.putJson(false, this.getMessageFromConfig("busPackageError"));
+			this.putJson(false, this.getMessageFromConfig("needBusPackageId"));
 		}
 	}
 
 	/**
 	 * 新增一条套餐对象
+	 * 
+	 * @throws ErrorMessageException
 	 */
-	public void addBusPackage()
+	@AuthCheck
+	public void addBusPackage() throws ErrorMessageException
 	{
-		try
+		Date starTime = null;
+		Date endTime = null;
+		if (isNotEmpty(starTimeStr))
 		{
-			Date starTime = null;
-			Date endTime = null;
-			if (starTimeStr != null && !"".equals(starTimeStr))
+			try
 			{
 				starTime = ymdhm.parse(starTimeStr);
+			} catch (ParseException e)
+			{
+				throw new ErrorMessageException(this.getMessageFromConfig("time_pattern_error"));
 			}
-			if (endTimeStr != null && !"".equals(endTimeStr))
+		}
+		if (isNotEmpty(endTimeStr))
+		{
+			try
 			{
 				endTime = ymdhm.parse(endTimeStr);
-			}
-
-			busPackage.setStarTime(starTime);
-			busPackage.setEndTime(endTime);
-
-			busPackage.setUpdateTime(new Date());
-
-			// 添加套餐与服务的联系
-			if (itemIds != null && itemIds.length > 0)
+			} catch (ParseException e)
 			{
-				Set<BusItem> busItems = new HashSet<BusItem>();
-				for (String id : itemIds)
-				{
-					busItems.add(new BusItem(id));
-				}
-				busPackage.setBusItems(busItems);
-			} else
-			{
-				busPackage.setBusItems(null);
+				throw new ErrorMessageException(this.getMessageFromConfig("time_pattern_error"));
 			}
-
-			this.busPackageService.saveBusPackageWithNoFid(busPackage);
-			this.jsonObject.put("code", 1);
-		} catch (Exception e)
-		{
-			this.jsonObject.put("code", 0);
 		}
 
-		try
+		busPackage.setStarTime(starTime);
+		busPackage.setEndTime(endTime);
+
+		busPackage.setUpdateTime(new Date());
+
+		// 添加套餐与服务的联系
+		if (isNotEmpty(itemIds))
 		{
-			this.putJson(jsonObject.toString());
-		} catch (IOException e)
+			Set<BusItem> busItems = new HashSet<BusItem>();
+			for (String id : itemIds)
+			{
+				busItems.add(new BusItem(id));
+			}
+			busPackage.setBusItems(busItems);
+		} else
 		{
+			busPackage.setBusItems(null);
 		}
+
+		this.busPackageService.saveBusPackageWithNoFid(busPackage);
+		this.putJson();
 	}
 
 	/**
 	 * 查询一条记录的详细信息
 	 */
+	@AuthCheck
 	public void detailsBusPackage()
 	{
-		try
+		if (isNotEmpty(busPackage.getFid()))
 		{
-			if (isNotEmpty(busPackage.getFid()))
+			busPackage = this.baseService.get(BusPackage.class, busPackage.getFid());
+			if (busPackage != null)
 			{
-				busPackage = this.baseService.get(BusPackage.class, busPackage.getFid());
 				BusType busType = this.baseService.get(BusType.class, busPackage.getBusTypeCode());
 				// 填充数据
 				jsonObject.put("busTypeName", busType.getBusTypeName());
@@ -246,101 +237,101 @@ public class BusPackageAction extends BaseAction implements ModelDriven<BusPacka
 				this.putJson();
 			} else
 			{
-				this.putJson(false, "查询失败，未指定套餐id");
+				this.putJson(false, this.getMessageFromConfig("busPackageIdError"));
 			}
-		} catch (Exception e)
+		} else
 		{
-			log.error("查询套餐详细信息失败", e);
-			this.putJson(false, "查询失败！");
+			this.putJson(false, this.getMessageFromConfig("needBusPackageId"));
 		}
-
 	}
 
 	/**
 	 * 修改一个套餐
+	 * 
+	 * @throws ErrorMessageException
 	 */
-	public void saveBusPackage()
+	@AuthCheck
+	public void saveBusPackage() throws ErrorMessageException
 	{
-		try
+		Date starTime = null;
+		Date endTime = null;
+		if (starTimeStr != null && !"".equals(starTimeStr))
 		{
-			Date starTime = null;
-			Date endTime = null;
-			if (starTimeStr != null && !"".equals(starTimeStr))
+			try
 			{
 				starTime = ymdhm.parse(starTimeStr);
+			} catch (ParseException e)
+			{
+				throw new ErrorMessageException(this.getMessageFromConfig("time_pattern_error"));
 			}
-			if (endTimeStr != null && !"".equals(endTimeStr))
+		}
+		if (endTimeStr != null && !"".equals(endTimeStr))
+		{
+			try
 			{
 				endTime = ymdhm.parse(endTimeStr);
-			}
-
-			busPackage.setStarTime(starTime);
-			busPackage.setEndTime(endTime);
-
-			busPackage.setUpdateTime(new Date());
-
-			// 添加套餐与服务的联系
-			if (itemIds != null && itemIds.length > 0)
+			} catch (ParseException e)
 			{
-				Set<BusItem> busItems = new HashSet<BusItem>();
-				for (String id : itemIds)
-				{
-					busItems.add(new BusItem(id));
-				}
-				busPackage.setBusItems(busItems);
-			} else
-			{
-				busPackage.setBusItems(null);
+				throw new ErrorMessageException(this.getMessageFromConfig("time_pattern_error"));
 			}
+		}
 
-			this.busPackageService.update(busPackage);
-			this.jsonObject.put("code", 1);
-		} catch (Exception e)
+		busPackage.setStarTime(starTime);
+		busPackage.setEndTime(endTime);
+
+		busPackage.setUpdateTime(new Date());
+
+		// 添加套餐与服务的联系
+		if (isNotEmpty(itemIds))
 		{
-			this.jsonObject.put("code", 0);
+			Set<BusItem> busItems = new HashSet<BusItem>();
+			for (String id : itemIds)
+			{
+				busItems.add(new BusItem(id));
+			}
+			busPackage.setBusItems(busItems);
+		} else
+		{
+			busPackage.setBusItems(null);
 		}
-		try
-		{
-			this.putJson(jsonObject.toString());
-		} catch (IOException e)
-		{
-		}
+
+		this.busPackageService.update(busPackage);
+
+		this.putJson();
 	}
 
 	/**
 	 * 删除记录
 	 */
+	@AuthCheck(isCheckLoginOnly = false)
 	public void deleteBusPackageByIds()
 	{
-		if (ids != null && ids.length > 0)
+		if (isNotEmpty(ids))
 		{
 			this.busPackageService.deleteBusPackageByIds(ids);
-		}
-		this.jsonObject.put("code", 1);
-		try
+			this.putJson();
+		} else
 		{
-			this.putJson(jsonObject.toString());
-		} catch (IOException e)
-		{
-			e.printStackTrace();
+			this.putJson(false, this.getMessageFromConfig("needBusPackageId"));
 		}
 	}
 
 	/**
 	 * 检查一个套餐编码是否唯一
 	 */
+	@AuthCheck
 	public void checkPackageCodeIsUnique()
 	{
 		Map<String, Object> paramMap = new HashMap<String, Object>();
-		jsonObject.put("code", 1);
-		if (busPackage.getFid() == null || "".equals(busPackage.getFid()))
+		if (!isNotEmpty(this.busPackage.getFid()))
 		{
 			// 属于新增操作的检查
 			paramMap.put("packageCode", busPackage.getPackageCode());
 			busPackage = (BusPackage) this.baseService.get("From BusPackage b where b.packageCode = :packageCode", paramMap);
 			if (busPackage != null)
 			{
-				jsonObject.put("code", 0);
+				this.putJson(false, null);
+				return;
 			}
 		} else
 		{
@@ -350,16 +341,11 @@ public class BusPackageAction extends BaseAction implements ModelDriven<BusPacka
 			busPackage = (BusPackage) this.baseService.get("From BusPackage b where b.packageCode = :packageCode and b.fid <> :fid", paramMap);
 			if (busPackage != null)
 			{
-				jsonObject.put("code", 0);
+				this.putJson(false, null);
+				return;
 			}
 		}
-		try
-		{
-			this.putJson(jsonObject.toString());
-		} catch (IOException e)
-		{
-			e.printStackTrace();
-		}
+		this.putJson();
 	}
 
 	/**

@@ -2,12 +2,14 @@ package com.hhxh.car.common.dao;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.TreeSet;
 
 import javax.annotation.Resource;
 
@@ -30,7 +32,7 @@ public class Dao
 {
 
 	private static Logger log = Logger.getLogger(Dao.class);
-	
+
 	@Resource
 	private SessionFactory sessionFactory;
 
@@ -150,7 +152,6 @@ public class Dao
 	{
 		return getSize(clazz, null);
 	}
-	
 
 	/**
 	 * 
@@ -229,8 +230,9 @@ public class Dao
 		Session session = getSession();
 		return (T) session.get(clazz, id);
 	}
-	
-	public <T> T get(Class<T> clazz,Serializable id){
+
+	public <T> T get(Class<T> clazz, Serializable id)
+	{
 		Session session = getSession();
 		return (T) session.get(clazz, id);
 	}
@@ -241,7 +243,7 @@ public class Dao
 		T t = (T) session.get(clazz, id);
 		session.delete(t);
 	}
-	
+
 	public <T> void deleteObject(Class<T> clazz, Serializable id)
 	{
 		Session session = getSession();
@@ -269,13 +271,14 @@ public class Dao
 	{
 		Session session = getSession();
 		Query query = session.createQuery(hql);
-		if (paramMap != null)
-		{
-			for (Entry<String, Object> entry : paramMap.entrySet())
-			{
-				query.setParameter(entry.getKey(), entry.getValue());
-			}
-		}
+		// if (paramMap != null)
+		// {
+		// for (Entry<String, Object> entry : paramMap.entrySet())
+		// {
+		// query.setParameter(entry.getKey(), entry.getValue());
+		// }
+		// }
+		query.setProperties(paramMap);
 		if (start != null)
 			query.setFirstResult(start);
 		if (limit != null)
@@ -502,10 +505,9 @@ public class Dao
 		/**
 		 * 去重
 		 */
-//		Set<T> resultSet = new TreeSet<T>(resultList);
-
-//		return new ArrayList<T>(resultSet);
-		return resultList;
+		Set<T> resultSet = new TreeSet<T>(resultList);
+		return new ArrayList<T>(resultSet);
+		// return resultList;
 	}
 
 	public int getSize(Class clazz, List<Criterion> params, Map<String, List<Criterion>> criteriaMap)
@@ -544,11 +546,14 @@ public class Dao
 		Long result = (Long) mainCriteria.uniqueResult();
 		return Integer.parseInt(Long.toString(result));
 	}
-	
+
 	/**
 	 * 查询方法 利用qbc来进行查询
-	 * @param params 当前javabean中的查询条件
-	 * @param criteriaMap 子对象，或者子集合中的查询条件；当只有key，value为空时，那么只强制加载其key名称的子对象或者子集合
+	 * 
+	 * @param params
+	 *            当前javabean中的查询条件
+	 * @param criteriaMap
+	 *            子对象，或者子集合中的查询条件；当只有key，value为空时，那么只强制加载其key名称的子对象或者子集合
 	 * @author zw
 	 */
 	public <T> List<T> gets(Class<T> class1, List<Criterion> params, Map<String, List<Criterion>> criteriaMap, int iDisplayStart, int iDisplayLength, List<Order> orders)
@@ -573,9 +578,9 @@ public class Dao
 			for (String k : keys)
 			{
 				List<Criterion> childsCriterions = criteriaMap.get(k);
-				//当key存在时，不论其list是否具有值，都进行强制加载
+				// 当key存在时，不论其list是否具有值，都进行强制加载
 				mainCriteria.setFetchMode(k, FetchMode.JOIN);
-				
+
 				if (childsCriterions != null && childsCriterions.size() > 0)
 				{
 					Criteria childCriteria = mainCriteria.createCriteria(k);
@@ -587,40 +592,46 @@ public class Dao
 			}
 		}
 
-		if(orders!=null&&orders.size()>0){
-			for(Order o:orders){
+		if (orders != null && orders.size() > 0)
+		{
+			for (Order o : orders)
+			{
 				mainCriteria.addOrder(o);
 			}
 		}
-		
+
 		if (iDisplayStart >= 0 && iDisplayLength > 0)
 		{
 			mainCriteria.setFirstResult(iDisplayStart).setMaxResults(iDisplayLength);
 		}
 
 		List<T> resultList = mainCriteria.list();
-		/**
-		 * 去重
-		 */
-//		Set<T> resultSet = new TreeSet<T>(resultList);
-
-//		return new ArrayList<T>(resultSet);
-		return resultList;
+		// /**
+		// * 去重
+		// */
+		Set<T> resultSet = new HashSet<T>(resultList);
+		return new ArrayList<T>(resultSet);
+		// return resultList;
 	}
+
 	/**
 	 * 执行hql语句
+	 * 
 	 * @param hql
 	 * @param param
 	 * @return
 	 */
-	public Integer executeHqlUpdate(String hql,Map<String,Object> param){
+	public Integer executeHqlUpdate(String hql, Map<String, Object> param)
+	{
 		Query query = getSession().createQuery(hql).setProperties(param);
 		return query.executeUpdate();
 	}
+
 	/**
 	 * 获取一个对象，具有取消懒加载的功能
 	 */
-	public <T> T  get(Class<T> clazz,List<Criterion> params,String[] needFetchName){
+	public <T> T get(Class<T> clazz, List<Criterion> params, String[] needFetchName)
+	{
 		Session session = getSession();
 		Criteria criteria = session.createCriteria(clazz);
 		if (params != null)
@@ -630,17 +641,19 @@ public class Dao
 				criteria.add(param);
 			}
 		}
-		if(needFetchName!=null&&needFetchName.length>0){
-			for(String name:needFetchName){
+		if (needFetchName != null && needFetchName.length > 0)
+		{
+			for (String name : needFetchName)
+			{
 				criteria.setFetchMode(name, FetchMode.JOIN);
 			}
 		}
-//		criteria.setMaxResults(1);
+		// criteria.setMaxResults(1);
 
 		List<T> list = criteria.list();
-		log.debug("结果的条数为----"+list.size());
+		log.debug("结果的条数为----" + list.size());
 		Set<T> set = new HashSet<T>(list);
-		log.debug("转变为set中的记录条数"+set.size());
+		log.debug("转变为set中的记录条数" + set.size());
 		if (list.size() > 0)
 		{
 			return list.get(0);
@@ -665,6 +678,5 @@ public class Dao
 		}
 		return list;
 	}
-	
-	
+
 }

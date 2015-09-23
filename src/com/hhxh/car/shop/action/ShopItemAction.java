@@ -1,6 +1,5 @@
 package com.hhxh.car.shop.action;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -12,32 +11,24 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
+import net.sf.json.JSONArray;
+
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
-import net.sf.json.JSONArray;
-import net.sf.json.JsonConfig;
-import net.sf.json.util.CycleDetectionStrategy;
-
 import com.hhxh.car.base.autopart.domain.AutoPart;
-import com.hhxh.car.base.busatom.domain.BusAtom;
-import com.hhxh.car.base.busitem.domain.BusItem;
 import com.hhxh.car.base.carshop.domain.CarShop;
 import com.hhxh.car.common.action.BaseAction;
 import com.hhxh.car.common.annotation.AuthCheck;
 import com.hhxh.car.common.exception.ErrorMessageException;
-import com.hhxh.car.common.util.ConfigResourcesGetter;
-import com.hhxh.car.common.util.JsonDateValueProcessor;
 import com.hhxh.car.common.util.JsonValueFilterConfig;
 import com.hhxh.car.common.util.TypeTranslate;
 import com.hhxh.car.push.Push;
 import com.hhxh.car.shop.domain.ShopAtom;
 import com.hhxh.car.shop.domain.ShopItem;
-import com.hhxh.car.shop.domain.ShopItemImg;
 import com.hhxh.car.shop.service.ShopItemService;
-import com.hhxh.car.shop.state.ShopItemState;
 import com.hhxh.car.tig.domain.PushMessage;
 import com.hhxh.car.tig.domain.PushMessageState;
 import com.hhxh.car.tig.service.PushMessageService;
@@ -127,8 +118,8 @@ public class ShopItemAction extends BaseAction implements ModelDriven<ShopItem>
 	{
 		/**
 		 * busAtomDataStr = [{\
-		 * "atomCode\":\"123\",\"atomName\":\"123\",\"autoParts\":123,\"eunitPrice\
-		 * " : \ " \ " ,\"memo\":\"\",\"partName\":\"前刹车片\" ,\
+		 * "atomCode\":\"123\",\"atomName\":\"123\",\"autoParts\":123,\"eunitPri
+		 * c e \ " : \ " \ " ,\"memo\":\"\",\"partName\":\"前刹车片\" ,\
 		 * "brandName\":\"迈氏\",\"spec\":\"GB5763-200\",\"model\":\"广州本田飞度1.3L
 		 * 五档手动 两厢\",\"isActivity\":0}, {\
 		 * "atomCode\":\"123\",\"atomName\":\"123\",\"autoParts\":123,\"eunitPrice\":\"\",\"memo\":\"\",\"partName\":\"前刹车片\",\"brandName\":\"迈氏\",\"spec\":\"GB5763-2008\",\"model\":\"广州本田飞度1.3L 五档手动 两厢\""
@@ -213,7 +204,6 @@ public class ShopItemAction extends BaseAction implements ModelDriven<ShopItem>
 	{
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		CarShop carShop = this.getLoginUser().getCarShop();
-		jsonObject.put("code", 1);
 		if (shopItem.getFid() == null || "".equals(shopItem.getFid()))
 		{
 			// 属于新增操作的检查
@@ -222,7 +212,8 @@ public class ShopItemAction extends BaseAction implements ModelDriven<ShopItem>
 			shopItem = (ShopItem) this.baseService.get("From ShopItem b where b.itemCode = :itemCode and b.carShop = :carShop", paramMap);
 			if (shopItem != null)
 			{
-				jsonObject.put("code", 0);
+				this.putJson(false, null);
+				return;
 			}
 		} else
 		{
@@ -233,16 +224,11 @@ public class ShopItemAction extends BaseAction implements ModelDriven<ShopItem>
 			shopItem = (ShopItem) this.baseService.get("From ShopItem b where b.itemCode = :itemCode and b.fid <> :fid  and b.carShop = :carShop", paramMap);
 			if (shopItem != null)
 			{
-				jsonObject.put("code", 0);
+				this.putJson(false, null);
+				return;
 			}
 		}
-		try
-		{
-			this.putJson(jsonObject.toString());
-		} catch (IOException e)
-		{
-			e.printStackTrace();
-		}
+		this.putJson();
 	}
 
 	/**
@@ -326,106 +312,44 @@ public class ShopItemAction extends BaseAction implements ModelDriven<ShopItem>
 	@AuthCheck
 	public void detailsShopItem()
 	{
-		try
+		if (isNotEmpty(shopItem.getFid()))
 		{
-			if (isNotEmpty(shopItem.getFid()))
+			// 在这里执行查询操作
+			shopItem = this.baseService.get(ShopItem.class, shopItem.getFid());
+			if (shopItem != null)
 			{
-				// 在这里执行查询操作
-				shopItem = this.baseService.get(ShopItem.class, shopItem.getFid());
-				if (shopItem != null)
-				{
-					Set<ShopAtom> shopAtoms = shopItem.getShopAtoms();
-					List<ShopAtom> busAtomsReturnValue = new ArrayList<ShopAtom>();
-					if (shopAtoms != null && shopAtoms.size() > 0)
-					{
-						for (ShopAtom ba : shopAtoms)
-						{
-							// ba.setShopItem(null);
-							busAtomsReturnValue.add(ba);
-						}
-					}
+				Set<ShopAtom> shopAtoms = shopItem.getShopAtoms();
 
-					jsonObject.accumulate("details", shopItem, this.getJsonConfig(JsonValueFilterConfig.Shop.ShopItem.SHOPITEM_ONLY_SHOPITEM));
-					jsonObject.accumulate("busAtoms", busAtomsReturnValue, this.getJsonConfig(JsonValueFilterConfig.Shop.ShopAtom.SHOPATOM_HAS_AUTOPART));
-					this.putJson();
-					return;
-				} else
-				{
-					this.putJson(false, this.getMessageFromConfig("shopItemIdError"));
-					return;
-				}
+				jsonObject.accumulate("details", shopItem, this.getJsonConfig(JsonValueFilterConfig.Shop.ShopItem.SHOPITEM_ONLY_SHOPITEM));
+				jsonObject.accumulate("busAtoms", shopAtoms, this.getJsonConfig(JsonValueFilterConfig.Shop.ShopAtom.SHOPATOM_HAS_AUTOPART));
+				this.putJson();
+				return;
 			} else
 			{
-				this.putJson(false, this.getMessageFromConfig("needShopItemId"));
+				this.putJson(false, this.getMessageFromConfig("shopItemIdError"));
+				return;
 			}
-		} catch (Exception e)
+		} else
 		{
-			log.error("获取商家服务详细信息失败", e);
-			this.putJson(false, this.getMessageFromConfig("listShopItemError"));
+			this.putJson(false, this.getMessageFromConfig("needShopItemId"));
 		}
 	}
 
 	/**
 	 * 删除一组数据的方法
+	 * 
+	 * @throws ErrorMessageException
 	 */
 	@AuthCheck(isCheckLoginOnly = false)
-	public void deleteShopItemByIds()
+	public void deleteShopItemByIds() throws ErrorMessageException
 	{
-		this.shopItemService.deleteShopItemByIds(ids);
-		jsonObject.put("code", 1);
-		try
+		if (isNotEmpty(ids))
 		{
-			this.putJson(jsonObject.toString());
-		} catch (IOException e)
-		{
-		}
-	}
-
-	/**
-	 * 查看一个指定id的详细信息，包括子集信息
-	 */
-	@AuthCheck
-	public void detailsShoptem()
-	{
-		if (shopItem.getFid() == null || "".equals(shopItem.getFid()))
-		{
-			jsonObject.put("code", 0);// 获取失败
+			this.shopItemService.deleteShopItemByIds(ids);
+			this.putJson();
 		} else
 		{
-			// 在这里执行查询操作
-			shopItem = this.baseService.get(ShopItem.class, shopItem.getFid());
-			Set<ShopAtom> shopAtoms = shopItem.getShopAtoms();
-			List<ShopAtom> busAtomsReturnValue = new ArrayList<ShopAtom>();
-			if (shopAtoms != null && shopAtoms.size() > 0)
-			{
-				for (ShopAtom ba : shopAtoms)
-				{
-					ba.setShopItem(null);
-					ba.setCarShop(null);
-					busAtomsReturnValue.add(ba);
-				}
-			}
-
-			// 设置json处理数据的规则
-			JsonConfig jsonConfig = new JsonConfig();
-			jsonConfig.registerJsonValueProcessor(Date.class, new JsonDateValueProcessor());
-			jsonConfig.setIgnoreDefaultExcludes(false); // 设置默认忽略
-			jsonConfig.setCycleDetectionStrategy(CycleDetectionStrategy.LENIENT);// 设置循环策略为忽略
-																					// 解决json最头疼的问题
-																					// 死循环
-			jsonConfig.setExcludes(new String[] { "carShop", "shopAtoms", "shopItem", "shopPackages" });// 此处是亮点，只要将所需忽略字段加到数组中即可
-
-			jsonObject.put("code", 1);
-			jsonObject.accumulate("details", shopItem, jsonConfig);
-			jsonObject.accumulate("busAtoms", busAtomsReturnValue, jsonConfig);
-
-		}
-		try
-		{
-			this.putJson(jsonObject.toString());
-		} catch (IOException e)
-		{
-			e.printStackTrace();
+			this.putJson(false, this.getMessageFromConfig("needShopItemId"));
 		}
 	}
 
@@ -435,28 +359,20 @@ public class ShopItemAction extends BaseAction implements ModelDriven<ShopItem>
 	@AuthCheck
 	public void listShopItemImgByShopItem()
 	{
-		try
+		if (isNotEmpty(shopItem.getFid()))
 		{
-			if (isNotEmpty(shopItem.getFid()))
+			shopItem = this.baseService.get(ShopItem.class, shopItem.getFid());
+			if (shopItem != null)
 			{
-				shopItem = this.baseService.get(ShopItem.class, shopItem.getFid());
-				if (shopItem != null)
-				{
-					List<ShopItemImg> list = new ArrayList<ShopItemImg>(shopItem.getShopItemImgs());
-					this.jsonObject.accumulate("images", list, this.getJsonConfig(JsonValueFilterConfig.Shop.ShopItem.SHOPITEMIMG_ONLY_SHOPITEMIMG));
-					this.putJson();
-				} else
-				{
-					this.putJson(false, this.getMessageFromConfig("shopItemIdError"));
-				}
+				this.jsonObject.accumulate("images", shopItem.getShopItemImgs(), this.getJsonConfig(JsonValueFilterConfig.Shop.ShopItem.SHOPITEMIMG_ONLY_SHOPITEMIMG));
+				this.putJson();
 			} else
 			{
-				this.putJson(false, this.getMessageFromConfig("needShopItemId"));
+				this.putJson(false, this.getMessageFromConfig("shopItemIdError"));
 			}
-		} catch (Exception e)
+		} else
 		{
-			log.error("获取商家服务图片信息列表失败", e);
-			this.putJson(false, this.getMessageFromConfig("listImg_error"));
+			this.putJson(false, this.getMessageFromConfig("needShopItemId"));
 		}
 	}
 

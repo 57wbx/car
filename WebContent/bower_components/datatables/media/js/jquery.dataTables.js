@@ -11401,7 +11401,7 @@
 			 *      } );
 			 *    } );
 			 */
-			"sZeroRecords": "No matching records found"
+			"sZeroRecords": "没有数据"
 		},
 	
 	

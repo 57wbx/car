@@ -284,24 +284,10 @@ app.controller('shopPackageListController',['$scope','$state','$timeout','$http'
 		"paging":false,
 		"searching":false,
 		"pageLength":5,
-		"sAjaxSource":"shop/shopItemAction!listShopItem.action",
+		"sAjaxSource":"shop/shopPackageAction!getShopItemsByShopPackage.action",
     	"bServerSide":true,
-    	"sAjaxDataProp":"data",
-    	"oLanguage": {
-            "sLengthMenu": "每页 _MENU_ 条",
-            "sZeroRecords": "没有服务信息",
-            "sProcessing": "&lt;img src=’./loading.gif’ /&gt;",
-            "sInfo": "当前第 _START_ - _END_ 条，共 _TOTAL_ 条",
-            "sInfoEmpty": "没有记录",
-            "sInfoFiltered": "(从 _MAX_ 条记录中过滤)",
-            "sSearch": "搜索",
-            "oPaginate": {
-              "sFirst": "<<",
-              "sPrevious": "<",
-              "sNext": ">",
-              "sLast": ">>"
-            }
-          },scrollX:true,
+    	"sAjaxDataProp":"data"
+    	,scrollX:true,
     	  "aoColumns": [{
             "mDataProp": "itemCode",
           }, {

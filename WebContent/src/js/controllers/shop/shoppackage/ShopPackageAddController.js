@@ -329,7 +329,7 @@ app.controller("shopPackageAddController",['$scope','$state','$http','sessionSto
 		}else if(!table.row(nRow).child()){//当child中没有数据的时候从网上获取
 			//从网上获取数据，并将数据添加到子行中
 			$http({
-				url:"shop/shopItemAction!detailsShoptem.action",
+				url:"shop/shopItemAction!detailsShopItem.action",
 				method:"get",
 				params:{
 					fid:itemId

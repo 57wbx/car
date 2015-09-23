@@ -1,7 +1,7 @@
 package com.hhxh.car.base.busitem.action;
 
-import java.io.IOException;
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -11,25 +11,20 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
+import net.sf.json.JSONArray;
+
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
-import net.sf.json.JsonConfig;
-import net.sf.json.util.CycleDetectionStrategy;
-
 import com.hhxh.car.base.autopart.domain.AutoPart;
 import com.hhxh.car.base.busatom.domain.BusAtom;
 import com.hhxh.car.base.busitem.domain.BusItem;
 import com.hhxh.car.base.busitem.service.BusItemService;
-import com.hhxh.car.base.buspackage.domain.BusPackage;
-import com.hhxh.car.base.car.domain.Car;
 import com.hhxh.car.common.action.BaseAction;
 import com.hhxh.car.common.annotation.AuthCheck;
-import com.hhxh.car.common.util.JsonDateValueProcessor;
+import com.hhxh.car.common.exception.ErrorMessageException;
 import com.hhxh.car.common.util.JsonValueFilterConfig;
 import com.hhxh.car.common.util.TypeTranslate;
 import com.hhxh.car.push.Push;
@@ -45,22 +40,22 @@ public class BusItemAction extends BaseAction implements ModelDriven<BusItem>
 
 	@Resource
 	private BusItemService busItemService;
-	
+
 	/**
 	 * 推送的接口
 	 */
 	@Resource
-	private Push push ;
-	
+	private Push push;
+
 	@Resource
-	private PushMessageService pushMessageService ;
-	
+	private PushMessageService pushMessageService;
+
 	// 用字符串接受从前台传上来的时间参数，在这里进行处理
 	private String starTimeStr;
 	private String endTimeStr;
 
 	private String busTypeCode;
-	
+
 	/**
 	 * 用来接受服务子项数据列表
 	 */
@@ -75,11 +70,11 @@ public class BusItemAction extends BaseAction implements ModelDriven<BusItem>
 	 * 需要进行删除的服务id数组
 	 */
 	private String[] ids;
-	
+
 	/**
 	 * 排序所使用到的参数
 	 */
-	private String orderName ;
+	private String orderName;
 
 	/**
 	 * 查询所有的记录
@@ -87,64 +82,62 @@ public class BusItemAction extends BaseAction implements ModelDriven<BusItem>
 	@AuthCheck
 	public void listBusItem()
 	{
-		try
-		{
-			List<Criterion> params = new ArrayList<Criterion>();
-			// 用来缓存子查询
-			Map<String, List<Criterion>> criteriaMap = new HashMap<String, List<Criterion>>();
-			
-			if (isNotEmpty(this.getBusTypeCode()))
-			{
-				params.add(Restrictions.like("itemCode", this.getBusTypeCode(), MatchMode.ANYWHERE));
-			}
-			if (isNotEmpty(this.busItem.getItemCode()))
-			{
-				params.add(Restrictions.like("itemCode", this.busItem.getItemCode(), MatchMode.ANYWHERE));
-			}
-			if (isNotEmpty(this.busItem.getItemName()))
-			{
-				params.add(Restrictions.like("itemName", this.busItem.getItemName(), MatchMode.ANYWHERE));
-			}
-			if(isNotEmpty(this.busItem.getIsActivity())){
-				params.add(Restrictions.eq("isActivity", this.busItem.getIsActivity()));
-			}
-			if(isNotEmpty(this.busItem.getItemDes())){
-				params.add(Restrictions.like("itemDes", this.busItem.getItemDes(),MatchMode.ANYWHERE));
-			}
+		List<Criterion> params = new ArrayList<Criterion>();
+		// 用来缓存子查询
+		Map<String, List<Criterion>> criteriaMap = new HashMap<String, List<Criterion>>();
+		criteriaMap.put("busItemImgs", null);
 
-			// 排序的规则
-			List<Order> orders = new ArrayList<Order>();
-			if (isNotEmpty(orderName))
-			{
-				orders.add(Order.asc(orderName));
-			}
-			orders.add(Order.desc("updateTime"));
-			
-			List<BusItem> busItems = this.baseService.gets(BusItem.class, params, criteriaMap, this.getIDisplayStart(), this.getIDisplayLength(), orders);
-			int recordsTotal = this.baseService.getSize(BusItem.class, params, criteriaMap);
-
-			jsonObject.accumulate("data", busItems, this.getJsonConfig(JsonValueFilterConfig.Base.BusItem.BASEITEM_HAS_BASEITEMIMG));
-			jsonObject.put("recordsTotal", recordsTotal);
-			jsonObject.put("recordsFiltered", recordsTotal);
-			
-			this.putJson();
-		} catch (Exception e)
+		if (isNotEmpty(this.getBusTypeCode()))
 		{
-			log.error("获取服务", e);
-			this.putJson(false, this.getMessageFromConfig("busItemError"));
+			params.add(Restrictions.like("itemCode", this.getBusTypeCode(), MatchMode.ANYWHERE));
 		}
+		if (isNotEmpty(this.busItem.getItemCode()))
+		{
+			params.add(Restrictions.like("itemCode", this.busItem.getItemCode(), MatchMode.ANYWHERE));
+		}
+		if (isNotEmpty(this.busItem.getItemName()))
+		{
+			params.add(Restrictions.like("itemName", this.busItem.getItemName(), MatchMode.ANYWHERE));
+		}
+		if (isNotEmpty(this.busItem.getIsActivity()))
+		{
+			params.add(Restrictions.eq("isActivity", this.busItem.getIsActivity()));
+		}
+		if (isNotEmpty(this.busItem.getItemDes()))
+		{
+			params.add(Restrictions.like("itemDes", this.busItem.getItemDes(), MatchMode.ANYWHERE));
+		}
+
+		// 排序的规则
+		List<Order> orders = new ArrayList<Order>();
+		if (isNotEmpty(orderName))
+		{
+			orders.add(Order.asc(orderName));
+		}
+		orders.add(Order.desc("updateTime"));
+
+		List<BusItem> busItems = this.baseService.gets(BusItem.class, params, criteriaMap, this.getIDisplayStart(), this.getIDisplayLength(), orders);
+		int recordsTotal = this.baseService.getSize(BusItem.class, params, criteriaMap);
+
+		jsonObject.accumulate("data", busItems, this.getJsonConfig(JsonValueFilterConfig.Base.BusItem.BASEITEM_HAS_BASEITEMIMG));
+		jsonObject.put("recordsTotal", recordsTotal);
+		jsonObject.put("recordsFiltered", recordsTotal);
+
+		this.putJson();
 	}
 
 	/**
 	 * 添加一条记录
+	 * 
+	 * @throws ErrorMessageException
 	 */
 	@AuthCheck
-	public void addBusItem()
+	public void addBusItem() throws ErrorMessageException
 	{
 		/**
 		 * busAtomDataStr = [{\
-		 * "atomCode\":\"123\",\"atomName\":\"123\",\"autoParts\":123,\"eunitPrice\":\
-		 * " \ " ,\"memo\":\"\",\"partName\":\"前刹车片\" ,\
+		 * "atomCode\":\"123\",\"atomName\":\"123\",\"autoParts\":123,\"eunitPri
+		 * c e \ " : \ " \ " ,\"memo\":\"\",\"partName\":\"前刹车片\" ,\
 		 * "brandName\":\"迈氏\",\"spec\":\"GB5763-200\",\"model\":\"广州本田飞度1.3L
 		 * 五档手动 两厢\",\"isActivity\":0}, {\
 		 * "atomCode\":\"123\",\"atomName\":\"123\",\"autoParts\":123,\"eunitPrice\":\"\",\"memo\":\"\",\"partName\":\"前刹车片\",\"brandName\":\"迈氏\",\"spec\":\"GB5763-2008\",\"model\":\"广州本田飞度1.3L 五档手动 两厢\""
@@ -185,47 +178,46 @@ public class BusItemAction extends BaseAction implements ModelDriven<BusItem>
 				busAtomList.add(ba);
 			}
 		}
-		try
+		Date starTime = null;
+		Date endTime = null;
+
+		if (starTimeStr != null && !"".equals(starTimeStr))
 		{
-
-			Date starTime = null;
-			Date endTime = null;
-
-			if (starTimeStr != null && !"".equals(starTimeStr))
+			try
 			{
 				starTime = ymdhm.parse(starTimeStr);
+			} catch (ParseException e)
+			{
+				throw new ErrorMessageException(this.getMessageFromConfig("time_pattern_error"));
 			}
-			if (endTimeStr != null && !"".equals(endTimeStr))
+		}
+		if (endTimeStr != null && !"".equals(endTimeStr))
+		{
+			try
 			{
 				endTime = ymdhm.parse(endTimeStr);
+			} catch (ParseException e)
+			{
+				throw new ErrorMessageException(this.getMessageFromConfig("time_pattern_error"));
 			}
-			this.busItem.setBusAtoms(null);
-			this.busItem.setStarTime(starTime);
-			this.busItem.setEndTime(endTime);
-			this.busItem.setUpdateTime(new Date());
-			this.busItemService.saveBusItemContainsBusAtomWithNoId(busItem, busAtomList);
-			jsonObject.put("code", 1);// 保存成功
-		} catch (Exception e)
-		{
-			jsonObject.put("code", 0);
-			e.printStackTrace();
 		}
-		try
-		{
-			this.putJson(jsonObject.toString());
-		} catch (IOException e)
-		{
-			e.printStackTrace();
-		}
+		this.busItem.setBusAtoms(null);
+		this.busItem.setStarTime(starTime);
+		this.busItem.setEndTime(endTime);
+		this.busItem.setUpdateTime(new Date());
+		this.busItemService.saveBusItemContainsBusAtomWithNoId(busItem, busAtomList);
+
+		this.putJson();
 	}
 
 	/**
 	 * 用来做修改的方法,
+	 * 
+	 * @throws ErrorMessageException
 	 */
 	@AuthCheck
-	public void saveBusItem()
+	public void saveBusItem() throws ErrorMessageException
 	{
-
 		JSONArray busAtoms = null;
 		List<BusAtom> busAtomList = null;
 		if (busAtomDataStr != null && !"".equals(busAtomDataStr))
@@ -260,47 +252,53 @@ public class BusItemAction extends BaseAction implements ModelDriven<BusItem>
 				busAtomList.add(ba);
 			}
 		}
-		try
-		{
-			Date starTime = null;
-			Date endTime = null;
+		Date starTime = null;
+		Date endTime = null;
 
-			if (starTimeStr != null && !"".equals(starTimeStr))
+		if (starTimeStr != null && !"".equals(starTimeStr))
+		{
+			try
 			{
 				starTime = ymdhm.parse(starTimeStr);
+			} catch (ParseException e)
+			{
+				throw new ErrorMessageException(this.getMessageFromConfig("time_pattern_error"));
 			}
-			if (endTimeStr != null && !"".equals(endTimeStr))
+		}
+		if (endTimeStr != null && !"".equals(endTimeStr))
+		{
+			try
 			{
 				endTime = ymdhm.parse(endTimeStr);
+			} catch (ParseException e)
+			{
+				throw new ErrorMessageException(this.getMessageFromConfig("time_pattern_error"));
 			}
-			this.busItem.setBusAtoms(null);
-			this.busItem.setStarTime(starTime);
-			this.busItem.setEndTime(endTime);
-			this.busItem.setUpdateTime(new Date());
-			this.busItemService.updateBusItemWithBusAtom(busItem, busAtomList, deleteBusAtomIds);
-			jsonObject.put("code", 1);// 保存成功
-		} catch (Exception e)
-		{
-			jsonObject.put("code", 0);
-			e.printStackTrace();
 		}
-		try
-		{
-			this.putJson(jsonObject.toString());
-		} catch (IOException e)
-		{
-			e.printStackTrace();
-		}
+		this.busItem.setBusAtoms(null);
+		this.busItem.setStarTime(starTime);
+		this.busItem.setEndTime(endTime);
+		this.busItem.setUpdateTime(new Date());
+		this.busItemService.updateBusItemWithBusAtom(busItem, busAtomList, deleteBusAtomIds);
+
+		this.putJson();
 	}
 
 	/**
 	 * 删除一系列的数据
 	 */
-	@AuthCheck(isCheckLoginOnly=false)
+	@AuthCheck(isCheckLoginOnly = false)
 	public void deleteBusItemByIds()
 	{
-		this.busItemService.deleteBusItemByIds(ids);
-		this.putJson();
+		if (isNotEmpty(ids))
+		{
+			this.busItemService.deleteBusItemByIds(ids);
+			this.putJson();
+		} else
+		{
+			this.putJson(false, this.getMessageFromConfig("needBusItemId"));
+		}
+
 	}
 
 	/**
@@ -309,33 +307,23 @@ public class BusItemAction extends BaseAction implements ModelDriven<BusItem>
 	@AuthCheck
 	public void detailsBusItem()
 	{
-		try
+		if (!isNotEmpty(this.busItem.getFid()))
 		{
-			if (busItem.getFid() == null || "".equals(busItem.getFid()))
+			this.putJson(false, this.getMessageFromConfig("needBusItemId"));
+		} else
+		{
+			// 在这里执行查询操作
+			busItem = this.baseService.get(BusItem.class, busItem.getFid());
+			if (busItem != null)
 			{
-				this.putJson(false, "查询失败，没有需要查询的服务项id");
+				Set<BusAtom> busAtoms = busItem.getBusAtoms();
+				jsonObject.accumulate("details", busItem, this.getJsonConfig(JsonValueFilterConfig.Base.BusItem.BASEITEM_ONLY_BASEITEM));
+				jsonObject.accumulate("busAtoms", busAtoms, this.getJsonConfig(JsonValueFilterConfig.Base.BusAtom.BUSATOM_ONLY_BUSATOM));
+				this.putJson();
 			} else
 			{
-				// 在这里执行查询操作
-				busItem = this.baseService.get(BusItem.class, busItem.getFid());
-				Set<BusAtom> busAtoms = busItem.getBusAtoms();
-				List<BusAtom> busAtomsReturnValue = new ArrayList<BusAtom>();
-				if (busAtoms != null && busAtoms.size() > 0)
-				{
-					for (BusAtom ba : busAtoms)
-					{
-						ba.setBusItem(null);
-						busAtomsReturnValue.add(ba);
-					}
-				}
-				jsonObject.accumulate("details", busItem, this.getJsonConfig(JsonValueFilterConfig.Base.BusItem.BASEITEM_ONLY_BASEITEM));
-				jsonObject.accumulate("busAtoms", busAtomsReturnValue, this.getJsonConfig(JsonValueFilterConfig.Base.BusItem.BASEITEM_ONLY_BASEITEM));
-				this.putJson();
+				this.putJson(false, this.getMessageFromConfig("busItemIdError"));
 			}
-		} catch (Exception e)
-		{
-			log.error("查询服务项详细信息失败！", e);
-			this.putJson(false, "查询信息失败");
 		}
 	}
 
@@ -361,28 +349,12 @@ public class BusItemAction extends BaseAction implements ModelDriven<BusItem>
 			recordsTotal = this.baseService.getSize(BusItem.class);
 		}
 
-		// 设置json处理数据的规则
-		JsonConfig jsonConfig = new JsonConfig();
-		jsonConfig.registerJsonValueProcessor(Date.class, new JsonDateValueProcessor());
-		jsonConfig.setIgnoreDefaultExcludes(false); // 设置默认忽略
-		jsonConfig.setCycleDetectionStrategy(CycleDetectionStrategy.LENIENT);// 设置循环策略为忽略
-																				// 解决json最头疼的问题
-																				// 死循环
-		jsonConfig.setExcludes(new String[] { "busItems", "busItemImgs" });// 此处是亮点，只要将所需忽略字段加到数组中即可
-
-		this.jsonObject.put("code", 1);
-		this.jsonObject.accumulate("data", busItems, jsonConfig);
+		this.jsonObject.accumulate("data", busItems, this.getJsonConfig(JsonValueFilterConfig.Base.BusItem.BASEITEM_ONLY_BASEITEM));
 
 		jsonObject.put("recordsTotal", recordsTotal);
 		jsonObject.put("recordsFiltered", recordsTotal);
 
-		try
-		{
-			this.putJson(jsonObject.toString());
-		} catch (IOException e)
-		{
-			e.printStackTrace();
-		}
+		this.putJson();
 	}
 
 	/**
@@ -394,34 +366,29 @@ public class BusItemAction extends BaseAction implements ModelDriven<BusItem>
 	public void checkItemCodeIsUnique()
 	{
 		Map<String, Object> paramMap = new HashMap<String, Object>();
-		jsonObject.put("code", 1);
+		paramMap.put("itemCode", busItem.getItemCode());
+
 		if (busItem.getFid() == null || "".equals(busItem.getFid()))
 		{
 			// 属于新增操作的检查
-			paramMap.put("itemCode", busItem.getItemCode());
 			busItem = (BusItem) this.baseService.get("From BusItem b where b.itemCode = :itemCode", paramMap);
 			if (busItem != null)
 			{
-				jsonObject.put("code", 0);
+				this.putJson(false, null);
+				return;
 			}
 		} else
 		{
 			// 属于修改操作
-			paramMap.put("itemCode", busItem.getItemCode());
 			paramMap.put("fid", busItem.getFid());
 			busItem = (BusItem) this.baseService.get("From BusItem b where b.itemCode = :itemCode and b.fid <> :fid", paramMap);
 			if (busItem != null)
 			{
-				jsonObject.put("code", 0);
+				this.putJson(false, null);
+				return;
 			}
 		}
-		try
-		{
-			this.putJson(jsonObject.toString());
-		} catch (IOException e)
-		{
-			e.printStackTrace();
-		}
+		this.putJson();
 	}
 
 	/**
@@ -430,6 +397,31 @@ public class BusItemAction extends BaseAction implements ModelDriven<BusItem>
 	@AuthCheck
 	public void listItemImgByBusItem()
 	{
+		if (isNotEmpty(this.busItem.getFid()))
+		{
+			this.busItem = this.baseService.get(BusItem.class, this.busItem.getFid());
+			if (busItem != null)
+			{
+				this.jsonObject.accumulate("images", busItem.getBusItemImgs(), this.getJsonConfig(JsonValueFilterConfig.Base.BusItem.BASEITEMIMG_ONLY_BASEITEMIMG));
+				this.putJson();
+				return;
+			} else
+			{
+				this.putJson(false, this.getMessageFromConfig("busItemIdError"));
+				return;
+			}
+		} else
+		{
+			this.putJson(false, this.getMessageFromConfig("needBusItemId"));
+		}
+	}
+
+	/**
+	 * 推送一条服务项，其中推送的title为服务项的名称。推送的内容为服务项的服务详情
+	 */
+	@AuthCheck(isCheckLoginOnly = false)
+	public void pushBusItem()
+	{
 		try
 		{
 			if (isNotEmpty(this.busItem.getFid()))
@@ -437,39 +429,11 @@ public class BusItemAction extends BaseAction implements ModelDriven<BusItem>
 				this.busItem = this.baseService.get(BusItem.class, this.busItem.getFid());
 				if (busItem != null)
 				{
-					this.jsonObject.accumulate("images", busItem.getBusItemImgs(), this.getJsonConfig(JsonValueFilterConfig.Base.BusItem.BASEITEMIMG_ONLY_BASEITEMIMG));
-					this.putJson();
-					return;
-				} else
-				{
-					this.putJson(false, "操作出错，没有指定的服务项");
-					return;
-				}
-			} else
-			{
-				this.putJson(false, "操作出错，请指定服务项id");
-			}
-		} catch (Exception e)
-		{
-			log.error("查询服务项出错", e);
-			this.putJson(false, "查询出错");
-		}
-	}
-	
-	/**
-	 * 推送一条服务项，其中推送的title为服务项的名称。推送的内容为服务项的服务详情
-	 */
-	@AuthCheck(isCheckLoginOnly=false)
-	public void pushBusItem(){
-		try{
-			if(isNotEmpty(this.busItem.getFid())){
-				this.busItem = this.baseService.get(BusItem.class,this.busItem.getFid());
-				if(busItem!=null){
 					PushMessage pushMessage = new PushMessage();
-					
+
 					pushMessage.setFcontent(busItem.getItemDes());
 					pushMessage.setFtitle(busItem.getItemName());
-					
+
 					pushMessage.setCreateUser(this.getLoginUser());
 					pushMessage.setFcreateDate(new Date());
 					pushMessage.setFmessageType(PushMessageState.FMESSAGETYPE_BUSITEM);
@@ -477,22 +441,24 @@ public class BusItemAction extends BaseAction implements ModelDriven<BusItem>
 					pushMessage.setFpermid(busItem.getFid());
 					pushMessage.setFuseState(PushMessageState.FUSESTATE_OK);
 					pushMessage.setFsendType(PushMessageState.FSENDTYPE_ALL);
-					
-					Map<String,String> customValue = new HashMap<String,String>();
+
+					Map<String, String> customValue = new HashMap<String, String>();
 					customValue.put("messageType", PushMessageState.FMESSAGETYPE_BUSITEM.toString());
 					customValue.put("id", busItem.getFid());
-					
-					String pushResult = push.pushAllNotify(pushMessage.getFtitle(), busItem.getItemDes(),customValue);
-					
-					log.debug("推送平台服务返回的数据："+pushResult);
-					pushMessageService.addNotifyPushMessage(pushMessage,pushResult);
+
+					String pushResult = push.pushAllNotify(pushMessage.getFtitle(), busItem.getItemDes(), customValue);
+
+					log.debug("推送平台服务返回的数据：" + pushResult);
+					pushMessageService.addNotifyPushMessage(pushMessage, pushResult);
 					this.putJson();
 				}
-			}else{
+			} else
+			{
 				this.putJson(false, this.getMessageFromConfig("busItem_needId"));
 			}
-		}catch(Exception e){
-			log.error("推送平台服务失败",e);
+		} catch (Exception e)
+		{
+			log.error("推送平台服务失败", e);
 			this.putJson(false, this.getMessageFromConfig("push_error"));
 		}
 	}
@@ -573,5 +539,5 @@ public class BusItemAction extends BaseAction implements ModelDriven<BusItem>
 	{
 		this.orderName = orderName;
 	}
-	
+
 }

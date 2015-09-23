@@ -24,16 +24,17 @@ import com.hhxh.car.permission.domain.User;
  * @author： jiangdw
  *
  */
-public class OrgAction extends AbstractAction {
+public class OrgAction extends AbstractAction
+{
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	private String id;
 	private AdminOrgUnit editData;
-	private String [] ids;
+	private String[] ids;
 	private String parent;
 	private String code;
 	private String name;
@@ -45,30 +46,33 @@ public class OrgAction extends AbstractAction {
 	private Date onDutyTime;
 	private Date offDutyTime;
 	private String FLongNumber;
-	
 
 	/**
 	 * 修改的时候查询
+	 * 
 	 * @throws Exception
 	 */
 	public void getDataById() throws Exception
 	{
 		StringBuffer sql = getSql();
-		if(id!=null)
+		if (id != null)
 		{
 			sql.append("and t1.orgid='").append(id).append("'").append(RT);
 		}
 		List<Object[]> list = baseService.querySql(sql.toString());
 		JSONObject item = null;
-		if(list.size()>0){
+		if (list.size() > 0)
+		{
 			item = obj2Json(list.get(0));
 		}
 		JSONObject json = new JSONObject();
-		if(item!=null){
+		if (item != null)
+		{
 			json.put("code", "1");
 			json.put("msg", "success");
 			json.put("editData", item);
-		}else{
+		} else
+		{
 			json.put("code", "2");
 			json.put("msg", "fail");
 		}
@@ -77,17 +81,17 @@ public class OrgAction extends AbstractAction {
 
 	/**
 	 * 保存组织
+	 * 
 	 * @throws Exception
 	 */
 	public void save() throws Exception
 	{
 		JSONObject json = new JSONObject();
-		if(checkNumberUnique())
+		if (checkNumberUnique())
 		{
 			json.put("code", "2");
 			json.put("msg", "组织编码不能重复");
-		}
-		else
+		} else
 		{
 			AdminOrgUnit obj = new AdminOrgUnit();
 			User user = getLoginUser();
@@ -101,51 +105,59 @@ public class OrgAction extends AbstractAction {
 		}
 		putJson(json.toString());
 	}
-	
+
 	/**
 	 * 校验编码是否重复
+	 * 
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
 	public boolean checkNumberUnique()
 	{
 		String longNumber = null;
-		if(isNotEmpty(parent)){
+		if (isNotEmpty(parent))
+		{
 			AdminOrgUnit parentObj = baseService.get(AdminOrgUnit.class, parent);
-			longNumber = parentObj.getFLongNumber()+"!"+code;
-		}else{
+			longNumber = parentObj.getFLongNumber() + "!" + code;
+		} else
+		{
 			longNumber = code;
 		}
-		String sql = "select 1 from sys_org where orgCode like '"+longNumber+"%'";
+		String sql = "select 1 from sys_org where orgCode like '" + longNumber + "%'";
 		List<Object> list = baseService.querySql(sql.toString());
-		if(list.size()>=1){
+		if (list.size() >= 1)
+		{
 			return true;
 		}
 		return false;
 	}
-	
+
 	/**
 	 * 根据id删除组织
+	 * 
 	 * @throws Exception
 	 */
-	public void deleteById()throws Exception
+	public void deleteById() throws Exception
 	{
-		baseService.delete(AdminOrgUnit.class,id);
+		baseService.delete(AdminOrgUnit.class, id);
 		JSONObject json = new JSONObject();
 		json.put("code", "1");
 		json.put("msg", "success");
 		putJson(json.toString());
 	}
-	
+
 	/**
 	 * 批量删除组织
+	 * 
 	 * @throws Exception
 	 */
-	public void batchDelete()throws Exception
+	public void batchDelete() throws Exception
 	{
-		if(ids!=null){
-			for (String id : ids) {
-				baseService.delete(AdminOrgUnit.class,id);
+		if (ids != null)
+		{
+			for (String id : ids)
+			{
+				baseService.delete(AdminOrgUnit.class, id);
 			}
 		}
 		JSONObject json = new JSONObject();
@@ -153,12 +165,13 @@ public class OrgAction extends AbstractAction {
 		json.put("msg", "success");
 		putJson(json.toString());
 	}
-	
+
 	/**
 	 * 更新组织信息
+	 * 
 	 * @throws Exception
 	 */
-	public void modify()throws Exception
+	public void modify() throws Exception
 	{
 		AdminOrgUnit obj = baseService.get(AdminOrgUnit.class, id);
 		putParamsToObj(obj);
@@ -168,27 +181,27 @@ public class OrgAction extends AbstractAction {
 		json.put("msg", "success");
 		putJson(json.toString());
 	}
-	
+
 	/**
 	 * 把属性放入对象中
+	 * 
 	 * @param obj
 	 * @return
 	 */
 	private AdminOrgUnit putParamsToObj(AdminOrgUnit obj)
 	{
-		if(isNotEmpty(parent))
+		if (isNotEmpty(parent))
 		{
 			AdminOrgUnit parentObj = baseService.get(AdminOrgUnit.class, parent);
 			obj.setParent(parentObj);
-			obj.setLevel(parentObj.getLevel()+1);
-			obj.setFLongNumber(parentObj.getFLongNumber()+"!"+code);
-			if(parentObj.getIsleaf()!=null&&parentObj.getIsleaf()==1)
+			obj.setLevel(parentObj.getLevel() + 1);
+			obj.setFLongNumber(parentObj.getFLongNumber() + "!" + code);
+			if (parentObj.getIsleaf() != null && parentObj.getIsleaf() == 1)
 			{
 				parentObj.setIsleaf(0);
 				baseService.update(parentObj);
 			}
-		}
-		else
+		} else
 		{
 			obj.setFLongNumber(code);
 			obj.setLevel(1);
@@ -203,33 +216,34 @@ public class OrgAction extends AbstractAction {
 		obj.setLastModifyTime(new Date());
 		return obj;
 	}
-	
+
 	/**
 	 * 根据parent查询组织列表(树)
+	 * 
 	 * @throws IOException
 	 */
 	public void loadList() throws IOException
 	{
 		StringBuffer sql = getSql();
 		User user = getLoginUser();
-		if(user.getRootOrgUnit()!=null&&user.getRootOrgUnit().getFLongNumber()!=null)
+		if (user.getRootOrgUnit() != null && user.getRootOrgUnit().getFLongNumber() != null)
 		{
 			sql.append("where t1.orgCode like '").append(user.getRootOrgUnit().getFLongNumber()).append("%'").append(RT);
-		}
-		else
+		} else
 		{
 			sql.append("where 1<>1").append(RT);
 		}
-		if(isNotEmpty(id))
+		if (isNotEmpty(id))
 		{
 			sql.append("and t1.parentID='").append(id).append("'").append(RT);
 		}
-		commonQuery(sql,false);
+		commonQuery(sql, false);
 	}
-	
+
 	/**
 	 * 查询组织树
-	 * @throws IOException 
+	 * 
+	 * @throws IOException
 	 */
 	public void loadOrgList() throws IOException
 	{
@@ -237,54 +251,55 @@ public class OrgAction extends AbstractAction {
 		AdminOrgUnit rootOrg = user.getRootOrgUnit();
 		JSONObject json = new JSONObject();
 		JSONArray items = new JSONArray();
-		if(rootOrg!=null)
+		if (rootOrg != null)
 		{
 			JSONObject item = new JSONObject();
 			item.put("id", rootOrg.getId());
 			item.put("pId", "");
-			item.put("name",rootOrg.getName());
-			item.put("FLongNumber",rootOrg.getFLongNumber());
+			item.put("name", rootOrg.getName());
+			item.put("FLongNumber", rootOrg.getFLongNumber());
 			item.put("open", true);
 			items.add(item);
-			String hql = "from AdminOrgUnit where FLongNumber like '"+rootOrg.getNumber()+"!%' order by number asc";
+			String hql = "from AdminOrgUnit where FLongNumber like '" + rootOrg.getNumber() + "!%' order by number asc";
 			List<AdminOrgUnit> list = baseService.gets(hql);
-			for(AdminOrgUnit org : list)
+			for (AdminOrgUnit org : list)
 			{
 				item = new JSONObject();
 				item.put("id", org.getId());
 				item.put("name", org.getName());
-				item.put("pId",org.getParent()==null?"":org.getParent().getId());
-				item.put("FLongNumber",org.getFLongNumber());
+				item.put("pId", org.getParent() == null ? "" : org.getParent().getId());
+				item.put("FLongNumber", org.getFLongNumber());
 				item.put("open", true);
 				items.add(item);
 			}
 		}
-		json.put("rows",items.size()==0?new Object[]{}:items);
-		json.put("code",1);
+		json.put("rows", items.size() == 0 ? new Object[] {} : items);
+		json.put("code", 1);
 		putJson(json.toString());
 	}
 
 	/**
 	 * 根据sql 查询组织信息传入前台
+	 * 
 	 * @param sql
-	 * @param isPage 是否分页 true分页，false不分页
+	 * @param isPage
+	 *            是否分页 true分页，false不分页
 	 * @throws IOException
 	 */
 	@SuppressWarnings("unchecked")
-	private void commonQuery(StringBuffer sql,boolean isPage) throws IOException 
+	private void commonQuery(StringBuffer sql, boolean isPage) throws IOException
 	{
-		int total=baseService.querySql(sql.toString()).size();
+		int total = baseService.querySql(sql.toString()).size();
 		List<Object[]> list = null;
-		if(isPage)
+		if (isPage)
 		{
-			list = baseService.querySql(sql.toString(),start,pageSize);
-		}
-		else
+			list = baseService.querySql(sql.toString(), start, pageSize);
+		} else
 		{
 			list = baseService.querySql(sql.toString());
 		}
 		JSONArray items = new JSONArray();
-		for(Object[] obj : list)
+		for (Object[] obj : list)
 		{
 			JSONObject item = obj2Json(obj);
 			items.add(item);
@@ -299,12 +314,13 @@ public class OrgAction extends AbstractAction {
 
 	/**
 	 * 返回查询组织信息的sql
+	 * 
 	 * @return
 	 */
 	public StringBuffer getSql()
 	{
 		StringBuffer sql = new StringBuffer();
-		sql.append("SELECT").append(RT); 
+		sql.append("SELECT").append(RT);
 		sql.append("t1.orgid,t1.curCode,t1.name,t1.simpleName,t2.orgid parentId,t2.name parentName,").append(RT);
 		sql.append("t1.orgType,t1.memo,").append(RT);
 		sql.append("t1.fax,t1.useType,t1.orgCode,").append(RT);
@@ -315,66 +331,68 @@ public class OrgAction extends AbstractAction {
 		sql.append("LEFT JOIN T_PM_USER t5 ON t1.lastUpdateUserID=t5.id").append(RT);
 		return sql;
 	}
-	
+
 	/**
 	 * 把组织对象封装到JSONObject中
+	 * 
 	 * @param obj
 	 * @return JSONObject
 	 */
-	private JSONObject obj2Json(Object[] obj) 
+	private JSONObject obj2Json(Object[] obj)
 	{
 		JSONObject item = new JSONObject();
 		item.put("id", obj[0]);
-		item.put("code", obj[1]==null?"":obj[1]);
-		item.put("name", obj[2]==null?"":obj[2]);
-		item.put("simpleName",obj[3]==null?"":obj[3]);
-		item.put("parent", obj[4]==null?"":obj[4]);
-		item.put("parentName", obj[5]==null?"":obj[5]);
-		item.put("unitLayer", obj[6]==null?"":obj[6]);
+		item.put("code", obj[1] == null ? "" : obj[1]);
+		item.put("name", obj[2] == null ? "" : obj[2]);
+		item.put("simpleName", obj[3] == null ? "" : obj[3]);
+		item.put("parent", obj[4] == null ? "" : obj[4]);
+		item.put("parentName", obj[5] == null ? "" : obj[5]);
+		item.put("unitLayer", obj[6] == null ? "" : obj[6]);
 		item.put("description", checkNull(obj[7]));
 		item.put("fax", checkNull(obj[8]));
-		item.put("locked",checkNull(obj[9]));;
-		item.put("FLongNumber",checkNull(obj[10]));
+		item.put("locked", checkNull(obj[9]));
+		;
+		item.put("FLongNumber", checkNull(obj[10]));
 		item.put("creator", checkNull(obj[11]));
-		item.put("createTime",obj[12]==null?"":ymd.format(obj[12]));
-		item.put("lastUpdateUser",checkNull(obj[13]));
-		item.put("lastModifyTime", obj[14]==null?"":ymd.format(obj[14]));
+		item.put("createTime", obj[12] == null ? "" : ymd.format(obj[12]));
+		item.put("lastUpdateUser", checkNull(obj[13]));
+		item.put("lastModifyTime", obj[14] == null ? "" : ymd.format(obj[14]));
 		return item;
 	}
-	
+
 	/**
 	 * 获取直接下级
+	 * 
 	 * @throws IOException
 	 */
-	public void directSubAdminOrgUnits()throws IOException
+	public void directSubAdminOrgUnits() throws IOException
 	{
 		StringBuffer sql = getSql();
-		if(isNotEmpty(FLongNumber))
+		if (isNotEmpty(FLongNumber))
 		{
 			sql.append("where t1.orgCode like '").append(FLongNumber).append("%'").append(RT);
-		}
-		else
+		} else
 		{
 			User user = getLoginUser();
-			if(user.getRootOrgUnit()!=null&&user.getRootOrgUnit().getFLongNumber()!=null)
+			if (user.getRootOrgUnit() != null && user.getRootOrgUnit().getFLongNumber() != null)
 			{
 				sql.append("where t1.orgCode like '").append(user.getRootOrgUnit().getFLongNumber()).append("%'").append(RT);
-			}
-			else
+			} else
 			{
 				sql.append("where 1<>1").append(RT);
 			}
 		}
-		if(isNotEmpty(search))
+		if (isNotEmpty(search))
 		{
 			sql.append("AND (t1.name LIKE '%").append(search).append("%'").append(RT);
 			sql.append("or t1.curCode LIKE '%").append(search).append("%')").append(RT);
 		}
-		commonQuery(sql,true);
+		commonQuery(sql, true);
 	}
-	
+
 	/**
 	 * 冻结
+	 * 
 	 * @throws Exception
 	 */
 	public void freeze() throws Exception
@@ -387,12 +405,13 @@ public class OrgAction extends AbstractAction {
 		json.put("msg", "success");
 		putJson(json.toString());
 	}
-	
+
 	/**
 	 * 取消冻结
+	 * 
 	 * @throws Exception
 	 */
-	public void unfreeze()throws Exception
+	public void unfreeze() throws Exception
 	{
 		AdminOrgUnit obj = baseService.get(AdminOrgUnit.class, id);
 		obj.setLocked(0);
@@ -402,14 +421,16 @@ public class OrgAction extends AbstractAction {
 		json.put("msg", "success");
 		putJson(json.toString());
 	}
-	
+
 	/**
 	 * 考勤时间设置
+	 * 
 	 * @throws Exception
 	 */
-	public void attendanceSet()throws Exception
+	public void attendanceSet() throws Exception
 	{
-		for(int i=0;i<ids.length;i++){
+		for (int i = 0; i < ids.length; i++)
+		{
 			AdminOrgUnit obj = baseService.get(AdminOrgUnit.class, ids[i]);
 			baseService.update(obj);
 		}
@@ -418,138 +439,165 @@ public class OrgAction extends AbstractAction {
 		json.put("msg", "success");
 		putJson(json.toString());
 	}
-	
-	
+
 	/**
-	 * 获取所有的组织机构不包括部门级的
-	 * by zw
+	 * 获取所有的组织机构不包括部门级的 by zw
 	 */
-	public void listOrgNoDept(){
-		//3 代表部门取出不为部门的
-		List<Map> orgs = this.baseService.querySqlToMap("select a.name name,a.orgid id,a.parentID pId from sys_org a where a.orgType<>3", 0, 0);//查询出所有的数据
+	public void listOrgNoDept()
+	{
+		// 3 代表部门取出不为部门的
+		List<Map> orgs = this.baseService.querySqlToMap("select a.name name,a.orgid id,a.parentID pId from sys_org a where a.orgType<>3", 0, 0);// 查询出所有的数据
 		JSONObject json = new JSONObject();
-		json.put("code",1);
+		json.put("code", 1);
 		json.put("orgNoDept", orgs);
-		
-		try {
+
+		try
+		{
 			this.putJson(json.toString());
-		} catch (IOException e) {
+		} catch (IOException e)
+		{
 		}
-		
-		
+
 	}
-	
-	
-	public String getId() {
+
+	public String getId()
+	{
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(String id)
+	{
 		this.id = id;
 	}
 
-	public AdminOrgUnit getEditData() {
+	public AdminOrgUnit getEditData()
+	{
 		return editData;
 	}
 
-	public void setEditData(AdminOrgUnit editData) {
+	public void setEditData(AdminOrgUnit editData)
+	{
 		this.editData = editData;
 	}
 
-	public String[] getIds() {
+	public String[] getIds()
+	{
 		return ids;
 	}
 
-	public void setIds(String[] ids) {
+	public void setIds(String[] ids)
+	{
 		this.ids = ids;
 	}
 
-	public String getParent() {
+	public String getParent()
+	{
 		return parent;
 	}
 
-	public void setParent(String parent) {
+	public void setParent(String parent)
+	{
 		this.parent = parent;
 	}
 
-	public String getCode() {
+	public String getCode()
+	{
 		return code;
 	}
 
-	public void setCode(String code) {
+	public void setCode(String code)
+	{
 		this.code = code;
 	}
 
-	public String getName() {
+	public String getName()
+	{
 		return name;
 	}
 
-	public void setName(String name) {
+	public void setName(String name)
+	{
 		this.name = name;
 	}
 
-	public String getSimpleName() {
+	public String getSimpleName()
+	{
 		return simpleName;
 	}
 
-	public void setSimpleName(String simpleName) {
+	public void setSimpleName(String simpleName)
+	{
 		this.simpleName = simpleName;
 	}
 
-	public String getAdminAddress() {
+	public String getAdminAddress()
+	{
 		return adminAddress;
 	}
 
-	public void setAdminAddress(String adminAddress) {
+	public void setAdminAddress(String adminAddress)
+	{
 		this.adminAddress = adminAddress;
 	}
 
-	public String getFax() {
+	public String getFax()
+	{
 		return fax;
 	}
 
-	public void setFax(String fax) {
+	public void setFax(String fax)
+	{
 		this.fax = fax;
 	}
 
-	public String getPhoneNumber() {
+	public String getPhoneNumber()
+	{
 		return phoneNumber;
 	}
 
-	public void setPhoneNumber(String phoneNumber) {
+	public void setPhoneNumber(String phoneNumber)
+	{
 		this.phoneNumber = phoneNumber;
 	}
 
-	public Date getOnDutyTime() {
+	public Date getOnDutyTime()
+	{
 		return onDutyTime;
 	}
 
-	public void setOnDutyTime(Date onDutyTime) {
+	public void setOnDutyTime(Date onDutyTime)
+	{
 		this.onDutyTime = onDutyTime;
 	}
 
-	public Date getOffDutyTime() {
+	public Date getOffDutyTime()
+	{
 		return offDutyTime;
 	}
 
-	public void setOffDutyTime(Date offDutyTime) {
+	public void setOffDutyTime(Date offDutyTime)
+	{
 		this.offDutyTime = offDutyTime;
 	}
 
-	public String getFLongNumber() {
+	public String getFLongNumber()
+	{
 		return FLongNumber;
 	}
 
-	public void setFLongNumber(String fLongNumber) {
+	public void setFLongNumber(String fLongNumber)
+	{
 		FLongNumber = fLongNumber;
 	}
 
-	public Integer getUnitLayer() {
+	public Integer getUnitLayer()
+	{
 		return unitLayer;
 	}
 
-	public void setUnitLayer(Integer unitLayer) {
+	public void setUnitLayer(Integer unitLayer)
+	{
 		this.unitLayer = unitLayer;
 	}
-	
+
 }
