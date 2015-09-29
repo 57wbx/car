@@ -1,7 +1,6 @@
 package com.hhxh.car.org.domain;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -19,7 +18,6 @@ import org.hibernate.annotations.GenericGenerator;
 
 import com.hhxh.car.permission.domain.User;
 
-
 /***
  * Copyright (C), 2015-2025 Hhxh Tech. Co., Ltd
  * 
@@ -34,212 +32,269 @@ import com.hhxh.car.permission.domain.User;
  */
 @Entity
 @Table(name = "SYS_ORG")
-public class AdminOrgUnit implements Serializable {
-
-	private static final long serialVersionUID = 1L;
-
+public class AdminOrgUnit implements Serializable
+{
 	@Id
 	@GenericGenerator(name = "sasGenerator", strategy = "assigned")
 	@GeneratedValue(generator = "sasGenerator")
-	@Column(name="orgID",length=44)
+	@Column(name = "orgID", length = 44)
 	private String id;
-	
+
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "registerDate")
 	private Date createTime;
-	
+
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "updateTime")
 	private Date lastModifyTime;
-	 /**
-     * 创建人
-     */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="createUserID")
-    private User createUser;
-    /**
-     * 最后修改者
-     */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="lastUpdateUserID")
-    private User lastUpdateUser;
-    /**
-     * 简称
-     */
-    @Column(name="simpleName")
-    private String simpleName;
-    /**
-     * 编码
-     */
-    @Column(name="curCode")
-    private String number;
-    /**
-     * 名称
-     */
-    @Column(name="name")
-    private String name;
-    /**
-     * 上级组织
-     */
-    @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="parentID")
-    private AdminOrgUnit parent;
-    
-    
-    /**
-     * 组织层次 1集团，2公司，3部门
-     */
-    @Column(name="orgType")
-    private Integer unitLayer;
-    /**
-     * 组织描述
-     */
-    @Column(name="memo")
-    private String description;
-   
-    /**
-     * 传真
-     */
-    @Column(name="fax")
-    private String fax;
-    /**
-     * 长编码
-     * @return
-     */
-    @Column(name="orgCode")
-    private String FLongNumber;
-    /**
-     * 状态
-     */
 	/**
-	 * 是否锁定/冻结（解锁/反冻结）1冻结、0取消冻结
+	 * 创建人
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "createUserID")
+	private User createUser;
+	/**
+	 * 最后修改者
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "lastUpdateUserID")
+	private User lastUpdateUser;
+	/**
+	 * 简称
+	 */
+	@Column(name = "simpleName")
+	private String simpleName;
+	/**
+	 * 编码
+	 */
+	@Column(name = "curCode")
+	private String number;
+	/**
+	 * 名称
+	 */
+	@Column(name = "name")
+	private String name;
+	/**
+	 * 上级组织
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "parentID")
+	private AdminOrgUnit parent;
+
+	/**
+	 * 组织层次 1集团，2公司，3部门
+	 */
+	@Column(name = "orgType")
+	private Integer unitLayer;
+	/**
+	 * 组织描述
+	 */
+	@Column(name = "memo")
+	private String description;
+
+	/**
+	 * 传真
+	 */
+	@Column(name = "fax")
+	private String fax;
+	/**
+	 * 长编码
+	 * 
 	 * @return
 	 */
-    @Column(name="useType")
-    private Integer locked;
-   
-    /**
-     * 考勤地址
-     */
-    @Column(name="address")
-   	private String address;
-    
-    @Column(name="isLeaf")
-    private Integer isleaf;
-    
-    @Column(name="level")
-    private Integer level;
-    
-    
-    
-	public Integer getLocked() {
+	@Column(name = "orgCode")
+	private String FLongNumber;
+	/**
+	 * 状态
+	 */
+	/**
+	 * 是否锁定/冻结（解锁/反冻结）1冻结、0取消冻结
+	 * 
+	 * @return
+	 */
+	@Column(name = "useType")
+	private Integer locked;
+
+	/**
+	 * 考勤地址
+	 */
+	@Column(name = "address")
+	private String address;
+
+	@Column(name = "isLeaf")
+	private Integer isleaf;
+
+	@Column(name = "level")
+	private Integer level;
+
+	public Integer getLocked()
+	{
 		return locked;
 	}
-	public void setLocked(Integer locked) {
+
+	public void setLocked(Integer locked)
+	{
 		this.locked = locked;
 	}
-	public String getId() {
+
+	public String getId()
+	{
 		return id;
 	}
-	public void setId(String id) {
+
+	public void setId(String id)
+	{
 		this.id = id;
 	}
-	public Date getCreateTime() {
+
+	public Date getCreateTime()
+	{
 		return createTime;
 	}
-	public void setCreateTime(Date createTime) {
+
+	public void setCreateTime(Date createTime)
+	{
 		this.createTime = createTime;
 	}
-	public Date getLastModifyTime() {
+
+	public Date getLastModifyTime()
+	{
 		return lastModifyTime;
 	}
-	public void setLastModifyTime(Date lastModifyTime) {
+
+	public void setLastModifyTime(Date lastModifyTime)
+	{
 		this.lastModifyTime = lastModifyTime;
 	}
-	public User getCreateUser() {
+
+	public User getCreateUser()
+	{
 		return createUser;
 	}
-	public void setCreateUser(User createUser) {
+
+	public void setCreateUser(User createUser)
+	{
 		this.createUser = createUser;
 	}
-	public User getLastUpdateUser() {
+
+	public User getLastUpdateUser()
+	{
 		return lastUpdateUser;
 	}
-	public void setLastUpdateUser(User lastUpdateUser) {
+
+	public void setLastUpdateUser(User lastUpdateUser)
+	{
 		this.lastUpdateUser = lastUpdateUser;
 	}
-	public String getSimpleName() {
+
+	public String getSimpleName()
+	{
 		return simpleName;
 	}
-	public void setSimpleName(String simpleName) {
+
+	public void setSimpleName(String simpleName)
+	{
 		this.simpleName = simpleName;
 	}
-	public String getNumber() {
+
+	public String getNumber()
+	{
 		return number;
 	}
-	public void setNumber(String number) {
+
+	public void setNumber(String number)
+	{
 		this.number = number;
 	}
-	public String getName() {
+
+	public String getName()
+	{
 		return name;
 	}
-	public void setName(String name) {
+
+	public void setName(String name)
+	{
 		this.name = name;
 	}
-	public AdminOrgUnit getParent() {
+
+	public AdminOrgUnit getParent()
+	{
 		return parent;
 	}
-	public void setParent(AdminOrgUnit parent) {
+
+	public void setParent(AdminOrgUnit parent)
+	{
 		this.parent = parent;
 	}
-	public String getDescription() {
+
+	public String getDescription()
+	{
 		return description;
 	}
-	public void setDescription(String description) {
+
+	public void setDescription(String description)
+	{
 		this.description = description;
 	}
-	public Integer getUnitLayer() {
+
+	public Integer getUnitLayer()
+	{
 		return unitLayer;
 	}
-	public void setUnitLayer(Integer unitLayer) {
+
+	public void setUnitLayer(Integer unitLayer)
+	{
 		this.unitLayer = unitLayer;
 	}
-	public String getFax() {
+
+	public String getFax()
+	{
 		return fax;
 	}
-	public void setFax(String fax) {
+
+	public void setFax(String fax)
+	{
 		this.fax = fax;
 	}
-	public String getFLongNumber() {
+
+	public String getFLongNumber()
+	{
 		return FLongNumber;
 	}
-	public void setFLongNumber(String fLongNumber) {
+
+	public void setFLongNumber(String fLongNumber)
+	{
 		FLongNumber = fLongNumber;
 	}
-	public String getAddress() {
+
+	public String getAddress()
+	{
 		return address;
 	}
-	public void setAddress(String address) {
+
+	public void setAddress(String address)
+	{
 		this.address = address;
 	}
-	public Integer getIsleaf() {
+
+	public Integer getIsleaf()
+	{
 		return isleaf;
 	}
-	public void setIsleaf(Integer isleaf) {
+
+	public void setIsleaf(Integer isleaf)
+	{
 		this.isleaf = isleaf;
 	}
-	public Integer getLevel() {
+
+	public Integer getLevel()
+	{
 		return level;
 	}
-	public void setLevel(Integer level) {
+
+	public void setLevel(Integer level)
+	{
 		this.level = level;
 	}
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
-	
-	
 
-	
-	
 }

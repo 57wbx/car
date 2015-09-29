@@ -1,6 +1,6 @@
 <div class="hbox hbox-auto-xs hbox-auto-sm" ng-controller="shopItemEditController">
   <div class="panel-heading font-bold text-center">
-    修改服务信息
+    	修改服务信息
   </div>
   <div class="panel-body">
     <form name="busItemForm" class="form-horizontal form-validation" method="get" ng-model="formData">
@@ -96,7 +96,9 @@
    
    	<div class="form-group">
    		<label class="col-sm-1 control-lable">显示图片</label>
-	       <div upload_one_img url="formData.photoUrl" name="formData.photoUrlName" label="photoUrl"></div>
+   		<div class="col-sm-11">
+	       		<div upload_one_img url="formData.photoUrl" name="formData.photoUrlName" label="photoUrl"></div>
+	       </div>
    	</div>
       
       

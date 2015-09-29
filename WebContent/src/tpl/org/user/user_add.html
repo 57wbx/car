@@ -2,97 +2,61 @@
 .line{height:100%;}
 </style>
 <div class="hbox hbox-auto-xs hbox-auto-sm" ng-controller="UserAdd">
-  <div class="panel-heading font-bold text-center">
-    添加用户
-  </div>
-  <div class="panel-body">
-    <form name="form" class="form-horizontal form-validation" method="get" ng-model="formData" novalidate>
-      <div class="form-group">
-        <label class="col-sm-3 control-label">账号<i class="fa fa-asterisk text-danger"></i></label>
-        <div class="col-sm-8">
-          <input type="text" id="number" ng-change="checkNull()" placeholder="用户账号" class="form-control" ng-model="formData.number" required>
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="col-sm-3 control-label">名称<i class="fa fa-asterisk text-danger"></i></label>
-        <div class="col-sm-8">
-          <input type="text" id="name" ng-change="checkNull()" placeholder="用户名称" class="form-control" ng-model="formData.name" required>
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="col-sm-3 control-label">所属组织</label>
-        <div class="col-sm-8">
-        	<input readonly type="text" class="form-control" ng-model="formData.superName">
-		</div>
-      </div>
-      <div class="form-group">
-        <label class="col-sm-3 col-xs-11 control-label">职员<i class="fa fa-asterisk text-danger"></i></label>
-        <div class="col-sm-6 col-xs-8">
-          <input id="personName" readonly type="text" placeholder="选择职员" class="form-control" ng-model="viewData.personName" required>
-        </div>
-        <div class="col-sm-2 col-xs-4">
-          <a id="personChooseBtn" ng-click="personChoose()" class="w100 btn btn-info">选择</a>
-        </div>
-      </div>
-      <div class="form-group none" id="personUnit">
-        <div class="col-sm-offset-3 col-sm-8">
-          <div ui-view class="fade-in-down smooth">
-            <div class="panel panel-default">
-              <div class="panel-body">
-                <div class="wrapper-md">
-                  <div class="table-responsive">
-                    <table id="personList" class="table table-striped b-t b-b">
-                      <thead>
-                        <tr>
-                          <th>编码</th>
-                          <th>名称</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="col-sm-3 control-label">角色<i class="fa fa-asterisk text-danger"></i></label>
-        <div class="col-sm-8">
-        	<select class="form-control" ng-model="formData.roleId" ng-change="checkNull()" required>
-				<option ng-repeat="o in roleList" value="{{o.id}}">{{o.name}}</option>
-			</select>
-		</div>
-      </div>
-      <div class="form-group">
-        <label class="col-sm-3 control-label">电话</label>
-        <div class="col-sm-8">
-          <input type="text" placeholder="电话" class="form-control" ng-model="formData.cell">
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="col-sm-3 control-label">邮箱</label>
-        <div class="col-sm-8">
-          <input type="text" placeholder="邮箱" class="form-control" ng-model="formData.email">
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="col-sm-3 control-label">备注</label>
-        <div class="col-sm-8">
-          <input type="text" placeholder="备注" class="form-control" ng-model="formData.description">
-        </div>
-      </div>
-      <div class="line line-dashed b-b line-lg pull-in"></div>
-      <div class="form-group">
-        <div class="col-sm-offset-3 col-sm-2 col-xs-6">
-          <button type="button" id="add" class="w100 btn btn-success" ng-click="submit()" ng-disabled='form.$invalid'>确定</button>
-        </div>
-        <div class="col-sm-2 col-xs-6">
-          <a ng-click="return()" class="w100 btn btn-default">取消</a>
-        </div>
-      </div>
-    </form>
-  </div>
+	  <div class="panel-heading font-bold text-center">
+	   	 添加用户
+	  </div>
+	  <div class="panel-body">
+		    <form name="form" class="form-horizontal form-validation" method="get" ng-model="formData" novalidate>
+		    
+			      <div class="form-group">
+			      		<label class="col-sm-1 control-label">名称<i class="fa fa-asterisk text-danger"></i></label>
+				        <div class="col-sm-3">
+				          	<input type="text" name="name" id="name" placeholder="用户名称" class="form-control" ng-model="formData.name" required>
+				          	<div pattern-style form-input="form.name"  input-message="message.name" ></div>
+				        </div>
+				        <label class="col-sm-1 control-label">账号<i class="fa fa-asterisk text-danger"></i></label>
+				        <div class="col-sm-3">
+				          	<input type="text" id="number" name="number" placeholder="用户账号" class="form-control" ng-model="formData.number" required>
+				          	<div pattern-style form-input="form.number"  input-message="message.number" ></div>
+				        </div>
+				        <label class="col-sm-1 control-label">密码<i class="fa fa-asterisk text-danger"></i></label>
+				        <div class="col-sm-3">
+				          	<input type="password" name="password" placeholder="用户密码" class="form-control" ng-model="formData.password" required ng-minlength="6" ng-maxlength="20" ng-pattern="/^[0-9a-zA-Z]*$/" >
+				          	<div pattern-style form-input="form.password"  input-message="message.password" ></div>
+				        </div>
+			      </div>
+			      
+			      <div class="form-group">
+				        <label class="col-sm-1 control-label">所属组织</label>
+				        <div class="col-sm-3">
+			        		<input readonly type="text" class="form-control" ng-model="selectData.orgName">
+					</div>
+					<label class="col-sm-1 control-label">角色<i class="fa fa-asterisk text-danger"></i></label>
+				        <div class="col-sm-3">
+			        		<select class="form-control" ng-model="formData.roleId" ng-change="checkNull()" required>
+							<option ng-repeat="o in roleList" value="{{o.id}}">{{o.name}}</option>
+						</select>
+					</div>
+			      </div>
+		      
+			      <div class="form-group">
+				        <label class="col-sm-1 control-label">备注</label>
+				        <div class="col-sm-11">
+				          	<input type="text" placeholder="备注" class="form-control" ng-model="formData.description">
+				        </div>
+			      </div>
+			      
+			      <div class="line line-dashed b-b line-lg pull-in"></div>
+			      
+			      <div class="form-group">
+				        <div class="col-sm-offset-4 col-sm-2 col-xs-6">
+				          	<div doing button-value="保存" doing-value="保存中..." is-doing="isDoing" doing-method="submit();" form-valid="form.$valid"></div>
+				        </div>
+				        <div class="col-sm-2 col-xs-6">
+				          	<a ng-click="cancel()" class="w100 btn btn-default">取消</a>
+				        </div>
+			      </div>
+			      
+		    </form>
+	  </div>
 </div>

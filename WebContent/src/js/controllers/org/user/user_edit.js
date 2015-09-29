@@ -1,64 +1,97 @@
 'use strict';
-app.controller('UserEdit', ['$scope', '$http', '$state',  'uiLoad', 'JQ_CONFIG','$timeout',
-  function($scope, $http, $state, uiLoad, JQ_CONFIG,$timeout) {
-    uiLoad.load(JQ_CONFIG.dataTable);
-    $scope.formData = {};
-    var id = sessionStorage.getItem("id");
-    if($scope.permBtn&&$scope.permBtn.length>0&&$scope.permBtn.indexOf("modify")<0){//判断是否有修改权限
-    	$("#modify").remove();
-    }
-    function loadRole(){
-    	var url = app.url.role.api.list;
-    	app.utils.getData(url,function callback(dt) {
-    		$scope.roleList = dt;
-    		loadData();
-    	});
-    }
-    loadRole();
-    // 获取要被编辑组织的数据
-    function loadData(){
-    	$http({
-    		url: app.url.user.api.edit,
-    		data: {
-    			id: id
-    		},
-    		method: 'POST'
-    	}).then(function(dt) {
-    		dt = dt.data.editData;
-    		$scope.formData = {
-				id: dt.id,
-				number: dt.number,
-				name: dt.name,
-				orgId: dt.orgId,
-				orgName:dt.orgName,
-				personId:dt.personId,
-				personName:dt.personName,
-				cell: dt.cell,
-				email: dt.email,
-				roleId:dt.roleId,
-				description: dt.description
-    		};
-    	});
-    }
-    // 提交并更新数据
-    $scope.submit = function() {
-      var url = app.url.user.api.modify;
-      app.utils.getData(url, $scope.formData, function(dt) {
-    	$("#clickId").next().removeAttr("disabled");
-        $state.go('app.user.list');
-        $scope.$parent.reload();
-      });
-    };
-    $scope.return = function(){
-    	$state.go('app.user.list');
-    	$scope.$parent.reload();
-	};
-    $scope.checkNull = function(){
-    	if($scope.formData.roleId&&$scope.formData.number&&$scope.formData.name&&$scope.formData.personName){
-    		$(".w100.btn.btn-success").attr("disabled",false);
+app.controller('UserEdit', ['$scope', '$http', '$state','sessionStorageService','hintService',
+  function($scope, $http, $state,sessionStorageService,hintService) {
+	
+	$scope.API.isListPage = false ;
+	
+	$scope.needCacheArray = ["userListDataTableProperties","userIdForEdit"];
+	sessionStorageService.clearNoCacheItem($scope.needCacheArray);
+	if($scope.rowIds&&$scope.rowIds[0]){
+		sessionStorageService.setItem("userIdForEdit",$scope.rowIds[0]);
+	}else{
+		$scope.rowIds[0]  = sessionStorageService.getItemStr("userIdForEdit");
+	}
+	
+	if(!$scope.rowIds||$scope.rowIds[0]==""){
+		$state.go($scope.state.list);//返回到列表界面
+	}
+	var id = $scope.rowIds[0];
+	
+	$scope.formData = {};
+	
+	 function loadRole(){
+	    	var url = app.url.role.api.list;
+	    	app.utils.getData(url,function callback(dt) {
+	    		$scope.roleList = dt;
+	    	});
+	    }
+	loadRole();
+	
+	$http({
+		url:"basedata/userAction!detailsUser.action",
+		method:"POST",
+		data:{
+			id:id
+		}
+	}).then(function(resp){
+		if(resp.data.code==1){
+			$scope.formData = resp.data.details ;
+			$scope.formData.password = 123456;
+			checkUnquie();
+		}else{
+			alert($scope.data.message);
+			$state.go($scope.state.list);
+		}
+	});
+	
+	
+	function checkUnquie(){
+		$scope.$watch("formData.number",function(val){
+			if($scope.formData){
+				$scope.API.checkCodeUnique(id,val,unquieNumber);
+			}
+	    });
+	}
+    function unquieNumber(resp){
+    	if(resp.data.code == 1){
+    		//不重复
+    		$scope.form.number.$setValidity("custom_pattern",true);
     	}else{
-    		$(".w100.btn.btn-success").attr("disabled",true);
+    		//重复
+    		$scope.form.number.$setValidity("custom_pattern",false);
     	}
-    };
-  }
-]);
+    }
+    
+    $scope.$watch("formData.updatePassWord",function(val){
+		if(!val){
+			$scope.formData.password = 123456;
+		}
+    });
+    
+    //修改
+    $scope.submit = function(){
+    	if(!$scope.formData.updatePassWord == 1){
+    		$scope.formData.password = undefined ;
+    	}
+    	$http({
+    		url:"basedata/userAction!updateUser.action",
+    		method:"POST",
+    		data:$scope.formData
+    	}).then(function(resp){
+    		if(resp.data.code==1){
+    			hintService.hint({title: "成功", content: "保存成功！" });
+    			$state.go($scope.state.list);
+    		}else{
+    			alert(resp.data.message);
+    		}
+    		$scope.isDoing = false ;
+    	});
+    }
+	
+	$scope.cancel = function(){
+		$state.go($scope.state.list);
+	}
+	
+	$scope.clearRowIds();
+	
+}]);

@@ -10,16 +10,14 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import net.sf.json.JSONObject;
+import net.sf.json.JsonConfig;
+
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
-import net.sf.json.JSONObject;
-import net.sf.json.JsonConfig;
-import net.sf.json.util.CycleDetectionStrategy;
-
-import com.hhxh.car.base.busitem.domain.BusItem;
 import com.hhxh.car.base.carshop.domain.CarShop;
 import com.hhxh.car.base.carshop.domain.CarShopImg;
 import com.hhxh.car.base.carshop.service.CarShopService;
@@ -49,63 +47,66 @@ public class CarShopAction extends BaseAction implements ModelDriven<CarShop>
 
 	@Resource
 	private CarShopService carShopService;
-	
+
 	/**
 	 * 推送的接口
 	 */
 	@Resource
-	private Push push ;
-	
+	private Push push;
+
 	@Resource
-	private PushMessageService pushMessageService ;
+	private PushMessageService pushMessageService;
 
 	/**
 	 * 获取修车网店的信息
 	 */
+	@AuthCheck
 	public void listCarShop()
 	{
 
 		List<CarShop> carShops = null;
 		int recordsTotal;
-		// carShops = this.baseService.gets(CarShop.class,
-		// this.getIDisplayStart(), this.getIDisplayLength());
-		// recordsTotal = this.baseService.getSize(CarShop.class);
+
 		List<Criterion> params = new ArrayList<Criterion>();
+
+		Map<String, List<Criterion>> criteriaMap = new HashMap<String, List<Criterion>>();
+
 		if (isNotEmpty(carShop.getShopName()))
 		{
-			Restrictions.like("shopName", carShop.getShopName(), MatchMode.ANYWHERE);
+			params.add(Restrictions.like("shopName", carShop.getShopName(), MatchMode.ANYWHERE));
 		}
-		if (carShop.getShopType() != null)
+		if (isNotEmpty(carShop.getShopType()))
 		{
-			Restrictions.eq("shopType", carShop.getShopType());
+			params.add(Restrictions.eq("shopType", carShop.getShopType()));
+		}
+		if (isNotEmpty(carShop.getUseState()))
+		{
+			params.add(Restrictions.eq("useState", carShop.getUseState()));
 		}
 
-		Order order = null;
+		String FLongNumber = getLoginLongNumber();
+		List<Criterion> childsCriterions = new ArrayList<Criterion>();
+		childsCriterions.add(Restrictions.like("FLongNumber", FLongNumber, MatchMode.START));
+		criteriaMap.put("org", childsCriterions);
+		criteriaMap.put("user", null);
+		criteriaMap.put("shopBlackList", null);
+
+		List<Order> orders = new ArrayList<Order>();
 		if (isNotEmpty(orderName))
 		{
-			Order.asc("orderName");
-		} else
-		{
-			Order.asc("updateTime");
+			orders.add(Order.asc(orderName));
 		}
-		carShops = this.baseService.gets(CarShop.class, params, this.getIDisplayStart(), this.getIDisplayLength(), order);
-		recordsTotal = this.baseService.getSize(CarShop.class, params);
-		JsonConfig jsonConfig = new JsonConfig();
-		jsonConfig.registerJsonValueProcessor(Date.class, new JsonDateValueProcessor());
+		orders.add(Order.asc("shopCode"));
+		orders.add(Order.desc("updateTime"));
 
-		jsonObject.put("code", "1");
+		carShops = this.baseService.gets(CarShop.class, params, criteriaMap, this.getIDisplayStart(), this.getIDisplayLength(), orders);
+		recordsTotal = this.baseService.getSize(CarShop.class, params, criteriaMap);
 
-		jsonObject.accumulate("data", carShops, jsonConfig);
+		jsonObject.accumulate("data", carShops, this.getJsonConfig(JsonValueFilterConfig.Base.CarShop.CARSHOP_HAS_USER));
 		jsonObject.put("recordsTotal", recordsTotal);
 		jsonObject.put("recordsFiltered", recordsTotal);
 
-		try
-		{
-			this.putJson(jsonObject.toString());
-		} catch (IOException e)
-		{
-			e.printStackTrace();
-		}
+		this.putJson();
 	}
 
 	/**
@@ -225,31 +226,24 @@ public class CarShopAction extends BaseAction implements ModelDriven<CarShop>
 	 */
 	public void detailsCarShopById()
 	{
-		try
+		CarShop cs = null;
+		if (isNotEmpty(carShop.getId()))
 		{
-			CarShop cs = null;
-			if (isNotEmpty(carShop.getId()))
+			cs = baseService.get(CarShop.class, carShop.getId());
+			if (cs != null)
 			{
-				cs = baseService.get(CarShop.class, carShop.getId());
-				if (cs != null)
-				{
-					jsonObject.accumulate("details", cs, this.getJsonConfig(JsonValueFilterConfig.Base.CarShop.CARSHOP_HAS_ORG));
-					this.putJson();
-					return;
-				} else
-				{
-					this.putJson(false, this.getMessageFromConfig("carShop_errorId"));
-					return;
-				}
+				jsonObject.accumulate("details", cs, this.getJsonConfig(JsonValueFilterConfig.Base.CarShop.CARSHOP_HAS_ORG));
+				this.putJson();
+				return;
 			} else
 			{
-				this.putJson(false, this.getMessageFromConfig("carShop_needId"));
+				this.putJson(false, this.getMessageFromConfig("carShop_errorId"));
 				return;
 			}
-		} catch (Exception e)
+		} else
 		{
-			log.error("查询网店相信信息出错", e);
-			this.putJson(false, this.getMessageFromConfig("carShop_error"));
+			this.putJson(false, this.getMessageFromConfig("carShop_needId"));
+			return;
 		}
 	}
 
@@ -417,21 +411,25 @@ public class CarShopAction extends BaseAction implements ModelDriven<CarShop>
 			this.putJson(false, this.getMessageFromConfig("carShop_error"));
 		}
 	}
-	
+
 	/**
 	 * 推送一条商铺项，其中推送的title为服务项的名称。推送的内容为服务项的服务详情
 	 */
-	@AuthCheck(isCheckLoginOnly=false)
-	public void pushCarShop(){
-		try{
-			if(isNotEmpty(this.carShop.getId())){
-				this.carShop = this.baseService.get(CarShop.class,this.carShop.getId());
-				if(carShop!=null){
+	@AuthCheck(isCheckLoginOnly = false)
+	public void pushCarShop()
+	{
+		try
+		{
+			if (isNotEmpty(this.carShop.getId()))
+			{
+				this.carShop = this.baseService.get(CarShop.class, this.carShop.getId());
+				if (carShop != null)
+				{
 					PushMessage pushMessage = new PushMessage();
-					
+
 					pushMessage.setFcontent(carShop.getDescription());
 					pushMessage.setFtitle(carShop.getSimpleName());
-					
+
 					pushMessage.setCreateUser(this.getLoginUser());
 					pushMessage.setFcreateDate(new Date());
 					pushMessage.setFmessageType(PushMessageState.FMESSAGETYPE_CARSHOP);
@@ -439,22 +437,24 @@ public class CarShopAction extends BaseAction implements ModelDriven<CarShop>
 					pushMessage.setFpermid(carShop.getId());
 					pushMessage.setFuseState(PushMessageState.FUSESTATE_OK);
 					pushMessage.setFsendType(PushMessageState.FSENDTYPE_ALL);
-					
-					Map<String,String> customValue = new HashMap<String,String>();
+
+					Map<String, String> customValue = new HashMap<String, String>();
 					customValue.put("messageType", PushMessageState.FMESSAGETYPE_CARSHOP.toString());
 					customValue.put("id", carShop.getId());
-					
-					String pushResult = push.pushAllNotify(pushMessage.getFtitle(), pushMessage.getFcontent(),customValue);
-					
-					log.debug("推送商铺返回的数据："+pushResult);
-					pushMessageService.addNotifyPushMessage(pushMessage,pushResult);
+
+					String pushResult = push.pushAllNotify(pushMessage.getFtitle(), pushMessage.getFcontent(), customValue);
+
+					log.debug("推送商铺返回的数据：" + pushResult);
+					pushMessageService.addNotifyPushMessage(pushMessage, pushResult);
 					this.putJson();
 				}
-			}else{
+			} else
+			{
 				this.putJson(false, this.getMessageFromConfig("carShop_needId"));
 			}
-		}catch(Exception e){
-			log.error("推送平台服务失败",e);
+		} catch (Exception e)
+		{
+			log.error("推送平台服务失败", e);
 			this.putJson(false, this.getMessageFromConfig("push_error"));
 		}
 	}

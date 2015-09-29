@@ -4,6 +4,10 @@ app.controller('carShopController', ['$rootScope','$scope','$state','$timeout','
   var url = app.url.org.api.list; // 后台API路径
   var data = null;
   
+  $scope.API = {
+		  isListPage:true//是否显示操作的按钮
+  }
+  
   $scope.rowIds = [];
   
 	var roleBtnUiClass = "app.carshop.";//用于后台查找按钮权限
@@ -221,11 +225,39 @@ app.controller('carShopController', ['$rootScope','$scope','$state','$timeout','
 			  pattern:"请输入正确的数字qq号吗"
 		  },
 		  bankCardNo:{
-			  pattern:"必须为16或19位的正确银行卡号"
+			  pattern:"银行卡号只能由数字组成"
 		  },
 		  employeeNum:{
 			  pattern:"员工数必须为整数"
 		  }
+  }
+  
+  /**
+   * 营业时间的
+   */
+  $scope.time = {
+		  hour:getHour(),
+		  mins:getMinuts()
+  }
+  function getHour(){
+	  var hours = [];
+	  for(var i=23;i>=10;i--){
+		  hours.push({label:i.toString(),value:i.toString()});
+	  }
+	  for(var i=9;i>=0;i--){
+		  hours.push({label:"0"+i.toString(),value:"0"+i.toString()});
+	  }
+	  return hours ;
+  }
+  function getMinuts(){
+	  var mins = [];
+	  for(var i=59;i>=10;i--){
+		  mins.push({label:i.toString(),value:i.toString()});
+	  }
+	  for(var i=9;i>=0;i--){
+		  mins.push({label:"0"+i.toString(),value:"0"+i.toString()});
+	  }
+	  return mins ;
   }
   
 }]);

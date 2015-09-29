@@ -2,13 +2,16 @@ package com.hhxh.car.org.action;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
-import com.hhxh.car.common.action.AbstractAction;
+import com.hhxh.car.common.action.BaseAction;
+import com.hhxh.car.common.annotation.AuthCheck;
+import com.hhxh.car.common.util.CommonConstant;
 import com.hhxh.car.org.domain.AdminOrgUnit;
 import com.hhxh.car.permission.domain.User;
 
@@ -24,7 +27,7 @@ import com.hhxh.car.permission.domain.User;
  * @author： jiangdw
  *
  */
-public class OrgAction extends AbstractAction
+public class OrgAction extends BaseAction
 {
 
 	/**
@@ -46,6 +49,12 @@ public class OrgAction extends AbstractAction
 	private Date onDutyTime;
 	private Date offDutyTime;
 	private String FLongNumber;
+
+	protected Integer start;
+
+	protected Integer pageSize;
+
+	protected String search;// 查询条件
 
 	/**
 	 * 修改的时候查询
@@ -441,23 +450,42 @@ public class OrgAction extends AbstractAction
 	}
 
 	/**
+	 * 获取全部的集团、公司和部门，并且根据登陆人员所在根组织，进行数据筛选
+	 * 
+	 * @author zw
+	 */
+	@AuthCheck
+	public void listOrgHasDeptTreeByLoginUser()
+	{
+		if (getSessionValue(CommonConstant.LOGIN_ORG_ROOT) == null)
+		{
+			this.putJson(false, null);
+			return;
+		}
+
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("FLongNumber", this.getLoginUser().getRootOrgUnit().getFLongNumber() + "%");
+
+		String hql = "SELECT new Map(id as id,simpleName as simpleName,name as name,FLongNumber as FLongNumber,parent.id as pId) from AdminOrgUnit a where a.FLongNumber LIKE :FLongNumber";
+
+		List<Map<String, Object>> orgs = this.baseService.gets(hql, paramMap);
+		jsonObject.put("data", orgs);
+		this.putJson();
+	}
+
+	/**
 	 * 获取所有的组织机构不包括部门级的 by zw
 	 */
+	@AuthCheck
 	public void listOrgNoDept()
 	{
 		// 3 代表部门取出不为部门的
-		List<Map> orgs = this.baseService.querySqlToMap("select a.name name,a.orgid id,a.parentID pId from sys_org a where a.orgType<>3", 0, 0);// 查询出所有的数据
-		JSONObject json = new JSONObject();
-		json.put("code", 1);
-		json.put("orgNoDept", orgs);
+		String longNumber = getLoginLongNumber();
+		List<Map> orgs = this.baseService.querySqlToMap("select a.name name,a.orgid id,a.parentID pId,a.orgCode as orgCode from sys_org a where a.orgType<>3 and a.orgCode like '" + longNumber + "%'",
+				0, 0);// 查询出所有的数据
+		jsonObject.put("orgNoDept", orgs);
 
-		try
-		{
-			this.putJson(json.toString());
-		} catch (IOException e)
-		{
-		}
-
+		this.putJson();
 	}
 
 	public String getId()

@@ -1,13 +1,13 @@
 <div class="leave hbox hbox-auto-xs hbox-auto-sm"
 	ng-controller="carShopController">
 	<div class="frame-panel">
-		<div class="row">
+		<div class="row" ng-show="API.isListPage">
 			<!-- <div class="col-md-4 col-xs-0"></div> -->
 			<div class="col-md-3 col-xs-12">
 				<h2 class="leave-title text-left txt-center">商铺管理</h2>
 			</div>
 			
-			<div class="col-md-9 col-xs-12"
+			<div class="col-md-9 col-xs-12" 
 				ng-init="single=true;only=false;mutiple=true;locked=true">
 				<div class="panel-heading pull-right btn-group">
 					<button id="clickId" class="none" ng-click="click()"></button>

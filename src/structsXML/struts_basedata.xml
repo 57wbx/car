@@ -6,6 +6,7 @@
 <struts>
 	<package name="basedata" namespace="/basedata" extends="default">
 		<action name="orgAction" class="com.hhxh.car.org.action.OrgAction"/>
+		<action name="orgZAction" class="com.hhxh.car.org.action.OrgZAction"/>
 		<action name="personAction" class="com.hhxh.car.org.action.PersonAction"/>
 		<action name="positionAction" class="com.hhxh.car.org.action.PositionAction"/>
 		<action name="userAction" class="com.hhxh.car.permission.action.UserAction"/>

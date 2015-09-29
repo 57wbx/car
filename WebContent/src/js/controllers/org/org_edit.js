@@ -1,44 +1,63 @@
 'use strict';
-app.controller('OrgEdit', ['$scope', '$http', '$state',  'uiLoad', 'JQ_CONFIG',
-  function($scope, $http, $state, uiLoad, JQ_CONFIG) {
-    var id = sessionStorage.getItem("id");
-    if($scope.permBtn&&$scope.permBtn.length>0&&$scope.permBtn.indexOf("modify")<0){//判断是否有修改权限
-    	$("#modify").remove();
-    }
+app.controller('OrgEdit', ['$scope', '$http', '$state','$timeout', 'sessionStorageService','hintService',
+  function($scope, $http, $state,$timeout,sessionStorageService,hintService) {
+	
+	$scope.treeAPI.reloadListTable = undefined ;
+    
+    $scope.needCacheArray = ["orgListDataTableProperties","orgIdForEdit"];
+	sessionStorageService.clearNoCacheItem($scope.needCacheArray);
+	if($scope.rowIds&&$scope.rowIds[0]){
+		sessionStorageService.setItem("orgIdForEdit",$scope.rowIds[0]);
+	}else{
+		$scope.rowIds[0]  = sessionStorageService.getItemStr("orgIdForEdit");
+	}
+	
+	if(!$scope.rowIds||$scope.rowIds[0]==""){
+		$state.go($scope.state.list);//返回到列表界面
+	}
+	var id = $scope.rowIds[0];
+    
     // 获取要被编辑组织的数据
     $http({
-      url: app.url.org.api.edit,
+      url: "basedata/orgZAction!detailsOrg.action",
       data: {
         id: id
       },
       method: 'POST'
     }).then(function(dt) {
-      dt = dt.data.editData;
-      $scope.formData = {
-        id: dt.id,
-        code: dt.code,
-        name: dt.name,
-        simpleName: dt.simpleName,
-        phoneNumber: dt.phoneNumber,
-        fax: dt.fax,
-        adminAddress: dt.adminAddress,
-        parent:dt.parent,
-        unitLayer:dt.unitLayer,
-        superName:dt.parentName
-      };
-
+    	if(dt.data.code==1){
+    		$scope.formData = dt.data.details ;
+    		$timeout(function(){
+    			$scope.treeController.select_branch_byId($scope.formData.pId);
+    		},200);
+    	}else{
+    		alert(dt.data.message);
+    	}
     });
     // 提交并更新数据
     $scope.submit = function() {
-      var url = app.url.org.api.modify;
-      app.utils.getData(url, $scope.formData, function(dt) {
-    	  $state.go('app.org.list'); 
-    	  $scope.$parent.reload();
-      });
+    	$scope.formData.createTime = undefined ;
+    	$scope.formData.FLongNumber = undefined ;
+    	$scope.formData.lastModifyTime = undefined ;
+    	
+    	$scope.formData.parentId = $scope.treeData.orgId ;
+    	
+    	$http({
+    		url:"basedata/orgZAction!updateOrg.action",
+    		method:"POST",
+    		data:$scope.formData
+    	}).then(function(resp){
+    		if(resp.data.code==1){
+    			hintService.hint({title: "成功", content: "保存成功！" });
+    			$state.go($scope.state.list);
+    		}else{
+    			alert(resp.data.message);
+    		}
+    		$scope.isDoing = false ;
+    	});
     };
-    $scope.return = function(){
-    	$state.go('app.org.list');
-    	$scope.$parent.return();
+    $scope.cancel = function(){
+    	$state.go($scope.state.list);
 	};
 
   }

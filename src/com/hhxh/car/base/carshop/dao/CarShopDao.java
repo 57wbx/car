@@ -18,31 +18,36 @@ import com.hhxh.car.common.util.JsonValueFilterConfig;
 @Repository
 public class CarShopDao extends Dao
 {
-	public List<Map<String,Object>> getsCarShopWithMannager(List<Criterion> params,Integer start,Integer end,Order order)
+	public List<Map<String, Object>> getsCarShopWithMannager(List<Criterion> params, Integer start, Integer end, Order order)
 	{
 		Criteria criteria = getSession().createCriteria(CarShop.class);
 		criteria.setFetchMode("user", FetchMode.JOIN);
-		for(Criterion c:params){
+		for (Criterion c : params)
+		{
 			criteria.add(c);
 		}
-		if(order!=null){
+		if (order != null)
+		{
 			criteria.addOrder(order);
 		}
-		if(start!=null){
+		if (start != null)
+		{
 			criteria.setFirstResult(start);
 		}
-		if(end!=null){
+		if (end != null)
+		{
 			criteria.setFetchSize(end);
 		}
-		List<CarShop> carShops = criteria.list() ;
-		List<Map<String,Object>> returnList = new ArrayList<Map<String,Object>>();
-		for(CarShop carShop : carShops){
+		List<CarShop> carShops = criteria.list();
+		List<Map<String, Object>> returnList = new ArrayList<Map<String, Object>>();
+		for (CarShop carShop : carShops)
+		{
 			Map map = ConvertObjectMapUtil.convertObjectToMap(carShop, JsonValueFilterConfig.Base.CarShop.CARSHOP_ONLY_CARSHOP);
-			map.put("username", carShop.getUser()!=null?carShop.getUser().getName():null);
-			map.put("userid", carShop.getUser()!=null?carShop.getUser().getId():null);
+			map.put("username", carShop.getUser() != null && carShop.getUser().size() > 0 ? carShop.getUser().iterator().next().getName() : null);
+			map.put("userid", carShop.getUser() != null && carShop.getUser().size() > 0 ? carShop.getUser().iterator().next().getId() : null);
 			returnList.add(map);
 		}
-		return returnList ;
+		return returnList;
 	}
-	
+
 }

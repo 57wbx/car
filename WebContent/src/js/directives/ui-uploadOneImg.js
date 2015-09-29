@@ -12,20 +12,20 @@ app.directive("uploadOneImg",['uploadOneImgService',function(uploadOneImgService
 		restrict:"EA",
 		replace:true,
 		compile: function(ele, attr, transcludeFn){
-				var newEle = angular.element("<div>" +
+				var newEle = angular.element("<div class='row'>" +
 																	    "<div ng-if='"+attr.url+"'>"+
 																			" <div class='col-sm-7'>"+
 																			"<span ng-bind-html='"+attr.name+" | trustHtmlFilter' class='form-control'></span></div>"+
-																			 "<div class='col-sm-2'>"+
+																			 "<div class='col-sm-5'>"+
 																					"<button class='btn btn-success' id='"+attr.label+"' role='button' ng-click='previewImg(\""+attr.label+"\")'>预览</button>"+
 	 	        																	"<button class='btn btn-danger' role='button' ng-click='deleteImg(\""+attr.label+"\")'>删除</button>"+
 	 	        																"</div>"+
 	 	        														"</div>"+
-	 	        														 "<div ng-if='!"+attr.url+"'>"+
+	 	        														 "<div  ng-if='!"+attr.url+"'>"+
 			       																"<div class='col-sm-7'>"+
 			       																		"<input type='file' uploader='uploader'  nv-file-select='' class='form-control ' accept='image/*'  options='{name:\""+attr.label+"\"}'  />"+
 			       																"</div>"+
-																			       "<div class='col-sm-2'>"+
+																			       "<div class='col-sm-5'>"+
 																			 	        "<button class='btn btn-success' role='button' ng-click='uploadImg(\""+attr.label+"\")'  id='"+attr.label+"Button' >上传</button>"+
 																			      " </div>"+
 																		    "</div>"+

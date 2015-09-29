@@ -1,6 +1,8 @@
 'use strict';
-app.controller('carShopEditController', ['$rootScope','$scope', '$http', '$state','$modal',  'uiLoad', 'JQ_CONFIG','FileUploader','previewService','sessionStorageService',
-  function($rootScope,$scope, $http, $state, $modal,uiLoad, JQ_CONFIG,FileUploader,previewService,sessionStorageService) {
+app.controller('carShopEditController', ['$rootScope','$scope', '$http', '$state','$modal','hintService','FileUploader','previewService','sessionStorageService',
+  function($rootScope,$scope, $http, $state, $modal,hintService,FileUploader,previewService,sessionStorageService) {
+	
+	$scope.API.isListPage = false ;
 	
 	$scope.needCacheArray = ["carShopListDataTableProperties","carShopIdForEdit"];
 	sessionStorageService.clearNoCacheItem($scope.needCacheArray);
@@ -35,99 +37,8 @@ app.controller('carShopEditController', ['$rootScope','$scope', '$http', '$state
       $scope.formData.busCardUrlName = dt.busCardUrl?"请点击&nbsp;<a  style='color: blue; text-decoration: underline;'  onClick='$(\"#busCardUrl\").click();'>预览！</a>":undefined;
       $scope.formData.photoUrlName = dt.photoUrl?"请点击&nbsp;<a  style='color: blue; text-decoration: underline;'  onClick='$(\"#photoUrl\").click();'>预览！</a>":undefined;
       
-      
       initFormData(dt);//配置其他需要手动加工的数据
     });
-    
-    
-    var uploader = $scope.uploader = new FileUploader({
-        url: 'common/fileUploadAction!uploadOnePictrue.action',
-        alias:"files",
-        autoUpload:false,
-        removeAfterUpload:true
-    });
-    
-    /**
-	  * 过滤器
-	  */
-    uploader.filters.push({
-         name: 'imageFilter',
-         fn: function(item /*{File|FileLikeObject}*/, options) {
-       	  var isImage = false;
-       	  isImage = item.type.indexOf("image")>=0;
-       	  if(!isImage){
-       		  console.info(item);
-       		  alert("请选择图片文件!");
-       	  }else{
-       		  //清除之前的有的，每个单一文件只能有一个
-       		 if(uploader.queue&&uploader.queue.length>0){
-          	   for(var i=0;i<uploader.queue.length;i++){
-          		   if(options.name==uploader.queue[i].name){
-          			   uploader.removeFromQueue(i);
-          		   }
-          	   }
-             }
-       	  }
-          return isImage;
-         }
-     });
-    /**
-     * 预览图片功能
-     */
-    var previewImg = $scope.previewImg = function(name){
-    	 previewService.preview($scope.formData[name]);
-    }
-    /**
-     * 删除一张图片，删除图片只能删除图片formdata中的记录，目前后台不做任何操作
-     */
-    $scope.deleteImg = function(name){
-    	$scope.formData[name] = undefined;
-    	$scope.formData[name+"Name"] = undefined;
-    }
-    
-    
-    /**
-     * 上传一张图片，根据图片的name来上传指定的图片
-     */
-    $scope.uploadImg = function(alias){
-    	if(uploader.queue&&uploader.queue.length>0){
-    		for(var i=0;i<uploader.queue.length;i++){
-    			if(uploader.queue[i].name==alias){
-    				//禁用上传按钮
-    				buttonClick(uploader.queue[i].name);
-    				//上传
-    				uploader.uploadItem(i);
-    				return ;
-    			}
-    		}
-    	}else{
-    		alert("请选择图片文件!");
-    	}
-    }
-    /**
-     * 当成功上传一个文件的时候调用
-     */
-    uploader.onSuccessItem = function(fileItem, response, status, headers) {
-    	if(response.code){//成功上传
-    		var name = fileItem.name;
-    		$scope.formData[name] = response.url;
-    		$scope.formData[name+"Name"] = response.name;
-    		console.info($scope.formData);
-    	}else{
-    		alert(response.message);
-    	}
-    };
-    
-    /**
-     * 当上传按钮被点击的时候，将该按钮变为disblead，并改变其中的html
-     */
-    var buttonClick = function(name){
-    	var buttonName = "#"+name+"Button";
-    	$(buttonName).attr("disabled","disabled");
-    	$(buttonName).html("上传中...");
-    }
-    
-    
     
     /**
      * 特殊的属性需要在这里配置一下
@@ -137,11 +48,11 @@ app.controller('carShopEditController', ['$rootScope','$scope', '$http', '$state
     	var busStartTimeM = data.busStartTime.split(":")[1];
     	var busEndTimeH = data.busEndTime.split(":")[0];
     	var busEndTimeM = data.busEndTime.split(":")[1];
-    	$("#busStartTimeH").val(busStartTimeH);
-    	$("#busStartTimeM").val(busStartTimeM);
-    	$("#busEndTimeH").val(busEndTimeH);
-    	$("#busEndTimeM").val(busEndTimeM);
-    	
+    	$scope.formData.busStartTimeH = busStartTimeH ;
+    	$scope.formData.busStartTimeM = busStartTimeM ;
+    	$scope.formData.busEndTimeH = busEndTimeH ;
+    	$scope.formData.busEndTimeM = busEndTimeM ;
+    	$scope.formData.registerDate = data.registerDate.substr(0,10);
     	initFormDateControl(data);
     }
     
@@ -153,8 +64,7 @@ app.controller('carShopEditController', ['$rootScope','$scope', '$http', '$state
         		function(){
     	    		var optionSet = {
     						singleDatePicker : true,
-    						timePicker : true,
-    						format : 'YYYY-MM-DD HH:mm'
+    						format : 'YYYY-MM-DD'
     					};
     	    		$('#registerDate').daterangepicker(optionSet).on('apply.daterangepicker', function(ev){
     	    			$scope.formData.registerDate=$('#registerDate').val();
@@ -162,13 +72,14 @@ app.controller('carShopEditController', ['$rootScope','$scope', '$http', '$state
         		}
     	);
     	
-    	$('#registerDate').val(data.registerDate);
+    	if(data.registerDate){
+    		$('#registerDate').val(data.registerDate.substr(0,10));
+    	}
     }
     
     
  // 提交并更新数据
     $scope.submit = function() {
-      var url = "base/carShopAction!editCarShop.action";
       
       //提交数据的时候，将坐标地址更新到scope中
       $scope.formData.mapX=$('#mapX').val();
@@ -176,13 +87,22 @@ app.controller('carShopEditController', ['$rootScope','$scope', '$http', '$state
       
       //提交数据时需要将开始营业时间和结束营业时间进行合并处理
       
-      $scope.formData.busStartTime = $("#busStartTimeH").val()+":"+$("#busStartTimeM").val();
-      $scope.formData.busEndTime = $("#busEndTimeH").val()+":"+$("#busEndTimeM").val();
-
+      $scope.formData.busStartTime = $scope.formData.busStartTimeH + ":" + $scope.formData.busStartTimeM;
+      $scope.formData.busEndTime = $scope.formData.busEndTimeH + ":" + $scope.formData.busEndTimeM;
       
-      app.utils.getData(url, $scope.formData, function(dt) {
-        $state.go($scope.state.list);
-      });
+      $http({
+ 		 url:"base/carShopAction!editCarShop.action",
+ 		 method:"POST",
+ 		 data:$scope.formData
+ 	  }).then(function(resp){
+ 		  if(resp.data.code == 1){
+ 			  hintService.hint({title: "成功", content: "保存成功！" });
+ 			  $state.go($scope.state.list);
+ 		  }else{
+ 			  alert(resp.data.message);
+ 		  }
+ 		  $scope.isDoing = false ;
+ 	  });
     };
     
     
@@ -217,85 +137,7 @@ app.controller('carShopEditController', ['$rootScope','$scope', '$http', '$state
 			$scope.formData.mapY = obj.lat ;
     	});
 	}
-    
-    
-    $scope.checkNull = function(){
-    	if($.trim($("#number").val())!=""&&$.trim($("#name").val())!=""&&$.trim($("#superName").val())!=""){
-    		$(".w100.btn.btn-success").attr("disabled",false);
-    	}else{
-    		$(".w100.btn.btn-success").attr("disabled",true);
-    	}
-    };
-    $scope.choose = function() {
-      var url = app.url.org.api.list;
-      var data = null;
-      step = chooseBtn.data('step') || 0;
-      if(step === 0){
-        if(firstTime){
-          app.utils.getData(url, function callback(dt) {
-            data = dt;
-            initTable(data);
-            superList.removeClass('none');
-            chooseBtn.html('取消').data('step', 1);
-          });
-          firstTime = false;
-        }else{
-          superList.removeClass('none');
-          chooseBtn.html('取消').data('step', 1);
-        }
-      }else{
-        superList.addClass('none');
-        chooseBtn.html('选择').data('step', 0);
-        if($("#superName").val()==''){
-        	$(".w100.btn.btn-success").attr("disabled",true);
-        }else{
-        	if($.trim($("#number").val())!=""&&$.trim($("#name").val())!=""){
-        		$(".w100.btn.btn-success").attr("disabled",false);
-        	}else{
-        		$(".w100.btn.btn-success").attr("disabled",true);
-        	}
-        }
-      }
-    };
 
     $scope.clearRowIds();
     
-    function initTable(data) {
-      var dTable = $('#orgAddList').dataTable({
-        "data": data,
-        "sAjaxDataProp": "dataList",
-        "fnCreatedRow": function(nRow, aData, iDataIndex) {
-          $(nRow).attr({'data-id': aData['id'], 'data-name': aData['name']});
-        },
-        "aoColumns": [{
-          "mDataProp": "code"
-        }, {
-          "mDataProp": "name"
-        }]
-      });
-      dTable.$('tr').dblclick(function(e, settings) {
-        //$scope.seeDetails($(this).data('id'));
-      }).click(function(e) {
-        $scope.formData.org = $(this).data('id');
-        $scope.viewData.orgName = $(this).data('name');
-
-        var that = $(this), classname = 'rowSelected';
-        var siblings = $(this).siblings();
-
-        if(that.hasClass(classname)){
-          that.removeClass(classname);
-          $('#superName').val('');
-          chooseBtn.html('取消').data('step', 1);
-          $scope.formData.org = null;
-          $scope.viewData.orgName = null;
-        }else{
-          that.addClass(classname);
-          $('#superName').val($scope.viewData.orgName);
-          chooseBtn.html('确定').data('step', 2);
-        }
-        
-        siblings.removeClass(classname);
-      });
-    }
-  }
-]);
+}]);

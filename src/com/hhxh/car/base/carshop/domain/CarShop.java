@@ -22,7 +22,6 @@ import com.hhxh.car.base.member.domain.Member;
 import com.hhxh.car.opr.domain.Order;
 import com.hhxh.car.org.domain.AdminOrgUnit;
 import com.hhxh.car.permission.domain.User;
-import com.hhxh.car.shop.domain.ShopItem;
 
 @Entity
 @Table(name = "base_car_shop")
@@ -126,7 +125,7 @@ public class CarShop implements Serializable
 	 */
 	@Column(name = "area", length = 10)
 	private String area;
-	
+
 	/**
 	 * 区
 	 */
@@ -250,22 +249,21 @@ public class CarShop implements Serializable
 	/**
 	 * 该id可能是组织id
 	 */
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "orgid")
 	private AdminOrgUnit org;
 
-	@OneToOne(mappedBy = "carShop", fetch = FetchType.LAZY)
-	private User user;
-	
-	@OneToMany(mappedBy="carShop",fetch=FetchType.LAZY)
-	private Set<Member> merbers = new HashSet<Member>(); ;
-	
-	@OneToMany(mappedBy="carShop",fetch=FetchType.LAZY)
+	@OneToMany(mappedBy = "carShop", fetch = FetchType.LAZY)
+	private Set<User> user = new HashSet<User>();
+
+	@OneToMany(mappedBy = "carShop", fetch = FetchType.LAZY)
+	private Set<Member> merbers = new HashSet<Member>();;
+
+	@OneToMany(mappedBy = "carShop", fetch = FetchType.LAZY)
 	private Set<Order> orders = new HashSet<Order>();
-	
-	@OneToOne(fetch=FetchType.LAZY,mappedBy="carShop")
-	private ShopBlackList shopBlackList ;
-	
+
+	@OneToOne(fetch = FetchType.LAZY, mappedBy = "carShop")
+	private ShopBlackList shopBlackList;
 
 	@Column
 	private String branks;
@@ -651,15 +649,20 @@ public class CarShop implements Serializable
 	@Override
 	public String toString()
 	{
-		return "CarShop [id=" + id + ", shopCode=" + shopCode + ", shopName=" + shopName + ", simpleName=" + simpleName + ", shopType=" + shopType + ", busCard=" + busCard + ", busCardUrl=" + busCardUrl + ", legalNAME=" + legalNAME + ", legalCELL=" + legalCELL + ", IDCARDNO=" + IDCARDNO + ", IDCARDURL=" + IDCARDURL + ", telephone=" + telephone + ", registerDate=" + registerDate + ", province=" + province + ", city=" + city + ", area=" + area + ", address=" + address + ", mapX=" + mapX + ", mapY=" + mapY + ", auditState=" + auditState + ", useState=" + useState + ", VIPLevel=" + VIPLevel + ", commentLevel=" + commentLevel + ", employeeNum=" + employeeNum + ", email=" + email + ", qq=" + qq + ", weixin=" + weixin + ", updateTime=" + updateTime + ", description=" + description + ", busStartTime=" + busStartTime + ", busEndTime=" + busEndTime + ", bankName=" + bankName + ", bankCardNo=" + bankCardNo + ", bankCardUrl=" + bankCardUrl + ", Memo=" + Memo + "]";
+		return "CarShop [id=" + id + ", shopCode=" + shopCode + ", shopName=" + shopName + ", simpleName=" + simpleName + ", shopType=" + shopType + ", busCard=" + busCard + ", busCardUrl="
+				+ busCardUrl + ", legalNAME=" + legalNAME + ", legalCELL=" + legalCELL + ", IDCARDNO=" + IDCARDNO + ", IDCARDURL=" + IDCARDURL + ", telephone=" + telephone + ", registerDate="
+				+ registerDate + ", province=" + province + ", city=" + city + ", area=" + area + ", address=" + address + ", mapX=" + mapX + ", mapY=" + mapY + ", auditState=" + auditState
+				+ ", useState=" + useState + ", VIPLevel=" + VIPLevel + ", commentLevel=" + commentLevel + ", employeeNum=" + employeeNum + ", email=" + email + ", qq=" + qq + ", weixin=" + weixin
+				+ ", updateTime=" + updateTime + ", description=" + description + ", busStartTime=" + busStartTime + ", busEndTime=" + busEndTime + ", bankName=" + bankName + ", bankCardNo="
+				+ bankCardNo + ", bankCardUrl=" + bankCardUrl + ", Memo=" + Memo + "]";
 	}
 
-	public User getUser()
+	public Set<User> getUser()
 	{
 		return user;
 	}
 
-	public void setUser(User user)
+	public void setUser(Set<User> user)
 	{
 		this.user = user;
 	}
@@ -733,5 +736,5 @@ public class CarShop implements Serializable
 	{
 		this.smallArea = smallArea;
 	}
-	
+
 }

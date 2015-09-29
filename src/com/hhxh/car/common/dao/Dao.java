@@ -9,9 +9,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.TreeSet;
 
 import javax.annotation.Resource;
+import javax.persistence.Id;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
@@ -23,7 +23,9 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Example;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.Transformers;
 import org.springframework.stereotype.Repository;
 
@@ -298,6 +300,7 @@ public class Dao
 				query.setParameter(entry.getKey(), entry.getValue());
 			}
 		}
+		List<Object> list = query.list();
 		return query.uniqueResult();
 	}
 
@@ -459,60 +462,14 @@ public class Dao
 	 */
 	public <T> List<T> gets(Class<T> clazz, List<Criterion> params, Map<String, List<Criterion>> criteriaMap, int iDisplayStart, int iDisplayLength, org.hibernate.criterion.Order o)
 	{
-		Criteria mainCriteria = getSession().createCriteria(clazz);
-		/*
-		 * 添加主表的查询条件
-		 */
-		if (params != null && params.size() > 0)
-		{
-			for (Criterion c : params)
-			{
-				mainCriteria.add(c);
-			}
-		}
-		/*
-		 * 添加 子表的查询条件
-		 */
-		if (criteriaMap != null && criteriaMap.size() > 0)
-		{
-			Set<String> keys = criteriaMap.keySet();
-			for (String k : keys)
-			{
-				List<Criterion> childsCriterions = criteriaMap.get(k);
-				if (childsCriterions != null && childsCriterions.size() > 0)
-				{
-					mainCriteria.setFetchMode(k, FetchMode.JOIN);
-					Criteria childCriteria = mainCriteria.createCriteria(k);
-					for (Criterion child : childsCriterions)
-					{
-						childCriteria.add(child);
-					}
-				}
-			}
-		}
-
-		if (o != null)
-		{
-			mainCriteria.addOrder(o);
-		}
-
-		if (iDisplayStart >= 0 && iDisplayLength > 0)
-		{
-			mainCriteria.setFirstResult(iDisplayStart).setMaxResults(iDisplayLength);
-		}
-
-		List<T> resultList = mainCriteria.list();
-		/**
-		 * 去重
-		 */
-		Set<T> resultSet = new TreeSet<T>(resultList);
-		return new ArrayList<T>(resultSet);
-		// return resultList;
+		List<Order> orders = new ArrayList<Order>();
+		orders.add(o);
+		return this.gets(clazz, params, criteriaMap, iDisplayStart, iDisplayLength, orders);
 	}
 
 	public int getSize(Class clazz, List<Criterion> params, Map<String, List<Criterion>> criteriaMap)
 	{
-		Criteria mainCriteria = getSession().createCriteria(clazz).setProjection(Projections.rowCount());
+		Criteria mainCriteria = getSession().createCriteria(clazz).setProjection(Projections.countDistinct(getIdName(clazz)));
 		/*
 		 * 添加主表的查询条件
 		 */
@@ -543,6 +500,7 @@ public class Dao
 				}
 			}
 		}
+
 		Long result = (Long) mainCriteria.uniqueResult();
 		return Integer.parseInt(Long.toString(result));
 	}
@@ -605,13 +563,34 @@ public class Dao
 			mainCriteria.setFirstResult(iDisplayStart).setMaxResults(iDisplayLength);
 		}
 
-		List<T> resultList = mainCriteria.list();
-		// /**
-		// * 去重
-		// */
-		Set<T> resultSet = new HashSet<T>(resultList);
-		return new ArrayList<T>(resultSet);
-		// return resultList;
+		// 先查出所有的记录的id
+		String idName = getIdName(class1);
+
+		ProjectionList projectionList = Projections.projectionList();
+		// 决定返回的结果
+		projectionList.add(Projections.property(idName));
+		mainCriteria.setProjection(Projections.distinct(projectionList));
+		List<Object> idList = mainCriteria.list();// 指定记录的id
+
+		Criteria resultCriteria = getSession().createCriteria(class1);
+		resultCriteria.add(Restrictions.in(idName, idList));
+
+		/*
+		 * 添加 子表的查询条件
+		 */
+		if (criteriaMap != null && criteriaMap.size() > 0)
+		{
+			Set<String> keys = criteriaMap.keySet();
+			for (String k : keys)
+			{
+				List<Criterion> childsCriterions = criteriaMap.get(k);
+				// 当key存在时，不论其list是否具有值，都进行强制加载
+				resultCriteria.setFetchMode(k, FetchMode.JOIN);
+			}
+		}
+
+		resultCriteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+		return resultCriteria.list();
 	}
 
 	/**
@@ -679,4 +658,22 @@ public class Dao
 		return list;
 	}
 
+	/**
+	 * 获取一个字节码的id属性名称
+	 * 
+	 * @param clazz
+	 * @return
+	 */
+	private String getIdName(Class clazz)
+	{
+		Field[] fields = clazz.getDeclaredFields();
+		for (Field f : fields)
+		{
+			if (f.getAnnotation(Id.class) != null)
+			{
+				return f.getName();
+			}
+		}
+		return null;
+	}
 }

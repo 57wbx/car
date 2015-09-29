@@ -11,7 +11,6 @@ import com.hhxh.car.common.service.BaseService;
 import com.hhxh.car.common.util.DesCrypto;
 import com.hhxh.car.permission.dao.UserDao;
 import com.hhxh.car.permission.domain.User;
-import com.hhxh.car.sys.domain.LoginLog;
 
 /***
  * Copyright (C), 2015-2025 Hhxh Tech. Co., Ltd
@@ -36,7 +35,8 @@ public class UserService extends BaseService
 	{
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("number", number);
-		User nuser = (User) userDao.get("from User where number=:number", paramMap);
+		User nuser = (User) userDao.get(
+				"SELECT DISTINCT u from User u left join fetch u.adminOrgUnit left join fetch u.rootOrgUnit left join fetch u.role left join fetch u.carShop where u.number=:number", paramMap);
 		if (nuser != null)
 		{
 			if (nuser.getPassword() == null)
@@ -64,7 +64,7 @@ public class UserService extends BaseService
 						{
 							return nuser;
 						}
-					} catch (Exception e )
+					} catch (Exception e)
 					{
 						// e.printStackTrace();
 						// 不能解密，说明保存在数据库中的密码为明文密码，需要对其进行加密操作
@@ -78,9 +78,9 @@ public class UserService extends BaseService
 								e1.printStackTrace();
 							}
 							this.update(nuser);
-							
-//							nuser.setPassword(password);
-							return nuser ;
+
+							// nuser.setPassword(password);
+							return nuser;
 						}
 					}
 				}

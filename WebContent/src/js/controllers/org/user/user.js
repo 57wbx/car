@@ -1,262 +1,159 @@
 'use strict';
 
-app.controller('UserController', ['$rootScope','$scope','$state','$timeout','roleBtnService',function($rootScope, $scope, $state, $timeout,roleBtnService) {
+app.controller('UserController', ['$rootScope','$scope','$state','$timeout','$http','roleBtnService','modelDataCacheService','utilService','sessionStorageService',function($rootScope, $scope, $state, $timeout,$http,roleBtnService,modelDataCacheService,utilService,sessionStorageService) {
 	
 	var roleBtnUiClass = "app.user.";//用于后台查找按钮权限
 	roleBtnService.getRoleBtnService(roleBtnUiClass,$scope);
 	
-  var url = app.url.org.api.list; // 后台API路径
-  var data = null;
-  app.utils.getData(url, function callback(dt){
-    data = dt;
-    initData();
-    $scope.loading = false;
-    $scope.loading_sub = false;
-  });
-  $scope.reload = function(){
-	  $timeout(function(){
-        $scope.init();
-      }, 200);
-  };
-  var nodes = {};
-  var treeData = [];
-  // 构造节点
-  function setNode(dt) {
-    if (!nodes['id' + dt['id']]) {
-      var node = {};
-    } else {
-      return nodes['id' + dt['id']];
-    }
-    node['label'] = dt.name || '没有名字';
-    node['data'] = dt.id || '没有数据';
-    node['children'] = node['children'] || [];
-    node['onSelect'] = item_selected;
-    node['FLongNumber'] =dt.FLongNumber;
-    node['unitLayer'] = dt.unitLayer;
-    if (dt['parent']) {
-      setParentNode(node, dt['parent']);  // 若存在父节点，则先构造父节点
-    } else {
-      node['parent'] = null;
-    }
-    nodes['id' + dt['id']] = node;
-    return node;
-  }
-  // 构造父节点
-  function setParentNode(node, id) {
-    var len = data.length;
-    for (var i = 0; i < len; i++) {
-      if (data[i]['id'] === id) {
-        var parentNode = setNode(data[i]);
-        parentNode['children'].push(node);
-      }
-    }
-  }
-  // 列表树数据
-  $scope.tree_data = [];
-  $scope.org_tree = {};
-  // 初始化数据并生成列表树所需的数据结构
-  function initData() {
-    var len = data.length;
-    for (var i = 0; i < len; i++) {
-      var node = setNode(data[i]);
-      if (node['parent'] === null) {
-        treeData.push(node);
-      }
-    }
-    var container_a = [], container_b = [], ln = treeData.length;
-    for(var i=0; i<ln; i++){
-      if(treeData[i].children.length !== 0){
-        treeData[i].expanded = true;
-        container_a.push(treeData[i]);
-      } else{
-        container_b.push(treeData[i]);
-      }
-    }
-    treeData = container_a.concat(container_b);
-    console.log(treeData);
-    // 列表树数据传值
-    $scope.tree_data = treeData;
-	$timeout(function(){
-		// 默认选中第一个节点
-		//$scope.org_tree.select_first_branch();
-		try {
-			$scope.init();
-		} catch (e) {
-		}
-	}, 200);
-  }
-
-  var thisBranch;
-  // 选择列表树中的一项
-  var item_selected = function(branch) {
-	  thisBranch = branch;
-	  $rootScope.FLongNumber=branch.FLongNumber;
-	  $rootScope.ids = [];
-	  $scope.setBtnStatus();
-	  try {
-		  $scope.init();
-	  } catch (e) {
-	  }
-  };  
-
-  // 选择列表树中的一项
-  var tree_handler = function(branch) {
-    $state.go('app.user.list');
-  };
-
-  $scope.click = function(){};
-
-  var status_false = {
-    only : true,
-    single : true,
-    locked : true,
-    mutiple : true
-  };
-
-  var status = {
-    only : false,
-    single : true,
-    locked : true,
-    mutiple : true
-  };
-  // 添加用户（工具栏按钮）
-  $scope.addUnit = function(){
-	  if(!thisBranch||!thisBranch.unitLayer||thisBranch.unitLayer!=3){
-		  mask.insertBefore(container);
-		  $("#msgP").html("只能在部门下添加用户!");
-		  container.removeClass('none');
-		  doIt = function(){
-			  $rootScope.cancel();
-		  };
-		  return;
-	  }
-	  sessionStorage.setItem("FLongNumber", thisBranch.FLongNumber);
-	  sessionStorage.setItem("treeId", thisBranch.data);
-	  sessionStorage.setItem("treeName", thisBranch.label);
-	  setStatus(status_false);
-	  $state.go('app.user.add');
-  };
-
-  // 编辑某一用户（工具栏按钮）
-  $scope.editIt = function(){
-	  sessionStorage.setItem("id", $rootScope.ids[0]);
-      setStatus(status_false);
-      $state.go('app.user.edit');
-  };   
-
-  var mask = $('<div class="mask"></div>');
-  var container = $('#dialog-container');
-  var dialog = $('#dialog');
-  var hButton = $('#clickId');
-  var doIt = function(){};
-
-  // 冻结、解冻某一用户（工具栏按钮）
-  $scope.freeze = function(){
-    mask.insertBefore(container);
-    $("#msgP").html("你确定要执行该操作吗？");
-    container.removeClass('none');
-    doIt = function(){
-      var isFreezeUrl = $scope.obj.locked?app.url.org.api.unfreeze:app.url.org.api.freeze
-      app.utils.getData(isFreezeUrl, {id: $rootScope.ids[0]}, function callback(dt){
-        mask.addClass('none');
-        container.addClass('none');
-        $rootScope.ids = [];
-        $scope.init();
-        $scope.setBtnStatus();
-      });
-    };
-  };
-
-  // 删除某一用户（工具栏按钮）
-  $scope.removeIt = function(){
-    mask.insertBefore(container);
-    $("#msgP").html("你确定要执行该操作吗？");
-    container.removeClass('none');
-    doIt = function(){
-      if($rootScope.ids.length !== 0){
-        var url = app.url.user.api.delete;
-        app.utils.getData(url, {"ids":$rootScope.ids}, function callback(dt){
-          mask.remove();
-          container.addClass('none');
-          $state.reload('app.user.list');
-        });
-      }
-    };
-  };
-
-  // 执行操作
-  $rootScope.do = function(){
-    doIt();
-  };
-
-  // 模态框退出
-  $rootScope.cancel = function(){
-    mask.remove();
-    container.addClass('none');
-  };  
-
-  // 不操作返回
-  $scope.return = function(){
-    $rootScope.ids = [];
-    setStatus(status);
-    window.history.back();
-  };  
-
-  // 查看某一用户详情（工具栏按钮）
-  $scope.seeDetails = function(id){
-	  sessionStorage.setItem("id",id? id:$rootScope.ids[0]);
-	  setStatus(status_false);
-	  $state.go('app.user.details');
-  };
-
-  // 设置按钮的状态值
-  $scope.setBtnStatus = function(){
-    if($scope.ids.length === 0){
-      $scope.single = true;
-      $scope.locked = true;
-      $scope.mutiple = true;
-      $scope.only = false;
-    }else if($scope.ids.length === 1){
-      $scope.only = false;
-      $scope.single = false;
-      $scope.locked = false;
-      $scope.mutiple = false;
-    }else{
-      $scope.only = false;
-      $scope.single = true;
-      $scope.locked = true;
-      $scope.mutiple = false;
-    }
-
-    if($scope.obj&&!$scope.obj.locked){
-      if(!$scope.single) {
-        $('button .fa-lock').next('span').html('冻结');
-      }
-    } else {
-      if(!$scope.single){
-        $('button .fa-lock').next('span').html('解冻');
-      }
-    }
-
-/*    status = {
-      only : $scope.only,
-      single : $scope.single,
-      locked : $scope.locked,
-      mutiple : $scope.mutiple
-    };*/
-
-    hButton.trigger('click'); // 触发一次点击事件，使所以按钮的状态值生效
-  };
-
-  function setStatus(param){
-    if(param){
-      $scope.only = param.only,
-      $scope.single = param.single,
-      $scope.locked = param.locked,
-      $scope.mutiple = param.mutiple
-    }
-
-    //hButton.trigger('click');
-  }
+	/**
+	 * 在session中不能清除的内容，应该包含子缓存对象
+	 */
+	$scope.session = {};
+	$scope.session.cacheArray = ["userListDataTableProperties","userIdForEdit","userIdForDetails"];
+	sessionStorageService.clearNoCacheItem($scope.session.cacheArray);
+	
+	
+	var stateName = "user";
+	$scope.state = {
+			list:"app."+stateName+".list",
+			add:"app."+stateName+".add",
+			edit:"app."+stateName+".edit",
+			details:"app."+stateName+".details"
+	};
+	
+	$scope.rowIds = [];
+	/**
+	 * 清空需要操作的id，主要是在busAtomListController中调用
+	 */
+	$scope.clearRowIds = function(){
+		$scope.rowIds = [];
+		$scope.setBtnStatus();
+	}
+	
+	/**
+	 * 组织树的形成
+	 */
+	$scope.treeAPI = {};
+	$scope.treeData = [];
+	$scope.selectData = {};
+	$scope.treeController = {};
+	modelDataCacheService.orgHasDeptAndCarShopTreeDataService().then(function(orgData){
+		$scope.loading = false ;
+		$scope.treeData = utilService.wrapData(orgData,"id","pId","name",function(obj,node){
+			node.FLongNumber = obj.FLongNumber ;
+			if(obj.unitLayer == 1){
+				var unitLayer = "集团";
+			}else if(obj.unitLayer == 2){
+				var unitLayer = "子公司";
+			}else if(obj.unitLayer == 3){
+				var unitLayer = "部门";
+			}else{
+				var unitLayer = "门店";
+			}
+			node.label = obj.name + "(" + unitLayer + ")";
+			node.unitLayer = obj.unitLayer ;
+			node.carShopId = obj.carShopId ;
+			node.onSelect = function(branch){
+				if(branch.FLongNumber){
+					$scope.selectData.FLongNumber = branch.FLongNumber ;
+					$scope.selectData.carShopId = undefined ;
+				}else{
+					$scope.selectData.carShopId = branch.id ;
+					$scope.selectData.FLongNumber = undefined ;
+				}
+				$scope.selectData.orgName = branch.label ;
+				$scope.selectData.orgId = branch.id ;
+				$scope.selectData.unitLayer = branch.unitLayer ;
+				
+				if($scope.treeAPI.reloadListTable){
+					$scope.treeAPI.reloadListTable();
+				}
+			}
+		}) ;
+	});
+	
+	//选择一个默认的节点
+	select_first();
+	function select_first(){
+		$timeout(function(){
+			$scope.treeController.select_first_branch();
+			$scope.treeController.expand_all();
+			if(!$scope.selectData.orgName){
+				select_first();
+			}
+		},30);
+	}
+	
+	
+	// 设置按钮的状态值
+	$scope.setBtnStatus = function(){
+		console.info("设置按钮",$scope.rowIds);
+	    if($scope.rowIds.length === 0){
+	      $scope.single = true;
+	      $scope.locked = true;
+	      $scope.mutiple = true;
+	    }else if($scope.rowIds.length === 1){
+	      $scope.single = false;
+	      $scope.locked = false;
+	      $scope.mutiple = false;
+	    }else{
+	      $scope.single = true;
+	      $scope.locked = true;
+	      $scope.mutiple = false;
+	    }
+	    $scope.$evalAsync();
+	 };
+	 
+	 $scope.add = function(){
+		 $state.go($scope.state.add);
+		 $scope.clearRowIds();
+	 };
+	 
+	 $scope.editIt = function(){
+		 $state.go($scope.state.edit);
+	 }
+	 
+	/*
+	 *公共的api 或者储存数据用 
+	 */
+	$scope.API = {
+			isListPage : true,
+			checkCodeUnique:checkCodeUnique
+	};
+	function checkCodeUnique(id,code,fn){
+		$http({
+			url:"basedata/userAction!checkUserCodeUnique.action",
+			method:"POST",
+			data:{
+				id:id,
+				number:code
+			}
+		}).then(function(resp){
+			if(fn){
+				fn(resp);
+			}
+		});
+	}
+	//是否是列表界面
+	$scope.$watch("API.isListPage",function(val){
+		 var view_content = $("#view_content");
+		 if(val){
+			 view_content.addClass("col-sm-9");
+			 view_content.removeClass("col-sm-12");
+		 }else{
+			 view_content.addClass("col-sm-12");
+			 view_content.removeClass("col-sm-9");
+		 }
+	 });
+	 
+	 //输入提示
+	 $scope.message = {
+			 password:{
+				 pattern:"密码只能由数字和字母组成"
+			 },
+			 number:{
+				 custom_pattern:"该账号名已经存在"
+			 }
+	 }
 
 }]);

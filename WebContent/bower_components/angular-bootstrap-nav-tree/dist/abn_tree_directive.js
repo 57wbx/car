@@ -265,6 +265,30 @@
                   return scope.treeData[0];
                 }
               };
+              tree.select_branch_byId = function(id,treeData,isChildren){
+            	  var _rootTreeData = treeData ;
+            	  if((!_rootTreeData) && !isChildren){
+            		  _rootTreeData = scope.treeData ;
+            	  }
+            	  if(!_rootTreeData||_rootTreeData.length<=0){
+            		  return ;
+            	  }
+            	  var _n = _rootTreeData.length;
+            	  if(_n > 0){
+            		for(var i=0;i<_n;i++){
+            			var root = _rootTreeData[i];
+            			if(root["id"] == id){
+            				tree.select_branch(root);
+            				return root;
+            			}else{
+            				var result = tree.select_branch_byId(id,root.children,true);
+            				if(result){
+            					return result ;
+            				}
+            			}
+            		}  
+            	  }
+              };
               tree.select_first_branch = function() {
                 var b;
                 b = tree.get_first_branch();

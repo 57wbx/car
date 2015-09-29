@@ -20,8 +20,10 @@ import org.apache.log4j.Logger;
 import org.apache.struts2.ServletActionContext;
 
 import com.hhxh.car.common.service.BaseService;
+import com.hhxh.car.common.util.CommonConstant;
 import com.hhxh.car.common.util.ConfigResourcesGetter;
 import com.hhxh.car.common.util.JsonDateValueProcessor;
+import com.hhxh.car.org.domain.AdminOrgUnit;
 import com.hhxh.car.permission.domain.Role;
 import com.hhxh.car.permission.domain.User;
 import com.hhxh.car.permission.service.UserService;
@@ -88,12 +90,14 @@ public class BaseAction extends ActionSupport
 	protected SimpleDateFormat ymdhm = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 	protected SimpleDateFormat ymdhms = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	protected SimpleDateFormat ymd = new SimpleDateFormat("yyyy-MM-dd");
-	
 
 	/**
 	 * 假如需要传输的数据不复杂，所有的数据都通过该json对象进行传输
 	 */
 	protected JSONObject jsonObject = new JSONObject();
+
+	protected static final String DETAILS = "details";
+	protected static final String DATA = "data";
 
 	/**
 	 * 获得会话
@@ -255,15 +259,17 @@ public class BaseAction extends ActionSupport
 		User user = getSessionValue("LOGIN_USER");
 		if (user == null)
 		{
-//			try
-//			{
-////				String path = ServletActionContext.getRequest().getRemoteHost();
-////				System.out.println(path);
-////				ServletActionContext.getResponse().sendRedirect(path + "/car");
-//			} catch (IOException e)
-//			{
-//				e.printStackTrace();
-//			}
+			// try
+			// {
+			// // String path =
+			// ServletActionContext.getRequest().getRemoteHost();
+			// // System.out.println(path);
+			// // ServletActionContext.getResponse().sendRedirect(path +
+			// "/car");
+			// } catch (IOException e)
+			// {
+			// e.printStackTrace();
+			// }
 		}
 		return user;
 	}
@@ -285,10 +291,10 @@ public class BaseAction extends ActionSupport
 		}
 		return true;
 	}
-	
+
 	public boolean isNotEmpty(String[] ids)
 	{
-		if (ids == null || ids.length<=0)
+		if (ids == null || ids.length <= 0)
 		{
 			return false;
 		}
@@ -453,5 +459,26 @@ public class BaseAction extends ActionSupport
 		return getMessageFromConfig("common_deflaut_message");
 	}
 
+	/**
+	 * 从session中获取 登陆人的更组织
+	 */
+	protected AdminOrgUnit getRootOrg()
+	{
+		AdminOrgUnit rootOrg = getSessionValue(CommonConstant.LOGIN_ORG_ROOT);
+		return rootOrg;
+	}
+
+	/**
+	 * 获取更组织中number 长编码
+	 */
+	protected String getLoginLongNumber()
+	{
+		AdminOrgUnit org = getRootOrg();
+		if (org != null)
+		{
+			return org.getFLongNumber();
+		}
+		return null;
+	}
 
 }

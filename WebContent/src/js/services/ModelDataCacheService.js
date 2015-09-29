@@ -17,11 +17,23 @@ app.factory("modelDataCacheService",['$http','$q',function($http,$q){
 	var busTypeZtreeDataFlushTimes = 5;
 	var busTypeZtreeDataNowTimes = 0;
 	/**
-	 * 全局变量@3
+	 * 全局变量@3 组织不存在部门
 	 */
 	var orgNoDeptZtreeData = null;//该数据主要是为了业务ztree提供的缓存数据
 	var orgNoDeptZtreeDataFlushTimes = 5;
 	var orgNoDeptZtreeDataNowTimes = 0;
+	/**
+	 * 全局变量@3.1 组织存在部门
+	 */
+	var orgHasDeptZtreeData = null;//该数据主要是为了业务ztree提供的缓存数据
+	var orgHasDeptZtreeDataFlushTimes = 5;
+	var orgHasDeptZtreeDataNowTimes = 0;
+	/**
+	 * 全局变量@3.2组织存在部门 和存在商铺信息
+	 */
+	var orgHasDeptAndCarShopZtreeData = null;//该数据主要是为了业务ztree提供的缓存数据
+	var orgHasDeptAndCarShopZtreeDataFlushTimes = 5;
+	var orgHasDeptAndCarShopZtreeDataNowTimes = 0;
 	/**
 	 * 全局变量@4
 	 */
@@ -113,6 +125,56 @@ app.factory("modelDataCacheService",['$http','$q',function($http,$q){
 					orgNoDeptZtreeDataNowTimes ++;
 					console.info("缓存数据中读取数据@3");
 					deferred.resolve(orgNoDeptZtreeData);
+				}
+				return deferred.promise;
+			},
+			/**
+			 * 组织架构的树，可以存在部门
+			 */
+			orgHasDeptTreeDataService:function(needFlush){
+				var deferred = $q.defer();
+				if(needFlush || !orgHasDeptZtreeData || (orgHasDeptZtreeDataNowTimes > orgHasDeptZtreeDataFlushTimes)){
+					//需要从网上刷新最新的数据
+					$http({
+						url:"basedata/orgZAction!listOrgHasDeptTreeByLoginUser.action",
+						method : "get"
+					}).then(function(resp){
+						if(resp.data.code==1){
+							orgHasDeptZtreeData = resp.data.data ;
+							orgHasDeptZtreeDataNowTimes = 0;
+						}
+						console.info("从网上获取数据@3.1");
+						deferred.resolve(orgHasDeptZtreeData);
+					});
+				}else{
+					orgHasDeptZtreeDataNowTimes ++;
+					console.info("缓存数据中读取数据@3.1");
+					deferred.resolve(orgHasDeptZtreeData);
+				}
+				return deferred.promise;
+			},
+			/**
+			 * 组织架构的树，可以存在部门/可以存在商铺
+			 */
+			orgHasDeptAndCarShopTreeDataService:function(needFlush){
+				var deferred = $q.defer();
+				if(needFlush || !orgHasDeptAndCarShopZtreeData || (orgHasDeptAndCarShopZtreeDataNowTimes > orgHasDeptAndCarShopZtreeDataFlushTimes)){
+					//需要从网上刷新最新的数据
+					$http({
+						url:"basedata/orgZAction!listOrgHasDeptAndCarShopByLoginUser.action",
+						method : "get"
+					}).then(function(resp){
+						if(resp.data.code==1){
+							orgHasDeptAndCarShopZtreeData = resp.data.data ;
+							orgHasDeptAndCarShopZtreeDataNowTimes = 0;
+						}
+						console.info("从网上获取数据@3.2");
+						deferred.resolve(orgHasDeptAndCarShopZtreeData);
+					});
+				}else{
+					orgHasDeptAndCarShopZtreeDataNowTimes ++;
+					console.info("缓存数据中读取数据@3.2");
+					deferred.resolve(orgHasDeptAndCarShopZtreeData);
 				}
 				return deferred.promise;
 			},

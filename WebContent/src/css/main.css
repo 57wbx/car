@@ -673,3 +673,9 @@ form div .inputerror {
 	font-family: 微软雅黑;
 	font-size: 3px
 }
+form .yj_form_group {
+    padding: 5px;
+    border-color: #cfdadd;
+    border-radius: 2px;
+    height: 34px;
+}

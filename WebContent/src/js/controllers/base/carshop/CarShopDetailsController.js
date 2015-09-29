@@ -2,6 +2,8 @@
 
 app.controller('carShopDetailsController', ['$http','$rootScope','$scope','$state','sessionStorageService',function($http, $rootScope, $scope, $state,sessionStorageService) {
 	
+	$scope.API.isListPage = false ;
+	
 	$scope.needCacheArray = ["carShopIdForDetails","carShopListDataTableProperties"];
 	sessionStorageService.clearNoCacheItem($scope.needCacheArray);
 	if($scope.rowIds[0]){

@@ -1,7 +1,7 @@
 app.controller('carShopListController',['$rootScope','$scope','$state','$timeout','$modal','$ocLazyLoad','$compile','utils','dataTableSearchService','sessionStorageService','carShopStateService', function($rootScope, $scope, $state, $timeout,$modal,$ocLazyLoad,$compile,utils,dataTableSearchService,sessionStorageService,carShopStateService) {
 		
+	$scope.API.isListPage = true ;
 	$scope.$evalAsync(initTable);
-	
 	$scope.clearRowIds();
 	
 	var isF5 = true ;
@@ -43,7 +43,7 @@ app.controller('carShopListController',['$rootScope','$scope','$state','$timeout
 					app.state.go('access.signin');
 				}
 			}).DataTable({
-				"sAjaxSource":"base/carShopAction!listCarShopWithMannager.action",
+				"sAjaxSource":"base/carShopAction!listCarShop.action",
 		    	"bServerSide":true,
 		    	"sAjaxDataProp":"data",
 		    	 "dom": '<"top">rt<"bottom"ip><"clear">',
@@ -87,20 +87,30 @@ app.controller('carShopListController',['$rootScope','$scope','$state','$timeout
 			        	return carShopStateService.getVIPLevel(param);
 			        }
 			      },{
-			        "mDataProp": "registerDate"
-			      },{
-			    	"mDataProp":"username",
-			    	"render":function(param){
-			    		if(param){
-			    			return "<a name='operation'  style='text-decoration:underline;color:blue;'>"+param+"</a>";
-			    		}else{
-			    			return "<button name='operation'  type='button' class='btn btn-default'>新增</button>";
-			    		}
-			    	},
-			    	"fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
-	                    $(nTd).attr("name","operation");
-	                }
-			      }],
+			        "mDataProp": "registerDate",
+			        "render":function(param){
+			        	if(param){
+			        		return param.substr(0,10);
+			        	}else{
+			        		return "";
+			        	}
+			        }
+			      }
+//			      ,
+//			      {
+//			    	"mDataProp":"username",
+//			    	"render":function(param){
+//			    		if(param){
+//			    			return "<a name='operation'  style='text-decoration:underline;color:blue;'>"+param+"</a>";
+//			    		}else{
+//			    			return "<button name='operation'  type='button' class='btn btn-default'>新增</button>";
+//			    		}
+//			    	},
+//			    	"fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
+//	                    $(nTd).attr("name","operation");
+//	                }
+//			      }
+			],
 			        "fnCreatedRow": function(nRow, aData, iDataIndex){
 			            $(nRow).attr('data-id', aData['id']);
 			            $(nRow).find("button").click(function(e){

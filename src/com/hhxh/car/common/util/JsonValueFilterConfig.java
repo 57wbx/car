@@ -157,7 +157,10 @@ public class JsonValueFilterConfig
 			 * carshop 网店需要过滤的数据
 			 */
 			public static final String[] CARSHOP_ONLY_CARSHOP = new String[] { "org", "user", "merbers", "orders", "shopBlackList" };
-			public static final String[] CARSHOP_HAS_ORG = new String[] { "user", "createUser", "lastUpdateUser", "parent", "merbers", "orders", "shopBlackList" };
+			public static final String[] CARSHOP_HAS_ORG = new String[] { "user", "createUser", "lastUpdateUser", "parent", "merbers", "orders", "shopBlackList", HIBERNATE_LAZY_PROPERTISE_HANDLER,
+					HIBERNATE_LAZY_PROPERTISE_LAZYINITIALIZER };
+			public static final String[] CARSHOP_HAS_USER = CombineStringArrayNoSame(new String[] { "org", "merbers", "orders", "shopBlackList", HIBERNATE_LAZY_PROPERTISE_HANDLER,
+					HIBERNATE_LAZY_PROPERTISE_LAZYINITIALIZER }, JsonValueFilterConfig.Permission.User.USER_ONLY_PRIMARY_PROPERTIESE);
 			// 门店黑名单
 			public static final String[] SHOPBLACKLIST_ONLY_BLACKLIST = new String[] { "carShop", "createUser" };
 		}
@@ -266,10 +269,19 @@ public class JsonValueFilterConfig
 
 	}
 
-	public class Org
+	public static class Org
 	{
 		private Org()
 		{
+		}
+
+		public static class AdminOrgUnit
+		{
+			private AdminOrgUnit()
+			{
+			}
+
+			public static final String[] ORG_ONLY_ORG = new String[] { "createUser", "lastUpdateUser", "parent", HIBERNATE_LAZY_PROPERTISE_HANDLER, HIBERNATE_LAZY_PROPERTISE_LAZYINITIALIZER };
 		}
 	}
 
@@ -290,6 +302,10 @@ public class JsonValueFilterConfig
 			 */
 			public static final String[] USER_ONLY_PRIMARY_PROPERTIESE = new String[] { "userType", "adminOrgUnit", "password", "isEnable", "isLock", "description", "createTime", "lastModifyTime",
 					"createUser", "lastModifyUser", "person", "role", "rootOrgUnit", "isAdministrator", "isOprUser", "carShop" };
+
+			public static final String[] USER_HAS_ORG = new String[] { "adminOrgUnit", "password", "createUser", "lastUpdateUser", "parent", "createUser", "lastModifyUser", "person", "creator",
+					"lastUpdateUser", "adminOrgUnit", "role", "permItems", "carShop", HIBERNATE_LAZY_PROPERTISE_HANDLER, HIBERNATE_LAZY_PROPERTISE_LAZYINITIALIZER };
+
 		}
 	}
 

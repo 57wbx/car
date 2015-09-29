@@ -1,44 +1,63 @@
 package com.hhxh.car.common.util;
 
 /**
- * 公共的常量工具对象
- * 目前包含的常量有 对象是否为黑名单
+ * 公共的常量工具对象 目前包含的常量有 对象是否为黑名单
+ * 
  * @author zw
  * @date 2015年8月18日 上午9:39:21
  *
  */
 public class CommonConstant
 {
-	private CommonConstant(){};
-	
+	private CommonConstant()
+	{
+	};
+
 	/**
 	 * 不需要进行权限检查的angular ui-router 路径
 	 */
-	public static final String[] DONT_AUTH_UICLASS = new String[]{"signin","access.signin","access.signup","app.home","app"};
-	
+	public static final String[] DONT_AUTH_UICLASS = new String[] { "signin", "access.signin", "access.signup", "app.home", "app" };
+
 	/**
 	 * 不需要进行检查的资源URL路径
 	 */
-	public static final String[] DONT_AUTH_PATH = new String[]{"login.action","logout.action"};
-	
+	public static final String[] DONT_AUTH_PATH = new String[] { "login.action", "logout.action" };
+
 	/**
 	 * struts请求请求非静态资源的后缀名集合
 	 */
-	public static final String[] STRUTS_ACTION_EXTENSION = new String[]{".action",".do"};
-	
+	public static final String[] STRUTS_ACTION_EXTENSION = new String[] { ".action", ".do" };
+
 	/**
 	 * 用户登陆之后储存在session的key
 	 */
 	public static final String LOGIN_USER = "LOGIN_USER";
 	/**
+	 * 用户登陆之后储存在session的key 权限
+	 */
+	public static final String LOGIN_ROLE = "login_role";
+	/**
+	 * 用户登陆之后储存在session的key 组织
+	 */
+	public static final String LOGIN_ORG_ROOT = "login_org_root";
+	/**
+	 * 用户登陆之后储存在session中的部门
+	 */
+	public static final String LOGIN_ORG_DEPT = "login_org_dept";
+	/**
+	 * 用户登陆之后储存在session中的部门
+	 */
+	public static final String LOGIN_CARSHOP = "login_carshop";
+
+	/**
 	 * 用户登陆之后保存的登陆日志
 	 */
-	public static final String LOGIN_LOG = "login_log" ;
-	
+	public static final String LOGIN_LOG = "login_log";
+
 	/**
 	 * 登陆
 	 */
-	public static final Integer LOGIN_CODE = 200 ;
+	public static final Integer LOGIN_CODE = 200;
 	/**
 	 * 未登录
 	 */
@@ -46,17 +65,17 @@ public class CommonConstant
 	/**
 	 * 没有权限
 	 */
-	public static final Integer NOT_HAS_AUTH_CODE = 404; 
-	
+	public static final Integer NOT_HAS_AUTH_CODE = 404;
+
 	/**
 	 * 是黑名单对象
 	 */
-	public static final Integer BLACKLIST_YES = 1 ;
+	public static final Integer BLACKLIST_YES = 1;
 	/**
 	 * 不是黑名单对象
 	 */
 	public static final Integer BLACKLIST_NO = 0;
-	
+
 	/**
 	 * 是否存在:存在，用于搜索条件
 	 */

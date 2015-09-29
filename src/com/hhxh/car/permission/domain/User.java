@@ -10,7 +10,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -57,7 +56,7 @@ public class User implements Serializable, Comparable<Object>
 	private String account;
 
 	/**
-	 * 用户类型 20:职员 30:客户 40：供应商 10：系统用户
+	 * 1：系统用户
 	 */
 	@Column(name = "USERTYPE", length = 32)
 	private Integer userType;
@@ -134,14 +133,14 @@ public class User implements Serializable, Comparable<Object>
 	private Person person;
 
 	// 角色
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "roleid")
 	private Role role;
 
 	/**
 	 * 根组织
 	 */
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "rootOrgID")
 	private AdminOrgUnit rootOrgUnit;
 
@@ -152,7 +151,7 @@ public class User implements Serializable, Comparable<Object>
 	@Column
 	private Integer isOprUser;
 
-	@OneToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "shopid")
 	private CarShop carShop;
 
