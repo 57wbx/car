@@ -188,8 +188,20 @@ app.controller('shopItemListController',['$scope','$state','$timeout','$http','s
             	}}
             }, {
                 "mDataProp": "starTime",
+                "render":function(param){
+                	if(param){
+                		return param.substr(0,"yyyy-mm-dd".length);
+                	}
+                	return "";
+                }
             }, {
               "mDataProp": "endTime",
+              "render":function(param){
+              	if(param){
+              		return param.substr(0,"yyyy-mm-dd".length);
+              	}
+              	return "";
+              }
             }, {
               "mDataProp": "memo",
             }],

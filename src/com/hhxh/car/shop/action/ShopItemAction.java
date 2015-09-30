@@ -1,7 +1,6 @@
 package com.hhxh.car.shop.action;
 
 import java.math.BigDecimal;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -167,23 +166,11 @@ public class ShopItemAction extends BaseAction implements ModelDriven<ShopItem>
 
 		if (isNotEmpty(starTimeStr))
 		{
-			try
-			{
-				starTime = ymdhm.parse(starTimeStr);
-			} catch (ParseException e)
-			{
-				throw new ErrorMessageException(this.getMessageFromConfig("time_pattern_error"));
-			}
+			starTime = parseStringToDate(starTimeStr);
 		}
 		if (isNotEmpty(endTimeStr))
 		{
-			try
-			{
-				endTime = ymdhm.parse(endTimeStr);
-			} catch (ParseException e)
-			{
-				throw new ErrorMessageException(this.getMessageFromConfig("time_pattern_error"));
-			}
+			endTime = parseStringToDate(endTimeStr);
 		}
 
 		this.shopItem.setShopAtoms(null);
@@ -279,23 +266,11 @@ public class ShopItemAction extends BaseAction implements ModelDriven<ShopItem>
 
 		if (starTimeStr != null && !"".equals(starTimeStr))
 		{
-			try
-			{
-				starTime = ymdhm.parse(starTimeStr);
-			} catch (ParseException e)
-			{
-				throw new ErrorMessageException(this.getMessageFromConfig("time_pattern_error"));
-			}
+			starTime = parseStringToDate(starTimeStr);
 		}
 		if (endTimeStr != null && !"".equals(endTimeStr))
 		{
-			try
-			{
-				endTime = ymdhm.parse(endTimeStr);
-			} catch (ParseException e)
-			{
-				throw new ErrorMessageException(this.getMessageFromConfig("time_pattern_error"));
-			}
+			endTime = parseStringToDate(endTimeStr);
 		}
 		this.shopItem.setShopAtoms(null);
 		this.shopItem.setStarTime(starTime);

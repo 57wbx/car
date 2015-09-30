@@ -7,6 +7,11 @@ app.controller("shopItemAddController",['$scope','$state','$http','checkUniqueSe
 		clickTr(aData);
 	}
 	
+	$scope.options = {
+			hello:"hello"
+	}
+	$scope.dateController = {};
+	
 	$scope.formData = {};
 	defaultFormData($scope.formData);
 	$scope.busAtomData = [];//用来保存该服务项中的所有子项，用来显示在列表中，并在保存的时候提交到服务器端
@@ -444,6 +449,7 @@ app.controller("shopItemAddController",['$scope','$state','$http','checkUniqueSe
 		$scope.formData.spec = aData['spec'];
 		$scope.formData.model = aData['model'];
 		$scope.formData.autoIsActivity = aData['isActivity'];
+		$scope.formData.eunitPrice = aData['yunitPrice'];
 		
 		$scope.formData.autoPartAllName = aData['partName']+"+"+aData['brandName']+"+"+aData['spec']+"+"+aData['model'] ;
 		$("#autoPartAllName").val(aData['partName']+"+"+aData['brandName']+"+"+aData['spec']+"+"+aData['model']);
@@ -475,7 +481,7 @@ app.controller("shopItemAddController",['$scope','$state','$http','checkUniqueSe
 			if(code == 1){//代表保存成功
 				$state.go($scope.state.list);
 			}else{//代表保存失败
-				alert("保存失败");
+				alert(resp.data.message);
 			}
 			$scope.isDoing = false ;
 		},function(resp){

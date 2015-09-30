@@ -571,6 +571,10 @@ public class Dao
 		projectionList.add(Projections.property(idName));
 		mainCriteria.setProjection(Projections.distinct(projectionList));
 		List<Object> idList = mainCriteria.list();// 指定记录的id
+		if (idList == null || idList.size() <= 0)
+		{
+			return null;
+		}
 
 		Criteria resultCriteria = getSession().createCriteria(class1);
 		resultCriteria.add(Restrictions.in(idName, idList));

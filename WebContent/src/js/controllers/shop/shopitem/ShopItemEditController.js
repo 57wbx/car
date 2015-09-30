@@ -144,8 +144,12 @@ app.controller("shopItemEditController",['$scope','$state','$http','$timeout','c
 		//时间控件需要进行dom操作渲染
 //		$("#starTime").val(data.details.starTime);
 //		$("#endTime").val(data.details.endTime);
-		$scope.formData.starTimeStr = data.details.starTime;
-		$scope.formData.endTimeStr = data.details.endTime;
+		if(data.details.starTime){
+			$scope.formData.starTimeStr = data.details.starTime.substr(0,"YYYY-MM-dd".length);
+		}
+		if(data.details.endTime){
+			$scope.formData.endTimeStr = data.details.endTime.substr(0,"YYYY-MM-dd".length);
+		}		
 		/*
 		 * 渲染子项列表信息
 		 */
@@ -470,6 +474,7 @@ app.controller("shopItemEditController",['$scope','$state','$http','$timeout','c
 		$scope.formData.spec = aData['spec'];
 		$scope.formData.model = aData['model'];
 		$scope.formData.autoIsActivity = aData['isActivity'];
+		$scope.formData.eunitPrice = aData['yunitPrice'];
 		
 		$scope.formData.autoPartAllName = aData['partName']+"+"+aData['brandName']+"+"+aData['spec']+"+"+aData['model'] ;
 		$("#autoPartAllName").val(aData['partName']+"+"+aData['brandName']+"+"+aData['spec']+"+"+aData['model']);
@@ -503,7 +508,7 @@ app.controller("shopItemEditController",['$scope','$state','$http','$timeout','c
 				 hintService.hint({title: "成功", content: "保存成功！" });
 				$state.go($scope.state.list);
 			}else{//代表保存失败
-				alert("保存失败");
+				alert(resp.data.message);
 			}
 			$scope.isDoing = false ;
 		},function(resp){

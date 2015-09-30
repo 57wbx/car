@@ -3,6 +3,7 @@ package com.hhxh.car.common.action;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -19,6 +20,7 @@ import net.sf.json.util.CycleDetectionStrategy;
 import org.apache.log4j.Logger;
 import org.apache.struts2.ServletActionContext;
 
+import com.hhxh.car.common.exception.ErrorMessageException;
 import com.hhxh.car.common.service.BaseService;
 import com.hhxh.car.common.util.CommonConstant;
 import com.hhxh.car.common.util.ConfigResourcesGetter;
@@ -481,4 +483,39 @@ public class BaseAction extends ActionSupport
 		return null;
 	}
 
+	/**
+	 * 将字符串解析成日期对象
+	 * 
+	 * @throws ErrorMessageException
+	 */
+	protected Date parseStringToDate(String dateStr) throws ErrorMessageException
+	{
+		if (isNotEmpty(dateStr))
+		{
+			Date date = null;
+			try
+			{
+				date = ymd.parse(dateStr);
+			} catch (ParseException e)
+			{
+				try
+				{
+					date = ymdhm.parse(dateStr);
+				} catch (ParseException e1)
+				{
+					try
+					{
+						date = ymdhms.parse(dateStr);
+					} catch (ParseException e2)
+					{
+						throw new ErrorMessageException("请输入正确日期格式的数据");
+					}
+				}
+			}
+			return date;
+		} else
+		{
+			throw new ErrorMessageException("日期不能为空");
+		}
+	}
 }

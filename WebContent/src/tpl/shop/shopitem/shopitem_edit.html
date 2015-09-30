@@ -68,7 +68,7 @@
 			            <option value="4">强制下架（违规）</option>
 		          </select>
 	        </div>
-        
+	        
 	        <label class="col-sm-1 control-label">是否参与聚会<i class="fa fa-asterisk text-danger"></i></label>
 	        <div class="col-sm-3">
 		          <select id="isActivity" class="form-control" required ng-model="formData.isActivity">
@@ -77,23 +77,19 @@
 			            <option value="1">参加</option>
 		          </select>
 	        </div>
-	        </div>
+	      
+     </div>
       
-     <div class="form-group" ng-if="formData.isActivity==1">
+     <div class="form-group" >
+       		
      
-	        <label class="col-sm-1  control-label" >开始时间<i class="fa fa-asterisk text-danger"></i></label>
-	        <div class="col-sm-3 ">
-<!-- 	          	<input type="text" style="width: 100%" name="starTime" id="starTime" class="form-control" value="" ng-model="formData.starTimeStr" /> -->
-	          	<div date date-model="formData.starTimeStr" ></div>
-	      	 </div>
-	      	  <label class="col-sm-1  control-label">结束时间<i class="fa fa-asterisk text-danger"></i></label>
-	        <div class="col-sm-3 ">
-<!-- 	          	<input type="text" style="width: 100%" name="endTime" id="endTime" class="form-control" value="" ng-model="formData.endTimeStr"/> -->
-	          	<div date date-model="formData.endTimeStr" ></div>
-	      	 </div>
+     		<label class="col-sm-2  control-label" ng-if="formData.isActivity==1">开始时间-结束时间<i class="fa fa-asterisk text-danger"></i></label>
+    		 <div class="col-sm-5" ng-if="formData.isActivity==1">
+	        	<div date date-model="date" format="YYYY-MM-DD" time-picker=true start-model="formData.starTimeStr" end-model="formData.endTimeStr"  date-controller="dateController"></div>
+	        </div>
 	      	 
       </div>
-   
+		
    	<div class="form-group">
    		<label class="col-sm-1 control-lable">显示图片</label>
    		<div class="col-sm-11">
@@ -114,7 +110,7 @@
 	        <label class="col-sm-1 control-label">使用规则<i class="fa fa-asterisk text-danger"></i></label>
 	        <div class="col-sm-11">
 	          	<textarea name="useRule" class="form-control" rows="3" ng-model="formData.useRule"  required maxlength="400"></textarea>
-	          	<div pattern-style form-input="busPackageForm.useRule"  input-message="message.useRule" ></div>
+	          	<div pattern-style form-input="busItemForm.useRule"  input-message="message.useRule" ></div>
 	        </div>
       </div>
       
@@ -211,7 +207,7 @@
         
         			<label class="col-sm-2 control-label">配件单价</label>
 			        <div class="col-sm-4">
-			          	<input type="number" name="eunitPrice" placeholder="配件单价" class="form-control" ng-model="formData.eunitPrice" ng-pattern="/^[0-9]+(\.[0-9]{1,2})?$/" min="0">
+			          	<input type="number" name="eunitPrice" placeholder="配件单价" class="form-control" ng-model="formData.eunitPrice" ng-pattern="/^[0-9]+(\.[0-9]{1,2})?$/" min="0" disabled>
 				         <div pattern-style form-input="busAtomForm.eunitPrice"  input-message="message.eunitPrice" ></div>
 			        </div>
      			 </div>

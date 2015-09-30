@@ -150,21 +150,7 @@ app.controller("shopPackageAddController",['$scope','$state','$http','sessionSto
 	    	"sAjaxDataProp":"data",
 	    	"pageLength":5,
 	    	"dom": '<"top">rt<"bottom"p><"clear">',
-	    	"oLanguage": {
-	            "sLengthMenu": "每页 _MENU_ 条",
-	            "sZeroRecords": "没有找到符合条件的数据",
-	            "sProcessing": "&lt;img src=’./loading.gif’ /&gt;",
-	            "sInfo": "当前第 _START_ - _END_ 条，共 _TOTAL_ 条",
-	            "sInfoEmpty": "没有记录",
-	            "sInfoFiltered": "(从 _MAX_ 条记录中过滤)",
-	            "sSearch": "搜索",
-	            "oPaginate": {
-	              "sFirst": "<<",
-	              "sPrevious": "<",
-	              "sNext": ">",
-	              "sLast": ">>"
-	            }
-	          },scrollX:true,
+	    	"scrollX":true,
 	    	  "aoColumns": [ {
 	    		  "render":function(param){
 	    			  return "<button type='button' class='btn btn-default' ><span class='glyphicon glyphicon-ok'></span>选择</button>" +
