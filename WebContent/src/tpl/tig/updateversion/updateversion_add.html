@@ -52,7 +52,8 @@
       
        <label class="col-sm-1 control-label">上传时间</label>
         <div class="col-sm-3">
-          <input type="text" placeholder="上传时间" name="uploadTimeStr" id="uploadTimeStr"  class="form-control" ng-model="formData.uploadTimeStr" readonly >
+<!--           <input type="text" placeholder="上传时间" name="uploadTimeStr" id="uploadTimeStr"  class="form-control" ng-model="formData.uploadTimeStr" readonly > -->
+		<div date date-model="formData.uploadTimeStr" format="YYYY-MM-DD" single-date-picker="true" date-controller="dateController"></div>
         </div>
        
         <label class="col-sm-1 control-label">安装包下载地址<i class="fa fa-asterisk text-danger"></i></label>

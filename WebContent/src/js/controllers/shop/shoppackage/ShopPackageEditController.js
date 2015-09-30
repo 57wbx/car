@@ -451,8 +451,12 @@ app.controller("shopPackageEditController",['$scope','$state','$http','sessionSt
 				//时间控件的初始化
 				$('#starTime').val($scope.formData.starTime);
 				$('#endTime').val($scope.formData.endTime);
-				$scope.formData.starTimeStr = $scope.formData.starTime;
-				$scope.formData.endTimeStr = $scope.formData.endTime;
+				if(resp.data.details.starTime){
+					$scope.formData.starTimeStr = resp.data.details.starTime.substr(0,"YYYY-MM-dd".length);
+				}
+				if(resp.data.details.endTime){
+					$scope.formData.endTimeStr = resp.data.details.endTime.substr(0,"YYYY-MM-dd".length);
+				}		
 				$scope.formData.starTime = undefined;
 				$scope.formData.endTime = undefined;
 				//套餐编号的初始化

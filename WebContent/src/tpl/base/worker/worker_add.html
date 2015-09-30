@@ -111,7 +111,7 @@
 		 <div class="form-group">
 			<label class="col-sm-1 control-label">出生日期</label>
 			<div class="col-sm-3">
-				<input id="birthday" class="form-control" type="text"  ng-model="formData.birthdayStr"  />
+				<div date date-model="formData.birthday" format="YYYY-MM-DD" single-date-picker="true" date-controller="dateController"></div>
 			</div>
 			<label class="col-sm-1 control-label">性别</label>
 			<div class="col-sm-3">

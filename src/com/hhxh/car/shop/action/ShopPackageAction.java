@@ -1,6 +1,5 @@
 package com.hhxh.car.shop.action;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -146,23 +145,11 @@ public class ShopPackageAction extends BaseAction implements ModelDriven<ShopPac
 		Date endTime = null;
 		if (starTimeStr != null && !"".equals(starTimeStr))
 		{
-			try
-			{
-				starTime = ymdhm.parse(starTimeStr);
-			} catch (ParseException e)
-			{
-				throw new ErrorMessageException(this.getMessageFromConfig("time_pattern_error"));
-			}
+			starTime = parseStringToDate(starTimeStr);
 		}
 		if (endTimeStr != null && !"".equals(endTimeStr))
 		{
-			try
-			{
-				endTime = ymdhm.parse(endTimeStr);
-			} catch (ParseException e)
-			{
-				throw new ErrorMessageException(this.getMessageFromConfig("time_pattern_error"));
-			}
+			endTime = parseStringToDate(endTimeStr);
 		}
 
 		shopPackage.setStarTime(starTime);
@@ -234,23 +221,11 @@ public class ShopPackageAction extends BaseAction implements ModelDriven<ShopPac
 		Date endTime = null;
 		if (starTimeStr != null && !"".equals(starTimeStr))
 		{
-			try
-			{
-				starTime = ymdhm.parse(starTimeStr);
-			} catch (ParseException e)
-			{
-				throw new ErrorMessageException(this.getMessageFromConfig("time_pattern_error"));
-			}
+			starTime = parseStringToDate(starTimeStr);
 		}
 		if (endTimeStr != null && !"".equals(endTimeStr))
 		{
-			try
-			{
-				endTime = ymdhm.parse(endTimeStr);
-			} catch (ParseException e)
-			{
-				throw new ErrorMessageException(this.getMessageFromConfig("time_pattern_error"));
-			}
+			endTime = parseStringToDate(endTimeStr);
 		}
 
 		shopPackage.setStarTime(starTime);

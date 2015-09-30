@@ -28,7 +28,7 @@ app.controller('carownerEditController', ['$rootScope','$scope', '$http', '$stat
     		$scope.formData = dt.data.details ;
 	        $scope.formData.IDCARDURLName = dt.data.details.IDCARDURL?"请点击&nbsp;<a  style='color: blue; text-decoration: underline;'  onClick='$(\"#IDCARDURL\").click();'>预览！</a>":undefined;
 	        $scope.formData.birthdayStr = dt.data.details.birthday.substring(0,10) ;//2015-08-12    十位
-	        $scope.formData.birthdat = dt.data.details.birthday.substring(0,10);
+	        $scope.formData.birthday = dt.data.details.birthday.substring(0,10);
     	}else{
     		alert(dt.data.message);
     		$state.go($scope.state.list);
@@ -122,22 +122,6 @@ app.controller('carownerEditController', ['$rootScope','$scope', '$http', '$stat
     	$(buttonName).attr("disabled","disabled");
     	$(buttonName).html("上传中...");
     }
-    
-    
-    $('#birthday').focus(
-    		function(){
-	    		var optionSet = {
-	    				showDropdowns:true,
-						singleDatePicker : true,
-//						timePicker : true,
-						format : 'YYYY-MM-DD'
-						
-					};
-	    		$('#birthday').daterangepicker(optionSet).on('apply.daterangepicker', function(ev){
-	    			$scope.formData.birthday=$('#birthday').val();
-	    		});
-    		}
-	);
     
     $scope.submit = function(){
     	$http({

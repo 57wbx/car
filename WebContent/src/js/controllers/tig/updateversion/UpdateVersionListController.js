@@ -138,6 +138,12 @@ app.controller('updateVersionListController',['$scope','$state','$timeout','$htt
             "mDataProp": "versionName",
           }, {
             "mDataProp": "uploadTime",
+            "render":function(param){
+              	if(param){
+              		return param.substr(0,"yyyy-mm-dd".length);
+              	}
+              	return "";
+            }
           }, {
             "mDataProp": "fileName",
           }, {

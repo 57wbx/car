@@ -32,21 +32,6 @@ app.controller('appCaseEditController', ['$rootScope','$scope', '$http', '$state
     	}
     });
     
-    $('#uploadTime').focus(
-    		function(){
-	    		var optionSet = {
-	    				showDropdowns:true,
-						singleDatePicker : true,
-						timePicker : true,
-						format : 'YYYY-MM-DD hh:mm:ss'
-						
-					};
-	    		$('#uploadTime').daterangepicker(optionSet).on('apply.daterangepicker', function(ev){
-	    			$scope.formData.uploadTime=$('#uploadTime').val();
-	    		});
-    		}
-	);
-    
     $scope.submit = function(){
     	$http({
     		url:"tig/appCaseAction!updateAppCase.action",

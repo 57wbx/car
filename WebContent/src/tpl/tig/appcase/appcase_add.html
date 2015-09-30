@@ -38,7 +38,8 @@
 			</div>
 			<label class="col-sm-1 control-label">上架时间</label>
 			<div class="col-sm-3">
-				<input id="uploadTime" class="form-control" type="text"  ng-model="formData.uploadTime" />
+<!-- 				<input id="uploadTime" class="form-control" type="text"  ng-model="formData.uploadTime" /> -->
+				<div date date-model="formData.uploadTime" format="YYYY-MM-DD" single-date-picker="true" date-controller="dateController"></div>
 			</div>
 		</div> 
 		

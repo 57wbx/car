@@ -64,7 +64,8 @@
 							    	 </div>
 							</div>
 							<div class="col-sm-8">
-								<input id="sendTimeStr" type="text" class="form-control" ng-model="formData.sendTimeStr" ng-disabled="(!formData.sendNow||formData.sendNow==0)">
+<!-- 								<input id="sendTimeStr" type="text" class="form-control" ng-model="formData.sendTimeStr" ng-disabled="(!formData.sendNow||formData.sendNow==0)"> -->
+								<div date date-model="formData.sendTimeStr" format="YYYY-MM-DD HH:mm:ss" time-picker="true" single-date-picker="true" date-controller="dateController" ng-disabled="(!formData.sendNow||formData.sendNow==0)"></div>
 							</div>
 						</div>
 				</div>

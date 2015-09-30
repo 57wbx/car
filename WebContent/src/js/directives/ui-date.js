@@ -73,11 +73,10 @@ app.directive("date",['$compile',function($compile){
 			    };
 			
 			var optionSet = {
-    				singleDatePicker:singleDatePicker,
+    				"singleDatePicker":singleDatePicker,
     				"timePicker": timePicker,
     				"showDropdowns": true,
     			    "timePicker24Hour": true,
-    			    "timePickerSeconds": true,
     				"locale": _zh_cn,
     				"autoApply":true
 			};

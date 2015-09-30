@@ -79,7 +79,13 @@ app.controller('appCaseListController',['$rootScope','$scope','$state','$timeout
 			      },{
 			        "mDataProp": "logoUrl"
 			      },{
-			        "mDataProp": "uploadTime"
+			        "mDataProp": "uploadTime",
+			        "render":function(param){
+		              	if(param){
+		              		return param.substr(0,"yyyy-mm-dd".length);
+		              	}
+		              	return "";
+		          	}
 			      },{
 			        "mDataProp": "user.name"
 			      },{

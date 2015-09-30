@@ -495,7 +495,8 @@ public class BaseAction extends ActionSupport
 			Date date = null;
 			try
 			{
-				date = ymd.parse(dateStr);
+
+				date = ymdhms.parse(dateStr);
 			} catch (ParseException e)
 			{
 				try
@@ -505,7 +506,7 @@ public class BaseAction extends ActionSupport
 				{
 					try
 					{
-						date = ymdhms.parse(dateStr);
+						date = ymd.parse(dateStr);
 					} catch (ParseException e2)
 					{
 						throw new ErrorMessageException("请输入正确日期格式的数据");

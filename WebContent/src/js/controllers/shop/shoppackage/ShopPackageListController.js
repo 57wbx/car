@@ -200,9 +200,21 @@ app.controller('shopPackageListController',['$scope','$state','$timeout','$http'
 	            		return "";break;
 	            	}}
 		      }, {
-	          	"mDataProp":"starTime"
+	          	"mDataProp":"starTime",
+	          	"render":function(param){
+	              	if(param){
+	              		return param.substr(0,"yyyy-mm-dd".length);
+	              	}
+	              	return "";
+	            }
 	          }, {
-	          	"mDataProp":"endTime"
+	          	"mDataProp":"endTime",
+	          	"render":function(param){
+	              	if(param){
+	              		return param.substr(0,"yyyy-mm-dd".length);
+	              	}
+	              	return "";
+	          	}
 	          }, {
 	             "mDataProp": "publishTime",
 	          }],

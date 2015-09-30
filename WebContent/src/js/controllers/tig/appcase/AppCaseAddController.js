@@ -10,22 +10,6 @@ app.controller("appCaseAddController",['$scope','$state','$http','checkUniqueSer
 	$scope.needCacheArray = ["appCaseDataTableProperties"];
 	sessionStorageService.clearNoCacheItem($scope.needCacheArray);
 	
-    $('#uploadTime').focus(
-    		function(){
-	    		var optionSet = {
-	    				showDropdowns:true,
-						singleDatePicker : true,
-						timePicker : true,
-						format : 'YYYY-MM-DD hh:mm:ss'
-						
-					};
-	    		$('#uploadTime').daterangepicker(optionSet).on('apply.daterangepicker', function(ev){
-	    			$scope.formData.uploadTime=$('#uploadTime').val();
-	    		});
-    		}
-	);
-	
-
 	
 	/**
 	 * 点击保存操作

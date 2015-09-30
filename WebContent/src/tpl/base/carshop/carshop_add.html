@@ -127,7 +127,8 @@
       	 
 	     	 <label class="col-sm-1 col-xs-11 control-label">注册时间</label>
 	       	 <div class="col-sm-3 col-xs-8">
-	         	<input type="text"  name="registerDate" id="registerDate" class="form-control" value="" ng-model="formData.registerDate" readonly/>
+<!-- 	         	<input type="text"  name="registerDate" id="registerDate" class="form-control" value="" ng-model="formData.registerDate" readonly/> -->
+			<div date date-model="formData.registerDate" format="YYYY-MM-DD" single-date-picker="true" date-controller="dateController"></div>
 	     	 </div>
 	     	 
 	     	 <label class="col-sm-1 col-xs-11 control-label">企业邮箱</label>

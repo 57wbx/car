@@ -10,20 +10,6 @@ app.controller("pushAddController",['$scope','$state','$http','hintService','ses
 	//2007-08-15 15:09:00
 	$scope.formData.sendTimeStr = flushTime.getFullYear()+"-"+(flushTime.getMonth()+1)+"-"+flushTime.getDate()+" "+flushTime.getHours()+":"+(flushTime.getMinutes()+2)+":"+flushTime.getSeconds();//默认消息保存5个小时
 	
-    $('#sendTimeStr').focus(
-    		function(){
-	    		var optionSet = {
-						singleDatePicker : true,
-						timePicker : true,
-						format : 'YYYY-MM-DD HH:mm:ss'
-					};
-	    			$('#sendTimeStr').daterangepicker(optionSet).on('apply.daterangepicker', function(ev){
-		    			$scope.formData.sendTimeStr=$('#sendTimeStr').val();
-		    		});
-    		}
-	);
-	
-	
 	$scope.submit = function(){
 		$scope.formData.fexpiresTime = $scope.formData.expiresDay * 24 * 3600 + $scope.formData.expiresHour * 3600 ;
 		if($scope.formData.sendNow==1){
