@@ -491,9 +491,9 @@ app.controller("shopItemEditController",['$scope','$state','$http','$timeout','c
 		$scope.formData.deleteBusAtomIds = $scope.deleteBusAtomIds;
 		$scope.formData.busPackages = undefined ;
 		
-		$scope.formData.standardPrice = $scope.formData.workHours + $scope.formData.autoPartsPrice ;
+		$scope.formData.standardPrice = app.utils.addNumber($scope.formData.workHours , $scope.formData.autoPartsPrice) ;
 		if($scope.formData.isActivity == 0){
-			$scope.formData.actualPrice = $scope.formData.workHours + $scope.formData.autoPartsPrice ;
+			$scope.formData.actualPrice = app.utils.addNumber($scope.formData.workHours , $scope.formData.autoPartsPrice) ;
 			$scope.formData.starTimeStr = undefined;
 			$scope.formData.endTimeStr = undefined;
 		}
@@ -530,11 +530,11 @@ app.controller("shopItemEditController",['$scope','$state','$http','$timeout','c
 	 */
 	//增加配件合计
 	$scope.addAutoPartsPrice = function(autoPartsPrice){
-		$scope.formData.autoPartsPrice = ($scope.formData.autoPartsPrice || 0) + autoPartsPrice;
+		$scope.formData.autoPartsPrice = app.utils.addNumber(($scope.formData.autoPartsPrice ?$scope.formData.autoPartsPrice: 0) , autoPartsPrice);
 	}
 	//减少配件合计价
 	$scope.deleteAutoPartsPrice = function(autoPartsPrice){
-		$scope.formData.autoPartsPrice = ($scope.formData.autoPartsPrice || 0) - autoPartsPrice;
+		$scope.formData.autoPartsPrice = app.utils.subNumber(($scope.formData.autoPartsPrice?$scope.formData.autoPartsPrice: 0) , autoPartsPrice);
 //		$("#clickId").trigger("click");
 		$scope.$evalAsync();
 	}
@@ -566,7 +566,7 @@ app.controller("shopItemEditController",['$scope','$state','$http','$timeout','c
 			if(val == 0){
 				$scope.formData.actualPrice = 0 ;
 			}else if(val == 1 && !isFirst){
-				$scope.formData.actualPrice = $scope.formData.workHours + $scope.formData.autoPartsPrice ;
+				$scope.formData.actualPrice = app.utils.addNumber($scope.formData.workHours, $scope.formData.autoPartsPrice) ;
 			}
 			isFirst = false ;
 		})

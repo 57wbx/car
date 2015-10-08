@@ -185,6 +185,26 @@ angular.module('app').controller('AppCtrl', ['$scope', '$translate', '$localStor
     getUserName();
     // 公用函数工具
     app.utils = {};
+    /**
+     * 加法  解决js小数的精度问题
+     */
+    app.utils.addNumber = function(number1,number2){
+    	var r1,r2,m,result;   
+    	try{r1=number1.toString().split(".")[1].length}catch(e){r1=0}   
+    	try{r2=number2.toString().split(".")[1].length}catch(e){r2=0}   
+    	m=Math.pow(10,Math.max(r1,r2))   
+    	result = (number1*m+number2*m)/m;   
+    	return Number(result) ;
+    }
+    app.utils.subNumber = function(number1,number2){
+    	var r1,r2,m,n,result;   
+    	try{r1=number1.toString().split(".")[1].length}catch(e){r1=0}   
+    	try{r2=number2.toString().split(".")[1].length}catch(e){r2=0}   
+    	m=Math.pow(10,Math.max(r1,r2));
+    	n=(r1>=r2)?r1:r2;
+    	result = ((number1*m-number2*m)/m).toFixed(n);  
+    	return Number(result) ;
+    }
     app.utils.getData = function(u, d, m, h) {
       var args = arguments;
       $http({

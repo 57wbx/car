@@ -105,7 +105,7 @@
 		          </select>
 	        </div>
         
-	        <label class="col-sm-1 control-label">是否参与聚会<i class="fa fa-asterisk text-danger"></i></label>
+	        <label class="col-sm-1 control-label">是否参与聚惠<i class="fa fa-asterisk text-danger"></i></label>
 	        <div class="col-sm-3">
 		          <select id="isActivity" class="form-control" required ng-model="formData.isActivity">
 		          	<!-- 0=不参加（默认），1=参加 -->
@@ -181,19 +181,21 @@
        <div>
 		     <table class="table table-striped" id="busItemTable">
 				<thead>
-					<th>项目编号</th>
-					<th>项目名称</th>
-					<th>标准价</th>
-					<th>实际价</th>
-					<th>工时费</th>
-					<th>配件合计价</th>
-					<th>使用状态</th>
-					<th>是否参加聚惠</th>
-					<th>开始时间</th>
-					<th>结束时间</th>
-					<th>操作</th>
+					<tr>
+						<th>项目编号</th>
+						<th>项目名称</th>
+						<th>标准价</th>
+						<th>实际价</th>
+						<th>工时费</th>
+						<th>配件合计价</th>
+						<th>使用状态</th>
+						<th>是否参加聚惠</th>
+						<th>开始时间</th>
+						<th>结束时间</th>
+						<th>操作</th>
 					</tr>
 				</thead>
+				<tbody></tbody>
 			</table>
   		 </div>
     </div>
@@ -221,17 +223,18 @@
 			 	 <!-- 在这里添加服务列表进行选择 -->
 			   		<table class="table table-striped" id="busItemTableForChoose">
 							<thead>
-								<th class="text-center">操作</th>
-								<th>项目编号</th>
-								<th>项目名称</th>
-								<th>标准价</th>
-								<th>实际价</th>
-								<th>工时费</th>
-								<th>配件合计价</th>
-								<th>使用状态</th>
-								<th>是否参加聚惠</th>
-								<th>开始时间</th>
-								<th>结束时间</th>
+								<tr>
+									<th class="text-center">操作</th>
+									<th>项目编号</th>
+									<th>项目名称</th>
+									<th>标准价</th>
+									<th>实际价</th>
+									<th>工时费</th>
+									<th>配件合计价</th>
+									<th>使用状态</th>
+									<th>是否参加聚惠</th>
+									<th>开始时间</th>
+									<th>结束时间</th>
 								</tr>
 							</thead>
 						</table>

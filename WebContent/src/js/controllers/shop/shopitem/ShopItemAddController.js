@@ -7,9 +7,6 @@ app.controller("shopItemAddController",['$scope','$state','$http','checkUniqueSe
 		clickTr(aData);
 	}
 	
-	$scope.options = {
-			hello:"hello"
-	}
 	$scope.dateController = {};
 	
 	$scope.formData = {};
@@ -465,9 +462,9 @@ app.controller("shopItemAddController",['$scope','$state','$http','checkUniqueSe
 		$scope.formData.busAtomDataStr = JSON.stringify($scope.busAtomData);//对json数组进行序列化
 		$scope.formData.itemCode = ($scope.formData.busTypeCode || "") + $scope.formData.itemCode;
 		
-		$scope.formData.standardPrice = $scope.formData.workHours + $scope.formData.autoPartsPrice ;
+		$scope.formData.standardPrice = app.utils.addNumber($scope.formData.workHours , $scope.formData.autoPartsPrice) ;
 		if($scope.formData.isActivity == 0){
-			$scope.formData.actualPrice = $scope.formData.workHours + $scope.formData.autoPartsPrice ;
+			$scope.formData.actualPrice = app.utils.addNumber($scope.formData.workHours , $scope.formData.autoPartsPrice) ;
 			$scope.formData.starTimeStr = undefined;
 			$scope.formData.endTimeStr = undefined;
 		}
@@ -502,11 +499,11 @@ app.controller("shopItemAddController",['$scope','$state','$http','checkUniqueSe
 	 */
 	//增加配件合计
 	$scope.addAutoPartsPrice = function(autoPartsPrice){
-		$scope.formData.autoPartsPrice = ($scope.formData.autoPartsPrice || 0) + autoPartsPrice;
+		$scope.formData.autoPartsPrice = app.utils.addNumber(($scope.formData.autoPartsPrice ?$scope.formData.autoPartsPrice: 0) , autoPartsPrice);
 	}
 	//减少配件合计价
 	$scope.deleteAutoPartsPrice = function(autoPartsPrice){
-		$scope.formData.autoPartsPrice = ($scope.formData.autoPartsPrice || 0) - autoPartsPrice;
+		$scope.formData.autoPartsPrice = app.utils.subNumber(($scope.formData.autoPartsPrice?$scope.formData.autoPartsPrice: 0) , autoPartsPrice);
 		$scope.$evalAsync();
 //		$("#clickId").trigger("click");
 	}
@@ -534,7 +531,7 @@ app.controller("shopItemAddController",['$scope','$state','$http','checkUniqueSe
 	function defaultFormData(formData){
 		if(formData){
 			formData.useState = 0 ;//初始化
-			formData.isActivity = 0 ; //不参加聚会
+			formData.isActivity = 0 ; //不参加聚惠
 			formData.standardPrice = 0; //标准价
 			formData.actualPrice = 0 ;//实际价
 			formData.workHours = 0 ; //工时费
@@ -549,7 +546,7 @@ app.controller("shopItemAddController",['$scope','$state','$http','checkUniqueSe
 		if(val == 0){
 			$scope.formData.actualPrice = 0 ;
 		}else if(val == 1){
-			$scope.formData.actualPrice = $scope.formData.workHours + $scope.formData.autoPartsPrice ;
+			$scope.formData.actualPrice = app.utils.addNumber($scope.formData.workHours, $scope.formData.autoPartsPrice) ;
 		}
 	})
 	

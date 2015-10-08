@@ -70,7 +70,8 @@ app.controller("shopPackageAddController",['$scope','$state','$http','sessionSto
 	    info:false,
 	    lengthChange:false,
 	    paging:false,
-	    scrollX:true,
+	    "scrollX":true,
+	    "autoWidth":true,
 	    "aoColumns":[{
             "mDataProp": "itemCode",
           },{
@@ -245,13 +246,18 @@ app.controller("shopPackageAddController",['$scope','$state','$http','sessionSto
 	 * 初始化显示text的事件
 	 */
 	function initTextEvent(id){
-		var textName = "#busItemsText span .glyphicon-remove[data-id="+id+"]" ;
-				$(textName).mouseover(function(){
+		  var textName = "#busItemsText span .glyphicon-remove[data-id="+id+"]" ;
+		  
+		  $(textName).mouseover(function(){
 			  $(textName).css("background-color","red").css("cursor","pointer");
+			  $(textName).parent("span").css("text-decoration","underline");
 		  });
+		  
 		  $(textName).mouseout(function(){
-			  $(textName).css("background-color","#5cb85c")
+			  $(textName).css("background-color","#5cb85c");
+			  $(textName).parent("span").css("text-decoration","blink");
 		  });
+		  
 		  $(textName).click(function(){
 			  deleteBusItem(id);
 		  });
@@ -265,7 +271,7 @@ app.controller("shopPackageAddController",['$scope','$state','$http','sessionSto
 			alert("该服务项已经存在");
 			return ;
 		}
-		$("#busItemsText").append("<span class='label label-success'>" +
+		$("#busItemsText").append("<span style=' width: 10px;word-wrap: break-word;word-break: normal;background-color: #5cb85c;color: white;'>" +
 				data.itemName+" <span class='glyphicon glyphicon-remove' aria-hidden='true' data-id='"+data.fid+"' '></span></span>&nbsp;");
 		initTextEvent(data.fid);
 		$scope.itemIds.push(data.fid);
@@ -284,7 +290,7 @@ app.controller("shopPackageAddController",['$scope','$state','$http','sessionSto
 			  busItemTable.row(index).remove().draw();
 		  }
 		  var textName = "#busItemsText span .glyphicon-remove[data-id="+id+"]" ;
-		  $(textName).parent(".label-success").remove();
+		  $(textName).parent("span").remove();
 		  console.info($scope.itemIds);
 	}
 	/**
@@ -292,16 +298,16 @@ app.controller("shopPackageAddController",['$scope','$state','$http','sessionSto
 	 * 选择一行服务
 	 */
 	function addBusItemPrice(workHours,autoPartsPrice){
-		$scope.formData.workHours = ($scope.formData.workHours || 0 )+ workHours;
-		$scope.formData.autoPartsPrice = ($scope.formData.autoPartsPrice || 0) + autoPartsPrice;
+		$scope.formData.workHours =app.utils.addNumber(($scope.formData.workHours? $scope.formData.workHours : 0 ), workHours);
+		$scope.formData.autoPartsPrice =app.utils.addNumber(($scope.formData.autoPartsPrice?$scope.formData.autoPartsPrice:0) , autoPartsPrice);
 		$("#clickId").trigger("click");
 	}
 	/**
 	 * 删除一行服
 	 */
 	function deleteBusItemPrice(workHours,autoPartsPrice){
-		$scope.formData.workHours = $scope.formData.workHours - workHours;
-		$scope.formData.autoPartsPrice = $scope.formData.autoPartsPrice - autoPartsPrice;
+		$scope.formData.workHours = app.utils.subNumber($scope.formData.workHours,workHours);
+		$scope.formData.autoPartsPrice = app.utils.subNumber($scope.formData.autoPartsPrice ,autoPartsPrice);
 		$("#clickId").trigger("click");
 	}
 	

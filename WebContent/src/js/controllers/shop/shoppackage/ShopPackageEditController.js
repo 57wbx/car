@@ -265,12 +265,14 @@ app.controller("shopPackageEditController",['$scope','$state','$http','sessionSt
 	 * 初始化显示text的事件
 	 */
 	function initTextEvent(id){
-		var textName = "#busItemsText span .glyphicon-remove[data-id="+id+"]" ;
-				$(textName).mouseover(function(){
+		  var textName = "#busItemsText span .glyphicon-remove[data-id="+id+"]" ;
+		  $(textName).mouseover(function(){
 			  $(textName).css("background-color","red").css("cursor","pointer");
+			  $(textName).parent("span").css("text-decoration","underline");
 		  });
 		  $(textName).mouseout(function(){
-			  $(textName).css("background-color","#5cb85c")
+			  $(textName).css("background-color","#5cb85c");
+			  $(textName).parent("span").css("text-decoration","blink");
 		  });
 		  $(textName).click(function(){
 			  deleteBusItem(id);
@@ -285,7 +287,7 @@ app.controller("shopPackageEditController",['$scope','$state','$http','sessionSt
 			alert("该服务项已经存在");
 			return ;
 		}
-		$("#busItemsText").append("<span class='label label-success'>" +
+		$("#busItemsText").append("<span style=' width: 10px;word-wrap: break-word;word-break: normal;background-color: #5cb85c;color: white;'>" +
 				data.itemName+" <span class='glyphicon glyphicon-remove' aria-hidden='true' data-id='"+data.fid+"' '></span></span>&nbsp;");
 		initTextEvent(data.fid);
 		$scope.itemIds.push(data.fid);
@@ -304,7 +306,7 @@ app.controller("shopPackageEditController",['$scope','$state','$http','sessionSt
 			  busItemTable.row(index).remove().draw();
 		  }
 		  var textName = "#busItemsText span .glyphicon-remove[data-id="+id+"]" ;
-		  $(textName).parent(".label-success").remove();
+		  $(textName).parent("span").remove();
 		  console.info($scope.itemIds);
 	}
 	/**
@@ -312,20 +314,16 @@ app.controller("shopPackageEditController",['$scope','$state','$http','sessionSt
 	 * 选择一行服务
 	 */
 	function addBusItemPrice(workHours,autoPartsPrice){
-		$scope.formData.workHours = ($scope.formData.workHours || 0 )+ workHours;
-		$scope.formData.autoPartsPrice = ($scope.formData.autoPartsPrice || 0) + autoPartsPrice;
-//		$("#clickId").trigger("click");
-//		if(!$scope.$$phase){
-//			$scope.$digest();
-//		}
-		$scope.$evalAsync();
+		$scope.formData.workHours =app.utils.addNumber(($scope.formData.workHours? $scope.formData.workHours : 0 ), workHours);
+		$scope.formData.autoPartsPrice =app.utils.addNumber(($scope.formData.autoPartsPrice?$scope.formData.autoPartsPrice:0) , autoPartsPrice);
+		$("#clickId").trigger("click");
 	}
 	/**
 	 * 删除一行服
 	 */
 	function deleteBusItemPrice(workHours,autoPartsPrice){
-		$scope.formData.workHours = $scope.formData.workHours - workHours;
-		$scope.formData.autoPartsPrice = $scope.formData.autoPartsPrice - autoPartsPrice;
+		$scope.formData.workHours = app.utils.subNumber($scope.formData.workHours,workHours);
+		$scope.formData.autoPartsPrice = app.utils.subNumber($scope.formData.autoPartsPrice ,autoPartsPrice);
 		$("#clickId").trigger("click");
 	}
 	
@@ -470,7 +468,7 @@ app.controller("shopPackageEditController",['$scope','$state','$http','sessionSt
 				$scope.formData.shopItems = undefined;
 				$scope.formData.updateTime = undefined;
 				
-				//监控是否聚会的值的变化
+				//监控是否聚惠的值的变化
 				watchIsActivity();
 			}else{
 				$state.go($scope.state.list);
